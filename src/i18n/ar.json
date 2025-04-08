@@ -1,0 +1,40 @@
+{
+  "common": {
+    "menu": {
+      "dashboard": "لوحة التحكم",
+      "products": "المنتجات",
+      "customers": "العملاء",
+      "orders": "الطلبات",
+      "analytics": "التحليلات"
+    },
+    "actions": {
+      "add": "إضافة",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "search": "بحث",
+      "close": "إغلاق"
+    },
+    "search": {
+      "placeholder": "بحث..."
+    },
+    "loading": "جاري التحميل...",
+    "error": {
+      "general": "حدث خطأ",
+      "network": "حدث خطأ في الشبكة"
+    },
+    "success": {
+      "created": "تم الإنشاء بنجاح",
+      "updated": "تم التحديث بنجاح",
+      "deleted": "تم الحذف بنجاح"
+    },
+    "validation": {
+      "required": "هذا الحقل مطلوب"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    }
+  }
+} 

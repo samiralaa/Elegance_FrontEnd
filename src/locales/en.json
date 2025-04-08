@@ -1,0 +1,75 @@
+{
+  "brands": {
+    "title": "Brands",
+    "addBrand": "Add Brand",
+    "editBrand": "Edit Brand",
+    "name": "Brand Name",
+    "nameAr": "Brand Name (Arabic)",
+    "description": "Description",
+    "descriptionAr": "Description (Arabic)",
+    "logo": "Logo",
+    "status": "Status",
+    "products": "Products",
+    "deleteConfirm": "Are you sure you want to delete this brand?",
+    "deleteSuccess": "Brand deleted successfully",
+    "updateSuccess": "Brand updated successfully",
+    "createSuccess": "Brand created successfully",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "validation": {
+      "nameRequired": "Brand name is required",
+      "nameArRequired": "Arabic brand name is required"
+    }
+  },
+  "common": {
+    "search": "Search...",
+    "status": "Status",
+    "cancel": "Cancel",
+    "save": "Save",
+    "warning": "Warning",
+    "yes": "Yes",
+    "no": "No",
+    "ltr": "LTR",
+    "rtl": "RTL",
+    "languages": {
+      "english": "English",
+      "arabic": "Arabic"
+    },
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "directions": {
+      "ltr": "Left to Right",
+      "rtl": "Right to Left"
+    },
+    "brand": {
+      "tagline": "Premium Dashboard"
+    },
+    "menu": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "brands": "Brands",
+      "orders": "Orders",
+      "customers": "Customers",
+      "analytics": "Analytics",
+      "settings": "Settings",
+      "messages": "Messages",
+      "reports": "Reports",
+      "calendar": "Calendar",
+      "help": "Help",
+      "profile": "Profile",
+      "notifications": "Notifications",
+      "support": "Support",
+      "logout": "Logout"
+    },
+    "user": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    }
+  }
+} 

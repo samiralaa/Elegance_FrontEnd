@@ -1,0 +1,40 @@
+{
+  "common": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "customers": "Customers",
+      "orders": "Orders",
+      "analytics": "Analytics"
+    },
+    "actions": {
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "search": "Search",
+      "close": "Close"
+    },
+    "search": {
+      "placeholder": "Search..."
+    },
+    "loading": "Loading...",
+    "error": {
+      "general": "An error occurred",
+      "network": "Network error occurred"
+    },
+    "success": {
+      "created": "Created successfully",
+      "updated": "Updated successfully",
+      "deleted": "Deleted successfully"
+    },
+    "validation": {
+      "required": "This field is required"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  }
+} 
