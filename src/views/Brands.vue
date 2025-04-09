@@ -113,7 +113,7 @@
       :close-on-click-modal="false"
     >
       <el-form
-        ref="brandForm"
+        ref="brandFormRef"
         :model="brandForm"
         :rules="formRules"
         label-position="top"
@@ -204,8 +204,12 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { Edit, Delete, Plus, Picture, ZoomIn } from '@element-plus/icons-vue';
+import { defineComponent, ref, reactive, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { Edit, Delete, Plus, Picture, ZoomIn, Refresh } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import axios from 'axios'
 
 // Create axios instance with default config
 const api = axios.create({
@@ -219,9 +223,9 @@ const api = axios.create({
 // Add request interceptor to include token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'));
+    if (tokenData?.token) {
+      config.headers.Authorization = `Bearer ${tokenData.token}`;
     }
     return config;
   },
@@ -235,225 +239,253 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Redirect to login if token is invalid
+      localStorage.removeItem('tokenData');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-export default {
-  name: 'Brands',
+export default defineComponent({
+  name: 'BrandsView',
   components: {
     Edit,
     Delete,
     Plus,
     Picture,
-    ZoomIn
+    ZoomIn,
+    Refresh
   },
-  data() {
-    return {
-      brands: [],
-      loading: true,
-      dialogVisible: false,
-      deleteDialogVisible: false,
-      dialogType: 'create',
-      submitting: false,
-      deleting: false,
-      selectedBrand: null,
-      brandForm: {
-        logo: '',
-        name_en: '',
-        name_ar: '',
-        description_en: '',
-        description_ar: ''
-      },
-      formRules: {
-        name_en: [
-          { required: true, message: 'Please enter brand name in English', trigger: 'blur' }
-        ],
-        name_ar: [
-          { required: true, message: 'Please enter brand name in Arabic', trigger: 'blur' }
-        ],
-        description_en: [
-          { required: true, message: 'Please enter brand description in English', trigger: 'blur' }
-        ],
-        description_ar: [
-          { required: true, message: 'Please enter brand description in Arabic', trigger: 'blur' }
-        ]
-      }
-    };
-  },
-  mounted() {
-    this.fetchBrands();
-  },
-  methods: {
-    async fetchBrands() {
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+    const brandFormRef = ref(null)
+    const dialogVisible = ref(false)
+    const deleteDialogVisible = ref(false)
+    const dialogType = ref('create')
+    const brands = ref([])
+    const loading = ref(false)
+    const submitting = ref(false)
+    const deleting = ref(false)
+    const selectedBrand = ref(null)
+    const error = ref(null)
+
+    const brandForm = reactive({
+      logo: '',
+      name_en: '',
+      name_ar: '',
+      description_en: '',
+      description_ar: ''
+    })
+
+    const formRules = {
+      name_en: [
+        { required: true, message: 'Please enter brand name in English', trigger: 'blur' }
+      ],
+      name_ar: [
+        { required: true, message: 'Please enter brand name in Arabic', trigger: 'blur' }
+      ],
+      description_en: [
+        { required: true, message: 'Please enter brand description in English', trigger: 'blur' }
+      ],
+      description_ar: [
+        { required: true, message: 'Please enter brand description in Arabic', trigger: 'blur' }
+      ]
+    }
+
+    const fetchBrands = async () => {
       try {
-        this.loading = true;
-        console.log('Fetching brands...');
-        
-        // Get token data and verify it exists
-        const tokenData = JSON.parse(localStorage.getItem('tokenData'));
+        loading.value = true
+        error.value = null
+
+        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
         if (!tokenData?.token) {
-          console.error('No token found in localStorage');
-          this.$message.error('Authentication token not found. Please login again.');
-          window.location.href = '/login';
-          return;
+          console.error('No token found')
+          router.push('/login')
+          return
         }
 
-        // Log the request details
-        console.log('Making API request with token:', tokenData.token.substring(0, 10) + '...');
+        await store.dispatch('fetchBrands')
+        brands.value = store.getters.getBrands
         
-        // Using Vuex store action to fetch brands
-        await this.$store.dispatch('fetchBrands');
-        this.brands = this.$store.getters.getBrands;
+        console.log('Brands loaded:', brands.value)
+      } catch (err) {
+        console.error('Error loading brands:', err)
+        error.value = err.response?.data?.message || 
+                     err.message || 
+                     'Failed to load brands'
         
-        console.log('Brands loaded:', this.brands);
-      } catch (error) {
-        console.error('Failed to fetch brands:', error);
-        
-        // Handle specific error cases
-        if (error.response) {
-          console.error('Error response:', error.response);
-          
-          if (error.response.status === 401) {
-            this.$message.error('Session expired. Please login again.');
-            window.location.href = '/login';
-          } else if (error.response.status === 403) {
-            this.$message.error('You do not have permission to view brands');
-          } else if (error.response.status === 404) {
-            this.$message.error('Brands endpoint not found');
-          } else if (error.response.data?.message) {
-            this.$message.error(error.response.data.message);
-          } else {
-            this.$message.error('Failed to fetch brands. Please try again later.');
-          }
-        } else if (error.request) {
-          console.error('No response received:', error.request);
-          this.$message.error('No response from server. Please check your connection.');
-        } else {
-          console.error('Error setting up request:', error.message);
-          this.$message.error('Error setting up request: ' + error.message);
+        if (err.response?.status === 401) {
+          localStorage.removeItem('tokenData')
+          router.push('/login')
         }
       } finally {
-        this.loading = false;
+        loading.value = false
       }
-    },
-    openCreateDialog() {
-      this.dialogType = 'create';
-      this.brandForm = {
-        logo: '',
-        name_en: '',
-        name_ar: '',
-        description_en: '',
-        description_ar: ''
-      };
-      this.dialogVisible = true;
-    },
-    editItem(item) {
-      this.dialogType = 'edit';
-      this.selectedBrand = item;
-      this.brandForm = { ...item };
-      this.dialogVisible = true;
-    },
-    deleteItem(item) {
-      this.selectedBrand = item;
-      this.deleteDialogVisible = true;
-    },
-    handleLogoChange(file) {
-      if (file) {
-        // Create a URL for the selected file
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.brandForm.logo = e.target.result;
-        };
-        reader.readAsDataURL(file.raw);
-      }
-    },
-    async submitForm() {
-      try {
-        await this.$refs.brandForm.validate();
-        this.submitting = true;
+    }
 
-        const formData = new FormData();
-        formData.append('name_en', this.brandForm.name_en);
-        formData.append('name_ar', this.brandForm.name_ar);
-        formData.append('description_en', this.brandForm.description_en || '');
-        formData.append('description_ar', this.brandForm.description_ar || '');
+    const openCreateDialog = () => {
+      dialogType.value = 'create'
+      brandForm.logo = ''
+      brandForm.name_en = ''
+      brandForm.name_ar = ''
+      brandForm.description_en = ''
+      brandForm.description_ar = ''
+      dialogVisible.value = true
+    }
+
+    const editItem = (item) => {
+      dialogType.value = 'edit'
+      selectedBrand.value = item
+      brandForm.logo = item.media?.[0]?.original_url || ''
+      brandForm.name_en = item.name_en
+      brandForm.name_ar = item.name_ar
+      brandForm.description_en = item.description_en
+      brandForm.description_ar = item.description_ar
+      dialogVisible.value = true
+    }
+
+    const deleteItem = (item) => {
+      selectedBrand.value = item
+      deleteDialogVisible.value = true
+    }
+
+    const handleLogoChange = (file) => {
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          brandForm.logo = e.target.result
+        }
+        reader.readAsDataURL(file.raw)
+      }
+    }
+
+    const submitForm = async () => {
+      try {
+        if (!brandFormRef.value) {
+          console.error('Form reference is not available')
+          return
+        }
         
-        if (this.brandForm.logo instanceof File) {
-          formData.append('logo', this.brandForm.logo);
-        } else if (this.brandForm.logo && typeof this.brandForm.logo === 'string') {
-          const response = await fetch(this.brandForm.logo);
-          const blob = await response.blob();
-          const file = new File([blob], 'logo.png', { type: 'image/png' });
-          formData.append('logo', file);
+        await brandFormRef.value.validate()
+        submitting.value = true
+
+        const formData = new FormData()
+        formData.append('name_en', brandForm.name_en)
+        formData.append('name_ar', brandForm.name_ar)
+        formData.append('description_en', brandForm.description_en || '')
+        formData.append('description_ar', brandForm.description_ar || '')
+        
+        if (brandForm.logo instanceof File) {
+          formData.append('logo', brandForm.logo)
+        } else if (brandForm.logo && typeof brandForm.logo === 'string') {
+          const response = await fetch(brandForm.logo)
+          const blob = await response.blob()
+          const file = new File([blob], 'logo.png', { type: 'image/png' })
+          formData.append('logo', file)
         }
 
-        const url = this.dialogType === 'create' ? '/brands' : `/brands/${this.selectedBrand.id}`;
-        const method = this.dialogType === 'create' ? 'post' : 'put';
+        const url = dialogType.value === 'create' ? '/brands' : `/brands/${selectedBrand.value.id}`
+        const method = dialogType.value === 'create' ? 'post' : 'put'
 
         await api[method](url, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        });
+        })
 
-        this.$message.success(`Brand ${this.dialogType === 'create' ? 'created' : 'updated'} successfully`);
-        this.dialogVisible = false;
-        this.fetchBrands();
-      } catch (error) {
-        console.error('Error saving brand:', error);
-        if (error.response?.data?.errors) {
-          Object.values(error.response.data.errors).forEach(errors => {
-            this.$message.error(errors[0]);
-          });
+        ElMessage({
+          message: `Brand ${dialogType.value === 'create' ? 'created' : 'updated'} successfully`,
+          type: 'success',
+          duration: 2000
+        })
+        dialogVisible.value = false
+        fetchBrands()
+      } catch (err) {
+        console.error('Error saving brand:', err)
+        if (err.response?.data?.errors) {
+          Object.values(err.response.data.errors).forEach(errors => {
+            ElMessage({
+              message: errors[0],
+              type: 'error',
+              duration: 5000
+            })
+          })
         } else {
-          this.$message.error('Failed to save brand');
+          ElMessage({
+            message: 'Failed to save brand',
+            type: 'error',
+            duration: 5000
+          })
         }
       } finally {
-        this.submitting = false;
-      }
-    },
-    async confirmDelete() {
-      try {
-        this.deleting = true;
-        await api.delete(`/brands/${this.selectedBrand.id}`);
-        this.$message.success('Brand deleted successfully');
-        this.deleteDialogVisible = false;
-        this.fetchBrands();
-      } catch (error) {
-        console.error('Error deleting brand:', error);
-        this.$message.error('Failed to delete brand');
-      } finally {
-        this.deleting = false;
-      }
-    },
-    async deleteImage(brand) {
-      try {
-        if (!brand.media || brand.media.length === 0) return;
-
-        const mediaId = brand.media[0].id;
-        await api.delete(`/media/${mediaId}`);
-
-        await api.put(`/brands/${brand.id}`, {
-          name_en: brand.name_en,
-          name_ar: brand.name_ar,
-          description_en: brand.description_en,
-          description_ar: brand.description_ar,
-          logo: null
-        });
-
-        this.$message.success('Image deleted successfully');
-        this.fetchBrands();
-      } catch (error) {
-        console.error('Error deleting image:', error);
-        this.$message.error('Failed to delete image');
+        submitting.value = false
       }
     }
+
+    const confirmDelete = async () => {
+      try {
+        deleting.value = true
+        await api.delete(`/brands/${selectedBrand.value.id}`)
+        ElMessage({
+          message: 'Brand deleted successfully',
+          type: 'success',
+          duration: 2000
+        })
+        deleteDialogVisible.value = false
+        fetchBrands()
+      } catch (err) {
+        console.error('Error deleting brand:', err)
+        ElMessage({
+          message: 'Failed to delete brand',
+          type: 'error',
+          duration: 5000
+        })
+      } finally {
+        deleting.value = false
+      }
+    }
+
+    const previewImage = (brand) => {
+      if (brand.media && brand.media.length > 0) {
+        const imageUrl = brand.media[0].original_url
+        window.open(imageUrl, '_blank')
+      }
+    }
+
+    const clearError = () => {
+      error.value = null
+    }
+
+    onMounted(() => {
+      fetchBrands()
+    })
+
+    return {
+      brands,
+      loading,
+      error,
+      dialogVisible,
+      deleteDialogVisible,
+      dialogType,
+      submitting,
+      deleting,
+      selectedBrand,
+      brandForm,
+      formRules,
+      brandFormRef,
+      fetchBrands,
+      openCreateDialog,
+      editItem,
+      deleteItem,
+      handleLogoChange,
+      submitForm,
+      confirmDelete,
+      previewImage,
+      clearError
+    }
   }
-};
+})
 </script>
 
 <style scoped>
