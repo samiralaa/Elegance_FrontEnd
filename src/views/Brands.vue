@@ -293,9 +293,9 @@ export default {
         this.loading = true;
         console.log('Fetching brands...');
         
-        // Get token and verify it exists
-        const token = localStorage.getItem('token');
-        if (!token) {
+        // Get token data and verify it exists
+        const tokenData = JSON.parse(localStorage.getItem('tokenData'));
+        if (!tokenData?.token) {
           console.error('No token found in localStorage');
           this.$message.error('Authentication token not found. Please login again.');
           window.location.href = '/login';
@@ -303,24 +303,13 @@ export default {
         }
 
         // Log the request details
-        console.log('Making API request with token:', token.substring(0, 10) + '...');
+        console.log('Making API request with token:', tokenData.token.substring(0, 10) + '...');
         
-        const response = await api.get('/brands');
-        console.log('API Response:', response);
-
-        if (!response.data) {
-          console.error('No data in response');
-          this.$message.error('No data received from server');
-          return;
-        }
-
-        if (response.data.status) {
-          console.log('Brands data:', response.data.data);
-          this.brands = response.data.data;
-        } else {
-          console.warn('API returned false status:', response.data);
-          this.$message.warning('No brands found');
-        }
+        // Using Vuex store action to fetch brands
+        await this.$store.dispatch('fetchBrands');
+        this.brands = this.$store.getters.getBrands;
+        
+        console.log('Brands loaded:', this.brands);
       } catch (error) {
         console.error('Failed to fetch brands:', error);
         

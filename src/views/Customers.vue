@@ -327,25 +327,11 @@ export default defineComponent({
         // Log the request details
         console.log('Fetching customers with token:', tokenData.token)
         
-        const response = await api.get('/users', {
-          headers: {
-            'Authorization': `Bearer ${tokenData.token}`
-          }
-        })
+        // Using Vuex store to load customers
+        await store.dispatch('fetchCustomers')
+        usersList.value = store.getters.getCustomers
         
-        // Log the response for debugging
-        console.log('API Response:', response.data)
-
-        if (response.data) {
-          // Check if data is an array or needs to be extracted from a specific property
-          usersList.value = Array.isArray(response.data) ? response.data : 
-                           response.data.data ? response.data.data : 
-                           response.data.customers ? response.data.customers : []
-          
-          console.log('Processed users list:', usersList.value)
-        } else {
-          throw new Error('No data received from API')
-        }
+        console.log('Customers loaded from store:', usersList.value)
       } catch (err) {
         console.error('Error loading customers:', err)
         console.error('Error details:', {
