@@ -3,6 +3,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Login from '../views/Login.vue'
 import Customers from '../views/Customers.vue'
 import Brands from '../views/Brands.vue'
+import Categories from '../views/Categories/index.vue'
 import Settings from '../views/Settings.vue'
 import Profile from '../views/Profile.vue'
 import Help from '../views/Help.vue'
@@ -28,6 +29,30 @@ const routes = [
     path: '/brands',
     name: 'Brands',
     component: () => import('../views/Brands.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    component: () => import('../views/Categories/index.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/products',
+    name: 'Products',
+    component: () => import('../views/Products.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: () => import('../views/Orders.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/analytics',
+    name: 'Analytics',
+    component: () => import('../views/Analytics.vue'),
     meta: { requiresAuth: true }
   },
   {

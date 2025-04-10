@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import categories from './modules/categories'
 
 const API_URL = 'https://ecommers.test'
 
@@ -24,6 +25,9 @@ api.interceptors.request.use(config => {
 })
 
 export default createStore({
+  modules: {
+    categories
+  },
   state: {
     products: [],
     orders: [],

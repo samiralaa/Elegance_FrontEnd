@@ -148,6 +148,7 @@ export default {
       { path: '/', name: 'common.menu.dashboard', icon: 'Monitor' },
       { path: '/products', name: 'common.menu.products', icon: 'Goods' },
       { path: '/brands', name: 'common.menu.brands', icon: 'Trophy' },
+      { path: '/categories', name: 'common.menu.categories', icon: 'Folder' },
       { path: '/orders', name: 'common.menu.orders', icon: 'ShoppingCartFull' },
       { path: '/customers', name: 'common.menu.customers', icon: 'User' },
       { path: '/analytics', name: 'common.menu.analytics', icon: 'DataLine' }
