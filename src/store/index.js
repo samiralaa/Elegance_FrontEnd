@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 import axios from 'axios'
 import categories from './modules/categories'
 
-const API_URL = 'https://ecommers.test'
+const API_URL = 'https://elegance_commers.test'
 
 // Create axios instance with default config
 const api = axios.create({
