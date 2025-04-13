@@ -1,11 +1,25 @@
 {
   "common": {
+    "brand": {
+      "tagline": "حلول أنيقة"
+    },
     "menu": {
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
+      "brands": "العلامات التجارية",
+      "categories": "التصنيفات",
+      "inputs":"المدخلات",
+      "addresses": "العناوين",
+      "addresses_list": "قائمة العناوين",
+      "addresses_create": "إنشاء عنوان",
+      "addresses_manage": "إدارة العناوين",
       "customers": "العملاء",
       "orders": "الطلبات",
-      "analytics": "التحليلات"
+      "analytics": "التحليلات",
+      "settings": "الإعدادات",
+      "profile": "الملف الشخصي",
+      "help": "المساعدة",
+      "logout": "تسجيل الخروج"
     },
     "actions": {
       "add": "إضافة",
@@ -37,4 +51,4 @@
       "inactive": "غير نشط"
     }
   }
-} 
+}

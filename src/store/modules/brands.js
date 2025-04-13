@@ -85,12 +85,19 @@ const actions = {
       }
 
       commit('SET_LOADING', true)
-      const response = await axios.post(`${API_URL}/api/brands`, {
-        name_en: brandData.name,
-        name_ar: brandData.name_ar,
-        description_en: brandData.description,
-        description_ar: brandData.description_ar,
-        logo: brandData.logo
+      const formData = new FormData()
+      formData.append('name_en', brandData.name)
+      formData.append('name_ar', brandData.name_ar)
+      formData.append('description_en', brandData.description)
+      formData.append('description_ar', brandData.description_ar)
+      if (brandData.logo) {
+        formData.append('logo', brandData.logo)
+      }
+      
+      const response = await axios.post(`${API_URL}/api/brands`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       })
       
       if (response.data?.status && response.data?.data) {
@@ -126,12 +133,19 @@ const actions = {
       }
 
       commit('SET_LOADING', true)
-      const response = await axios.put(`${API_URL}/api/brands/${id}`, {
-        name_en: brandData.name,
-        name_ar: brandData.name_ar,
-        description_en: brandData.description,
-        description_ar: brandData.description_ar,
-        logo: brandData.logo
+      const formData = new FormData()
+      formData.append('name_en', brandData.name)
+      formData.append('name_ar', brandData.name_ar)
+      formData.append('description_en', brandData.description)
+      formData.append('description_ar', brandData.description_ar)
+      if (brandData.logo) {
+        formData.append('logo', brandData.logo)
+      }
+      
+      const response = await axios.put(`${API_URL}/api/brands/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       })
       
       if (response.data?.status && response.data?.data) {
@@ -195,4 +209,4 @@ export default {
   mutations,
   actions,
   getters
-} 
+}

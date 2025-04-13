@@ -1,11 +1,25 @@
 {
   "common": {
+    "brand": {
+      "tagline": "Elegant Solutions"
+    },
     "menu": {
       "dashboard": "Dashboard",
       "products": "Products",
+      "brands": "Brands",
+      "categories": "Categories",
+      "inputs": "Inputs",
+      "addresses": "Addresses",
+      "addresses_list": "Address List",
+      "addresses_create": "Create Address",
+      "addresses_manage": "Manage Addresses",
       "customers": "Customers",
       "orders": "Orders",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "settings": "Settings",
+      "profile": "Profile",
+      "help": "Help",
+      "logout": "Logout"
     },
     "actions": {
       "add": "Add",
@@ -37,4 +51,4 @@
       "inactive": "Inactive"
     }
   }
-} 
+}

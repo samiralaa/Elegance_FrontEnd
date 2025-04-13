@@ -1,5 +1,8 @@
 import axios from 'axios'
 
+const API_URL = 'https://elegance_commers.test'
+const IMAGE_BASE_URL = 'https://elegance_commers.test'
+
 const state = {
   items: [],
   loading: false,
@@ -40,23 +43,30 @@ const actions = {
       commit('SET_LOADING', true)
       commit('SET_ERROR', null)
       
-      // Make sure Authorization header is set correctly
       const tokenData = JSON.parse(localStorage.getItem('tokenData'))
       if (tokenData?.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
       }
       
-      const response = await axios.get('/api/categories')
+      const response = await axios.get(`${API_URL}/api/categories`)
       
-      if (response.data) {
-        const categories = Array.isArray(response.data) ? response.data : 
-                         response.data.data ? response.data.data :
-                         response.data.categories ? response.data.categories : []
+      if (response.data?.status && response.data?.data) {
+        const transformedCategories = response.data.data.map(category => ({
+          id: category.id,
+          name: category.name_en,
+          name_ar: category.name_ar,
+          description: category.description_en,
+          description_ar: category.description_ar,
+          image: category.images?.[0]?.path ? `${IMAGE_BASE_URL}/${category.images[0].path}` : null,
+          created_at: category.created_at,
+          updated_at: category.updated_at,
+          deleted_at: category.deleted_at
+        }))
         
-        commit('SET_CATEGORIES', categories)
-        return categories
+        commit('SET_CATEGORIES', transformedCategories)
+        return transformedCategories
       } else {
-        throw new Error('Failed to fetch categories')
+        throw new Error(response.data?.message || 'Failed to fetch categories')
       }
     } catch (error) {
       console.error('Fetch categories error:', error)
@@ -75,9 +85,42 @@ const actions = {
       }
 
       commit('SET_LOADING', true)
-      const response = await axios.post('/api/categories', categoryData)
-      commit('ADD_CATEGORY', response.data)
-      return response.data
+      const formData = new FormData()
+      formData.append('name_en', categoryData.name)
+      formData.append('name_ar', categoryData.name_ar)
+      formData.append('description_en', categoryData.description)
+      formData.append('description_ar', categoryData.description_ar)
+      if (categoryData.image) {
+        formData.append('image', categoryData.image)
+      }
+      if (categoryData.brand_id) {
+        formData.append('brand_id', categoryData.brand_id)
+      }
+      
+      const response = await axios.post(`${API_URL}/api/categories`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      
+      if (response.data?.status && response.data?.data) {
+        const transformedCategory = {
+          id: response.data.data.id,
+          name: response.data.data.name_en,
+          name_ar: response.data.data.name_ar,
+          description: response.data.data.description_en,
+          description_ar: response.data.data.description_ar,
+          image: response.data.data.images?.[0]?.path ? `${IMAGE_BASE_URL}/${response.data.data.images[0].path}` : null,
+          created_at: response.data.data.created_at,
+          updated_at: response.data.data.updated_at,
+          deleted_at: response.data.data.deleted_at
+        }
+        
+        commit('ADD_CATEGORY', transformedCategory)
+        return transformedCategory
+      } else {
+        throw new Error(response.data?.message || 'Failed to create category')
+      }
     } catch (error) {
       commit('SET_ERROR', error.message)
       throw error
@@ -93,9 +136,39 @@ const actions = {
       }
 
       commit('SET_LOADING', true)
-      const response = await axios.put(`/api/categories/${id}`, categoryData)
-      commit('UPDATE_CATEGORY', response.data)
-      return response.data
+      const formData = new FormData()
+      formData.append('name_en', categoryData.name)
+      formData.append('name_ar', categoryData.name_ar)
+      formData.append('description_en', categoryData.description)
+      formData.append('description_ar', categoryData.description_ar)
+      if (categoryData.image) {
+        formData.append('image', categoryData.image)
+      }
+      
+      const response = await axios.put(`${API_URL}/api/categories/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      
+      if (response.data?.status && response.data?.data) {
+        const transformedCategory = {
+          id: response.data.data.id,
+          name: response.data.data.name_en,
+          name_ar: response.data.data.name_ar,
+          description: response.data.data.description_en,
+          description_ar: response.data.data.description_ar,
+          image: response.data.data.images?.[0]?.path ? `${IMAGE_BASE_URL}/${response.data.data.images[0].path}` : null,
+          created_at: response.data.data.created_at,
+          updated_at: response.data.data.updated_at,
+          deleted_at: response.data.data.deleted_at
+        }
+        
+        commit('UPDATE_CATEGORY', transformedCategory)
+        return transformedCategory
+      } else {
+        throw new Error(response.data?.message || 'Failed to update category')
+      }
     } catch (error) {
       commit('SET_ERROR', error.message)
       throw error
@@ -111,8 +184,13 @@ const actions = {
       }
 
       commit('SET_LOADING', true)
-      await axios.delete(`/api/categories/${categoryId}`)
-      commit('REMOVE_CATEGORY', categoryId)
+      const response = await axios.delete(`${API_URL}/api/categories/${categoryId}`)
+      
+      if (response.data?.status) {
+        commit('REMOVE_CATEGORY', categoryId)
+      } else {
+        throw new Error(response.data?.message || 'Failed to delete category')
+      }
     } catch (error) {
       commit('SET_ERROR', error.message)
       throw error
@@ -134,4 +212,4 @@ export default {
   mutations,
   actions,
   getters
-} 
+}

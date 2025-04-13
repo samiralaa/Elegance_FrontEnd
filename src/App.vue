@@ -16,16 +16,38 @@
       <!-- Menu Navigation -->
       <nav class="sidebar-menu">
         <!-- Main Navigation -->
-        <router-link
-          v-for="item in mainMenuItems"
-          :key="item.path"
-          :to="item.path"
-          class="menu-item"
-          :class="{ active: currentRoute === item.path }"
-        >
-          <el-icon><component :is="item.icon" /></el-icon>
-          <span>{{ $t(item.name) }}</span>
-        </router-link>
+        <template v-for="item in mainMenuItems" :key="item.path || item.name">
+          <div v-if="item.children" class="menu-item-group">
+            <div class="menu-item" @click="toggleDropdown(item)" :class="{ active: isDropdownOpen(item) }">
+              <el-icon><component :is="item.icon" /></el-icon>
+              <span>{{ $t(item.name) }}</span>
+              <el-icon class="dropdown-icon" :class="{ 'is-open': isDropdownOpen(item) }"><ArrowDown /></el-icon>
+            </div>
+            <transition name="dropdown">
+              <div v-show="isDropdownOpen(item)" class="submenu">
+                <router-link
+                  v-for="child in item.children"
+                  :key="child.path"
+                  :to="child.path"
+                  class="submenu-item"
+                  :class="{ active: currentRoute === child.path }"
+                >
+                  <el-icon><component :is="child.icon" /></el-icon>
+                  <span>{{ $t(child.name) }}</span>
+                </router-link>
+              </div>
+            </transition>
+          </div>
+          <router-link
+            v-else
+            :to="item.path"
+            class="menu-item"
+            :class="{ active: currentRoute === item.path }"
+          >
+            <el-icon><component :is="item.icon" /></el-icon>
+            <span>{{ $t(item.name) }}</span>
+          </router-link>
+        </template>
 
         <div class="menu-divider"></div>
 
@@ -149,6 +171,15 @@ export default {
       { path: '/products', name: 'common.menu.products', icon: 'Goods' },
       { path: '/brands', name: 'common.menu.brands', icon: 'Trophy' },
       { path: '/categories', name: 'common.menu.categories', icon: 'Folder' },
+      {
+        name: 'common.menu.addresses',
+        icon: 'Location',
+        children: [
+          { path: '/addresses/list', name: 'common.menu.addresses_list', icon: 'List' },
+          { path: '/addresses/create', name: 'common.menu.addresses_create', icon: 'Plus' },
+          { path: '/addresses/manage', name: 'common.menu.addresses_manage', icon: 'Setting' }
+        ]
+      },
       { path: '/orders', name: 'common.menu.orders', icon: 'ShoppingCartFull' },
       { path: '/customers', name: 'common.menu.customers', icon: 'User' },
       { path: '/analytics', name: 'common.menu.analytics', icon: 'DataLine' }
@@ -221,6 +252,20 @@ export default {
       window.removeEventListener('resize', handleResize)
     })
 
+    const openDropdowns = ref(new Set())
+
+    const toggleDropdown = (item) => {
+      if (openDropdowns.value.has(item.name)) {
+        openDropdowns.value.delete(item.name)
+      } else {
+        openDropdowns.value.add(item.name)
+      }
+    }
+
+    const isDropdownOpen = (item) => {
+      return openDropdowns.value.has(item.name)
+    }
+
     return {
       searchQuery,
       isSidebarOpen,
@@ -237,6 +282,8 @@ export default {
       handleCommand,
       toggleSidebar,
       showNotifications,
+      toggleDropdown,
+      isDropdownOpen,
     }
   },
 }
@@ -289,5 +336,53 @@ export default {
   .search-bar {
     width: 200px;
   }
+}
+
+.menu-item-group {
+  position: relative;
+}
+
+.dropdown-icon {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-icon.is-open {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  padding-left: var(--spacing-md);
+  background: var(--bg-secondary);
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+}
+
+.submenu-item:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.submenu-item.active {
+  color: var(--primary-color);
+  background: var(--bg-active);
+}
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.3s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

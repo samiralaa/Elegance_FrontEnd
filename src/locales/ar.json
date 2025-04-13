@@ -53,6 +53,10 @@
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
       "brands": "العلامات التجارية",
+      "addresses": "العناوين",
+      "addresses_list": "قائمة العناوين",
+      "addresses_create": "إنشاء عنوان",
+      "addresses_manage": "إدارة العناوين",
       "orders": "الطلبات",
       "customers": "العملاء",
       "analytics": "التحليلات",
@@ -72,4 +76,4 @@
       "logout": "تسجيل الخروج"
     }
   }
-} 
+}
