@@ -213,7 +213,7 @@ import axios from 'axios'
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: 'https://elegance_commers.test/api',
+  baseURL: 'https://testback.eleganceoud.com//api',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'

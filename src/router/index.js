@@ -11,6 +11,11 @@ import Help from '../views/Help.vue'
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    component: () => import('../views/Website/home.vue')
+  },
+  {
+    path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')
   },
@@ -35,6 +40,18 @@ const routes = [
     path: '/categories',
     name: 'Categories',
     component: () => import('../views/Categories/index.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/categories/:id',
+    name: 'CategoryShow',
+    component: () => import('../views/Categories/show.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/categories/create',
+    name: 'CategoryCreate',
+    component: () => import('../views/Categories/create.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -91,4 +108,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-export default router 
+export default router

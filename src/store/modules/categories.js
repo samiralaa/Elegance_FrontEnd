@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const API_URL = 'https://elegance_commers.test'
-const IMAGE_BASE_URL = 'https://elegance_commers.test'
+const API_URL = 'https://testback.eleganceoud.com/'
+const IMAGE_BASE_URL = 'https://testback.eleganceoud.com/'
 
 const state = {
   items: [],
@@ -42,14 +42,14 @@ const actions = {
 
       commit('SET_LOADING', true)
       commit('SET_ERROR', null)
-      
+
       const tokenData = JSON.parse(localStorage.getItem('tokenData'))
       if (tokenData?.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
       }
-      
+
       const response = await axios.get(`${API_URL}/api/categories`)
-      
+
       if (response.data?.status && response.data?.data) {
         const transformedCategories = response.data.data.map(category => ({
           id: category.id,
@@ -62,7 +62,7 @@ const actions = {
           updated_at: category.updated_at,
           deleted_at: category.deleted_at
         }))
-        
+
         commit('SET_CATEGORIES', transformedCategories)
         return transformedCategories
       } else {
@@ -90,19 +90,18 @@ const actions = {
       formData.append('name_ar', categoryData.name_ar)
       formData.append('description_en', categoryData.description)
       formData.append('description_ar', categoryData.description_ar)
+      formData.append('brand_id', categoryData.brand_id)
+
       if (categoryData.image) {
         formData.append('image', categoryData.image)
       }
-      if (categoryData.brand_id) {
-        formData.append('brand_id', categoryData.brand_id)
-      }
-      
+
       const response = await axios.post(`${API_URL}/api/categories`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
-      
+
       if (response.data?.status && response.data?.data) {
         const transformedCategory = {
           id: response.data.data.id,
@@ -115,7 +114,7 @@ const actions = {
           updated_at: response.data.data.updated_at,
           deleted_at: response.data.data.deleted_at
         }
-        
+
         commit('ADD_CATEGORY', transformedCategory)
         return transformedCategory
       } else {
@@ -136,21 +135,24 @@ const actions = {
       }
 
       commit('SET_LOADING', true)
+
       const formData = new FormData()
       formData.append('name_en', categoryData.name)
       formData.append('name_ar', categoryData.name_ar)
       formData.append('description_en', categoryData.description)
       formData.append('description_ar', categoryData.description_ar)
-      if (categoryData.image) {
+      formData.append('brand_id', categoryData.brand_id)
+
+      if (categoryData.image instanceof File) {
         formData.append('image', categoryData.image)
       }
-      
-      const response = await axios.put(`${API_URL}/api/categories/${id}`, formData, {
+
+      const response = await axios.post(`${API_URL}/api/categories/${id}?_method=PUT`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
-      
+
       if (response.data?.status && response.data?.data) {
         const transformedCategory = {
           id: response.data.data.id,
@@ -163,7 +165,7 @@ const actions = {
           updated_at: response.data.data.updated_at,
           deleted_at: response.data.data.deleted_at
         }
-        
+
         commit('UPDATE_CATEGORY', transformedCategory)
         return transformedCategory
       } else {
@@ -185,7 +187,7 @@ const actions = {
 
       commit('SET_LOADING', true)
       const response = await axios.delete(`${API_URL}/api/categories/${categoryId}`)
-      
+
       if (response.data?.status) {
         commit('REMOVE_CATEGORY', categoryId)
       } else {

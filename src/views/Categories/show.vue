@@ -1,115 +1,99 @@
 <template>
-  <div class="category-details-container">
+  <div class="category-details-container" :class="{ 'rtl': $i18n.locale === 'ar' }">
     <div class="header">
-      <h2>Category Details</h2>
-      <el-button type="primary" @click="$router.push('/categories')">Back to Categories</el-button>
+      <div class="header-left">
+        <el-button @click="router.back()" :icon="ArrowLeft" class="back-button">Back</el-button>
+        <h2 class="page-title">Category Details</h2>
+      </div>
+    
     </div>
 
-    <el-card v-if="category" class="category-card">
-      <div class="category-content">
+    <el-card v-loading="loading" class="category-details">
+      <div v-if="category" class="details-content">
         <div class="image-section">
           <el-image
-            v-if="category.image"
-            :src="category.image"
+            v-if="category.images && category.images.length > 0"
+            :src="`${BASE_URL}/${category.images[0].path}`"
             fit="cover"
             class="category-image"
-            :preview-src-list="[category.image]"
+            :preview-src-list="[`${BASE_URL}/${category.images[0].path}`]"
+            :initial-index="0"
+            preview-teleported
           >
             <template #error>
               <div class="image-error">
                 <el-icon><Picture /></el-icon>
-                <span>Image not available</span>
               </div>
             </template>
           </el-image>
+          <div v-else class="image-error">
+            <el-icon><Picture /></el-icon>
+          </div>
         </div>
 
         <div class="info-section">
-          <el-row :gutter="20">
-            <el-col :xs="24" :sm="12">
-              <div class="info-group">
-                <h3>English Information</h3>
-                <div class="info-item">
-                  <label>Name:</label>
-                  <span>{{ category.name }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Description:</label>
-                  <p>{{ category.description || 'No description available' }}</p>
-                </div>
-              </div>
-            </el-col>
-
-            <el-col :xs="24" :sm="12">
-              <div class="info-group arabic-section" dir="rtl">
-                <h3 class="arabic-text">المعلومات العربية</h3>
-                <div class="info-item">
-                  <label class="arabic-text">الاسم:</label>
-                  <span class="arabic-text">{{ category.name_ar || 'غير متوفر' }}</span>
-                </div>
-                <div class="info-item">
-                  <label class="arabic-text">الوصف:</label>
-                  <p class="arabic-text">{{ category.description_ar || 'لا يوجد وصف متوفر' }}</p>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-
-          <div class="metadata-section">
-            <h3>Additional Information</h3>
-            <el-row :gutter="20">
-              <el-col :xs="24" :sm="12">
-                <div class="info-item">
-                  <label>Created At:</label>
-                  <span>{{ formatDate(category.created_at) }}</span>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="12">
-                <div class="info-item">
-                  <label>Last Updated:</label>
-                  <span>{{ formatDate(category.updated_at) }}</span>
-                </div>
-              </el-col>
-            </el-row>
-          </div>
+          <el-descriptions :column="1" border>
+            <el-descriptions-item label="Name (EN)">
+              {{ category.name_en }}
+            </el-descriptions-item>
+            <el-descriptions-item label="Name (AR)">
+              <div dir="rtl">{{ category.name_ar || 'N/A' }}</div>
+            </el-descriptions-item>
+            <el-descriptions-item label="Brand">
+              {{ category.brand?.name_en || 'N/A' }}
+            </el-descriptions-item>
+            <el-descriptions-item label="Description (EN)">
+              {{ category.description_en || 'N/A' }}
+            </el-descriptions-item>
+            <el-descriptions-item label="Description (AR)">
+              <div dir="rtl">{{ category.description_ar || 'N/A' }}</div>
+            </el-descriptions-item>
+          </el-descriptions>
         </div>
       </div>
     </el-card>
-
-    <div v-else class="loading-state">
-      <el-skeleton :rows="3" animated />
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { Picture } from '@element-plus/icons-vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ArrowLeft, Edit, Delete, Picture } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import axios from 'axios'
 
+const router = useRouter()
 const route = useRoute()
 const category = ref(null)
+const loading = ref(false)
+
+const BASE_URL = 'https://testback.eleganceoud.com/'
+const API_URL = `${BASE_URL}/api/categories`
 
 const fetchCategory = async () => {
+  loading.value = true
   try {
-    // Simulated API call - replace with actual API endpoint
-    const response = await fetch(`/api/categories/${route.params.id}`)
-    category.value = await response.json()
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    if (!tokenData || !tokenData.token) {
+      throw new Error('Authentication token not found')
+    }
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const response = await axios.get(`${API_URL}/${route.params.id}`)
+
+    if (response.data.status === 'success') {
+      category.value = response.data.data
+    } else {
+      throw new Error(response.data.message || 'Failed to fetch category')
+    }
   } catch (error) {
-    console.error('Error fetching category:', error)
-    ElMessage.error('Failed to load category details')
+    console.error('Fetch category error:', error)
+    ElMessage.error(error.message || 'Failed to fetch category')
+    router.push('/categories')
+  } finally {
+    loading.value = false
   }
 }
-
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
 onMounted(() => {
   fetchCategory()
 })
@@ -117,139 +101,64 @@ onMounted(() => {
 
 <style scoped>
 .category-details-container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 20px;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
 }
 
-.category-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-.category-content {
+.header-left {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  align-items: center;
+  gap: 16px;
+}
+
+.category-details {
+  margin-top: 20px;
+}
+
+.details-content {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
 }
 
 .image-section {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
+  width: 100%;
 }
 
 .category-image {
   width: 100%;
-  max-width: 400px;
-  height: 300px;
+  height: 200px;
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .image-error {
+  width: 100%;
+  height: 200px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+}
+
+.image-error .el-icon {
+  font-size: 48px;
   color: #909399;
-  font-size: 14px;
 }
 
 .info-section {
-  padding: 0 1rem;
+  flex: 1;
 }
 
-.info-group {
-  margin-bottom: 2rem;
-}
-
-.info-group h3 {
-  margin-bottom: 1rem;
-  color: #303133;
-  font-size: 1.2rem;
-}
-
-.info-item {
-  margin-bottom: 1rem;
-}
-
-.info-item label {
-  font-weight: bold;
-  color: #606266;
-  margin-right: 0.5rem;
-}
-
-.info-item p {
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #303133;
-}
-
-.metadata-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #ebeef5;
-}
-
-.arabic-text {
-  font-family: 'Noto Sans Arabic', 'Noto Kufi Arabic', 'Arial', sans-serif;
-  line-height: 1.6;
-}
-
-.arabic-section {
-  text-align: right;
-}
-
-.arabic-section .info-item {
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 0.5rem;
-}
-
-.arabic-section label {
-  margin-right: 0;
-  margin-left: 0.5rem;
-}
-
-.loading-state {
-  padding: 2rem;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive Design */
-@media (min-width: 768px) {
-  .category-content {
-    flex-direction: row;
+@media (max-width: 768px) {
+  .details-content {
+    grid-template-columns: 1fr;
   }
-
-  .image-section {
-    flex: 0 0 40%;
-  }
-
-  .info-section {
-    flex: 1;
-  }
-}
-
-/* RTL Support */
-[dir="rtl"] .header {
-  flex-direction: row-reverse;
-}
-
-[dir="rtl"] .info-item label {
-  margin-right: 0;
-  margin-left: 0.5rem;
 }
 </style>
