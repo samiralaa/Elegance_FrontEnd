@@ -85,6 +85,8 @@
 
 
     <HomeBrands />
+    <Products />
+    <LatestProducts />
   </div>
 </template>
 
@@ -92,13 +94,17 @@
 import Header from '@/components/Website/Header.vue'
 import Categories from '@/components/Website/Categories.vue'
 import HomeBrands from '@/components/Website/HomeBrands.vue'
+import Products from '@/components/Website/ProductSection.vue'
+import LatestProducts from '@/components/Website/LatestProducts.vue'
 
 export default {
   name: 'Home',
   components: {
     Header,
     Categories,
-    HomeBrands
+    HomeBrands,
+    LatestProducts,
+    Products
   },
   data() {
     return {

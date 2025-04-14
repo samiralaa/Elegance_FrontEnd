@@ -7,7 +7,6 @@ import websiteCategories from './modules/websiteCategories'
 
 const API_URL = 'https://elegance_commers.test'
 
-// Create axios instance with default config
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -21,7 +20,6 @@ const api = axios.create({
   withCredentials: true
 })
 
-// Add token to requests if it exists
 api.interceptors.request.use(config => {
   const tokenData = JSON.parse(localStorage.getItem('tokenData'))
   if (tokenData?.token) {
@@ -98,26 +96,23 @@ export default createStore({
       try {
         commit('SET_LOADING', true)
         commit('SET_ERROR', null)
-        
+
         const response = await api.post('/api/login', {
           email: credentials.email,
           password: credentials.password
         })
-        
+
         console.log('Login response:', response.data)
-        
-        // Check for token structure in response
-        const token = response.data.token || response.data.access_token
-        const user = response.data.user || { name: 'Admin' }
-        
+
+        // Check for token structure in response, including nested data object
+        const responseData = response.data.data || response.data
+        const token = responseData.token || responseData.access_token
+        const user = responseData.user || { name: 'Admin' }
+
         if (token) {
-          // Save token to localStorage and state
           commit('SET_TOKEN', token)
           commit('SET_USER', user)
-          
-          // Explicitly set Authorization header
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-          
           return response.data
         } else {
           throw new Error('Login failed: No token received')
@@ -142,40 +137,24 @@ export default createStore({
 
     async fetchCustomers({ commit, state }) {
       try {
-        if (!state.token) {
-          throw new Error('Authentication required')
-        }
-
+        if (!state.token) throw new Error('Authentication required')
         commit('SET_LOADING', true)
         commit('SET_ERROR', null)
-        
-        console.log('Fetching customers with token:', state.token)
-        
-        // Make sure Authorization header is set correctly
+
         const tokenData = JSON.parse(localStorage.getItem('tokenData'))
         if (tokenData?.token) {
           api.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
-        
+
         const response = await api.get('/api/users')
-        
-        console.log('Customers API Response:', response.data)
-        
-        if (response.data) {
-          // Handle both array and object responses
-          const users = Array.isArray(response.data) ? response.data : 
-                       response.data.data ? response.data.data :
-                       response.data.users ? response.data.users : []
-          
-          console.log('Processed customers:', users)
-          commit('SET_CUSTOMERS', users)
-          return users
-        } else {
-          throw new Error('Failed to fetch customers')
-        }
+        const users = Array.isArray(response.data)
+          ? response.data
+          : response.data.data || response.data.users || []
+
+        commit('SET_CUSTOMERS', users)
+        return users
       } catch (error) {
         console.error('Fetch customers error:', error)
-        console.error('Error response:', error.response)
         const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch customers'
         commit('SET_ERROR', errorMessage)
         throw error
@@ -186,40 +165,24 @@ export default createStore({
 
     async fetchBrands({ commit, state }) {
       try {
-        if (!state.token) {
-          throw new Error('Authentication required')
-        }
-
+        if (!state.token) throw new Error('Authentication required')
         commit('SET_LOADING', true)
         commit('SET_ERROR', null)
-        
-        console.log('Fetching brands with token:', state.token)
-        
-        // Make sure Authorization header is set correctly
+
         const tokenData = JSON.parse(localStorage.getItem('tokenData'))
         if (tokenData?.token) {
           api.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
-        
+
         const response = await api.get('/api/brands')
-        
-        console.log('Brands API Response:', response.data)
-        
-        if (response.data) {
-          // Handle both array and object responses
-          const brands = Array.isArray(response.data) ? response.data : 
-                        response.data.data ? response.data.data :
-                        response.data.brands ? response.data.brands : []
-          
-          console.log('Processed brands:', brands)
-          commit('SET_BRANDS', brands)
-          return brands
-        } else {
-          throw new Error('Failed to fetch brands')
-        }
+        const brands = Array.isArray(response.data)
+          ? response.data
+          : response.data.data || response.data.brands || []
+
+        commit('SET_BRANDS', brands)
+        return brands
       } catch (error) {
         console.error('Fetch brands error:', error)
-        console.error('Error response:', error.response)
         const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch brands'
         commit('SET_ERROR', errorMessage)
         throw error
@@ -256,7 +219,7 @@ export default createStore({
       try {
         commit('SET_LOADING', true)
         commit('SET_ERROR', null)
-        
+
         const response = await api.post('/api/register', {
           name: userData.name,
           email: userData.email,
@@ -265,14 +228,12 @@ export default createStore({
           password: userData.password,
           password_confirmation: userData.password_confirmation
         })
-        
+
         console.log('Registration response:', response.data)
-        
-        // Check for token in response
-        if (response.data && response.data.token) {
-          // Optionally set the token and user if you want to log in immediately after registration
-          commit('SET_TOKEN', response.data.token)
-          commit('SET_USER', response.data.user)
+
+        if (response.data?.data?.token) {
+          commit('SET_TOKEN', response.data.data.token)
+          commit('SET_USER', response.data.data.user)
           return response.data
         } else {
           throw new Error('Registration failed: No token received')
@@ -289,32 +250,21 @@ export default createStore({
 
     async fetchProfile({ commit, state }) {
       try {
-        if (!state.token) {
-          throw new Error('Authentication required')
-        }
+        if (!state.token) throw new Error('Authentication required')
 
         commit('SET_LOADING', true)
         commit('SET_ERROR', null)
-        
-        // Make sure Authorization header is set correctly
+
         const tokenData = JSON.parse(localStorage.getItem('tokenData'))
         if (tokenData?.token) {
           api.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
-        
+
         const response = await api.get('/api/me')
-        
-        console.log('Profile Response:', response.data)
-        
-        if (response.data) {
-          commit('SET_PROFILE', response.data)
-          return response.data
-        } else {
-          throw new Error('Failed to fetch profile')
-        }
+        commit('SET_PROFILE', response.data)
+        return response.data
       } catch (error) {
         console.error('Fetch profile error:', error)
-        console.error('Error response:', error.response)
         const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch profile'
         commit('SET_ERROR', errorMessage)
         throw error
@@ -328,9 +278,7 @@ export default createStore({
     totalOrders: state => state.orders.length,
     totalCustomers: state => state.customers.length,
     totalBrands: state => state.brands.length,
-    totalRevenue: state => {
-      return state.orders.reduce((total, order) => total + order.total, 0)
-    },
+    totalRevenue: state => state.orders.reduce((total, order) => total + order.total, 0),
     getCustomers: state => state.customers,
     getBrands: state => state.brands,
     isLoading: state => state.loading,

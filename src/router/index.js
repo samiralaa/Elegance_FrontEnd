@@ -15,10 +15,16 @@ const routes = [
     component: () => import('../views/Website/home.vue')
   },
   {
+    path: '/read/products/:id',
+    name: 'ProductShowHomePage',
+    component: () => import('../views/Website/showProduct.vue') 
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')
   },
+
   {
     path: '/login',
     name: 'Login',
@@ -57,7 +63,18 @@ const routes = [
   {
     path: '/products',
     name: 'Products',
-    component: () => import('../views/Products.vue'),
+    component: () => import('../views/Products/index.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/products/:id',
+    name: 'ProductShow',
+    component: () => import('../views/Products/show.vue'), 
+  },
+  {
+    path: '/products/create',
+    name: 'ProductCreate',
+    component: () => import('../views/Products/create.vue'),
     meta: { requiresAuth: true }
   },
   {

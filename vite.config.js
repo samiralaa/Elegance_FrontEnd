@@ -14,14 +14,14 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'https://testback.eleganceoud.com',
+        target: 'https://elegance_commers.test',
         changeOrigin: true,
         secure: false,
         ws: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
         configure: (proxy, options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('origin', 'https://testback.eleganceoud.com');
+            proxyReq.setHeader('origin', 'https://elegance_commers.test');
           });
         }
       }
