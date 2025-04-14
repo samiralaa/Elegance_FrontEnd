@@ -2,6 +2,7 @@
   <div class="home">
     <Header />
     <!-- Hero Section with Ramadan Theme -->
+  
     <section class="hero-section">
       <div class="floating-elements">
         <div v-for="n in 5" :key="n" class="crescent" :style="{ animationDelay: `${n * 0.5}s` }"></div>
@@ -14,7 +15,7 @@
         </router-link>
       </div>
     </section>
-
+    <Categories />
     <!-- Featured Products Section -->
     <section class="featured-products">
       <h2 class="section-title">{{ $t('home.featuredProducts') }}</h2>
@@ -22,6 +23,8 @@
         <!-- Products will be loaded here -->
       </div>
     </section>
+
+
 
     <!-- Brand Showcase -->
     <section class="brands-showcase">
@@ -35,11 +38,13 @@
 
 <script>
 import Header from '@/components/Website/Header.vue'
+import Categories from '@/components/Website/Categories.vue'
 
 export default {
   name: 'Home',
   components: {
-    Header
+    Header,
+    Categories
   },
   data() {
     return {

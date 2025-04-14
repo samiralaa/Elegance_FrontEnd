@@ -68,6 +68,12 @@
     "languages": {
       "english": "English",
       "arabic": "Arabic"
+    },
+    "currency": {
+      "title": "Currency",
+      "AED": "AED",
+      "USD": "USD",
+      "select": "Select Currency"
     }
   }
 }
