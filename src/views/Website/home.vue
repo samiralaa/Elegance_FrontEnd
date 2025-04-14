@@ -29,10 +29,56 @@
     <Categories />
     <Brands />
     <!-- Featured Products Section -->
-    <section class="featured-products">
-      <h2 class="section-title">{{ $t('home.featuredProducts') }}</h2>
-      <div class="products-grid">
-        <!-- Products will be loaded here -->
+    <section class="all-categories py-4">
+      <div class="container">
+        <div class="title">
+          <fa class="fa-icon" :icon="['fas','cubes']"></fa>
+          <h2>{{ $t('home.categories') }}</h2>
+        </div>
+        <div class="card-container">
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="category-content">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
+              <p>لبان هوجاري</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -70,81 +116,75 @@ export default {
   min-height: 100vh;
 }
 
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(10deg);
-  }
+.category-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
-  padding: 2rem;
+.all-categories .container .card-container .card{
+  background-color: #f7f7f7;
+  border: none;
+  padding: 12px;
+  transition: all 0.3s ease;
 }
 
-.hero-title {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-  font-weight: bold;
+.all-categories .container .card-container{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 أعمدة للشاشة الكاملة */
+  gap: 30px;
+  padding: 16px;
 }
 
-.hero-subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+.category-content img{
+  border-radius: 8px;
+  width: 100%;
 }
 
-.cta-button {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: linear-gradient(45deg, #ffd700, #ffa500);
-  color: #1a1a1a;
-  text-decoration: none;
-  border-radius: 30px;
-  font-weight: bold;
+.all-categories .container .card-container .card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  width: 100%;
+  background-color: #8b6b3d;
+  border-radius: 8px;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: -1;
   transition: transform 0.3s ease;
 }
 
-.cta-button:hover {
-  transform: scale(1.05);
+.all-categories .container .card-container .card:hover{
+  color: #fff;
+  scale: 1.2;
 }
 
-.section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  margin: 4rem 0 2rem;
+.all-categories .container .card-container .card:hover::after {
+  transform: translate(-50%, -50%) scale(1);
 }
 
-.products-grid,
-.brands-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
+.title{
+  margin-bottom: 20px;
+  color: #8b6b3d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* RTL Support */
-[dir="rtl"] .hero-section {
-  direction: rtl;
+.fa-icon{
+  font-size: 1.8rem;
 }
 
-/* Responsive Design */
+@media (max-width: 1200px) {
+  .card-container {
+    grid-template-columns: repeat(5, 1fr); /* 5 أعمدة للشاشات المتوسطة */
+  }
+}
+
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1.2rem;
-  }
-
-  .section-title {
-    font-size: 2rem;
+  .card-container {
+    grid-template-columns: repeat(3, 1fr); /* 3 أعمدة للشاشات الصغيرة */
   }
 }
 </style>

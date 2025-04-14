@@ -93,5 +93,8 @@
       "settings": "Settings",
       "logout": "Logout"
     }
+  },
+  "home": {
+    "categories": "Categories"
   }
 } 

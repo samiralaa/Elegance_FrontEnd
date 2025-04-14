@@ -21,7 +21,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 
 
-
 // Initialize theme and direction
 const { theme, direction, lang } = initializeTheme()
 document.documentElement.setAttribute('data-theme', theme)
