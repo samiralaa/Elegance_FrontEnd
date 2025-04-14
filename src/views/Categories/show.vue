@@ -67,7 +67,7 @@ const route = useRoute()
 const category = ref(null)
 const loading = ref(false)
 
-const BASE_URL = 'https://testback.eleganceoud.com/'
+const BASE_URL = 'https://elegance_commers.test/'
 const API_URL = `${BASE_URL}/api/categories`
 
 const fetchCategory = async () => {

@@ -3,7 +3,7 @@ import axios from 'axios'
 import categories from './modules/categories'
 import brands from './modules/brands'
 
-const API_URL = 'https://testback.eleganceoud.com/'
+const API_URL = 'https://elegance_commers.test/'
 
 // Create axios instance with default config
 const api = axios.create({
@@ -11,9 +11,12 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
+    'X-Requested-With': 'XMLHttpRequest',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With'
   },
-  withCredentials: false
+  withCredentials: true
 })
 
 // Add token to requests if it exists

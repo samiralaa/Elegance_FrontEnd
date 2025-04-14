@@ -128,7 +128,7 @@ export default defineComponent({
           localStorage.removeItem('rememberedEmail')
         }
         
-        router.push('/')
+        router.push('/dashboard')
       } catch (err) {
         error.value = err.response?.data?.message || 'Login failed. Please check your credentials.'
         ElMessage({
@@ -249,4 +249,4 @@ export default defineComponent({
 :deep(.el-checkbox__label) {
   color: #666;
 }
-</style> 
+</style>

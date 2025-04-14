@@ -11,6 +11,20 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'https://testback.eleganceoud.com',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('origin', 'https://testback.eleganceoud.com');
+          });
+        }
+      }
+    }
   }
-}) 
+})
