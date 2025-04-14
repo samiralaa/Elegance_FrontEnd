@@ -2,18 +2,20 @@
 <template>
   <header class="header">
     <div class="top-bar">
-      <div class="container">
-        <div class="top-bar-left">
-          <a href="#" class="join-link">{{ $t('header.joinUs') }}</a>
-        </div>
-        <div class="top-bar-right">
-          <div class="currency">  {{ $t('currencies') }}</div>
-          <language-switcher />
+      <div class="container-fluid">
+        <div class="d-flex justify-content-between mx-5">
+          <div class="top-bar-left">
+            <a href="#" class=" btn join-link">{{ $t('header.joinUs') }}</a>
+          </div>
+          <div class="top-bar-right">
+            <div class="currency">  {{ $t('currencies') }}</div>
+            <language-switcher />
+          </div>
         </div>
       </div>
     </div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
+      <div class="container-fluid mx-5">
         <a class="navbar-brand" href="#">
           <img src="@/assets/images/EleganceLogo.png" alt="Bootstrap" height="50">
         </a>
@@ -35,6 +37,9 @@
               <router-link to="/about" class="nav-link">{{ $t('header.aboutUs') }}</router-link>
             </li>
           </ul>
+          <a class="search-btn mx-2">
+            <fa icon="search"></fa>
+          </a>
           <router-link to="/login" class="login-btn btn">{{ $t('header.login') }}</router-link>
         </div>
       </div>
@@ -54,9 +59,37 @@ export default {
 </script>
 
 <style scoped>
-.container-fluid{
-  padding-left: 100px;
-  padding-right: 100px;
+.search-btn {
+  position: relative;
+  padding: 1em 2em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  isolation: isolate;
+  overflow: hidden;
+  color: #8b6b3d;
+}
+
+.search-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 45px;
+  width: 45px;
+  background-color: #8b6b3d;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: -1;
+  transition: transform 0.3s ease;
+}
+
+.search-btn:hover{
+  color: #fff;
+}
+
+.search-btn:hover::after {
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .login-btn{
@@ -68,6 +101,10 @@ export default {
   background-color: #725932;
 }
 
+.login-btn:focus{
+  color: #fff !important;
+}
+
 .nav-link.active,
 .nav-link:hover{
   color: #8B6B3D;
@@ -75,6 +112,7 @@ export default {
 
 .nav-link{
   color: #333;
+  font-weight: 500;
 }
 
 .header {
@@ -98,7 +136,7 @@ export default {
   align-items: center;
 }
 
-.top-bar .container {
+.top-bar .container-fluid {
   font-size: 0.9rem;
 }
 
@@ -148,13 +186,13 @@ export default {
   gap: 1rem;
 }
 
-.search-btn {
+/* .search-btn {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
   color: #333;
-}
+} */
 
 .auth-btn {
   padding: 0.5rem 1.5rem;

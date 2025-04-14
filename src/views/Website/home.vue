@@ -4,16 +4,27 @@
     <!-- Hero Section with Ramadan Theme -->
   
     <section class="hero-section">
-      <div class="floating-elements">
-        <div v-for="n in 5" :key="n" class="crescent" :style="{ animationDelay: `${n * 0.5}s` }"></div>
+      <div id="carouselExample" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="@/assets/images/Hero/slider1.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="@/assets/images/Hero/slider2.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="@/assets/images/Hero/slider3.png" class="d-block w-100" alt="...">
+        </div>
       </div>
-      <div class="hero-content">
-        <h1 class="hero-title">{{ $t('home.heroTitle') }}</h1>
-        <p class="hero-subtitle">{{ $t('home.heroSubtitle') }}</p>
-        <router-link to="/products" class="cta-button">
-          {{ $t('home.shopNow') }}
-        </router-link>
-      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
     </section>
     <Categories />
     <Brands />
@@ -59,34 +70,6 @@ export default {
   min-height: 100vh;
 }
 
-.hero-section {
-  position: relative;
-  height: 80vh;
-  background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #ffffff;
-}
-
-.floating-elements {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.crescent {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #ffd700, #ffa500);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-  animation: float 8s infinite ease-in-out;
-}
 
 @keyframes float {
   0%, 100% {

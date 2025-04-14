@@ -14,6 +14,14 @@ import './assets/styles/theme.css'
 import i18n from './i18n'
 import { initializeTheme } from './utils/theme'
 
+
+// Font Awesome
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+
+
+
 // Initialize theme and direction
 const { theme, direction, lang } = initializeTheme()
 document.documentElement.setAttribute('data-theme', theme)
@@ -32,6 +40,12 @@ app.use(router)
 app.use(ElementPlus)
 app.use(i18n)
 
-app.mount('#app')
 
+
+library.add(fas)
+
+
+app.component('fa', FontAwesomeIcon)
+
+app.mount('#app')
 import "bootstrap/dist/js/bootstrap.js"
