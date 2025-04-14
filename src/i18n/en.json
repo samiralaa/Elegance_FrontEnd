@@ -1,4 +1,19 @@
 {
+  "header": {
+    "joinUs": "Join Us",
+    "home": "Home",
+    "products": "Products",
+    "contactUs": "Contact Us",
+    "aboutUs": "About Us",
+    "login": "Login"
+  },
+  "home": {
+    "heroTitle": "Ramadan Offers",
+    "heroSubtitle": "Discover our exclusive collection of luxury perfumes",
+    "shopNow": "Shop Now",
+    "featuredProducts": "Featured Products",
+    "ourBrands": "Our Brands"
+  },
   "common": {
     "brand": {
       "tagline": "Elegant Solutions"
@@ -49,6 +64,10 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive"
+    },
+    "languages": {
+      "english": "English",
+      "arabic": "Arabic"
     }
   }
 }

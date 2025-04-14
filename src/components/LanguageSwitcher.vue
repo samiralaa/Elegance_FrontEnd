@@ -1,18 +1,22 @@
 <template>
-  <el-button-group>
-    <el-button 
-      :type="locale === 'en' ? 'primary' : 'default'"
-      @click="switchLanguage('en')"
-    >
-      {{ $t('common.languages.english') }}
-    </el-button>
-    <el-button 
-      :type="locale === 'ar' ? 'primary' : 'default'"
-      @click="switchLanguage('ar')"
-    >
-      {{ $t('common.languages.arabic') }}
-    </el-button>
-  </el-button-group>
+  <div class="language-switcher">
+    <el-button-group>
+      <el-button 
+        :class="['lang-btn', { active: locale === 'en' }]"
+        @click="switchLanguage('en')"
+      >
+        <span class="lang-code">EN</span>
+        <span class="lang-name">{{ $t('common.languages.english') }}</span>
+      </el-button>
+      <el-button 
+        :class="['lang-btn', { active: locale === 'ar' }]"
+        @click="switchLanguage('ar')"
+      >
+        <span class="lang-code">ع</span>
+        <span class="lang-name">{{ $t('common.languages.arabic') }}</span>
+      </el-button>
+    </el-button-group>
+  </div>
 </template>
 
 <script setup>
@@ -30,11 +34,37 @@ const switchLanguage = (lang) => {
 </script>
 
 <style scoped>
-.el-button-group {
+.language-switcher {
   margin: 0 8px;
 }
 
-.el-button {
-  min-width: 90px;
+.lang-btn {
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--el-border-color);
 }
-</style> 
+
+.lang-btn.active {
+  background-color: var(--el-color-primary);
+  color: white;
+  border-color: var(--el-color-primary);
+}
+
+.lang-code {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.lang-name {
+  font-size: 0.9em;
+}
+
+:deep(.el-button-group .el-button) {
+  border-radius: 4px;
+  margin: 0 4px;
+}
+</style>

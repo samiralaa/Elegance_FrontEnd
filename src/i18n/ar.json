@@ -1,4 +1,19 @@
 {
+  "header": {
+    "joinUs": "انضم إلينا",
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "contactUs": "اتصل بنا",
+    "aboutUs": "من نحن",
+    "login": "تسجيل الدخول"
+  },
+  "home": {
+    "heroTitle": "عروض رمضان",
+    "heroSubtitle": "اكتشف مجموعتنا الحصرية من العطور الفاخرة",
+    "shopNow": "تسوق الآن",
+    "featuredProducts": "منتجات مميزة",
+    "ourBrands": "علاماتنا التجارية"
+  },
   "common": {
     "brand": {
       "tagline": "حلول أنيقة"
@@ -49,6 +64,10 @@
     "status": {
       "active": "نشط",
       "inactive": "غير نشط"
+    },
+    "languages": {
+      "english": "الإنجليزية",
+      "arabic": "العربية"
     }
   }
 }
