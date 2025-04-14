@@ -2,7 +2,7 @@
     <section class="brands-section py-5 bg-light">
       <div class="container">
         <h2 class="text-center text-warning mb-5 fs-2 fw-bold">
-          Our Brands
+       {{ $t('common.menu.brands') }}
           <span class="ms-2">💼</span>
         </h2>
   

@@ -1,4 +1,14 @@
 {
+  "header": {
+  "joinUs": "Join Us",
+  "login": "Login",
+  "register": "Register",
+  "aboutUs": "About Us",
+  "contactUs": "Contact Us",
+  "products": "Products",
+  "home": "Home"
+},
+
   "brands": {
     "title": "Brands",
     "addBrand": "Add Brand",

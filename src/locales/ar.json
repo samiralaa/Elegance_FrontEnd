@@ -1,4 +1,15 @@
 {
+ "header": {
+    "joinUs": "انضم ",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "aboutUs":"عننا",
+    "contactUs":"تواصل معنا",
+    "products":"المنتجات",
+    "home":"الرئيسية"
+ },
+
+  "currencies":"العملات",
   "brands": {
     "title": "العلامات التجارية",
     "addBrand": "إضافة علامة تجارية",
@@ -25,8 +36,10 @@
   },
   "common": {
     "search": "بحث...",
+    "crunsses":"العملات",
     "status": "الحالة",
     "cancel": "إلغاء",
+
     "save": "حفظ",
     "warning": "تحذير",
     "yes": "نعم",
@@ -48,10 +61,12 @@
     },
     "brand": {
       "tagline": "لوحة تحكم مميزة"
+      
     },
     "menu": {
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
+    
       "brands": "العلامات التجارية",
       "addresses": "العناوين",
       "addresses_list": "قائمة العناوين",

@@ -7,7 +7,7 @@
           <a href="#" class="join-link">{{ $t('header.joinUs') }}</a>
         </div>
         <div class="top-bar-right">
-          <div class="currency">AED (درهم)</div>
+          <div class="currency">  {{ $t('currencies') }}</div>
           <language-switcher />
         </div>
       </div>
