@@ -12,27 +12,6 @@
         </div>
       </div>
     </div>
-    <div class="main-header">
-      <div class="container">
-        <router-link to="/" class="logo">
-          <img src="@/assets/images/logo.png" alt="Elegance" />
-        </router-link>
-        <nav class="main-nav">
-          <ul>
-            <li><router-link to="/">{{ $t('header.home') }}</router-link></li>
-            <li><router-link to="/products">{{ $t('header.products') }}</router-link></li>
-            <li><router-link to="/contact">{{ $t('header.contactUs') }}</router-link></li>
-            <li><router-link to="/about">{{ $t('header.aboutUs') }}</router-link></li>
-          </ul>
-        </nav>
-        <div class="header-actions">
-          <button class="search-btn">
-            <i class="fas fa-search"></i>
-          </button>
-          <router-link to="/login" class="auth-btn">{{ $t('header.login') }}</router-link>
-        </div>
-      </div>
-    </div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -44,19 +23,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <router-link to="/" class="nav-link active" aria-current="page">{{ $t('header.home') }}</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <router-link to="/products" class="nav-link">{{ $t('header.products') }}</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <router-link to="/contact" class="nav-link">{{ $t('header.contactUs') }}</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <router-link to="/about" class="nav-link">{{ $t('header.aboutUs') }}</router-link>
             </li>
           </ul>
-          <button class="login-btn btn">Login</button>
+          <router-link to="/login" class="login-btn btn">{{ $t('header.login') }}</router-link>
         </div>
       </div>
     </nav>
