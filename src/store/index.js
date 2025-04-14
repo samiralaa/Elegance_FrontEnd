@@ -3,7 +3,7 @@ import axios from 'axios'
 import categories from './modules/categories'
 import brands from './modules/brands'
 
-const API_URL = 'https://elegance_commers.test/'
+const API_URL = 'https://elegance_commers.test'
 
 // Create axios instance with default config
 const api = axios.create({
