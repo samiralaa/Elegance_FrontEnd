@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import "bootstrap/dist/css/bootstrap.css"
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -32,3 +33,5 @@ app.use(ElementPlus)
 app.use(i18n)
 
 app.mount('#app')
+
+import "bootstrap/dist/js/bootstrap.js"

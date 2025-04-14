@@ -1,3 +1,4 @@
+
 <template>
   <header class="header">
     <div class="top-bar">
@@ -32,6 +33,33 @@
         </div>
       </div>
     </div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="@/assets/images/EleganceLogo.png" alt="Bootstrap" height="50">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+          </ul>
+          <button class="login-btn btn">Login</button>
+        </div>
+      </div>
+    </nav>
   </header>
 </template>
 
@@ -47,6 +75,29 @@ export default {
 </script>
 
 <style scoped>
+.container-fluid{
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.login-btn{
+  background-color: #8b6b3d;
+  color: #fff;
+}
+
+.login-btn:hover{
+  background-color: #725932;
+}
+
+.nav-link.active,
+.nav-link:hover{
+  color: #8B6B3D;
+}
+
+.nav-link{
+  color: #333;
+}
+
 .header {
   width: 100%;
   background: #fff;
