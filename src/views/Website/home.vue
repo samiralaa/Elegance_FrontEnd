@@ -16,6 +16,7 @@
       </div>
     </section>
     <Categories />
+    <Brands />
     <!-- Featured Products Section -->
     <section class="featured-products">
       <h2 class="section-title">{{ $t('home.featuredProducts') }}</h2>
@@ -26,25 +27,21 @@
 
 
 
-    <!-- Brand Showcase -->
-    <section class="brands-showcase">
-      <h2 class="section-title">{{ $t('home.ourBrands') }}</h2>
-      <div class="brands-grid">
-        <!-- Brand logos will be loaded here -->
-      </div>
-    </section>
+    <HomeBrands />
   </div>
 </template>
 
 <script>
 import Header from '@/components/Website/Header.vue'
 import Categories from '@/components/Website/Categories.vue'
+import HomeBrands from '@/components/Website/HomeBrands.vue'
 
 export default {
   name: 'Home',
   components: {
     Header,
-    Categories
+    Categories,
+    HomeBrands
   },
   data() {
     return {

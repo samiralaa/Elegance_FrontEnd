@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const API_URL = 'http://127.0.0.1:8000'
-const IMAGE_BASE_URL = 'http://127.0.0.1:8000'
+const API_URL = 'https://elegance_commers.test'
+const IMAGE_BASE_URL = 'https://elegance_commers.test'
 
 const state = {
   items: [],
@@ -27,7 +27,7 @@ const actions = {
       commit('SET_LOADING', true)
       commit('SET_ERROR', null)
 
-      const response = await axios.get(`${API_URL}/api/catffegories/website`)
+      const response = await axios.get(`${API_URL}/api/website`)
 
       if (response.data?.status && response.data?.data) {
         const categories = Array.isArray(response.data.data) ? response.data.data : [response.data.data]
