@@ -11,9 +11,9 @@ import Help from '../views/Help.vue'
 
 const routes = [
   {
-    path: '/join',
-    name: 'JoinUs',
-    component: () => import('../views/Website/JoinUs.vue')
+    path: '/Account/Login',
+    name: 'Account/Login',
+    component: () => import('../views/Website/AccountLogin.vue')
   },
   {
     path: '/',

@@ -40,7 +40,7 @@
           <a class="search-btn mx-2">
             <fa icon="search"></fa>
           </a>
-          <router-link to="/join" class="login-btn btn">{{ $t('header.login') }}</router-link>
+          <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
         </div>
       </div>
     </nav>
