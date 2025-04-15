@@ -1,46 +1,19 @@
 <template>
-    <section class="brands-section py-5 bg-light">
-      <div class="container">
-        <h2 class="text-center text-warning mb-5 fs-2 fw-bold">
-       {{ $t('common.menu.brands') }}
-          <span class="ms-2">💼</span>
-        </h2>
-  
-        <div class="row g-4">
-          <div
-            v-for="brand in brands"
-            :key="brand.id"
-            class="col-12 col-sm-6 col-md-4 col-lg-3"
-          >
-            <div class="card h-100 text-center border-0 shadow-sm">
-              <div class="card-body d-flex flex-column align-items-center">
-                <div
-                  class="rounded-circle border border-warning mb-3 d-flex justify-content-center align-items-center bg-light"
-                  style="width: 100px; height: 100px; overflow: hidden;"
-                >
-                  <img
-                    v-if="brand.images.length"
-                    :src="getImageUrl(brand.images[0].path)"
-                    :alt="brand.name_en"
-                    class="img-fluid w-100 h-100 object-fit-contain"
-                  />
-                  <span v-else class="text-muted small">No Image</span>
-                </div>
-                <h5 class="card-title fw-bold">{{ brand.name_ar }}</h5>
-                <p class="card-text text-muted">{{ brand.name_en }}</p>
-                <button
-                  @click="likeBrand(brand.id)"
-                  class="btn btn-warning btn-sm mt-2 text-white"
-                >
-                  Like
-                </button>
-              </div>
-            </div>
-          </div>
+  <section class="our-brands">
+    <div class="container">
+      <div class="title mt-5">
+        <fa class="fa-icon" :icon="['fas','diagram-project']"></fa>
+        <h2>{{ $t('home.brands') }}</h2>
+      </div>
+      <div v-for="brand in brands" :key="brand.id" class="content">
+        <div class="brand-img">
+          <img v-if="brand.images.length" :src="getImageUrl(brand.images[0].path)" :alt="brand.name_en" class="img-fluid"/>
+          <span v-else class="text-muted small">No Image</span>
         </div>
       </div>
-    </section>
-  </template>
+    </div>
+  </section>
+</template>
   
   <script>
   import axios from "axios";
@@ -76,9 +49,44 @@
   };
   </script>
   
-  <style scoped>
+<style scoped>
   .object-fit-contain {
     object-fit: contain;
   }
-  </style>
+
+  .title{
+    margin-bottom: 15px;
+    color: #8b6b3d;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fa-icon{
+    font-size: 1.8rem;
+  }
+
+  .our-brands .content{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 30px;
+  }
+
+  .our-brands .content .brand-img{
+    transition: all 0.2s ease-in-out;
+  }
+
+  .our-brands .content .brand-img:hover{
+    scale: 1.2;
+  }
+
+  .our-brands .content .brand-img img{
+    height: 200px;
+    margin: 10px;
+    margin-bottom: 20px;
+    width: auto;
+  }
+</style>
+
   
