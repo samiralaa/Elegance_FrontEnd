@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
 import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
 import Customers from '../views/Customers.vue'
 import Brands from '../views/Brands.vue'
 import Categories from '../views/Categories/index.vue'
@@ -9,6 +10,11 @@ import Profile from '../views/Profile.vue'
 import Help from '../views/Help.vue'
 
 const routes = [
+  {
+    path: '/join',
+    name: 'JoinUs',
+    component: () => import('../views/Website/JoinUs.vue')
+  },
   {
     path: '/',
     name: 'Home',
@@ -29,6 +35,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/Register.vue')
   },
   {
     path: '/customers',

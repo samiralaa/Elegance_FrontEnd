@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <div class="d-flex justify-content-between mx-5">
           <div class="top-bar-left">
-            <a href="#" class=" btn join-link">{{ $t('header.joinUs') }}</a>
+            <router-link to="/register" class="btn join-link">{{ $t('header.joinUs') }}</router-link>
           </div>
           <div class="top-bar-right">
             <div class="currency">  {{ $t('currencies') }}</div>
@@ -25,22 +25,22 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link to="/" class="nav-link active" aria-current="page">{{ $t('header.home') }}</router-link>
+              <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' }" aria-current="page">{{ $t('header.home') }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/products" class="nav-link">{{ $t('header.products') }}</router-link>
+              <router-link to="/products" class="nav-link" :class="{ active: $route.path === '/products' }">{{ $t('header.products') }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/contact" class="nav-link">{{ $t('header.contactUs') }}</router-link>
+              <router-link to="/contact" class="nav-link" :class="{ active: $route.path === '/contact' }">{{ $t('header.contactUs') }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/about" class="nav-link">{{ $t('header.aboutUs') }}</router-link>
+              <router-link to="/about" class="nav-link" :class="{ active: $route.path === '/about' }">{{ $t('header.aboutUs') }}</router-link>
             </li>
           </ul>
           <a class="search-btn mx-2">
             <fa icon="search"></fa>
           </a>
-          <router-link to="/login" class="login-btn btn">{{ $t('header.login') }}</router-link>
+          <router-link to="/join" class="login-btn btn">{{ $t('header.login') }}</router-link>
         </div>
       </div>
     </nav>

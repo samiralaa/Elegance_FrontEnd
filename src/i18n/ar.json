@@ -1,5 +1,33 @@
 {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
   "header": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
     "joinUs": "انضم إلينا",
     "home": "الرئيسية",
     "products": "المنتجات",
@@ -8,6 +36,20 @@
     "login": "تسجيل الدخول"
   },
   "home": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
     "heroTitle": "عروض رمضان",
     "heroSubtitle": "اكتشف مجموعتنا الحصرية من العطور الفاخرة",
     "shopNow": "تسوق الآن",
@@ -15,10 +57,52 @@
     "ourBrands": "علاماتنا التجارية"
   },
   "common": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
     "brand": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "tagline": "حلول أنيقة"
     },
     "menu": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
       "brands": "العلامات التجارية",
@@ -37,6 +121,20 @@
       "logout": "تسجيل الخروج"
     },
     "actions": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "add": "إضافة",
       "edit": "تعديل",
       "delete": "حذف",
@@ -46,30 +144,128 @@
       "close": "إغلاق"
     },
     "search": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "placeholder": "بحث..."
     },
     "loading": "جاري التحميل...",
     "error": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "general": "حدث خطأ",
       "network": "حدث خطأ في الشبكة"
     },
     "success": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "created": "تم الإنشاء بنجاح",
       "updated": "تم التحديث بنجاح",
       "deleted": "تم الحذف بنجاح"
     },
     "validation": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "required": "هذا الحقل مطلوب"
     },
     "status": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "active": "نشط",
       "inactive": "غير نشط"
     },
     "languages": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "english": "الإنجليزية",
       "arabic": "العربية"
     },
     "currency": {
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "submit": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "register": "إنشاء حساب جديد"
+  },
       "title": "العملة",
       "AED": "درهم",
       "USD": "دولار",

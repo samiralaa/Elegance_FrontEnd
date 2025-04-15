@@ -1,6 +1,34 @@
 {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
   
   "header": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
     "joinUs": "Join Us",
     "home": "Home",
     "products": "Products",
@@ -9,6 +37,20 @@
     "login": "Login"
   },
   "home": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
     "heroTitle": "Ramadan Offers",
     "heroSubtitle": "Discover our exclusive collection of luxury perfumes",
     "shopNow": "Shop Now",
@@ -16,10 +58,52 @@
     "ourBrands": "Our Brands"
   },
   "common": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
     "brand": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "tagline": "Elegant Solutions"
     },
     "menu": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "dashboard": "Dashboard",
       "products": "Products",
       "brands": "Brands",
@@ -38,6 +122,20 @@
       "logout": "Logout"
     },
     "actions": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "add": "Add",
       "edit": "Edit",
       "delete": "Delete",
@@ -47,30 +145,128 @@
       "close": "Close"
     },
     "search": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "placeholder": "Search..."
     },
     "loading": "Loading...",
     "error": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "general": "An error occurred",
       "network": "Network error occurred"
     },
     "success": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "created": "Created successfully",
       "updated": "Updated successfully",
       "deleted": "Deleted successfully"
     },
     "validation": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "required": "This field is required"
     },
     "status": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "active": "Active",
       "inactive": "Inactive"
     },
     "languages": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "english": "English",
       "arabic": "Arabic"
     },
     "currency": {
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "submit": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "register": "Create an Account"
+  },
       "title": "Currency",
       "AED": "AED",
       "USD": "USD",
