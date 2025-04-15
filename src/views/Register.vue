@@ -10,48 +10,56 @@
     </div>
     <div class="register-right">
       <div class="register-form-container">
-        <h2>{{ $t('register.title') }}</h2>
-        <p class="subtitle">{{ $t('register.subtitle') }}</p>
+        <h2>{{ $t('header.register') }}</h2>
+        <p class="subtitle">{{ $t('header.register') }}</p>
         <form @submit.prevent="handleRegister" class="register-form">
           <div class="form-group">
-            <label for="fullName">{{ $t('register.fullName') }}</label>
+            <label for="fullName">{{ $t('header.fullName') }}</label>
             <input 
               type="text" 
               id="fullName" 
               v-model="formData.fullName" 
-              :placeholder="$t('register.fullNamePlaceholder')"
+              :placeholder="$t('header.fullNamePlaceholder')"
+              :class="{ 'error': errors.fullName, 'valid': formData.fullName && !errors.fullName }"
               required
             >
+            <span class="error-message" v-if="errors.fullName">{{ errors.fullName }}</span>
           </div>
           <div class="form-group">
-            <label for="email">{{ $t('register.email') }}</label>
+            <label for="email">{{ $t('header.email') }}</label>
             <input 
               type="email" 
               id="email" 
               v-model="formData.email" 
-              :placeholder="$t('register.emailPlaceholder')"
+              :placeholder="$t('header.emailPlaceholder')"
+              :class="{ 'error': errors.email, 'valid': formData.email && !errors.email }"
               required
             >
+            <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
           </div>
           <div class="form-group">
-            <label for="password">{{ $t('register.password') }}</label>
+            <label for="password">{{ $t('header.password') }}</label>
             <input 
               type="password" 
               id="password" 
               v-model="formData.password" 
-              :placeholder="$t('register.passwordPlaceholder')"
+              :placeholder="$t('header.passwordPlaceholder')"
+              :class="{ 'error': errors.password, 'valid': formData.password && !errors.password }"
               required
             >
+            <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
           </div>
           <div class="form-group">
-            <label for="confirmPassword">{{ $t('register.confirmPassword') }}</label>
+            <label for="confirmPassword">{{ $t('header.confirmPassword') }}</label>
             <input 
               type="password" 
               id="confirmPassword" 
               v-model="formData.confirmPassword" 
               :placeholder="$t('register.confirmPasswordPlaceholder')"
+              :class="{ 'error': errors.confirmPassword, 'valid': formData.confirmPassword && !errors.confirmPassword }"
               required
             >
+            <span class="error-message" v-if="errors.confirmPassword">{{ errors.confirmPassword }}</span>
           </div>
           <div class="form-group">
             <label for="country">{{ $t('register.country') }}</label>
@@ -82,11 +90,13 @@
                 id="phoneNumber"
                 v-model="formData.phoneNumber"
                 :placeholder="$t('register.phoneNumberPlaceholder')"
+                :class="{ 'error': errors.phoneNumber, 'valid': formData.phoneNumber && !errors.phoneNumber }"
                 required
                 pattern="[0-9]{9}"
                 maxlength="9"
               >
             </div>
+            <span class="error-message" v-if="errors.phoneNumber">{{ errors.phoneNumber }}</span>
           </div>
           <button type="submit" class="register-btn">{{ $t('register.submit') }}</button>
         </form>
@@ -102,6 +112,9 @@
 <script>
 import { ref } from 'vue'
 import { ElSelect, ElOption } from 'element-plus'
+import axios from 'axios'
+
+const API_URL = 'https://elegance_commers.test'
 
 export default {
   name: 'Register',
@@ -119,6 +132,14 @@ export default {
         country: '',
         phoneNumber: ''
       },
+      errors: {
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phoneNumber: '',
+        country: ''
+      },
       countries: [
         { code: 'SA', name: 'Saudi Arabia', dialCode: '+966' },
         { code: 'AE', name: 'United Arab Emirates', dialCode: '+971' },
@@ -135,13 +156,133 @@ export default {
       return country ? country.dialCode : ''
     }
   },
+  watch: {
+    'formData.fullName'(value) {
+      this.validateFullName(value)
+    },
+    'formData.email'(value) {
+      this.validateEmail(value)
+    },
+    'formData.password'(value) {
+      this.validatePassword(value)
+      if (this.formData.confirmPassword) {
+        this.validateConfirmPassword(this.formData.confirmPassword)
+      }
+    },
+    'formData.confirmPassword'(value) {
+      this.validateConfirmPassword(value)
+    },
+    'formData.phoneNumber'(value) {
+      this.validatePhoneNumber(value)
+    },
+    'formData.country'(value) {
+      this.validateCountry(value)
+    }
+  },
   methods: {
-    handleRegister() {
-      // TODO: Implement registration logic
-      console.log('Registration data:', {
-        ...this.formData,
-        phoneNumber: this.selectedCountryDialCode + this.formData.phoneNumber
-      })
+    validateFullName(value) {
+      if (!value) {
+        this.errors.fullName = this.$t('register.validation.fullNameRequired')
+      } else if (value.length < 3) {
+        this.errors.fullName = this.$t('register.validation.fullNameLength')
+      } else if (!/^[\p{L}\s'-]+$/u.test(value)) {
+        this.errors.fullName = this.$t('register.validation.fullNameInvalid')
+      } else {
+        this.errors.fullName = ''
+      }
+    },
+    validateEmail(value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!value) {
+        this.errors.email = this.$t('register.validation.emailRequired')
+      } else if (!emailRegex.test(value)) {
+        this.errors.email = this.$t('register.validation.emailInvalid')
+      } else {
+        this.errors.email = ''
+      }
+    },
+    validatePassword(value) {
+      if (!value) {
+        this.errors.password = this.$t('register.validation.passwordRequired')
+      } else if (value.length < 8) {
+        this.errors.password = this.$t('register.validation.passwordLength')
+      } else if (!/[A-Z]/.test(value)) {
+        this.errors.password = this.$t('register.validation.passwordUppercase')
+      } else if (!/[a-z]/.test(value)) {
+        this.errors.password = this.$t('register.validation.passwordLowercase')
+      } else if (!/[0-9]/.test(value)) {
+        this.errors.password = this.$t('register.validation.passwordNumber')
+      } else if (!/[!@#$%^&*]/.test(value)) {
+        this.errors.password = this.$t('register.validation.passwordSpecial')
+      } else {
+        this.errors.password = ''
+      }
+    },
+    validateConfirmPassword(value) {
+      if (!value) {
+        this.errors.confirmPassword = this.$t('register.validation.confirmPasswordRequired')
+      } else if (value !== this.formData.password) {
+        this.errors.confirmPassword = this.$t('register.validation.confirmPasswordMatch')
+      } else {
+        this.errors.confirmPassword = ''
+      }
+    },
+    validatePhoneNumber(value) {
+      if (!value) {
+        this.errors.phoneNumber = this.$t('register.validation.phoneRequired')
+      } else if (!/^[0-9]{9}$/.test(value)) {
+        this.errors.phoneNumber = this.$t('register.validation.phoneInvalid')
+      } else {
+        this.errors.phoneNumber = ''
+      }
+    },
+    validateCountry(value) {
+      if (!value) {
+        this.errors.country = this.$t('register.validation.countryRequired')
+      } else {
+        this.errors.country = ''
+      }
+    },
+    async handleRegister() {
+      // Validate all fields
+      this.validateFullName(this.formData.fullName)
+      this.validateEmail(this.formData.email)
+      this.validatePassword(this.formData.password)
+      this.validateConfirmPassword(this.formData.confirmPassword)
+      this.validatePhoneNumber(this.formData.phoneNumber)
+      
+      // Check if there are any errors
+      const hasErrors = Object.values(this.errors).some(error => error !== '')
+      if (!hasErrors) {
+        try {
+          const registrationData = {
+            ...this.formData,
+            phoneNumber: this.selectedCountryDialCode + this.formData.phoneNumber
+          }
+          
+          const response = await axios.post(`${API_URL}/api/register`, registrationData)
+          
+          if (response.data.success) {
+            // Redirect to login page on successful registration
+            this.$router.push('/login')
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            // Handle validation errors from the server
+            const serverErrors = error.response.data.errors
+            if (serverErrors) {
+              Object.keys(serverErrors).forEach(field => {
+                this.errors[field] = serverErrors[field][0]
+              })
+            } else {
+              // Handle general error
+              console.error('Registration failed:', error.response.data.message)
+            }
+          } else {
+            console.error('Registration failed:', error)
+          }
+        }
+      }
     },
     formatPhoneNumber(value) {
       // Remove non-numeric characters
@@ -236,8 +377,31 @@ input {
   transition: border-color 0.3s;
 }
 
+input.error {
+  border-color: #dc3545;
+  background-color: #fff;
+}
+
+input.valid {
+  border-color: #28a745;
+  background-color: #fff;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.form-group {
+  position: relative;
+}
+
 input:focus {
   border-color: #8B6B3D;
+  box-shadow: 0 0 0 0.2rem rgba(139, 107, 61, 0.25);
   outline: none;
 }
 

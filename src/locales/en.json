@@ -7,9 +7,24 @@
   "contactUs": "Contact Us",
   "products": "Products",
   "home": "Home"
-  
+},
+"loginPage":{
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "rememberMe": "Remember Me",
+  "login": "Login"
 },
 
+
+"registerPage":{
+  "tiile": "Register",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "rememberMe": "Remember Me",
+  "login": "Login"
+},
   "brands": {
     "title": "Brands",
     "addBrand": "Add Brand",

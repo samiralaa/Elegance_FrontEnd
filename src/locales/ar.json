@@ -6,9 +6,32 @@
     "aboutUs":"عننا",
     "contactUs":"تواصل معنا",
     "products":"المنتجات",
-    "home":"الرئيسية"
+    "fullName":"الاسم الكامل",
+    "email":"البريد الالكتروني",
+    "fullNamePlaceholder":"الاسم الكامل",
+    "emailPlaceholder":"البريد الالكتروني",
+    "home":"الرئيسية",
+  
+    "password": "كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني"
  },
+"loginPage": {
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "forgotPassword": "هل نسيت كلمة المرور؟",
+  "rememberMe": "تذكرني",
+  "login": "تسجيل الدخول"
+},
 
+"registerPage": {
+  "tiile": "تسجيل حساب",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "forgotPassword": "هل نسيت كلمة المرور؟",
+  "rememberMe": "تذكرني",
+  "login": "تسجيل الدخول"
+},
   "currencies":"العملات",
   "brands": {
     "title": "العلامات التجارية",
