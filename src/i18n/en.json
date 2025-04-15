@@ -11,7 +11,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
   
   "header": {
@@ -27,7 +46,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
     "joinUs": "Join Us",
     "home": "Home",
@@ -49,7 +87,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
     "heroTitle": "Ramadan Offers",
     "heroSubtitle": "Discover our exclusive collection of luxury perfumes",
@@ -70,7 +127,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
     "brand": {
   "login": {
@@ -85,7 +161,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "tagline": "Elegant Solutions"
     },
@@ -102,7 +197,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "dashboard": "Dashboard",
       "products": "Products",
@@ -134,7 +248,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "add": "Add",
       "edit": "Edit",
@@ -157,7 +290,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "placeholder": "Search..."
     },
@@ -175,7 +327,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "general": "An error occurred",
       "network": "Network error occurred"
@@ -193,7 +364,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "created": "Created successfully",
       "updated": "Updated successfully",
@@ -212,7 +402,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "required": "This field is required"
     },
@@ -229,7 +438,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "active": "Active",
       "inactive": "Inactive"
@@ -247,7 +475,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "english": "English",
       "arabic": "Arabic"
@@ -265,7 +512,26 @@
     "submit": "Sign In",
     "loggingIn": "Signing in...",
     "forgotPassword": "Forgot Password?",
-    "register": "Create an Account"
+    "register": "Create an Account",
+  "register": {
+    "title": "Create an Account",
+    "subtitle": "Join our community",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "country": "Country",
+    "countryPlaceholder": "Select your country",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here"
+  }
   },
       "title": "Currency",
       "AED": "AED",

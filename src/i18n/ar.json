@@ -11,7 +11,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
   "header": {
   "login": {
@@ -26,7 +45,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
     "joinUs": "انضم إلينا",
     "home": "الرئيسية",
@@ -48,7 +86,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
     "heroTitle": "عروض رمضان",
     "heroSubtitle": "اكتشف مجموعتنا الحصرية من العطور الفاخرة",
@@ -69,7 +126,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
     "brand": {
   "login": {
@@ -84,7 +160,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "tagline": "حلول أنيقة"
     },
@@ -101,7 +196,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
@@ -133,7 +247,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "add": "إضافة",
       "edit": "تعديل",
@@ -156,7 +289,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "placeholder": "بحث..."
     },
@@ -174,7 +326,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "general": "حدث خطأ",
       "network": "حدث خطأ في الشبكة"
@@ -192,7 +363,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "created": "تم الإنشاء بنجاح",
       "updated": "تم التحديث بنجاح",
@@ -211,7 +401,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "required": "هذا الحقل مطلوب"
     },
@@ -228,7 +437,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "active": "نشط",
       "inactive": "غير نشط"
@@ -246,7 +474,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "english": "الإنجليزية",
       "arabic": "العربية"
@@ -264,7 +511,26 @@
     "submit": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "register": "إنشاء حساب جديد"
+    "register": "إنشاء حساب جديد",
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلى مجتمعنا",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر دولتك",
+      "phoneNumber": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "submit": "تسجيل",
+      "alreadyHaveAccount": "هل لديك حساب؟",
+      "loginHere": "تسجيل الدخول هنا"
+    }
   },
       "title": "العملة",
       "AED": "درهم",

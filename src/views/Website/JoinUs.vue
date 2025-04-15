@@ -15,9 +15,20 @@
         </div>
         <div class="form-group">
           <label for="password">{{ $t('joinUs.password') }}</label>
-          <input type="password" id="password" v-model="formData.password" required>
+          <div class="password-input-container">
+            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="formData.password" required>
+            <button type="button" class="show-password-btn" @click="togglePassword">
+              {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
+            </button>
+          </div>
         </div>
-        <button type="submit" class="submit-btn">{{ $t('joinUs.submit') }}</button>
+        <div class="form-links">
+          <router-link to="/forgot-password" class="link">{{ $t('joinUs.forgotPassword') }}</router-link>
+        </div>
+        <button type="submit" class="submit-btn">{{ $t('joinUs.login') }}</button>
+        <div class="register-section">
+          <p>{{ $t('joinUs.notMember') }} <router-link to="/register" class="link">{{ $t('joinUs.registerHere') }}</router-link></p>
+        </div>
       </form>
     </div>
   </div>
@@ -30,14 +41,18 @@ export default {
     return {
       formData: {
         email: '',
-        password: ''
-      }
+        password: '',
+      },
+      showPassword: false
     }
   },
   methods: {
     handleSubmit() {
       // Handle form submission logic here
       console.log('Form submitted:', this.formData)
+    },
+    togglePassword() {
+      this.showPassword = !this.showPassword
     }
   }
 }
@@ -159,6 +174,58 @@ input:focus {
   box-shadow: 0 8px 20px rgba(155, 124, 31, 0.3);
 }
 
+.country-select {
+  padding: 1.2rem;
+  border: 2px solid #E0E0E0;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  width: 100%;
+  font-family: var(--font-body);
+  background-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.country-select:focus {
+  outline: none;
+  border-color: #9b7c1f;
+  box-shadow: 0 0 0 4px rgba(155, 124, 31, 0.15);
+  background-color: #fff;
+}
+
+.phone-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid #E0E0E0;
+  border-radius: 12px;
+  padding: 0.2rem 1.2rem;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.phone-input-container:focus-within {
+  border-color: #9b7c1f;
+  box-shadow: 0 0 0 4px rgba(155, 124, 31, 0.15);
+  background-color: #fff;
+}
+
+.country-code {
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.phone-input {
+  border: none;
+  padding: 1rem 0;
+  width: 100%;
+  background: transparent;
+}
+
+.phone-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 /* RTL Support */
 [dir="rtl"] .join-form {
   text-align: right;
@@ -177,5 +244,73 @@ input:focus {
   .join-us-content {
     padding: 2rem;
   }
+}
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .join-us-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .banner-section {
+    display: none;
+  }
+  
+  .join-us-content {
+    padding: 2rem;
+  }
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.show-password-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9b7c1f;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+
+.show-password-btn:hover {
+  color: #826618;
+}
+
+.form-links {
+  text-align: right;
+  margin-top: -0.5rem;
+}
+
+.link {
+  color: #9b7c1f;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #826618;
+  text-decoration: underline;
+}
+
+.register-section {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
+}
+
+[dir="rtl"] .show-password-btn {
+  right: auto;
+  left: 1rem;
+}
+
+[dir="rtl"] .form-links {
+  text-align: left;
 }
 </style>

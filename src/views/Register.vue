@@ -53,6 +53,41 @@
               required
             >
           </div>
+          <div class="form-group">
+            <label for="country">{{ $t('register.country') }}</label>
+            <el-select
+              v-model="formData.country"
+              class="country-select"
+              :placeholder="$t('register.countryPlaceholder')"
+              required
+            >
+              <el-option
+                v-for="country in countries"
+                :key="country.code"
+                :label="country.name"
+                :value="country.code"
+              >
+                {{ country.name }} ({{ country.dialCode }})
+              </el-option>
+            </el-select>
+          </div>
+          <div class="form-group phone-group">
+            <label for="phoneNumber">{{ $t('register.phoneNumber') }}</label>
+            <div class="phone-input-container">
+              <span class="country-code" v-if="selectedCountryDialCode">
+                {{ selectedCountryDialCode }}
+              </span>
+              <input
+                type="tel"
+                id="phoneNumber"
+                v-model="formData.phoneNumber"
+                :placeholder="$t('register.phoneNumberPlaceholder')"
+                required
+                pattern="[0-9]{9}"
+                maxlength="9"
+              >
+            </div>
+          </div>
           <button type="submit" class="register-btn">{{ $t('register.submit') }}</button>
         </form>
         <p class="login-link">
@@ -65,22 +100,54 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+import { ElSelect, ElOption } from 'element-plus'
+
 export default {
   name: 'Register',
+  components: {
+    ElSelect,
+    ElOption
+  },
   data() {
     return {
       formData: {
         fullName: '',
         email: '',
         password: '',
-        confirmPassword: ''
-      }
+        confirmPassword: '',
+        country: '',
+        phoneNumber: ''
+      },
+      countries: [
+        { code: 'SA', name: 'Saudi Arabia', dialCode: '+966' },
+        { code: 'AE', name: 'United Arab Emirates', dialCode: '+971' },
+        { code: 'KW', name: 'Kuwait', dialCode: '+965' },
+        { code: 'BH', name: 'Bahrain', dialCode: '+973' },
+        { code: 'QA', name: 'Qatar', dialCode: '+974' },
+        { code: 'OM', name: 'Oman', dialCode: '+968' }
+      ]
+    }
+  },
+  computed: {
+    selectedCountryDialCode() {
+      const country = this.countries.find(c => c.code === this.formData.country)
+      return country ? country.dialCode : ''
     }
   },
   methods: {
     handleRegister() {
       // TODO: Implement registration logic
-      console.log('Registration data:', this.formData)
+      console.log('Registration data:', {
+        ...this.formData,
+        phoneNumber: this.selectedCountryDialCode + this.formData.phoneNumber
+      })
+    },
+    formatPhoneNumber(value) {
+      // Remove non-numeric characters
+      const numeric = value.replace(/[^0-9]/g, '')
+      // Format as needed (example: XXX-XXX-XXXX)
+      return numeric.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3')
     }
   }
 }
@@ -188,6 +255,49 @@ input:focus {
 
 .register-btn:hover {
   background-color: #725932;
+}
+
+.country-select {
+  width: 100%;
+}
+
+.phone-group {
+  margin-bottom: 1.5rem;
+}
+
+.phone-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.country-code {
+  background-color: #f5f5f5;
+  padding: 0.75rem;
+  border-radius: 4px;
+  color: #333;
+  font-weight: 500;
+  min-width: 60px;
+  text-align: center;
+}
+
+:deep(.el-select) {
+  width: 100%;
+}
+
+:deep(.el-select .el-input__wrapper) {
+  background-color: #fff !important;
+  border: 1px solid #ddd;
+  box-shadow: none;
+}
+
+:deep(.el-select .el-input__wrapper:hover) {
+  border-color: #8B6B3D;
+}
+
+:deep(.el-select .el-input__wrapper.is-focus) {
+  border-color: #8B6B3D;
+  box-shadow: none;
 }
 
 .login-link {
