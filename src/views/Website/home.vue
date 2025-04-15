@@ -27,8 +27,6 @@
     </div>
     </section>
     <Categories />
-    <Brands />
-    <!-- Featured Products Section -->
     <section class="all-categories py-4">
       <div class="container">
         <div class="title">
@@ -87,10 +85,23 @@
         </div>
       </div>
     </section>
+    <Brands />
+    <!-- Featured Products Section -->
 
 
 
     <HomeBrands />
+    <section class="our-brands">
+      <div class="container">
+        <div class="title mt-5">
+          <fa class="fa-icon" :icon="['fas','diagram-project']"></fa>
+          <h2>{{ $t('home.brands') }}</h2>
+        </div>
+        <div class="content">
+          <a href=""><img src="@/assets/images/VervainLogo.png" alt="Vervain Logo"></a>
+        </div>
+      </div>
+    </section>
     <Products />
     <LatestProducts />
   </div>
@@ -165,6 +176,7 @@ export default {
   min-height: 100vh;
 }
 
+/* Categories */
 .category-content{
   display: flex;
   flex-direction: column;
@@ -192,7 +204,7 @@ export default {
 }
 
 .card {
-  flex: 0 0 calc(100% / 7 - 30px); /* Desktop default */
+  flex: 0 0 calc(100% / 7 - 30px);
   background-color: #f7f7f7;
   border: none;
   padding: 12px;
@@ -289,14 +301,14 @@ export default {
   .card {
     flex: 0 0 calc(100% / 3 - 5px);
   }
-  /* .all-categories .container .slider-wrapper .slider .card:hover {
+  .all-categories .container .slider-wrapper .slider .card:hover {
     color: inherit;
     scale: 1;
   }
 
   .all-categories .container .slider-wrapper .slider .card:hover::after {
     transform: translate(-50%, -50%) scale(0);
-  } */
+  }
   .slider {
     gap: 14px;
   }
@@ -310,4 +322,26 @@ export default {
     gap: 10px;
   }
 }
+
+/* Our Brandes */
+.our-brands .content{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.our-brands .content a{
+  /* margin-top: 30px; */
+  transition: all 0.2s ease-in-out;
+}
+
+.our-brands .content a:hover{
+  scale: 1.2;
+}
+
+.our-brands .content a img{
+  height: 300px;
+  width: auto;
+  justify-self: center;
+}  
 </style>
