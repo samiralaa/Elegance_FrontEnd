@@ -35,49 +35,39 @@
           <fa class="fa-icon" :icon="['fas','cubes']"></fa>
           <h2>{{ $t('home.categories') }}</h2>
         </div>
-        <div class="card-container">
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
+        <div class="slider-wrapper">
+          <button class="nav-button left" @click="scrollLeft">&#8592;</button>
+          <div class="slider" ref="slider">
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
+            </div>
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
+            </div>
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
+            </div>
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
+            </div>
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
+            </div>
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
+            </div>
+            <div class="card">
+              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+              <h3>لبان هوجاري</h3>
             </div>
           </div>
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="category-content">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="" >
-              <p>لبان هوجاري</p>
-            </div>
-          </div>
+          <button class="nav-button right" @click="scrollRight">&#8594;</button>
         </div>
       </div>
     </section>
@@ -108,13 +98,17 @@ export default {
   },
   data() {
     return {
-      // Data properties will be added here
-    }
+    };
   },
   methods: {
-    // Methods will be added here
+    scrollLeft() {
+      this.$refs.slider.scrollBy({ left: -200, behavior: 'smooth' });
+    },
+    scrollRight() {
+      this.$refs.slider.scrollBy({ left: 200, behavior: 'smooth' });
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -128,26 +122,55 @@ export default {
   align-items: center;
 }
 
-.all-categories .container .card-container .card{
+.slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 30px;
+  padding: 16px 0;
+  overflow: hidden;
+}
+
+.card {
+  flex: 0 0 auto;
   background-color: #f7f7f7;
   border: none;
   padding: 12px;
   transition: all 0.3s ease;
+  width: 200px; /* Adjust as needed */
 }
 
-.all-categories .container .card-container{
-  display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 أعمدة للشاشة الكاملة */
-  gap: 30px;
-  padding: 16px;
+.nav-button {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1;
 }
+
+.nav-button.left {
+  margin-right: 10px;
+}
+
+.nav-button.right {
+  margin-left: 10px;
+}
+
 
 .category-content img{
   border-radius: 8px;
   width: 100%;
 }
 
-.all-categories .container .card-container .card::after {
+.all-categories .container .slider-wrapper .slider .card::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -161,17 +184,17 @@ export default {
   transition: transform 0.3s ease;
 }
 
-.all-categories .container .card-container .card:hover{
+.all-categories .container .slider-wrapper .slider .card:hover{
   color: #fff;
   scale: 1.2;
 }
 
-.all-categories .container .card-container .card:hover::after {
+.all-categories .container .slider-wrapper .slider .card:hover::after {
   transform: translate(-50%, -50%) scale(1);
 }
 
 .title{
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #8b6b3d;
   display: flex;
   align-items: center;
@@ -180,17 +203,5 @@ export default {
 
 .fa-icon{
   font-size: 1.8rem;
-}
-
-@media (max-width: 1200px) {
-  .card-container {
-    grid-template-columns: repeat(5, 1fr); /* 5 أعمدة للشاشات المتوسطة */
-  }
-}
-
-@media (max-width: 768px) {
-  .card-container {
-    grid-template-columns: repeat(3, 1fr); /* 3 أعمدة للشاشات الصغيرة */
-  }
 }
 </style>
