@@ -61,13 +61,14 @@ export default {
 <style scoped>
 .search-btn {
   position: relative;
-  padding: 1em 2em;
+  padding: 1em;
   background: transparent;
   border: none;
   cursor: pointer;
   isolation: isolate;
   overflow: hidden;
   color: #8b6b3d;
+  border-radius: 50%;
 }
 
 .search-btn::after {

@@ -36,38 +36,54 @@
           <h2>{{ $t('home.categories') }}</h2>
         </div>
         <div class="slider-wrapper">
-          <button class="nav-button left" @click="scrollLeft">&#8592;</button>
+          <div class="scrollers ms-3 mb-2">
+            <button class="btn nav-button right" @click="scrollRight">&#8594;</button>
+            <button class="btn nav-button left" @click="scrollLeft">&#8592;</button>
+          </div>
           <div class="slider" ref="slider">
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
             <div class="card">
-              <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
-              <h3>لبان هوجاري</h3>
+              <div class="category-content">
+                <img src="@/assets/images/dd54ced2-6f85-47ef-8a24-f3ff5c196125..jpg" alt="لبان هوجاري" />
+                <p>لبان هوجاري</p>
+              </div>
             </div>
           </div>
-          <button class="nav-button right" @click="scrollRight">&#8594;</button>
         </div>
       </div>
     </section>
@@ -102,12 +118,45 @@ export default {
   },
   methods: {
     scrollLeft() {
-      this.$refs.slider.scrollBy({ left: -200, behavior: 'smooth' });
+      const width = window.innerWidth;
+      const card = this.$refs.slider.querySelector('.card');
+      const cardWidth = card.offsetWidth;
+
+      if (width <= 440) {
+        const gap = 26;
+        this.$refs.slider.scrollBy({ left: -(cardWidth * 2 + gap), behavior: 'smooth' });
+      } else if (width <= 768) {
+        const gap = 50;
+        this.$refs.slider.scrollBy({ left: -(cardWidth * 3 + gap), behavior: 'smooth' });
+      } else if (width <= 1200) {
+        const gap = 50;
+        this.$refs.slider.scrollBy({ left: -(cardWidth * 4 + gap), behavior: 'smooth' });
+      } else {
+        const gap = 30; // optional for bigger screens
+        this.$refs.slider.scrollBy({ left: -(cardWidth * 7 + gap), behavior: 'smooth' });
+      }
     },
     scrollRight() {
-      this.$refs.slider.scrollBy({ left: 200, behavior: 'smooth' });
+      const width = window.innerWidth;
+      const card = this.$refs.slider.querySelector('.card');
+      const cardWidth = card.offsetWidth;
+
+      if (width <= 440) {
+        const gap = 26;
+        this.$refs.slider.scrollBy({ left: cardWidth * 2 + gap, behavior: 'smooth' });
+      } else if (width <= 768) {
+        const gap = 50;
+        this.$refs.slider.scrollBy({ left: cardWidth * 3 + gap, behavior: 'smooth' });
+      } else if (width <= 1200) {
+        const gap = 50;
+        this.$refs.slider.scrollBy({ left: cardWidth * 4 + gap, behavior: 'smooth' });
+      } else {
+        const gap = 30; // optional for bigger screens
+        this.$refs.slider.scrollBy({ left: cardWidth * 7 + gap, behavior: 'smooth' });
+      }
     }
   }
+
 };
 </script>
 
@@ -125,35 +174,54 @@ export default {
 .slider-wrapper {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   overflow: hidden;
   padding: 16px;
+  font-weight: bolder;
 }
 
 .slider {
   display: flex;
+  width: 100%;
   overflow-x: auto;
   scroll-behavior: smooth;
   gap: 30px;
-  padding: 16px 0;
+  padding: 16px;
   overflow: hidden;
 }
 
 .card {
-  flex: 0 0 auto;
+  flex: 0 0 calc(100% / 7 - 30px); /* Desktop default */
   background-color: #f7f7f7;
   border: none;
   padding: 12px;
+  margin-top: 5px;
   transition: all 0.3s ease;
-  width: 200px; /* Adjust as needed */
 }
 
+.scrollers {
+  display: none;
+  align-self: flex-end;
+}
+
+
 .nav-button {
-  background-color: transparent;
+  background-color: #8b6b3d;
   border: none;
-  font-size: 2rem;
+  font-size: 1.3rem;
   cursor: pointer;
+  color: #fff;
   z-index: 1;
+  
+}
+
+.nav-button:hover{
+  background-color: #725932;
+}
+
+.nav-button:focus{
+  color: #fff;
 }
 
 .nav-button.left {
@@ -203,5 +271,43 @@ export default {
 
 .fa-icon{
   font-size: 1.8rem;
+}
+
+@media (max-width: 1200px) {
+  .card {
+    flex: 0 0 calc(100% / 4 - 20px);
+  }
+  .slider {
+    gap: 26px;
+  }
+  .scrollers {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex: 0 0 calc(100% / 3 - 5px);
+  }
+  /* .all-categories .container .slider-wrapper .slider .card:hover {
+    color: inherit;
+    scale: 1;
+  }
+
+  .all-categories .container .slider-wrapper .slider .card:hover::after {
+    transform: translate(-50%, -50%) scale(0);
+  } */
+  .slider {
+    gap: 14px;
+  }
+}
+
+@media (max-width: 440px) {
+  .card {
+    flex: 0 0 calc(100% / 2 + 2px);
+  }
+  .slider {
+    gap: 10px;
+  }
 }
 </style>
