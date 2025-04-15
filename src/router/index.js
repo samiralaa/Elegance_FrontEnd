@@ -11,6 +11,11 @@ import Help from '../views/Help.vue'
 
 const routes = [
   {
+    path: '/otp',
+    name: 'Otp',
+    component: () => import('@/views/Otp.vue')
+  },
+  {
     path: '/Account/Login',
     name: 'Account/Login',
     component: () => import('../views/Website/AccountLogin.vue')

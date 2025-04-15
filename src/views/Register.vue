@@ -114,7 +114,7 @@ import { ref } from 'vue'
 import { ElSelect, ElOption } from 'element-plus'
 import axios from 'axios'
 
-const API_URL = 'https://elegance_commers.test'
+const API_URL = 'https://elegance_commers.test/api/clients'
 
 export default {
   name: 'Register',
@@ -238,7 +238,6 @@ export default {
     },
     validateCountry(value) {
       if (!value) {
-        this.errors.country = this.$t('register.validation.countryRequired')
       } else {
         this.errors.country = ''
       }
@@ -250,22 +249,36 @@ export default {
       this.validatePassword(this.formData.password)
       this.validateConfirmPassword(this.formData.confirmPassword)
       this.validatePhoneNumber(this.formData.phoneNumber)
+      this.validateCountry(this.formData.country)
       
       // Check if there are any errors
       const hasErrors = Object.values(this.errors).some(error => error !== '')
       if (!hasErrors) {
         try {
           const registrationData = {
-            ...this.formData,
-            phoneNumber: this.selectedCountryDialCode + this.formData.phoneNumber
+            name: this.formData.fullName,
+            email: this.formData.email,
+            password: this.formData.password,
+            phone: this.selectedCountryDialCode + this.formData.phoneNumber,
+            country_id: this.formData.country
           }
           
-          const response = await axios.post(`${API_URL}/api/register`, registrationData)
+          const response = await axios.post(API_URL, registrationData)
           
-          if (response.data.success) {
-            // Redirect to login page on successful registration
-            this.$router.push('/login')
-          }
+          if (response.status === 201) {
+    const data = response.data;
+
+    console.log("Registration Successful");
+    console.log("Message:", data.message);
+    console.log("User:", data.user);
+
+    // Optionally save the user info
+    localStorage.setItem('user', JSON.stringify(data.user));
+
+    // Redirect to /otp route
+    this.$router.push({ name: 'Otp' });
+}
+
         } catch (error) {
           if (error.response && error.response.data) {
             // Handle validation errors from the server
