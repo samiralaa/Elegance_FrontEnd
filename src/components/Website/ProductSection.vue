@@ -39,7 +39,7 @@ const products = ref([])
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/products/section')
+    const response = await axios.get('https://localhost:8000/api/website/products/section')
     if (response.data.status && response.data.data) {
       products.value = response.data.data
     }
@@ -49,7 +49,7 @@ const fetchProducts = async () => {
 }
 
 const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`
+  return `https://localhost:8000/storage/${path}`
 }
 
 const addToFavorites = (product) => {
