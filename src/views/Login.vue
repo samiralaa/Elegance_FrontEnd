@@ -2,8 +2,8 @@
   <div class="login-container">
     <div class="login-box">
       <div class="login-header">
-        <h2>Welcome Back</h2>
-        <p>Please login to your account</p>
+        <h2> {{ $t('Login.WelcomeBack')}}</h2>
+        <p>{{ $t('Login.Pleaselogintoyouraccount')}}</p>
       </div>
 
       <el-form
@@ -38,8 +38,8 @@
         </el-form-item>
 
         <div class="form-footer">
-          <el-checkbox v-model="loginForm.remember">Remember me</el-checkbox>
-          <a href="#" class="forgot-password">Forgot Password?</a>
+          <el-checkbox v-model="loginForm.remember">{{ $t('Login.RememberMe')}}</el-checkbox>
+          <a href="#" class="forgot-password">{{ $t('Login.ForgotPassword')}}</a>
         </div>
 
         <el-button

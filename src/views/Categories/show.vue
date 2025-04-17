@@ -2,10 +2,13 @@
   <div class="category-details-container" :class="{ 'rtl': $i18n.locale === 'ar' }">
     <div class="header">
       <div class="header-left">
-        <el-button @click="router.back()" :icon="ArrowLeft" class="back-button">Back</el-button>
-        <h2 class="page-title">Category Details</h2>
+        <el-button @click="router.back()" :icon="ArrowLeft" class="back-button">
+          {{ $t('common.cancel') }}
+        </el-button>
+        <h2 class="page-title">
+          {{ $t('Categories.Categories') }} {{ $t('Global.View') }}
+        </h2>
       </div>
-    
     </div>
 
     <el-card v-loading="loading" class="category-details">
@@ -33,19 +36,19 @@
 
         <div class="info-section">
           <el-descriptions :column="1" border>
-            <el-descriptions-item label="Name (EN)">
+            <el-descriptions-item :label="$t('Categories.name') + ' (EN)'">
               {{ category.name_en }}
             </el-descriptions-item>
-            <el-descriptions-item label="Name (AR)">
+            <el-descriptions-item :label="$t('Categories.name') + ' (AR)'">
               <div dir="rtl">{{ category.name_ar || 'N/A' }}</div>
             </el-descriptions-item>
-            <el-descriptions-item label="Brand">
+            <el-descriptions-item :label="$t('Categories.Brand')">
               {{ category.brand?.name_en || 'N/A' }}
             </el-descriptions-item>
-            <el-descriptions-item label="Description (EN)">
+            <el-descriptions-item :label="$t('Categories.DescriptionEn')">
               {{ category.description_en || 'N/A' }}
             </el-descriptions-item>
-            <el-descriptions-item label="Description (AR)">
+            <el-descriptions-item :label="$t('Categories.DescriptionAr')">
               <div dir="rtl">{{ category.description_ar || 'N/A' }}</div>
             </el-descriptions-item>
           </el-descriptions>
@@ -58,8 +61,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ArrowLeft, Edit, Delete, Picture } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowLeft, Picture } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
 const router = useRouter()
@@ -67,7 +70,7 @@ const route = useRoute()
 const category = ref(null)
 const loading = ref(false)
 
-const BASE_URL = 'https://elegance_commers.test'
+const BASE_URL = 'http://127.0.0.1:8000'
 const API_URL = `${BASE_URL}/api/categories`
 
 const fetchCategory = async () => {
@@ -94,6 +97,7 @@ const fetchCategory = async () => {
     loading.value = false
   }
 }
+
 onMounted(() => {
   fetchCategory()
 })

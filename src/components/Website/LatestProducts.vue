@@ -1,6 +1,11 @@
 <template>
+<<<<<<< Updated upstream
   <!-- <div class="latest-products">
     <h2 class="title">Latest Products</h2>
+=======
+  <div class="latest-products">
+    <h2 class="title">{{ $t('LatestProducts.LatestProducts') }}</h2>
+>>>>>>> Stashed changes
     <el-row :gutter="20">
       <el-col v-for="product in products" :key="product.id" :span="6">
         <el-card class="product-card" shadow="hover">
@@ -84,7 +89,7 @@ const products = ref([])
 
 const fetchLatestProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/latest/products')
+    const response = await axios.get('http://127.0.0.1:8000/api/website/latest/products')
     if (response.data.status) {
       products.value = response.data.data
     }
@@ -94,7 +99,7 @@ const fetchLatestProducts = async () => {
 }
 
 const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`
+  return `http://127.0.0.1:8000/storage/${path}`
 }
 
 const addToFavorites = (product) => {

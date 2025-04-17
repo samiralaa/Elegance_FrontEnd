@@ -1,14 +1,14 @@
 <template>
   <div class="brands-container">
     <div class="header">
-      <h1 class="text-2xl font-bold text-gray-800">Brands Management</h1>
+      <h1 class="text-2xl font-bold text-gray-800">{{$t('Brands.Management')}}</h1>
       <el-button
         type="primary"
         @click="openCreateDialog"
         class="add-brand-btn"
       >
         <el-icon class="mr-2"><Plus /></el-icon>
-        Add New Brand
+        {{$t('Brands.AddBrands')}}
       </el-button>
     </div>
 
@@ -23,7 +23,7 @@
         :border="true"
         v-loading="loading"
       >
-        <el-table-column label="Logo " min-width="200" :resizable="true">
+        <el-table-column :label="$t('Brands.Logo')" min-width="200" :resizable="true">
           <template #default="scope">
             <div class="d-flex align-center brand-name">
               <div class="brand-logo-container" @click="previewImage(scope.row)">
@@ -46,7 +46,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="name_ar" label="Name (AR)" min-width="150" :resizable="true">
+        <el-table-column prop="name_ar" :label="$t('Brands.NameAr')" min-width="150" :resizable="true">
           <template #default="scope">
             <div class="text-right arabic-text" dir="rtl">
               {{ scope.row.name_ar || 'N/A' }}
@@ -54,7 +54,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="description_en" label="Description (EN)" min-width="200" :resizable="true">
+        <el-table-column prop="description_en" :label="$t('Brands.DescriptionEn')" min-width="200" :resizable="true">
           <template #default="scope">
             <div class="description-cell">
               {{ scope.row.description_en || 'N/A' }}
@@ -62,7 +62,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="description_ar" label="Description (AR)" min-width="200" :resizable="true">
+        <el-table-column prop="description_ar" :label="$t('Brands.DescriptionAr')" min-width="200" :resizable="true">
           <template #default="scope">
             <div class="text-right arabic-text" dir="rtl">
               {{ scope.row.description_ar || 'N/A' }}
@@ -70,7 +70,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="Actions" width="100" fixed="right">
+        <el-table-column :label="$t('Brands.Actions')" width="100" fixed="right">
           <template #default="scope">
             <div class="button-group">
               <el-tooltip content="Edit Brand" placement="top">

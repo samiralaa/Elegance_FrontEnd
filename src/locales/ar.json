@@ -11,10 +11,11 @@
     "fullNamePlaceholder":"الاسم الكامل",
     "emailPlaceholder":"البريد الالكتروني",
     "home":"الرئيسية",
-  
+    "search products":"ابحث عن المنتجات",
     "password": "كلمة المرور",
     "forgotPassword": "هل نسيت كلمة المرور؟",
-    "rememberMe": "تذكرني"
+    "rememberMe": "تذكرني",
+    "close":"اغلاق"
  },
 "loginPage": {
   "email": "البريد الإلكتروني",
@@ -33,7 +34,33 @@
   "login": "تسجيل الدخول"
 },
   "currencies":"العملات",
+  "Brands": {
+  "AddBrands": "إضافة علامة تجارية جديدة",
+  "Management": "إدارة العلامات التجارية",
+  "Logo": "الشعار",
+  "NameAr": "الاسم (عربي)",
+  "NameEn": "الاسم (إنجليزي)",
+  "DescriptionAr": "الوصف (عربي)",
+  "DescriptionEn": "الوصف (إنجليزي)",
+  "Actions": "الإجراءات",
+  "Edit": "تعديل العلامة",
+  "Delete": "حذف العلامة",
+  "NoData": "لا توجد علامات تجارية",
+  "CreateTitle": "إضافة علامة تجارية جديدة",
+  "EditTitle": "تعديل العلامة التجارية",
+  "PlaceholderNameEn": "أدخل اسم العلامة باللغة الإنجليزية",
+  "PlaceholderNameAr": "أدخل اسم العلامة باللغة العربية",
+  "PlaceholderDescriptionEn": "أدخل وصف العلامة باللغة الإنجليزية",
+  "PlaceholderDescriptionAr": "أدخل وصف العلامة باللغة العربية",
+  "Create": "إضافة",
+  "Update": "تحديث",
+  "Cancel": "إلغاء",
+  "DeleteTitle": "حذف العلامة التجارية",
+  "DeleteConfirmText": "هل أنت متأكد أنك تريد حذف هذه العلامة؟ لا يمكن التراجع عن هذا الإجراء."
+}
+,
   "brands": {
+      
     "title": "العلامات التجارية",
     "addBrand": "إضافة علامة تجارية",
     "editBrand": "تعديل علامة تجارية",
@@ -117,7 +144,99 @@
   "home": {
     "categories": "الفئات",
     "brands":"العلامات التجارية",
+
     "products":"المنتجات",
     "add-to-cart":"أضف إلى السلة"
-  }
+  },
+  "LatestProducts":{
+    "LatestProducts":"أحدث المنتجات"
+  },
+  "Login":{
+    "WelcomeBack":"مرحبًا بعودتك",
+    "LoginToYourAccount":"تسجيل الدخول إلى حسابك",
+    "Pleaselogintoyouraccount":"يرجى تسجيل الدخول إلى حسابك",
+    "Email":"البريد الإلكتروني",
+    "Password":"كلمة المرور",
+    "RememberMe":"تذكرني",
+    "ForgotPassword":"هل نسيت كلمة المرور؟",
+    "Login":"تسجيل الدخول"
+
+  },
+  "Categories":{
+    "Categories":"الفئات",
+    "AddCategory":"إضافة فئة",
+    "Image":"الصورة",
+    "NameEn":"الاسم (إنجليزي)",
+    "NameAr":"الاسم (عربي)",
+    "EditCategory":"تعديل الفئة",
+    "name":"الاسم",
+    "Actions":"الإجراءات",
+    "Brand":"العلامة التجارية",
+    "Description":"الوصف",
+    "DescriptionEn":"الوصف (إنجليزي)",
+    "DescriptionAr":"الوصف (عربي)",
+    "Status":"الحالة",
+    "Products":"المنتجات",
+    "DeleteConfirm":"هل أنت متأكد من حذف هذه الفئة؟",
+    "DeleteSuccess":"تم حذف الفئة بنجاح",
+    "UpdateSuccess":"تم تحديث الفئة بنجاح",
+    "CreateSuccess":"تم إنشاء الفئة بنجاح",
+    "Status":{
+      "Active":"نشط",
+      "Inactive":"غير نشط"
+    },
+    "Validation":{
+      "NameRequired":"اسم الفئة مطلوب",
+      "NameArRequired":"اسم الفئة بالعربية مطلوب"
+    }
+  },
+  "Global": {
+ "View":"عرض",
+ "Edit":"تعديل",
+    "Delete":"حذف",
+    "Save":"حفظ"
+ },
+ "Products": {
+  "NoImageAvailable": "لا توجد صورة متاحة",
+
+  "Availability": "التوافر",
+  "Available": "متاح",
+  "NotAvailable": "غير متاح",
+  "DescriptionEn": "الوصف (إنجليزي)",
+  "DescriptionAr": "الوصف (عربي)",
+  
+  "Loading": "جاري التحميل...",
+  "Products": "المنتجات",
+  "AddProduct": "إضافة منتج",
+  "Image": "الصورة",
+  "NameEn": "الاسم (إنجليزي)",
+  "NameAr": "الاسم (عربي)",
+  "Price": "السعر",
+  "Currency": "العملة",
+  "Actions": "العمليات",
+  "View": "عرض",
+  "Edit": "تعديل",
+  "Delete": "حذف",
+  "DeleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
+  "Warning": "تحذير",
+  "Yes": "نعم",
+  "No": "لا",
+  "DeletedSuccessfully": "تم حذف المنتج بنجاح",
+  "NA": "غير متاح",
+  "CreateProduct": "إنشاء منتج",
+ 
+  "Category": "التصنيف",
+  "SelectCategory": "اختار التصنيف",
+ 
+  "SelectCurrency": "اختار العملة",
+  "Country": "الدولة",
+  "SelectCountry": "اختار الدولة",
+  "ParentProduct": "منتج رئيسي",
+  "SelectParentProduct": "اختار منتج رئيسي",
+  "None": "لا شيء",
+  "Images": "الصور",
+  "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
+  "CreateButton": "إنشاء المنتج"
+}
+
 }

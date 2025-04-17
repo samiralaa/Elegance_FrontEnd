@@ -96,7 +96,7 @@
           </li>
         </ul>
         <p v-else-if="searchQuery">No results found.</p>
-        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">Close</button>
+        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">{{$t('header.close')}} </button>
       </div>
     </div>
   </header>
@@ -166,7 +166,7 @@ export default {
     },
     async fetchProducts() {
       try {
-        const response = await axios.get('https://elegance_commers.test/api/website/products/section');
+        const response = await axios.get('http://127.0.0.1:8000/api/website/products/section');
         this.products = response.data.data.slice(0, 5) || [];
         this.filteredProducts = this.products;
       } catch (error) {
