@@ -1,5 +1,5 @@
 <template>
-  <p>Products</p>
+  <!-- <p>Products</p>
   <div class="product-section">
     <el-row :gutter="20">
       <el-col v-for="product in products" :key="product.id" :span="6">
@@ -28,7 +28,7 @@
         </el-card>
       </el-col>
     </el-row>
-  </div>
+  </div> -->
   <div class="products-section">
     <div class="container">
       <div class="title mt-5">
@@ -36,24 +36,31 @@
         <h2>{{ $t('home.products') }}</h2>
       </div>
       <div class="row g-4">
-        <div class="card">
+        <div v-for="product in products" :key="product.id" :span="6" class="card">
           <div class="img-container">
-            <img src="@/assets/images/533120bc-9311-4d8c-9c43-ab5609e5fc64..jpeg" alt="" class="card-img-top">
+            <router-link :to="`/read/products/${product.id}`">
+              <img 
+                v-if="product.images.length"
+                :src="getImageUrl(product.images[0].path)"
+                :alt="product.name_en" 
+                class="card-img-top"
+              />
+            </router-link>
             <div class="card-btns">
-              <a class="eye-btn btn mx-2">
+              <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
                 <fa icon="eye"></fa>
-              </a>
-              <a class="cart-btn btn mx-2">
+              </router-link>
+              <a @click="addToCart(product)" class="cart-btn btn mx-2">
                 {{ $t('home.add-to-cart') }}
               </a>
-              <a class="love-btn btn mx-2">
-                <fa icon="heart" />
+              <a @click="addToFavorites(product)" class="love-btn btn mx-2">
+                <fa icon="heart" /> 
               </a>
             </div>
           </div>
           <div class="card-body">
-            <h5 class="card-title">دهن عود هندي</h5>
-            <p class="card-text">asmndsasa dsandasd asdsad asd</p>
+            <h5 class="card-title">{{ product.name_en }}</h5>
+            <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
           </div>
         </div>
       </div>
