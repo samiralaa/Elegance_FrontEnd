@@ -82,7 +82,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { StarFilled, ShoppingCart } from '@element-plus/icons-vue'
 
 const products = ref([])
 
@@ -135,7 +134,7 @@ onMounted(() => {
 
   .fa-icon{
     font-size: 1.8rem;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .card{

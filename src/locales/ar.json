@@ -144,10 +144,10 @@
   "home": {
     "categories": "الفئات",
     "brands":"العلامات التجارية",
-
     "products":"المنتجات",
     "add-to-cart":"أضف إلى السلة",
-    "best-selling":"المنتجات أفضل مبيعًا"
+    "best-selling":"المنتجات أفضل مبيعًا",
+    "why-us":"لماذا تختارنا؟"
   },
   "LatestProducts":{
     "LatestProducts":"أحدث المنتجات"
