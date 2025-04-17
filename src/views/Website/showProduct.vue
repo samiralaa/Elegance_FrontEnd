@@ -1,23 +1,32 @@
 <template>
-    <Header />
-    <div class="product-show">
-      <el-row :gutter="40" class="product-container">
-        <el-col :span="12">
-          <h1 class="product-title">{{ product.name_ar }}</h1>
-          <p class="price-new">{{ product.price }} {{ product.currency?.name_en }}</p>
-          <p class="price-old" v-if="product.old_price">{{ product.old_price }} {{ product.currency?.name_en }}</p>
-  
-          <p class="description" v-html="product.description_ar"></p>
-  
-          <div class="actions">
-            <el-button circle class="favorite-btn">
-              <el-icon><i class="el-icon-heart"></i></el-icon>
-            </el-button>
-            <el-button class="add-to-cart" type="primary">Add to Cart</el-button>
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <Header />
+<DirectionSwitcher />
+  <div class="product-show " :dir="direction">
+    <el-row :gutter="20" class="product-container full-height-row flex-md-row flex-column-reverse">
+      <el-col  :xs="24" :sm="24" :md="12"  :lg="14">
+        <div class="product-details">
+          <h1 class="product-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h1>
+
+          <div class="price-block">
+            <span class="price-new"
+              >{{ product.price }} {{ product.currency?.name_en }}</span
+            >
+            <span class="price-old" v-if="product.old_price"
+              >{{ product.old_price }} {{ product.currency?.name_en }}</span
+            >
+          </div>
+
+          <div class="description" v-html="locale === 'ar' ? product.description_ar : product.description_en"></div>
+
+          <div class="quantity-section">
             <div class="quantity-control">
+              <label>{{ $t('quantity') }}:</label>
               <el-button size="small" @click="decreaseQty">-</el-button>
-              <span>{{ quantity }}</span>
+              <span class="qty-number">{{ quantity }}</span>
               <el-button size="small" @click="increaseQty">+</el-button>
             </div>
           </div>
@@ -61,7 +70,7 @@
   
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/api/website/show/products/${route.params.id}`)
+      const res = await axios.get(`https://elegance_commers.test/api/website/show/products/${route.params.id}`)
       if (res.data.status) {
         product.value = res.data.data
         // Set default selected image if exists
@@ -69,13 +78,13 @@
           selectedImage.value = product.value.images[0].path
         }
       }
-    } catch (err) {
-      console.error(err)
     }
+  } catch (err) {
+    console.error(err);
   }
   
   const getImageUrl = (path) => {
-    return `http://127.0.0.1:8000/storage/${path}`
+    return `https://elegance_commers.test/storage/${path}`
   }
   
   const increaseQty = () => {
