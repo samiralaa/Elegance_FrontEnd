@@ -1,7 +1,6 @@
 <template>
   <div class="home" :dir="direction">
     <Header />
-    <!-- Hero Section with Ramadan Theme -->
   
     <section class="hero-section">
       <div id="carouselExample" class="carousel slide">
@@ -27,12 +26,11 @@
     </div>
     </section>
     <Categories />
-    <Brands />
-    <!-- Featured Products Section -->
     <HomeBrands />
     <Products />
     <LatestProducts />
     <BestSelling />
+    <WhyChooseUs />
   </div>
 </template>
 
@@ -42,6 +40,7 @@ import Categories from '@/components/Website/Categories.vue'
 import HomeBrands from '@/components/Website/HomeBrands.vue'
 import Products from '@/components/Website/ProductSection.vue'
 import BestSelling from '@/components/Website/BestSelling.vue'
+import WhyChooseUs from '@/components/Website/WhyChooseUs.vue'
 import LatestProducts from '@/components/Website/LatestProducts.vue'
 import i18n from '@/i18n.js'
 
@@ -53,7 +52,8 @@ export default {
     HomeBrands,
     LatestProducts,
     Products,
-    BestSelling
+    BestSelling,
+    WhyChooseUs
   },
   computed: {
     direction() {
