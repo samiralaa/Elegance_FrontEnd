@@ -102,14 +102,37 @@ const getImageUrl = (path) => {
 
 const addToFavorites = async (product) => {
     try {
-      if (product.isFavorited) {
-        await axios.delete(`/api/favorites/${product.id}`)
-      } else {
-        await axios.post('/api/favorites', { product_id: product.id })
+      const response = await axios.post('https://elegance_commers.test/api/favorites', { product_id: product.id }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      })
+      
+      if (response.data.success) {
+        console.log('test');
+        product.isFavorited = !product.isFavorited
+        ElNotification({
+          title: 'Success',
+
+          message: response.data.message || 'Product added to favorites',
+          type: 'success',
+        })
       }
-      await fetchFavorites() // Refresh the state
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error adding to favorites:', error)
+      if (error.response?.status === 401) {
+        ElNotification({
+          title: 'Error',
+          message: 'Please login to add favorites',
+          type: 'error',
+        })
+      } else {
+        ElNotification({
+          title: 'Error',
+          message: error.response?.data?.message || 'Failed to add to favorites',
+          type: 'error',
+        })
+      }
     }
   }
 
