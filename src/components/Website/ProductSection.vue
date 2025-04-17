@@ -35,8 +35,8 @@
         <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
         <h2>{{ $t('home.products') }}</h2>
       </div>
-      <div class="row g-4">
-        <div v-for="product in products" :key="product.id" :span="6" class="card">
+      <div v-for="product in products" :key="product.id" :span="6" class="row g-4">
+        <div class="card">
           <div class="img-container">
             <router-link :to="`/read/products/${product.id}`">
               <img 
@@ -181,7 +181,7 @@ onMounted(() => {
   .cart-btn{
     background-color: #fff;
     transition: all 0.2s ease-in-out;
-
+    
   }
   .cart-btn:hover{
     color: #333;
@@ -195,4 +195,11 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
   }
-</style>
+  .card-title{
+    color: #8b6b3d;
+    transition: all 0.2s ease-in;
+  }
+  .card:hover .card-title{
+    color: #fff;
+  }
+  </style>
