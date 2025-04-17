@@ -32,6 +32,7 @@
     <HomeBrands />
     <Products />
     <LatestProducts />
+    <BestSelling />
   </div>
 </template>
 
@@ -40,6 +41,7 @@ import Header from '@/components/Website/Header.vue'
 import Categories from '@/components/Website/Categories.vue'
 import HomeBrands from '@/components/Website/HomeBrands.vue'
 import Products from '@/components/Website/ProductSection.vue'
+import BestSelling from '@/components/Website/BestSelling.vue'
 import LatestProducts from '@/components/Website/LatestProducts.vue'
 import i18n from '@/i18n.js'
 
@@ -50,7 +52,8 @@ export default {
     Categories,
     HomeBrands,
     LatestProducts,
-    Products
+    Products,
+    BestSelling
   },
   computed: {
     direction() {

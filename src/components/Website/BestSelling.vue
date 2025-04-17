@@ -1,0 +1,207 @@
+<template>
+    <!-- <p>Products</p>
+    <div class="product-section">
+      <el-row :gutter="20">
+        <el-col v-for="product in products" :key="product.id" :span="6">
+          <el-card class="product-card" shadow="hover">
+            <div class="image-wrapper">
+              <router-link :to="`/read/products/${product.id}`">
+                <img
+                  v-if="product.images.length"
+                  :src="getImageUrl(product.images[0].path)"
+                  :alt="product.name_en"
+                  class="product-image"
+                />
+              </router-link>
+              <div class="action-icons">
+                <StarFilled @click="addToFavorites(product)" />
+                <ShoppingCart @click="addToCart(product)" />
+              </div>
+            </div>
+  
+            <div class="product-info">
+              <router-link :to="`/product/${product.id}`">
+                <h3 class="product-title">{{ product.name_en }}</h3>
+              </router-link>
+              <p>{{ product.price }} {{ product.currency.name_en }}</p>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div> -->
+    <div class="products-section">
+      <h1>best selling</h1>
+      <div class="container">
+        <div class="title mt-5">
+          <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
+          <h2>{{ $t('home.products') }}</h2>
+        </div>
+        <div v-for="product in products" :key="product.id" :span="6" class="row g-4">
+          <div class="card">
+            <div class="img-container">
+              <router-link :to="`/read/products/${product.id}`">
+                <img 
+                  v-if="product.images.length"
+                  :src="getImageUrl(product.images[0].path)"
+                  :alt="product.name_en" 
+                  class="card-img-top"
+                />
+              </router-link>
+              <div class="card-btns">
+                <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
+                  <fa icon="eye"></fa>
+                </router-link>
+                <a @click="addToCart(product)" class="cart-btn btn mx-2">
+                  {{ $t('home.add-to-cart') }}
+                </a>
+                <a @click="addToFavorites(product)" class="love-btn btn mx-2">
+                  <fa icon="heart" /> 
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name_en }}</h5>
+              <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted } from 'vue'
+  import axios from 'axios'
+  import { StarFilled, ShoppingCart } from '@element-plus/icons-vue'
+  
+  const products = ref([])
+  
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('https://elegance_commers.test/api/website/products/section')
+      if (response.data.status && response.data.data) {
+        products.value = response.data.data
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error)
+    }
+  }
+  
+  const getImageUrl = (path) => {
+    return `https://elegance_commers.test/storage/${path}`
+  }
+  
+  const addToFavorites = (product) => {
+    console.log('Add to Favorites:', product)
+  }
+  
+  const addToCart = (product) => {
+    console.log('Add to Cart:', product)
+  }
+  
+  onMounted(() => {
+    fetchProducts()
+  })
+  </script>
+  
+  <style scoped>
+  /* new */
+    .title{
+      margin-bottom: 15px;
+      color: #8b6b3d;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  
+    .fa-icon{
+      font-size: 1.8rem;
+      align-self: start;
+    }
+  
+    .card{
+      flex: 0 0 calc(100% / 4 - 30px);
+      padding: 0;
+      border: none;
+      box-shadow: 0 10px 20px #2334de1a;
+      transition: all 0.2s ease-in;
+      z-index: 1;
+    }
+    .img-container{
+      overflow: hidden;
+      border-radius: 0.5rem;
+      position: relative;
+    }
+    .card:hover{
+      color: #fff;
+    }
+    img{
+      z-index: 0;
+      transition: all 0.2s ease-in-out;
+      /* transition: all 0.2s ease-in; */
+    }
+    .card:hover img{
+      scale: 1.1;
+    }
+    .card:hover .card-btns{
+      transform: translateY(0px);
+    }
+    .card::after{
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 105%;
+      width: 105%;
+      background-color: #8b6b3d;
+      border-radius: 8px;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: -1;
+      transition: transform 0.3s ease;
+    }
+    .card:hover::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .card-btns{
+      position: absolute;
+      display: flex;
+      bottom: 0;
+      transform: translateY(100px);
+      width: 100%;
+      z-index: 1;
+      justify-content: center;
+      margin: 30px 0;
+      transition: all 0.5s ease-in-out;
+    }
+    .love-btn,
+    .eye-btn{
+      background-color: #8b6b3d;
+      color: #fff;
+      transition: all 0.2s ease-in-out;
+    }
+    .cart-btn{
+      background-color: #fff;
+      transition: all 0.2s ease-in-out;
+      
+    }
+    .cart-btn:hover{
+      color: #333;
+    }
+    .cart-btn:hover,
+    .love-btn:hover,
+    .eye-btn:hover{
+      scale: 1.2;
+    }
+    .products-section .container .row{
+      display: flex;
+      justify-content: space-between;
+    }
+    .card-title{
+      color: #8b6b3d;
+      transition: all 0.2s ease-in;
+    }
+    .card:hover .card-title{
+      color: #fff;
+    }
+    </style>
+  

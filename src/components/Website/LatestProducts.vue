@@ -84,7 +84,7 @@ const products = ref([])
 
 const fetchLatestProducts = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/website/latest/products')
+    const response = await axios.get('https://elegance_commers.test/api/website/latest/products')
     if (response.data.status) {
       products.value = response.data.data
     }
@@ -94,7 +94,7 @@ const fetchLatestProducts = async () => {
 }
 
 const getImageUrl = (path) => {
-  return `http://127.0.0.1:8000/storage/${path}`
+  return `https://elegance_commers.test/storage/${path}`
 }
 
 const addToFavorites = (product) => {
