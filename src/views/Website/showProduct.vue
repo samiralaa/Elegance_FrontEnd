@@ -70,7 +70,7 @@
   
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`https://elegance_commers.test/api/website/show/products/${route.params.id}`)
+      const res = await axios.get(`http://127.0.0.1:8000/api/website/show/products/${route.params.id}`)
       if (res.data.status) {
         product.value = res.data.data
         // Set default selected image if exists
@@ -84,7 +84,7 @@
   }
   
   const getImageUrl = (path) => {
-    return `https://elegance_commers.test/storage/${path}`
+    return `http://127.0.0.1:8000/storage/${path}`
   }
   
   const increaseQty = () => {

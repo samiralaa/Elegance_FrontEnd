@@ -160,7 +160,7 @@
   const parentProducts = ref([])
   
   // Base URL and API endpoints
-  const BASE_URL = 'https://elegance_commers.test'
+  const BASE_URL = 'http://127.0.0.1:8000'
   const PRODUCTS_API = `${BASE_URL}/api/products`
   const CATEGORIES_API = `${BASE_URL}/api/categories`
   const CURRENCIES_API = `${BASE_URL}/api/currencies`
