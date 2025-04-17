@@ -1,45 +1,8 @@
 <template>
-
-  <!-- <div class="latest-products">
-    <h2 class="title">Latest Products</h2>
-    <el-row :gutter="20">
-      <el-col v-for="product in products" :key="product.id" :span="6">
-        <el-card class="product-card" shadow="hover">
-          <div class="image-wrapper">
-            <router-link class="router-link" :to="`/read/products/${product.id}`">
-              <img
-                v-if="product.images.length"
-                :src="getImageUrl(product.images[0].path)"
-                :alt="product.name_en"
-                class="product-image"
-              />
-            </router-link>
-          </div>
-          <div class="product-info">
-            <router-link :to="`/read/products/${product.id}`" class="product-title">
-              <h3>{{ product.name_en }}</h3>
-            </router-link>
-            <div class="card-btns">
-              <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
-                <fa icon="eye"></fa>
-              </router-link>
-              <a @click="addToCart(product)" class="cart-btn btn mx-2">
-                {{ $t('home.add-to-cart') }}
-              </a>
-              <a @click="addToFavorites(product)" class="love-btn btn mx-2">
-                <fa icon="heart" /> 
-              </a>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div> -->
-
   <div class="products-section">
     <div class="container">
       <div class="title mt-5">
-        <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
+        <fa class="fa-icon" :icon="['fas', 'shopping-basket']"></fa>
         <h2>{{ $t('LatestProducts.LatestProducts') }}</h2>
       </div>
       <div class="row justify-content-center align-items-center">
@@ -55,10 +18,10 @@
           <div class="card">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
-                <img 
+                <img
                   v-if="product.images.length"
                   :src="getImageUrl(product.images[0].path)"
-                  :alt="product.name_en" 
+                  :alt="product.name_en"
                   class="card-img-top"
                 />
               </router-link>
@@ -67,57 +30,110 @@
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="card-btns">
                 <router-link :to="`/product/${product.id}`" class="eye-btn btn">
-                  <fa icon="eye"></fa>
+                  <fa icon="eye" />
                 </router-link>
                 <button @click="addToCart(product)" class="cart-btn btn">
                   {{ $t('home.add-to-cart') }}
                 </button>
                 <button @click="addToFavorites(product)" class="love-btn btn">
-                  <fa icon="heart" /> 
+                  <fa icon="heart" />
                 </button>
               </div>
             </div>
           </div>
         </el-col>
-
       </div>
     </div>
   </div>
+
+  <!-- Success Dialog -->
+  <el-dialog
+    v-model="showSuccessDialog"
+    title="🎉 Success"
+    width="30%"
+    :before-close="() => (showSuccessDialog = false)"
+    :center="true"
+    :close-on-click-modal="false"
+    :show-close="false"
+  >
+    <span>{{ successMessage }}</span>
+    <template #footer>
+      <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import { StarFilled, ShoppingCart } from '@element-plus/icons-vue'
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { ElNotification } from 'element-plus';
 
-const products = ref([])
+const products = ref([]);
+const showSuccessDialog = ref(false);
+const successMessage = ref('');
 
+// Fetch products
 const fetchLatestProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/latest/products')
+    const response = await axios.get('https://elegance_commers.test/api/website/latest/products');
     if (response.data.status) {
-      products.value = response.data.data
+      products.value = response.data.data;
     }
   } catch (error) {
-    console.error('Error fetching latest products:', error)
+    console.error('Error fetching latest products:', error);
   }
-}
+};
 
+// Get image URL
 const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`
-}
+  return `https://elegance_commers.test/storage/${path}`;
+};
 
-const addToFavorites = (product) => {
-  console.log('Favorite:', product.name_en)
-}
+// Add to favorites
+const addToFavorites = async (product) => {
+  try {
+    const response = await axios.post(
+      'https://elegance_commers.test/api/favorites',
+      { product_id: product.id },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      }
+    );
 
+    if (response.data.message) {
+      product.isFavorited = !product.isFavorited;
+      successMessage.value = response.data.message || 'Product added to favorites';
+      showSuccessDialog.value = true;
+      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`);
+    }
+  } catch (error) {
+    console.error('Error adding to favorites:', error);
+    if (error.response?.status === 401) {
+      ElNotification({
+        title: '⚠️ Unauthorized',
+        message: 'Please login to add to favorites.',
+        type: 'error',
+      });
+    } else {
+      ElNotification({
+        title: '❌ Error',
+        message: error.response?.data?.message || 'Something went wrong.',
+        type: 'error',
+      });
+    }
+  }
+};
+
+// Add to cart
 const addToCart = (product) => {
-  console.log('Add to cart:', product.name_en)
-}
+  console.log('Add to Cart:', product);
+};
 
-onMounted(fetchLatestProducts)
+// Load products on component mount
+onMounted(fetchLatestProducts);
 </script>
-
 <style scoped>
 /* .latest-products {
   padding: 20px;

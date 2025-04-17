@@ -34,6 +34,7 @@
     <LatestProducts />
     <BestSelling />
     <WhyChooseUs />
+    <Footer />
   </div>
 </template>
 
@@ -46,6 +47,7 @@ import BestSelling from '@/components/Website/BestSelling.vue'
 import WhyChooseUs from '@/components/Website/WhyChooseUs.vue'
 import LatestProducts from '@/components/Website/LatestProducts.vue'
 import i18n from '@/i18n.js'
+import Footer from '@/components/Website/Footer.vue'
 
 export default {
   name: 'Home',
@@ -56,7 +58,8 @@ export default {
     LatestProducts,
     Products,
     BestSelling,
-    WhyChooseUs
+    WhyChooseUs,
+    Footer,
   },
   computed: {
     direction() {

@@ -1,34 +1,4 @@
-<template>
-  <!-- <p>Products</p>
-  <div class="product-section">
-    <el-row :gutter="20">
-      <el-col v-for="product in products" :key="product.id" :span="6">
-        <el-card class="product-card" shadow="hover">
-          <div class="image-wrapper">
-            <router-link :to="`/read/products/${product.id}`">
-              <img
-                v-if="product.images.length"
-                :src="getImageUrl(product.images[0].path)"
-                :alt="product.name_en"
-                class="product-image"
-              />
-            </router-link>
-            <div class="action-icons">
-              <StarFilled @click="addToFavorites(product)" />
-              <ShoppingCart @click="addToCart(product)" />
-            </div>
-          </div>
-
-          <div class="product-info">
-            <router-link :to="`/product/${product.id}`">
-              <h3 class="product-title">{{ product.name_en }}</h3>
-            </router-link>
-            <p>{{ product.price }} {{ product.currency.name_en }}</p>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div> -->
+  <template>
   <div class="products-section">
     <div class="container">
       <div class="title mt-5">
@@ -73,18 +43,34 @@
           </div>
         </div>
       </div>
-
-
     </div>
+
+    <!-- Success Dialog -->
+    <el-dialog
+      v-model="showSuccessDialog"
+      title=" Success"
+      width="30%"
+      :before-close="() => (showSuccessDialog = false)"
+    >
+      <span>{{ successMessage }}</span>
+      <template #footer>
+        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { ElNotification, ElDialog, ElButton } from 'element-plus'
 
+// Reactive state
 const products = ref([])
+const showSuccessDialog = ref(false)
+const successMessage = ref('')
 
+// Fetch products from API
 const fetchProducts = async () => {
   try {
     const response = await axios.get('https://elegance_commers.test/api/website/products/section')
@@ -96,184 +82,207 @@ const fetchProducts = async () => {
   }
 }
 
+// Get full image URL
 const getImageUrl = (path) => {
   return `https://elegance_commers.test/storage/${path}`
 }
 
+// Add to favorites
 const addToFavorites = async (product) => {
-    try {
-      const response = await axios.post('https://elegance_commers.test/api/favorites', { product_id: product.id }, {
+  try {
+    const response = await axios.post(
+      'https://elegance_commers.test/api/favorites',
+      { product_id: product.id },
+      {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
         }
-      })
-      
-      if (response.data.success) {
-        console.log('test');
-        product.isFavorited = !product.isFavorited
-        ElNotification({
-          title: 'Success',
+      }
+    )
 
-          message: response.data.message || 'Product added to favorites',
-          type: 'success',
-        })
-      }
-    } catch (error) {
-      console.error('Error adding to favorites:', error)
-      if (error.response?.status === 401) {
-        ElNotification({
-          title: 'Error',
-          message: 'Please login to add favorites',
-          type: 'error',
-        })
-      } else {
-        ElNotification({
-          title: 'Error',
-          message: error.response?.data?.message || 'Failed to add to favorites',
-          type: 'error',
-        })
-      }
+    if (response.data.message) {
+      product.isFavorited = !product.isFavorited
+      successMessage.value = response.data.message || 'Product added to favorites'
+      showSuccessDialog.value = true
+
+      // ✅ Console log after success
+      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`)
+    }
+  } catch (error) {
+    console.error('Error adding to favorites:', error)
+
+    if (error.response?.status === 401) {
+      ElNotification({
+        title: '⚠️ Unauthorized',
+        message: 'Please login to add to favorites.',
+        type: 'error',
+      })
+    } else {
+      ElNotification({
+        title: '❌ Error',
+        message: error.response?.data?.message || 'Something went wrong.',
+        type: 'error',
+      })
     }
   }
+}
 
+
+// Add to cart
 const addToCart = (product) => {
   console.log('Add to Cart:', product)
 }
 
+// Load products on component mount
 onMounted(() => {
   fetchProducts()
 })
 </script>
 
 <style scoped>
-/* new */
-  .title{
-    margin-bottom: 15px;
-    color: #8b6b3d;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.title {
+  margin-bottom: 15px;
+  color: #8b6b3d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fa-icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.card {
+  padding: 0;
+  border: none;
+  box-shadow: 0 10px 20px #2334de1a;
+  transition: all 0.2s ease-in;
+  z-index: 1;
+}
+
+.img-container {
+  overflow: hidden;
+  border-radius: 0.5rem;
+  position: relative;
+}
+
+.card:hover {
+  color: #fff;
+}
+
+img {
+  z-index: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover img {
+  scale: 1.1;
+}
+
+.card:hover .card-btns {
+  transform: translateY(0px);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 105%;
+  width: 105%;
+  background-color: #8b6b3d;
+  border-radius: 8px;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: -1;
+  transition: transform 0.3s ease;
+}
+
+.card:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.card-btns {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  bottom: 0;
+  transform: translateY(100px);
+  z-index: 1;
+  justify-content: center;
+  margin: 30px 0;
+  transition: all 0.5s ease-in-out;
+}
+
+.love-btn,
+.eye-btn {
+  background-color: #8b6b3d;
+  color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.cart-btn {
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.cart-btn:hover {
+  color: #333;
+}
+
+.cart-btn:hover,
+.love-btn:hover,
+.eye-btn:hover {
+  scale: 1.2;
+}
+
+.card-title {
+  color: #8b6b3d;
+  transition: all 0.2s ease-in;
+}
+
+.card:hover .card-title {
+  color: #fff;
+}
+
+@media (max-width: 1200px) {
+  .disable {
+    display: none;
   }
 
-  .fa-icon{
-    font-size: 1.8rem;
-    margin-bottom: 8px;
+  .enable {
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 1.1rem;
+    text-align: center;
   }
 
-  .card{
-    padding: 0;
-    border: none;
-    box-shadow: 0 10px 20px #2334de1a;
-    transition: all 0.2s ease-in;
-    z-index: 1;
-  }
-  .img-container{
-    overflow: hidden;
-    border-radius: 0.5rem;
-    position: relative;
-  }
-  .card:hover{
-    color: #fff;
-  }
-  img{
-    z-index: 0;
-    transition: all 0.2s ease-in-out;
-  }
-  .card:hover img{
-    scale: 1.1;
-  }
-  .card:hover .card-btns{
-    transform: translateY(0px);
-  }
-  .card::after{
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    height: 105%;
-    width: 105%;
-    background-color: #8b6b3d;
-    border-radius: 8px;
-    transform: translate(-50%, -50%) scale(0);
-    z-index: -1;
-    transition: transform 0.3s ease;
-  }
-  .card:hover::after {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  .card-btns{
-    position: absolute;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    bottom: 0;
-    transform: translateY(100px);
-    width: 100%;
-    z-index: 1;
-    justify-content: center;
-    margin: 30px 0;
-    transition: all 0.5s ease-in-out;
-  }
-  .love-btn,
-  .eye-btn{
-    background-color: #8b6b3d;
-    color: #fff;
-    transition: all 0.2s ease-in-out;
-  }
-  .cart-btn{
-    background-color: #fff;
-    transition: all 0.2s ease-in-out;
-    
-  }
-  .cart-btn:hover{
-    color: #333;
-  }
-  .cart-btn:hover,
-  .love-btn:hover,
-  .eye-btn:hover{
-    scale: 1.2;
-  }
-  .card-title{
-    color: #8b6b3d;
-    transition: all 0.2s ease-in;
-  }
-  .card:hover .card-title{
-    color: #fff;
-  }
-  @media (max-width: 1200px) {
-
-    .disable {
-      display: none;
-    }
-    .enable {
-      display: block !important;
-    }
-    
-  }
-  @media (max-width: 768px) {
-    .card-title {
-      font-size: 1.1rem;
-      text-align: center;
-    }
-    .card-text {
-      text-align: center;
-      font-size: 0.95rem;
-    }
-    .card .img-container {
-      height: auto;
-    }
+  .card-text {
+    text-align: center;
+    font-size: 0.95rem;
   }
 
-  @media (max-width: 576px) {
-    .card-body {
-      padding: 1rem 0.5rem;
-    }
-    .card-title {
-      font-size: 1rem;
-    }
-    .card-text {
-      font-size: 0.9rem;
-    }
+  .card .img-container {
+    height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1rem 0.5rem;
   }
 
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
+  }
+}
 </style>

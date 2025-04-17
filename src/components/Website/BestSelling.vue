@@ -2,19 +2,22 @@
   <div class="products-section">
     <div class="container">
       <div class="title mt-5">
-        <fa class="fa-icon" :icon="['fas','star']"></fa>
+        <fa class="fa-icon" :icon="['fas', 'star']"></fa>
         <h2>{{ $t('home.best-selling') }}</h2>
       </div>
       <div class="row">
-        <el-col 
-          v-for="product in products" 
-          :key="product.id" 
-          :xs="24" :sm="24" :md="12" :lg="12"
+        <el-col
+          v-for="product in products"
+          :key="product.id"
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="12"
         >
           <div class="card my-3">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
-                <img 
+                <img
                   v-if="product.images.length"
                   :src="getImageUrl(product.images[0].path)"
                   :alt="product.name_en"
@@ -32,51 +35,102 @@
               <button @click="addToCart(product)" class="btn cart-btn">
                 <fa icon="cart-plus"></fa>
               </button>
-              <button @click="addToFavorites(product)" class="btn love-btn">
-                <fa icon="heart"></fa>
+              <button
+                @click="addToFavorites(product)"
+                :class="['btn love-btn', { 'is-favorited': product.isFavorited }]"
+              >
+                <fa icon="heart" />
               </button>
             </div>
           </div>
-        </el-col> 
+        </el-col>
       </div>
     </div>
+    <el-dialog
+      v-model="showSuccessDialog"
+      title="🎉 Success"
+      width="30%"
+      :before-close="() => (showSuccessDialog = false)"
+      :center="true"
+      :close-on-click-modal="false"
+      :show-close="false"
+    >
+      <span>{{ successMessage }}</span>
+      <template #footer>
+        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { ElNotification } from 'element-plus';
 
-const products = ref([])
+const products = ref([]);
+const showSuccessDialog = ref(false);
+const successMessage = ref('');
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/products/section')
+    const response = await axios.get('https://elegance_commers.test/api/website/products/section');
     if (response.data.status && response.data.data) {
-      products.value = response.data.data
+      products.value = response.data.data;
     }
   } catch (error) {
-    console.error('Error fetching products:', error)
+    console.error('Error fetching products:', error);
   }
-}
+};
 
 const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`
-}
+  return `https://elegance_commers.test/storage/${path}`;
+};
 
-const addToFavorites = (product) => {
-  console.log('Add to Favorites:', product)
-}
+const addToFavorites = async (product) => {
+  try {
+    const response = await axios.post(
+      'https://elegance_commers.test/api/favorites',
+      { product_id: product.id },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      }
+    );
+
+    if (response.data.message) {
+      product.isFavorited = !product.isFavorited;
+      successMessage.value = response.data.message || 'Product added to favorites';
+      showSuccessDialog.value = true;
+      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`);
+    }
+  } catch (error) {
+    console.error('Error adding to favorites:', error);
+    if (error.response?.status === 401) {
+      ElNotification({
+        title: '⚠️ Unauthorized',
+        message: 'Please login to add to favorites.',
+        type: 'error',
+      });
+    } else {
+      ElNotification({
+        title: '❌ Error',
+        message: error.response?.data?.message || 'Something went wrong.',
+        type: 'error',
+      });
+    }
+  }
+};
 
 const addToCart = (product) => {
-  console.log('Add to Cart:', product)
-}
+  console.log('Add to Cart:', product);
+};
 
 onMounted(() => {
-  fetchProducts()
-})
+  fetchProducts();
+});
 </script>
-
 <style scoped>
 .products-section {
   padding-bottom: 2rem;
