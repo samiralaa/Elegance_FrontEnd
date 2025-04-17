@@ -64,7 +64,7 @@
 
   .fa-icon{
     font-size: 1.8rem;
-    align-self: start;
+    margin-bottom: 10px;
   }
 
   .our-brands .content{

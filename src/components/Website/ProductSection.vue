@@ -35,34 +35,36 @@
         <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
         <h2>{{ $t('home.products') }}</h2>
       </div>
-      <div v-for="product in products" :key="product.id" :span="6" class="row g-4">
-        <div class="card">
-          <div class="img-container">
-            <router-link :to="`/read/products/${product.id}`">
-              <img 
-                v-if="product.images.length"
-                :src="getImageUrl(product.images[0].path)"
-                :alt="product.name_en" 
-                class="card-img-top"
-              />
-            </router-link>
-            <div class="card-btns">
-              <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
-                <fa icon="eye"></fa>
+      <div class="row g-4">
+        <el-col v-for="product in products" :key="product.id" :span="6">
+          <div class="card">
+            <div class="img-container">
+              <router-link :to="`/read/products/${product.id}`">
+                <img 
+                  v-if="product.images.length"
+                  :src="getImageUrl(product.images[0].path)"
+                  :alt="product.name_en" 
+                  class="card-img-top"
+                />
               </router-link>
-              <a @click="addToCart(product)" class="cart-btn btn mx-2">
-                {{ $t('home.add-to-cart') }}
-              </a>
-              <a @click="addToFavorites(product)" class="love-btn btn mx-2">
-                <fa icon="heart" /> 
-              </a>
+              <div class="card-btns">
+                <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
+                  <fa icon="eye"></fa>
+                </router-link>
+                <a @click="addToCart(product)" class="cart-btn btn mx-2">
+                  {{ $t('home.add-to-cart') }}
+                </a>
+                <a @click="addToFavorites(product)" class="love-btn btn mx-2">
+                  <fa icon="heart" /> 
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name_en }}</h5>
+              <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
             </div>
           </div>
-          <div class="card-body">
-            <h5 class="card-title">{{ product.name_en }}</h5>
-            <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
-          </div>
-        </div>
+        </el-col>
       </div>
     </div>
   </div>
@@ -115,7 +117,7 @@ onMounted(() => {
 
   .fa-icon{
     font-size: 1.8rem;
-    align-self: start;
+    margin-bottom: 10px;
   }
 
   .card{
@@ -137,7 +139,6 @@ onMounted(() => {
   img{
     z-index: 0;
     transition: all 0.2s ease-in-out;
-    /* transition: all 0.2s ease-in; */
   }
   .card:hover img{
     scale: 1.1;
@@ -190,10 +191,6 @@ onMounted(() => {
   .love-btn:hover,
   .eye-btn:hover{
     scale: 1.2;
-  }
-  .products-section .container .row{
-    display: flex;
-    justify-content: space-between;
   }
   .card-title{
     color: #8b6b3d;

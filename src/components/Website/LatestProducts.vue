@@ -46,8 +46,8 @@
         <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
         <h2>{{ $t('home.products') }}</h2>
       </div>
-      <div v-for="product in products" :key="product.id" :span="6" class="row d-flex justify-content-center g-4">
-
+      <div class="row justify-content-center align-items-center">
+        <el-col v-for="product in products" :key="product.id" :span="6">
           <div class="card">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
@@ -74,6 +74,7 @@
               </div>
             </div>
           </div>
+        </el-col>
 
       </div>
     </div>
@@ -179,7 +180,7 @@ onMounted(fetchLatestProducts)
 } */
 
 /* new */
-.title{
+  .title{
     margin-bottom: 15px;
     color: #8b6b3d;
     display: flex;
@@ -189,7 +190,7 @@ onMounted(fetchLatestProducts)
 
   .fa-icon{
     font-size: 1.8rem;
-    align-self: start;
+    margin-bottom: 10px;
   }
   .card{
     display: flex;
@@ -269,10 +270,6 @@ onMounted(fetchLatestProducts)
   .love-btn:hover,
   .eye-btn:hover{
     scale: 1.1;
-  }
-  .products-section .container .row{
-    display: flex;
-    justify-content: space-between;
   }
   .card-title{
     color: #8b6b3d;

@@ -229,7 +229,7 @@ export default {
 
 .fa-icon{
   font-size: 1.8rem;
-  align-self: start;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 1200px) {
