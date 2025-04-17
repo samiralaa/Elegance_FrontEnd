@@ -1,11 +1,7 @@
 <template>
-<<<<<<< Updated upstream
+
   <!-- <div class="latest-products">
     <h2 class="title">Latest Products</h2>
-=======
-  <div class="latest-products">
-    <h2 class="title">{{ $t('LatestProducts.LatestProducts') }}</h2>
->>>>>>> Stashed changes
     <el-row :gutter="20">
       <el-col v-for="product in products" :key="product.id" :span="6">
         <el-card class="product-card" shadow="hover">
@@ -44,7 +40,7 @@
     <div class="container">
       <div class="title mt-5">
         <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
-        <h2>{{ $t('home.products') }}</h2>
+        <h2>{{ $t('LatestProducts.LatestProducts') }}</h2>
       </div>
       <div class="row justify-content-center align-items-center">
         <el-col v-for="product in products" :key="product.id" :span="6">
@@ -222,11 +218,6 @@ onMounted(fetchLatestProducts)
   .card:hover img{
     scale: 1.1;
   }
-  .card:hover .love-btn,
-  .card:hover .eye-btn{
-    background-color: #fff;
-    color: #333;
-  }
   .card::after{
     content: "";
     position: absolute;
@@ -270,6 +261,11 @@ onMounted(fetchLatestProducts)
   .love-btn:hover,
   .eye-btn:hover{
     scale: 1.1;
+  }
+  .card:hover .love-btn,
+  .card:hover .eye-btn{
+    background-color: #fff;
+    color: #333;
   }
   .card-title{
     color: #8b6b3d;

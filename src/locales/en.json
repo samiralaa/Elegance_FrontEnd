@@ -135,7 +135,9 @@
   "home": {
     "categories": "Categories",
     "brands": "Our Brands",
-    "products":"Our Products"
+    "products":"Our Products",
+    "add-to-cart": "Add to Cart",
+    "best-selling": "Best-selling products"
   },
   "LatestProducts": {
     "LatestProducts": "Latest Products"

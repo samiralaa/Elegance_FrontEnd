@@ -146,7 +146,8 @@
     "brands":"العلامات التجارية",
 
     "products":"المنتجات",
-    "add-to-cart":"أضف إلى السلة"
+    "add-to-cart":"أضف إلى السلة",
+    "best-selling":"المنتجات أفضل مبيعًا"
   },
   "LatestProducts":{
     "LatestProducts":"أحدث المنتجات"
