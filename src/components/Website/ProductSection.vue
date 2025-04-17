@@ -29,6 +29,36 @@
       </el-col>
     </el-row>
   </div>
+  <div class="products-section">
+    <div class="container">
+      <div class="title mt-5">
+        <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
+        <h2>{{ $t('home.products') }}</h2>
+      </div>
+      <div class="row g-4">
+        <div class="card">
+          <div class="img-container">
+            <img src="@/assets/images/533120bc-9311-4d8c-9c43-ab5609e5fc64..jpeg" alt="" class="card-img-top">
+            <div class="card-btns">
+              <a class="eye-btn btn mx-2">
+                <fa icon="eye"></fa>
+              </a>
+              <a class="cart-btn btn mx-2">
+                {{ $t('home.add-to-cart') }}
+              </a>
+              <a class="love-btn btn mx-2">
+                <fa icon="heart" />
+              </a>
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">دهن عود هندي</h5>
+            <p class="card-text">asmndsasa dsandasd asdsad asd</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -40,7 +70,7 @@ const products = ref([])
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/products/section')
+    const response = await axios.get('http://127.0.0.1:8000/api/website/products/section')
     if (response.data.status && response.data.data) {
       products.value = response.data.data
     }
@@ -50,7 +80,7 @@ const fetchProducts = async () => {
 }
 
 const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`
+  return `http://127.0.0.1:8000/storage/${path}`
 }
 
 const addToFavorites = (product) => {
@@ -67,50 +97,95 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.product-section {
-  padding: 20px;
-}
-.product-info {
-  text-align: center;
-}
-.product-title {
-  cursor: pointer;
-  color: #333;
-  transition: color 0.3s;
-}
-.product-title:hover {
-  color: #a3852c;
-}
-.product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 5px;
-}
-.image-wrapper {
-  position: relative;
-}
-.action-icons {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  gap: 10px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.product-card:hover .action-icons {
-  opacity: 1;
-}
-.action-icons > * {
-  background-color: white;
-  padding: 6px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  transition: transform 0.2s;
-}
-.action-icons > *:hover {
-  transform: scale(1.2);
-}
+/* new */
+  .title{
+    margin-bottom: 15px;
+    color: #8b6b3d;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fa-icon{
+    font-size: 1.8rem;
+    align-self: start;
+  }
+
+  .card{
+    flex: 0 0 calc(100% / 4 - 30px);
+    padding: 0;
+    border: none;
+    box-shadow: 0 10px 20px #2334de1a;
+    transition: all 0.2s ease-in;
+    z-index: 1;
+  }
+  .img-container{
+    overflow: hidden;
+    border-radius: 0.5rem;
+    position: relative;
+  }
+  .card:hover{
+    color: #fff;
+  }
+  img{
+    z-index: 0;
+    transition: all 0.2s ease-in-out;
+    /* transition: all 0.2s ease-in; */
+  }
+  .card:hover img{
+    scale: 1.1;
+  }
+  .card:hover .card-btns{
+    transform: translateY(0px);
+  }
+  .card::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 105%;
+    width: 105%;
+    background-color: #8b6b3d;
+    border-radius: 8px;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: -1;
+    transition: transform 0.3s ease;
+  }
+  .card:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .card-btns{
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    transform: translateY(100px);
+    width: 100%;
+    z-index: 1;
+    justify-content: center;
+    margin: 30px 0;
+    transition: all 0.5s ease-in-out;
+  }
+  .love-btn,
+  .eye-btn{
+    background-color: #8b6b3d;
+    color: #fff;
+    transition: all 0.2s ease-in-out;
+  }
+  .cart-btn{
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+
+  }
+  .cart-btn:hover{
+    color: #333;
+  }
+  .cart-btn:hover,
+  .love-btn:hover,
+  .eye-btn:hover{
+    scale: 1.2;
+  }
+  .products-section .container .row{
+    display: flex;
+    justify-content: space-between;
+  }
 </style>

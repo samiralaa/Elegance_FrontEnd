@@ -47,7 +47,7 @@
   const error = ref(null)
   
   // Base URL for API and images
-  const BASE_URL = 'https://elegance_commers.test'
+  const BASE_URL = 'http://127.0.0.1:8000'
   const API_URL = `${BASE_URL}/api/products`
   
   // Fetch single product by id

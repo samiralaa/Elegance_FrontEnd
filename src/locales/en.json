@@ -112,6 +112,8 @@
   },
   "home": {
     "categories": "Categories",
-    "brands": "Our Brands"
+    "brands": "Our Brands",
+    "products":"Our Products",
+    "add-to-cart":"Add To Cart"
   }
 } 
