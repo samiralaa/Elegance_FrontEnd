@@ -88,7 +88,7 @@ const products = ref([])
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/website/products/section')
+    const response = await axios.get('https://elegance_commers.test/api/website/products/section')
     if (response.data.status && response.data.data) {
       products.value = response.data.data
     }
@@ -98,12 +98,21 @@ const fetchProducts = async () => {
 }
 
 const getImageUrl = (path) => {
-  return `http://127.0.0.1:8000/storage/${path}`
+  return `https://elegance_commers.test/storage/${path}`
 }
 
-const addToFavorites = (product) => {
-  console.log('Add to Favorites:', product)
-}
+const addToFavorites = async (product) => {
+    try {
+      if (product.isFavorited) {
+        await axios.delete(`/api/favorites/${product.id}`)
+      } else {
+        await axios.post('/api/favorites', { product_id: product.id })
+      }
+      await fetchFavorites() // Refresh the state
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
 
 const addToCart = (product) => {
   console.log('Add to Cart:', product)

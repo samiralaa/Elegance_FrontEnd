@@ -52,9 +52,26 @@
           <a class="cart-btn mx-2">
             <fa icon="shopping-cart" />
           </a>
-          <a class="favorite-btn mx-2">
+          <button class="favorite-btn mx-2" @click="fetchFavorites">
             <fa icon="heart" />
-          </a>
+            <span v-if="favoritesCount > 0" class="favorite-count">{{ favoritesCount }}</span>
+          </button>
+          <div v-if="showFavoritesModal" class="favorites-modal">
+            <div class="modal-content">
+              <h4>My Favorites</h4>
+              <ul v-if="favorites.length">
+                <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
+                  <img :src="favorite.product.images[0]?.path" alt="Product Image" class="product-image" />
+                  <div class="product-info">
+                    <h5>{{ favorite.product.name_en }}</h5>
+                    <p>{{ favorite.product.price }}</p>
+                  </div>
+                </li>
+              </ul>
+              <p v-else>No favorites yet</p>
+              <button class="btn btn-secondary mt-3" @click="showFavoritesModal = false">{{$t('header.close')}}</button>
+            </div>
+          </div>
           <template v-if="!isAuthenticated">
   <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
 </template>
@@ -121,6 +138,9 @@ export default {
       isLoggingOut: false,
       userProfile: null,
       isLoadingProfile: false,
+      favorites: [],
+      favoritesCount: 0,
+      showFavoritesModal: false,
     };
   },
   computed: {
@@ -166,11 +186,30 @@ export default {
     },
     async fetchProducts() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/website/products/section');
+        const response = await axios.get('https://elegance_commers.test/api/website/products/section');
         this.products = response.data.data.slice(0, 5) || [];
         this.filteredProducts = this.products;
       } catch (error) {
         console.error('Error fetching products:', error);
+      }
+    },
+    async fetchFavorites() {
+      if (!this.isAuthenticated) {
+        this.$router.push('/Account/Login');
+        return;
+      }
+      try {
+        const response = await axios.get('https://elegance_commers.test/api/favorites', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.favorites = response.data;
+        this.favoritesCount = this.favorites.length;
+        this.showFavoritesModal = true;
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+        this.$toast.error('Failed to load favorites');
       }
     },
     filterProducts() {
@@ -499,5 +538,95 @@ export default {
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Additional styles omitted for brevity, keep the rest as-is */
+.favorite-count {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #ff4757;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform: scale(1);
+  transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover .favorite-count {
+  transform: scale(1.1);
+}
+
+.favorites-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.favorites-modal .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  color: #8b6b3d;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.favorite-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.favorite-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(5px);
+}
+
+.favorite-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.favorite-item .product-info h5 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.favorite-item .product-info p {
+  margin: 5px 0 0;
+  color: #8b6b3d;
+  font-weight: 500;
+}
 </style>
