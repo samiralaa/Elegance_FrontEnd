@@ -43,7 +43,15 @@
         <h2>{{ $t('LatestProducts.LatestProducts') }}</h2>
       </div>
       <div class="row justify-content-center align-items-center">
-        <el-col v-for="product in products" :key="product.id" :span="6">
+        <el-col
+          v-for="product in products"
+          :key="product.id"
+          :xs="24"
+          :sm="12"
+          :md="8"
+          :lg="6"
+          class="d-flex justify-content-center"
+        >
           <div class="card">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
@@ -61,12 +69,12 @@
                 <router-link :to="`/product/${product.id}`" class="eye-btn btn">
                   <fa icon="eye"></fa>
                 </router-link>
-                <a @click="addToCart(product)" class="cart-btn btn">
+                <button @click="addToCart(product)" class="cart-btn btn">
                   {{ $t('home.add-to-cart') }}
-                </a>
-                <a @click="addToFavorites(product)" class="love-btn btn">
+                </button>
+                <button @click="addToFavorites(product)" class="love-btn btn">
                   <fa icon="heart" /> 
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -197,15 +205,18 @@ onMounted(fetchLatestProducts)
     box-shadow: none !important;
     transition: all 0.2s ease-in;
     z-index: 1;
-    width: fit-content;
+    width: 100%;
+    max-width: 250px;
   }
   .img-container{
     display: flex;
     overflow: hidden;
     border-radius: 50%;
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    aspect-ratio: 1/1;
   }
   .card:hover{
     color: #fff;

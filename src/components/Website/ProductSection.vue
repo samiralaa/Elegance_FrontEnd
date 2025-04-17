@@ -36,8 +36,12 @@
         <h2>{{ $t('home.products') }}</h2>
       </div>
       <div class="row g-4">
-        <el-col v-for="product in products" :key="product.id" :span="6">
-          <div class="card">
+        <div 
+          class="col-6 col-md-4 col-lg-3" 
+          v-for="product in products" 
+          :key="product.id"
+        >
+          <div class="card h-100">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
                 <img 
@@ -51,12 +55,15 @@
                 <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
                   <fa icon="eye"></fa>
                 </router-link>
-                <a @click="addToCart(product)" class="cart-btn btn mx-2">
+                <button @click="addToCart(product)" class="btn cart-btn disable">
                   {{ $t('home.add-to-cart') }}
-                </a>
-                <a @click="addToFavorites(product)" class="love-btn btn mx-2">
+                </button>
+                <button @click="addToCart(product)" class="d-none btn cart-btn enable">
+                  <fa icon="cart-plus"></fa>
+                </button>
+                <button @click="addToFavorites(product)" class="love-btn btn mx-2">
                   <fa icon="heart" /> 
-                </a>
+                </button>
               </div>
             </div>
             <div class="card-body">
@@ -64,8 +71,10 @@
               <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
             </div>
           </div>
-        </el-col>
+        </div>
       </div>
+
+
     </div>
   </div>
 </template>
@@ -121,7 +130,6 @@ onMounted(() => {
   }
 
   .card{
-    flex: 0 0 calc(100% / 4 - 30px);
     padding: 0;
     border: none;
     box-shadow: 0 10px 20px #2334de1a;
@@ -165,6 +173,8 @@ onMounted(() => {
   .card-btns{
     position: absolute;
     display: flex;
+    width: 100%;
+    align-items: center;
     bottom: 0;
     transform: translateY(100px);
     width: 100%;
@@ -199,4 +209,40 @@ onMounted(() => {
   .card:hover .card-title{
     color: #fff;
   }
-  </style>
+  @media (max-width: 1200px) {
+
+    .disable {
+      display: none;
+    }
+    .enable {
+      display: block !important;
+    }
+    
+  }
+  @media (max-width: 768px) {
+    .card-title {
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .card-text {
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    .card .img-container {
+      height: auto;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .card-body {
+      padding: 1rem 0.5rem;
+    }
+    .card-title {
+      font-size: 1rem;
+    }
+    .card-text {
+      font-size: 0.9rem;
+    }
+  }
+
+</style>
