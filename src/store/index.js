@@ -5,17 +5,14 @@ import brands from './modules/brands'
 import currency from './modules/currency'
 import websiteCategories from './modules/websiteCategories'
 
-const API_URL = 'http://127.0.0.1:8000'
+const API_URL = 'https://elegance_commers.test'
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With'
+    'X-Requested-With': 'XMLHttpRequest'
   },
   withCredentials: true
 })

@@ -11,12 +11,12 @@
       <form @submit.prevent="handleSubmit" class="join-form">
         <div class="form-group">
           <label for="email">{{ $t('joinUs.email') }}</label>
-          <input type="email" id="email" v-model="formData.email" required>
+          <input type="email" id="email" v-model="formData.email" required />
         </div>
         <div class="form-group">
           <label for="password">{{ $t('joinUs.password') }}</label>
           <div class="password-input-container">
-            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="formData.password" required>
+            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="formData.password" required />
             <button type="button" class="show-password-btn" @click="togglePassword">
               {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
@@ -27,7 +27,9 @@
         </div>
         <button type="submit" class="submit-btn">{{ $t('joinUs.login') }}</button>
         <div class="register-section">
-          <p>{{ $t('joinUs.notMember') }} <router-link to="/register" class="link">{{ $t('joinUs.registerHere') }}</router-link></p>
+          <p>{{ $t('joinUs.notMember') }}
+            <router-link to="/register" class="link">{{ $t('joinUs.registerHere') }}</router-link>
+          </p>
         </div>
       </form>
     </div>
@@ -35,6 +37,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'JoinUs',
   data() {
@@ -47,12 +51,36 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
-      // Handle form submission logic here
-      console.log('Form submitted:', this.formData)
+    async handleSubmit() {
+      try {
+        const response = await axios.post('https://elegance_commers.test/api/client/login', this.formData);
+
+        if (response.data.status) {
+          const userData = response.data.data;
+
+          // Optionally store token in localStorage
+          localStorage.setItem('auth_token', userData.token);
+          localStorage.setItem('auth_user', JSON.stringify(userData.user));
+
+          // Commit to Vuex (optional, if using Vuex)
+          this.$store.commit('auth/SET_AUTH', userData);
+
+          // Load cart (optional)
+          await this.$store.dispatch('cart/loadCart');
+
+          // Redirect to home page
+          this.$router.push('/');
+        } else {
+          // Handle error if status is false
+          console.error('Login failed: ', response.data.message);
+        }
+      } catch (error) {
+        console.error('Login failed:', error.response?.data?.message || error.message);
+        // Show a user-friendly error message here
+      }
     },
     togglePassword() {
-      this.showPassword = !this.showPassword
+      this.showPassword = !this.showPassword;
     }
   }
 }
@@ -174,92 +202,6 @@ input:focus {
   box-shadow: 0 8px 20px rgba(155, 124, 31, 0.3);
 }
 
-.country-select {
-  padding: 1.2rem;
-  border: 2px solid #E0E0E0;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  width: 100%;
-  font-family: var(--font-body);
-  background-color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-}
-
-.country-select:focus {
-  outline: none;
-  border-color: #9b7c1f;
-  box-shadow: 0 0 0 4px rgba(155, 124, 31, 0.15);
-  background-color: #fff;
-}
-
-.phone-input-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 2px solid #E0E0E0;
-  border-radius: 12px;
-  padding: 0.2rem 1.2rem;
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-.phone-input-container:focus-within {
-  border-color: #9b7c1f;
-  box-shadow: 0 0 0 4px rgba(155, 124, 31, 0.15);
-  background-color: #fff;
-}
-
-.country-code {
-  color: #666;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.phone-input {
-  border: none;
-  padding: 1rem 0;
-  width: 100%;
-  background: transparent;
-}
-
-.phone-input:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-/* RTL Support */
-[dir="rtl"] .join-form {
-  text-align: right;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .join-us-container {
-    grid-template-columns: 1fr;
-  }
-  
-  .banner-section {
-    display: none;
-  }
-  
-  .join-us-content {
-    padding: 2rem;
-  }
-}
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .join-us-container {
-    grid-template-columns: 1fr;
-  }
-  
-  .banner-section {
-    display: none;
-  }
-  
-  .join-us-content {
-    padding: 2rem;
-  }
-}
-
 .password-input-container {
   position: relative;
   width: 100%;
@@ -305,12 +247,28 @@ input:focus {
   color: #666;
 }
 
+/* RTL */
+[dir="rtl"] .join-form {
+  text-align: right;
+}
 [dir="rtl"] .show-password-btn {
   right: auto;
   left: 1rem;
 }
-
 [dir="rtl"] .form-links {
   text-align: left;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .join-us-container {
+    grid-template-columns: 1fr;
+  }
+  .banner-section {
+    display: none;
+  }
+  .join-us-content {
+    padding: 2rem;
+  }
 }
 </style>

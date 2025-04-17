@@ -55,7 +55,25 @@
           <a class="favorite-btn mx-2">
             <fa icon="heart" />
           </a>
-          <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
+          <template v-if="!isAuthenticated">
+  <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
+</template>
+<template v-else>
+  <div class="profile-dropdown">
+    <button class="profile-btn" @click="toggleProfileMenu">
+      <span class="user-name me-2">{{ userName }}</span>
+      <fa icon="user" />
+    </button>
+    <div v-if="showProfileMenu" class="dropdown-menu show">
+      <router-link to="/profile" class="dropdown-item">{{ $t('header.profile') }}</router-link>
+      <router-link to="/orders" class="dropdown-item">{{ $t('header.orders') }}</router-link>
+      <button class="dropdown-item" @click="logout" :disabled="isLoggingOut">
+        <span v-if="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status"></span>
+        {{ $t('header.logout') }}
+      </button>
+    </div>
+  </div>
+</template>
         </div>
       </div>
     </nav>
@@ -99,18 +117,56 @@ export default {
       showSearchDialog: false,
       products: [],
       filteredProducts: [],
+      showProfileMenu: false,
+      isLoggingOut: false,
+      userProfile: null,
+      isLoadingProfile: false,
     };
   },
+  computed: {
+    isAuthenticated() {
+      return localStorage.getItem('auth_token');
+    },
+    userName() {
+      return this.userProfile?.name || '';      
+    }
+  },
+  created() {
+    if (this.isAuthenticated) {
+      this.fetchUserProfile();
+    }
+  },
   methods: {
+    async fetchUserProfile() {
+      try {
+        this.isLoadingProfile = true;
+        const response = await axios.get('api/me', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.userProfile = response.data;
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        this.$toast.error('Failed to load user profile');
+      } finally {
+        this.isLoadingProfile = false;
+      }
+    },
     toggleSearchDialog() {
       this.showSearchDialog = !this.showSearchDialog;
-      if (this.showSearchDialog && this.products.length === 0) {
-        this.fetchProducts();
+      if (this.showSearchDialog) {
+        this.searchQuery = '';
+        if (this.products.length === 0) {
+          this.fetchProducts();
+        } else {
+          this.filteredProducts = this.products;
+        }
       }
     },
     async fetchProducts() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/website/products/section');
+        const response = await axios.get('https://elegance_commers.test/api/website/products/section');
         this.products = response.data.data.slice(0, 5) || [];
         this.filteredProducts = this.products;
       } catch (error) {
@@ -123,22 +179,74 @@ export default {
         product.name_en?.toLowerCase().includes(query)
       );
     },
+    toggleProfileMenu() {
+      this.showProfileMenu = !this.showProfileMenu;
+    },
+    async logout() {
+      try {
+        this.isLoggingOut = true;
+        await axios.post('api/logout', {}, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_user');
+        this.$router.push('/Account/Login');
+        this.showProfileMenu = false;
+        this.$toast.success('Logged out successfully');
+      } catch (error) {
+        console.error('Error during logout:', error);
+        this.$toast.error('Failed to logout. Please try again.');
+      } finally {
+        this.isLoggingOut = false;
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-/* Existing styles ... */
-.search-btn {
+.profile-dropdown {
   position: relative;
-  padding: 1em;
+}
+
+.profile-btn {
   background: transparent;
   border: none;
-  cursor: pointer;
-  isolation: isolate;
-  overflow: hidden;
   color: #8b6b3d;
-  border-radius: 50%;
+  cursor: pointer;
+  padding: 0.5em;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 8px 16px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #8b6b3d;
 }
 
 .custom-search-modal {
@@ -200,7 +308,6 @@ export default {
   color: #8b6b3d;
 }
 
-/* Action Buttons */
 .search-btn,
 .cart-btn,
 .favorite-btn {
@@ -239,96 +346,6 @@ export default {
 
 .search-btn:hover::after,
 .cart-btn:hover::after,
-.favorite-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.search-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
-
-.search-btn:hover {
-  color: #fff;
-}
-
-.search-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.cart-btn {
-  position: relative;
-  padding: 1em;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  isolation: isolate;
-  overflow: hidden;
-  color: #8b6b3d;
-  border-radius: 50%;
-}
-
-.cart-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
-
-.cart-btn:hover {
-  color: #fff;
-}
-
-.cart-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.favorite-btn {
-  position: relative;
-  padding: 1em;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  isolation: isolate;
-  overflow: hidden;
-  color: #8b6b3d;
-  border-radius: 50%;
-}
-
-.favorite-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
-
-.favorite-btn:hover {
-  color: #fff;
-}
-
 .favorite-btn:hover::after {
   transform: translate(-50%, -50%) scale(1);
 }
@@ -392,63 +409,6 @@ export default {
   text-decoration: none;
 }
 
-.main-header {
-  padding: 1rem 0;
-}
-
-.logo img {
-  height: 50px;
-  width: auto;
-}
-
-.main-nav ul {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.main-nav a {
-  color: #333;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.main-nav a:hover,
-.main-nav a.router-link-active {
-  color: #8B6B3D;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-/* .search-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: #333;
-} */
-
-.auth-btn {
-  padding: 0.5rem 1.5rem;
-  background: #8B6B3D;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.auth-btn:hover {
-  background: #725932;
-}
-
-/* RTL Support */
 [dir="rtl"] .top-bar-right {
   flex-direction: row-reverse;
 }
@@ -457,11 +417,9 @@ export default {
   flex-direction: row-reverse;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .main-nav {
     display: none;
-    /* Will be replaced with mobile menu */
   }
 
   .header-actions {

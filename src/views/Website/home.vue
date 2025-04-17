@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" :dir="direction">
     <Header />
     <!-- Hero Section with Ramadan Theme -->
   
@@ -29,9 +29,6 @@
     <Categories />
     <Brands />
     <!-- Featured Products Section -->
-
-
-
     <HomeBrands />
     <Products />
     <LatestProducts />
@@ -44,6 +41,7 @@ import Categories from '@/components/Website/Categories.vue'
 import HomeBrands from '@/components/Website/HomeBrands.vue'
 import Products from '@/components/Website/ProductSection.vue'
 import LatestProducts from '@/components/Website/LatestProducts.vue'
+import i18n from '@/i18n.js'
 
 export default {
   name: 'Home',
@@ -53,6 +51,11 @@ export default {
     HomeBrands,
     LatestProducts,
     Products
+  },
+  computed: {
+    direction() {
+      return i18n.global.locale === 'ar' ? 'rtl' : 'ltr';
+    }
   },
   data() {
     return {

@@ -4,12 +4,12 @@
     rel="stylesheet"
   />
   <Header />
-
-  <div class="product-show ">
+<DirectionSwitcher />
+  <div class="product-show " :dir="direction">
     <el-row :gutter="20" class="product-container full-height-row flex-md-row flex-column-reverse">
       <el-col  :xs="24" :sm="24" :md="12"  :lg="14">
         <div class="product-details">
-          <h1 class="product-title">{{ product.name_ar }}</h1>
+          <h1 class="product-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h1>
 
           <div class="price-block">
             <span class="price-new"
@@ -20,11 +20,11 @@
             >
           </div>
 
-          <div class="description" v-html="product.description_ar"></div>
+          <div class="description" v-html="locale === 'ar' ? product.description_ar : product.description_en"></div>
 
           <div class="quantity-section">
             <div class="quantity-control">
-              <label>الكمية:</label>
+              <label>{{ $t('quantity') }}:</label>
               <el-button size="small" @click="decreaseQty">-</el-button>
               <span class="qty-number">{{ quantity }}</span>
               <el-button size="small" @click="increaseQty">+</el-button>
@@ -33,7 +33,7 @@
 
           <div class="buttons-section">
             <el-button class="add-to-cart" type="primary" size="large" round
-              >إضافة إلى السلة</el-button
+              >{{ $t('add_to_cart') }}</el-button
             >
             <el-button class="favorite-btn" circle size="large">
               <el-icon><i class="el-icon-heart"></i></el-icon>
@@ -74,20 +74,24 @@
 
 <script setup>
 import Header from "@/components/Website/Header.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import axios from "axios";
-
+import DirectionSwitcher from "@/components/DirectionSwitcher.vue";
+const { locale, t } = useI18n();
+const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 const route = useRoute();
 const product = ref({});
 const quantity = ref(1);
+
 const placeholder = "/default-image.jpg";
 const selectedImage = ref(null);
 
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
+      `https://elegance_commers.test/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -102,7 +106,7 @@ const fetchProduct = async () => {
 };
 
 const getImageUrl = (path) => {
-  return `http://127.0.0.1:8000/storage/${path}`;
+  return `https://elegance_commers.test/storage/${path}`;
 };
 
 const increaseQty = () => {
