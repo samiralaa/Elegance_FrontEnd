@@ -63,7 +63,8 @@
                 <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
                   <img :src="getFavoriteProductImage(favorite)" alt="Product Image" class="product-image" />
                   <div class="product-info">
-                    <h5>{{ favorite.product.name_en }}</h5>
+                    <!-- {{ locale === 'ar' ? favorite.product.name_ar : favorite.product.name_en }} -->
+                    <h5>{{ currentLang === 'ar' ? favorite.product.name_ar : favorite.product.name_en }}</h5>
                     <p>{{ favorite.product.price }}</p>
                   </div>
                 </li>
@@ -103,7 +104,7 @@
             <img :src="getProductImage(product)" alt="Product Image" class="product-image" />
 
             <div class="product-info">
-              <h5>{{ product.name_en }}</h5>
+              <h5>{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
               <p>{{ product.price }} {{ product.currency?.name_en }}</p>
             </div>
           </li>
@@ -116,6 +117,7 @@
 </template>
 
 <script>
+
 import axios from 'axios';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
 import { API_URL } from '@/store/index.js';
@@ -146,6 +148,12 @@ export default {
     },
     userName() {
       return this.userProfile?.name || '';
+    },
+    currentLang() {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return localStorage.getItem('lang') || 'en';
+      }
+      return 'en';
     }
   },
   created() {
@@ -217,11 +225,12 @@ export default {
       }
     },
     filterProducts() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredProducts = this.products.filter(product =>
-        product.name_en?.toLowerCase().includes(query)
-      );
-    },
+  const query = this.searchQuery.toLowerCase();
+  this.filteredProducts = this.products.filter(product =>
+    product.name_en?.toLowerCase().includes(query) ||
+    product.name_ar?.toLowerCase().includes(query)
+  );
+},
     toggleProfileMenu() {
       this.showProfileMenu = !this.showProfileMenu;
     },
