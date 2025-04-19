@@ -5,7 +5,8 @@ import brands from './modules/brands'
 import currency from './modules/currency'
 import websiteCategories from './modules/websiteCategories'
 
-const API_URL = 'https://elegance_commers.test'
+
+export const API_URL = 'https://elegance_commers.test';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -30,7 +31,7 @@ export default createStore({
     categories,
     brands,
     currency,
-    websiteCategories
+    websiteCategories,
   },
   state: {
     products: [],

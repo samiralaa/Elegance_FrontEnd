@@ -61,7 +61,7 @@
               <h4>My Favorites</h4>
               <ul v-if="favorites.length">
                 <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
-                  <img :src="favorite.product.images[0]?.path" alt="Product Image" class="product-image" />
+                  <img :src="getFavoriteProductImage(favorite)" alt="Product Image" class="product-image" />
                   <div class="product-info">
                     <h5>{{ favorite.product.name_en }}</h5>
                     <p>{{ favorite.product.price }}</p>
@@ -69,43 +69,39 @@
                 </li>
               </ul>
               <p v-else>No favorites yet</p>
-              <button class="btn btn-secondary mt-3" @click="showFavoritesModal = false">{{$t('header.close')}}</button>
+              <button class="btn btn-secondary mt-3" @click="showFavoritesModal = false">{{ $t('header.close') }}</button>
             </div>
           </div>
           <template v-if="!isAuthenticated">
-  <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
-</template>
-<template v-else>
-  <div class="profile-dropdown">
-    <button class="profile-btn" @click="toggleProfileMenu">
-      <span class="user-name me-2">{{ userName }}</span>
-      <fa icon="user" />
-    </button>
-    <div v-if="showProfileMenu" class="dropdown-menu show">
-      <router-link to="/profile" class="dropdown-item">{{ $t('header.profile') }}</router-link>
-      <router-link to="/orders" class="dropdown-item">{{ $t('header.orders') }}</router-link>
-      <button class="dropdown-item" @click="logout" :disabled="isLoggingOut">
-        <span v-if="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status"></span>
-        {{ $t('header.logout') }}
-      </button>
-    </div>
-  </div>
-</template>
+            <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
+          </template>
+          <template v-else>
+            <div class="profile-dropdown">
+              <button class="profile-btn" @click="toggleProfileMenu">
+                <span class="user-name me-2">{{ userName }}</span>
+                <fa icon="user" />
+              </button>
+              <div v-if="showProfileMenu" class="dropdown-menu show">
+                <router-link to="/profile" class="dropdown-item">{{ $t('header.profile') }}</router-link>
+                <router-link to="/orders" class="dropdown-item">{{ $t('header.orders') }}</router-link>
+                <button class="dropdown-item" @click="logout" :disabled="isLoggingOut">
+                  <span v-if="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                  {{ $t('header.logout') }}
+                </button>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </nav>
     <div v-if="showSearchDialog" class="custom-search-modal">
       <div class="modal-content">
-        <input
-          type="text"
-          class="form-control search-input"
-          placeholder="Search products..."
-          v-model="searchQuery"
-          @input="filterProducts"
-        />
+        <input type="text" class="form-control search-input" placeholder="Search products..." v-model="searchQuery"
+          @input="filterProducts" />
         <ul v-if="filteredProducts.length">
           <li v-for="product in filteredProducts" :key="product.id" class="product-item">
-            <img :src="product.image_url" alt="Product Image" class="product-image" />
+            <img :src="getProductImage(product)" alt="Product Image" class="product-image" />
+
             <div class="product-info">
               <h5>{{ product.name_en }}</h5>
               <p>{{ product.price }} {{ product.currency?.name_en }}</p>
@@ -113,7 +109,7 @@
           </li>
         </ul>
         <p v-else-if="searchQuery">No results found.</p>
-        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">{{$t('header.close')}} </button>
+        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">{{ $t('header.close') }} </button>
       </div>
     </div>
   </header>
@@ -122,6 +118,7 @@
 <script>
 import axios from 'axios';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
+import { API_URL } from '@/store/index.js';
 
 export default {
   name: 'Header',
@@ -148,7 +145,7 @@ export default {
       return localStorage.getItem('auth_token');
     },
     userName() {
-      return this.userProfile?.name || '';      
+      return this.userProfile?.name || '';
     }
   },
   created() {
@@ -157,6 +154,13 @@ export default {
     }
   },
   methods: {
+    getProductImage(product) {
+      return `${API_URL}/${product.images[0]?.path || ''}`;
+    },
+
+    getFavoriteProductImage(fav) {
+      return `${API_URL}/${fav?.product?.images[0]?.path || ''}`;
+    },
     async fetchUserProfile() {
       try {
         this.isLoadingProfile = true;
@@ -243,6 +247,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style scoped>
@@ -264,9 +269,9 @@ export default {
   right: 0;
   top: 100%;
   background: #fff;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   min-width: 200px;
   z-index: 1000;
 }
@@ -552,7 +557,7 @@ export default {
   justify-content: center;
   font-size: 12px;
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transform: scale(1);
   transition: transform 0.2s ease;
 }
@@ -567,7 +572,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -593,8 +598,13 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .favorite-item {
