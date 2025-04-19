@@ -29,7 +29,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="card-btns">
-                <router-link :to="`/product/${product.id}`" class="eye-btn btn">
+                <router-link :to="`/read/products/${product.id}`"  class="eye-btn btn">
                   <fa icon="eye" />
                 </router-link>
                 <button @click="addToCart(product)" class="cart-btn btn">

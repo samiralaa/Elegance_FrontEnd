@@ -29,7 +29,7 @@
               <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
             </div>
             <div class="card-btns">
-              <router-link :to="`/product/${product.id}`" class="btn eye-btn">
+              <router-link :to="`/read/products/${product.id}`" class="btn eye-btn">
                 <fa icon="eye"></fa>
               </router-link>
               <button @click="addToCart(product)" class="btn cart-btn">

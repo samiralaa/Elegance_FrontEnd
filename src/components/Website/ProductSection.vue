@@ -22,7 +22,7 @@
                 />
               </router-link>
               <div class="card-btns">
-                <router-link :to="`/product/${product.id}`" class="eye-btn btn mx-2">
+                <router-link :to="`/read/products/${product.id}`" class="eye-btn btn mx-2">
                   <fa icon="eye"></fa>
                 </router-link>
                 <button @click="addToCart(product)" class="btn cart-btn disable">
