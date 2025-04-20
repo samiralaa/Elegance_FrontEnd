@@ -1,198 +1,201 @@
 <template>
-    <Header/>
-    
-  <div class="checkout-page">
-    <div class="container py-5">
-      <h2 class="mb-4">{{ $t('checkout.title') }}</h2>
-
-      <!-- Checkout Steps -->
-      <div class="checkout-steps mb-4">
-        <div class="step" :class="{ active: currentStep === 1 }">
-          1. {{ $t('checkout.reviewCart') }}
-        </div>
-        <div class="step" :class="{ active: currentStep === 2 }">
-          2. {{ $t('checkout.shippingInfo') }}
-        </div>
-        <div class="step" :class="{ active: currentStep === 3 }">
-          3. {{ $t('checkout.payment') }}
-        </div>
+  <div class="checkout-container">
+    <!-- Progress Stepper -->
+    <div class="stepper">
+      <div class="step" :class="{ active: step >= 1, completed: step > 1 }">
+        <div class="step-number">1</div>
+        <div class="step-label">{{ $t('checkout.cart') }}</div>
       </div>
+      <div class="step-line" :class="{ active: step > 1 }"></div>
+      <div class="step" :class="{ active: step >= 2, completed: step > 2 }">
+        <div class="step-number">2</div>
+        <div class="step-label">{{ $t('checkout.shipping') }}</div>
+      </div>
+      <div class="step-line" :class="{ active: step > 2 }"></div>
+      <div class="step" :class="{ active: step >= 3 }">
+        <div class="step-number">3</div>
+        <div class="step-label">{{ $t('checkout.payment') }}</div>
+      </div>
+    </div>
 
-      <!-- Step 1: Cart Review -->
-      <div v-if="currentStep === 1" class="cart-review">
-        <div class="card">
-          <div class="card-body">
-            <h3 class="card-title mb-4">{{ $t('checkout.cartItems') }}</h3>
-            <div v-if="cartItems.length" class="cart-items">
-              <div v-for="item in cartItems" :key="item.id" class="cart-item">
-                <img :src="getProductImage(item)" :alt="item.product.name_en" class="item-image" />
-                <div class="item-details">
-                  <h5>{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h5>
-                  <p class="text-muted">{{ $t('checkout.quantity') }}: {{ item.quantity }}</p>
-                  <p class="price">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }}</p>
-                </div>
-              </div>
-              <div class="cart-summary mt-4">
-                <div class="d-flex justify-content-between">
-                  <span>{{ $t('checkout.subtotal') }}:</span>
-                  <span>{{ totalCartValue }} {{ cartItems[0]?.currency?.name_en }}</span>
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                  <span>{{ $t('checkout.shipping') }}:</span>
-                  <span>{{ shippingCost }} {{ cartItems[0]?.currency?.name_en }}</span>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-between fw-bold">
-                  <span>{{ $t('checkout.total') }}:</span>
-                  <span>{{ calculateTotal }} {{ cartItems[0]?.currency?.name_en }}</span>
-                </div>
-              </div>
-            </div>
-            <div v-else class="text-center py-4">
-              <p>{{ $t('checkout.emptyCart') }}</p>
-              <router-link to="/products" class="btn btn-primary">{{ $t('checkout.continueShopping') }}</router-link>
+    <!-- Cart Review Step -->
+    <div v-if="step === 1" class="checkout-step">
+      <h2>{{ $t('checkout.reviewCart') }}</h2>
+      <div class="cart-items">
+        <div v-for="item in cartItems" :key="item.id" class="cart-item">
+          <img :src="getProductImage(item)" :alt="item.product.name_en" class="item-image">
+          <div class="item-details">
+            <h3>{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h3>
+            <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }}</p>
+            <div class="quantity-controls">
+              <button @click="updateQuantity(item, -1)" :disabled="item.quantity <= 1">-</button>
+              <span>{{ item.quantity }}</span>
+              <button @click="updateQuantity(item, 1)">+</button>
             </div>
           </div>
-        </div>
-        <div class="d-flex justify-content-between mt-4">
-          <router-link to="/products" class="btn btn-outline-secondary">{{ $t('checkout.back') }}</router-link>
-          <button @click="nextStep" class="btn btn-primary" :disabled="!cartItems.length">{{ $t('checkout.next') }}</button>
-        </div>
-      </div>
-
-      <!-- Step 2: Shipping Information -->
-      <div v-if="currentStep === 2" class="shipping-info">
-        <div class="card">
-          <div class="card-body">
-            <h3 class="card-title mb-4">{{ $t('checkout.shippingDetails') }}</h3>
-            <form @submit.prevent="submitShippingInfo" class="shipping-form">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">{{ $t('checkout.fullName') }}</label>
-                  <input v-model="shippingInfo.fullName" type="text" class="form-control" required />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">{{ $t('checkout.phone') }}</label>
-                  <input v-model="shippingInfo.phone" type="tel" class="form-control" required />
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">{{ $t('checkout.email') }}</label>
-                <input v-model="shippingInfo.email" type="email" class="form-control" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">{{ $t('checkout.address') }}</label>
-                <textarea v-model="shippingInfo.address" class="form-control" rows="3" required></textarea>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">{{ $t('checkout.city') }}</label>
-                  <input v-model="shippingInfo.city" type="text" class="form-control" required />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">{{ $t('checkout.postalCode') }}</label>
-                  <input v-model="shippingInfo.postalCode" type="text" class="form-control" required />
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="d-flex justify-content-between mt-4">
-          <button @click="previousStep" class="btn btn-outline-secondary">{{ $t('checkout.back') }}</button>
-          <button @click="nextStep" class="btn btn-primary">{{ $t('checkout.next') }}</button>
+          <button class="remove-item" @click="removeItem(item.id)">
+            <fa icon="trash" />
+          </button>
         </div>
       </div>
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>{{ $t('checkout.subtotal') }}</span>
+          <span>{{ subtotal }} {{ currency }}</span>
+        </div>
+        <div class="summary-row">
+          <span>{{ $t('checkout.shipping') }}</span>
+          <span>{{ shippingCost }} {{ currency }}</span>
+        </div>
+        <div class="summary-row total">
+          <span>{{ $t('checkout.total') }}</span>
+          <span>{{ total }} {{ currency }}</span>
+        </div>
+      </div>
+      <button class="btn-primary" @click="nextStep" :disabled="!cartItems.length">
+        {{ $t('checkout.continueToShipping') }}
+      </button>
+    </div>
 
-      <!-- Step 3: Payment -->
-      <div v-if="currentStep === 3" class="payment-info">
-        <div class="card">
-          <div class="card-body">
-            <h3 class="card-title mb-4">{{ $t('checkout.paymentMethod') }}</h3>
-            <div class="payment-methods">
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" v-model="paymentMethod" value="card" id="card" />
-                <label class="form-check-label" for="card">
-                  {{ $t('checkout.creditCard') }}
-                </label>
-              </div>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" v-model="paymentMethod" value="cash" id="cash" />
-                <label class="form-check-label" for="cash">
-                  {{ $t('checkout.cashOnDelivery') }}
-                </label>
-              </div>
-            </div>
-
-            <!-- Credit Card Form -->
-            <div v-if="paymentMethod === 'card'" class="card-details mt-4">
-              <div class="mb-3">
-                <label class="form-label">{{ $t('checkout.cardNumber') }}</label>
-                <input v-model="cardInfo.number" type="text" class="form-control" required />
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">{{ $t('checkout.expiryDate') }}</label>
-                  <input v-model="cardInfo.expiry" type="text" class="form-control" placeholder="MM/YY" required />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">{{ $t('checkout.cvv') }}</label>
-                  <input v-model="cardInfo.cvv" type="text" class="form-control" required />
-                </div>
-              </div>
-            </div>
+    <!-- Shipping Details Step -->
+    <div v-if="step === 2" class="checkout-step">
+      <h2>{{ $t('checkout.shippingDetails') }}</h2>
+      <form @submit.prevent="nextStep" class="shipping-form">
+        <div class="form-group">
+          <label for="fullName">{{ $t('checkout.fullName') }}</label>
+          <input 
+            type="text" 
+            id="fullName" 
+            v-model="shippingDetails.fullName" 
+            required
+          >
+        </div>
+        <div class="form-group">
+          <label for="address">{{ $t('checkout.address') }}</label>
+          <textarea 
+            id="address" 
+            v-model="shippingDetails.address" 
+            required
+          ></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">{{ $t('checkout.city') }}</label>
+            <input 
+              type="text" 
+              id="city" 
+              v-model="shippingDetails.city" 
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="postalCode">{{ $t('checkout.postalCode') }}</label>
+            <input 
+              type="text" 
+              id="postalCode" 
+              v-model="shippingDetails.postalCode" 
+              required
+            >
           </div>
         </div>
-        <div class="d-flex justify-content-between mt-4">
-          <button @click="previousStep" class="btn btn-outline-secondary">{{ $t('checkout.back') }}</button>
-          <button @click="placeOrder" class="btn btn-primary">{{ $t('checkout.placeOrder') }}</button>
+        <div class="form-group">
+          <label for="phone">{{ $t('checkout.phone') }}</label>
+          <input 
+            type="tel" 
+            id="phone" 
+            v-model="shippingDetails.phone" 
+            required
+          >
         </div>
+        <div class="button-group">
+          <button type="button" class="btn-secondary" @click="previousStep">
+            {{ $t('checkout.back') }}
+          </button>
+          <button type="submit" class="btn-primary">
+            {{ $t('checkout.continueToPayment') }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Payment Step -->
+    <div v-if="step === 3" class="checkout-step">
+      <h2>{{ $t('checkout.payment') }}</h2>
+      <div class="payment-methods">
+        <div 
+          v-for="method in paymentMethods" 
+          :key="method.id" 
+          class="payment-method"
+          :class="{ active: selectedPaymentMethod === method.id }"
+          @click="selectedPaymentMethod = method.id"
+        >
+          <fa :icon="method.icon" />
+          <span>{{ method.name }}</span>
+        </div>
+      </div>
+      <div class="order-summary">
+        <h3>{{ $t('checkout.orderSummary') }}</h3>
+        <div class="summary-details">
+          <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
+          <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
+          <div class="total-amount">
+            {{ $t('checkout.totalAmount') }}: {{ total }} {{ currency }}
+          </div>
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="btn-secondary" @click="previousStep">
+          {{ $t('checkout.back') }}
+        </button>
+        <button class="btn-primary" @click="placeOrder" :disabled="!selectedPaymentMethod">
+          {{ $t('checkout.placeOrder') }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import { API_URL } from '@/store/index.js';
-import Header from '@/components/Website/Header.vue'
+import axios from 'axios';
 
 export default {
   name: 'Checkout',
-  components: {
-    Header,
-  },
   data() {
     return {
-      currentStep: 1,
+      step: 1,
       cartItems: [],
-      shippingCost: 10,
-      shippingInfo: {
+      shippingDetails: {
         fullName: '',
-        phone: '',
-        email: '',
         address: '',
         city: '',
-        postalCode: ''
+        postalCode: '',
+        phone: ''
       },
-      paymentMethod: 'card',
-      cardInfo: {
-        number: '',
-        expiry: '',
-        cvv: ''
-      }
+      selectedPaymentMethod: null,
+      paymentMethods: [
+        { id: 1, name: 'Credit Card', icon: 'credit-card' },
+        { id: 2, name: 'PayPal', icon: 'paypal' },
+        { id: 3, name: 'Cash on Delivery', icon: 'money-bill' }
+      ],
+      shippingCost: 10
     };
   },
   computed: {
     currentLang() {
       return localStorage.getItem('lang') || 'en';
     },
-    totalCartValue() {
+    currency() {
+      return this.cartItems.length > 0 ? 
+        (this.currentLang === 'ar' ? this.cartItems[0].currency.name_ar : this.cartItems[0].currency.name_en) : '';
+    },
+    subtotal() {
       return this.cartItems.reduce((total, item) => {
         return total + (parseFloat(item.price) * item.quantity);
       }, 0).toFixed(2);
     },
-    calculateTotal() {
-      return (parseFloat(this.totalCartValue) + this.shippingCost).toFixed(2);
+    total() {
+      return (parseFloat(this.subtotal) + this.shippingCost).toFixed(2);
     }
   },
   created() {
@@ -200,14 +203,17 @@ export default {
   },
   methods: {
     getProductImage(item) {
-      return item.images && item.images.length > 0
-        ? `${API_URL}/${item.images[0].path}`
-        : 'path/to/default-image.jpg';
+      if (item.images && Array.isArray(item.images)) {
+        return `${API_URL}/${item.images[0]}`;
+      }
+      return `${API_URL}/images/default.jpg`;
     },
     async fetchCartItems() {
       try {
         const response = await axios.get(`${API_URL}/api/cart-items`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
         });
         this.cartItems = response.data.data.original.data;
       } catch (error) {
@@ -215,29 +221,72 @@ export default {
         this.$toast.error(this.$t('checkout.errorFetchingCart'));
       }
     },
-    nextStep() {
-      if (this.currentStep < 3) {
-        this.currentStep++;
+    async updateQuantity(item, change) {
+      const newQuantity = item.quantity + change;
+      if (newQuantity < 1) {
+        this.$toast.warning(this.$t('checkout.minimumQuantity'));
+        return;
+      }
+    
+      try {
+        const response = await axios.put(`${API_URL}/api/cart-items/${item.id}`, {
+          quantity: newQuantity
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+    
+        if (response.data.success) {
+          item.quantity = newQuantity;
+          this.$toast.success(this.$t('checkout.quantityUpdated'));
+        } else {
+          this.$toast.error(this.$t('checkout.errorUpdatingQuantity'));
+        }
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+        this.$toast.error(this.$t('checkout.errorUpdatingQuantity'));
       }
     },
-    previousStep() {
-      if (this.currentStep > 1) {
-        this.currentStep--;
+    async removeItem(itemId) {
+      try {
+        await axios.delete(`${API_URL}/api/cart-items/${itemId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+        this.$toast.success(this.$t('checkout.itemRemoved'));
+      } catch (error) {
+        console.error('Error removing item:', error);
+        this.$toast.error(this.$t('checkout.errorRemovingItem'));
       }
+    },
+    nextStep() {
+      if (this.step < 3) this.step++;
+    },
+    previousStep() {
+      if (this.step > 1) this.step--;
     },
     async placeOrder() {
       try {
         const orderData = {
-          shipping_info: this.shippingInfo,
-          payment_method: this.paymentMethod,
-          card_info: this.paymentMethod === 'card' ? this.cardInfo : null
+          shipping_details: this.shippingDetails,
+          payment_method: this.selectedPaymentMethod,
+          items: this.cartItems.map(item => ({
+            product_id: item.product.id,
+            quantity: item.quantity,
+            price: item.price
+          }))
         };
 
-        const response = await axios.post(`${API_URL}/api/orders`, orderData, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+        await axios.post(`${API_URL}/api/orders`, orderData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
         });
 
-        this.$toast.success(this.$t('checkout.orderSuccess'));
+        this.$toast.success(this.$t('checkout.orderPlaced'));
         this.$router.push('/orders');
       } catch (error) {
         console.error('Error placing order:', error);
@@ -249,52 +298,77 @@ export default {
 </script>
 
 <style scoped>
-.checkout-page {
-  background-color: #f8f9fa;
-  min-height: 100vh;
+.checkout-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
-.checkout-steps {
+.stepper {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
 }
 
 .step {
-  flex: 1;
-  text-align: center;
-  padding: 1rem;
-  color: #6c757d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
 }
 
-.step.active {
-  color: #8b6b3d;
-  font-weight: 600;
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
 }
 
-.step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 100%;
+.step.active .step-number {
+  background-color: #8b6b3d;
+}
+
+.step.completed .step-number {
+  background-color: #4CAF50;
+}
+
+.step-line {
+  width: 100px;
   height: 2px;
-  background: #dee2e6;
-  transform: translateY(-50%);
-  z-index: 0;
+  background-color: #e0e0e0;
+  margin: 0 1rem;
+  transition: all 0.3s ease;
+}
+
+.step-line.active {
+  background-color: #8b6b3d;
+}
+
+.checkout-step {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-items {
+  margin: 2rem 0;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  position: relative;
 }
 
 .item-image {
@@ -306,68 +380,210 @@ export default {
 }
 
 .item-details {
-  flex: 1;
+  flex-grow: 1;
 }
 
-.price {
-  color: #8b6b3d;
-  font-weight: 600;
+.item-details h3 {
   margin: 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.item-price {
+  color: #8b6b3d;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #8b6b3d;
+  background: transparent;
+  color: #8b6b3d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quantity-controls button:hover {
+  background: #8b6b3d;
+  color: #fff;
+}
+
+.remove-item {
+  background: transparent;
+  border: none;
+  color: #ff4757;
+  cursor: pointer;
+  padding: 0.5rem;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
 }
 
 .cart-summary {
-  background: #f8f9fa;
+  margin: 2rem 0;
   padding: 1rem;
+  background: #f8f9fa;
   border-radius: 8px;
 }
 
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
+
+.summary-row.total {
+  border-top: 1px solid #dee2e6;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
 .shipping-form {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-.payment-methods {
-  max-width: 400px;
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-.card-details {
-  max-width: 500px;
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  border-color: #8b6b3d;
+  outline: none;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.payment-method {
+  padding: 1rem;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.payment-method.active {
+  border-color: #8b6b3d;
+  background: #fff;
+}
+
+.order-summary {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.total-amount {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #8b6b3d;
+  margin-top: 1rem;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background-color: #8b6b3d;
-  border-color: #8b6b3d;
+  background: #8b6b3d;
+  color: #fff;
+  border: none;
 }
 
 .btn-primary:hover {
-  background-color: #725932;
-  border-color: #725932;
+  background: #725932;
 }
 
-.btn-outline-secondary:hover {
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #8b6b3d;
   color: #8b6b3d;
-  border-color: #8b6b3d;
-  background-color: transparent;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
 }
 
 @media (max-width: 768px) {
-  .checkout-steps {
+  .stepper {
     flex-direction: column;
     gap: 1rem;
   }
 
-  .step:not(:last-child)::after {
-    display: none;
+  .step-line {
+    width: 2px;
+    height: 30px;
   }
 
-  .cart-item {
+  .form-row {
     flex-direction: column;
-    text-align: center;
   }
 
-  .item-image {
-    margin-right: 0;
-    margin-bottom: 1rem;
+  .button-group {
+    flex-direction: column-reverse;
+    gap: 1rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
   }
 }
 </style>
