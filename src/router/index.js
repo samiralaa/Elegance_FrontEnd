@@ -11,6 +11,11 @@ import Help from '../views/Help.vue'
 
 const routes = [
   {
+    path: '/checkout',
+    name: 'Checkout',
+    component: () => import('../views/Website/Checkout.vue'),
+  },
+  {
     path: '/otp',
     name: 'Otp',
     component: () => import('@/views/Otp.vue')

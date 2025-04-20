@@ -258,8 +258,16 @@ export default {
     },
 
     getProductImage(item) {
-    return item.images && item.images.length > 0 ? item.images[0].path : 'path/to/default-image.jpg';  // Fallback to a default image if none exists
+    return item.images && item.images.length > 0 ? item.images[0] : 'path/to/default-image.jpg';  // Fallback to a default image if none exists
   },
+
+    checkout() {
+      if (this.cartItems.length === 0) {
+        this.$toast.warning('Your cart is empty.');
+        return;
+      }
+      this.$router.push('/checkout');
+    },
     getProductImage(product) {
       const imagePath = product.images && product.images[0]?.path ? product.images[0].path : '';
       return `${API_URL}/${imagePath}`;
