@@ -222,32 +222,45 @@ export default {
       }
     },
     async updateQuantity(item, change) {
-      const newQuantity = item.quantity + change;
-      if (newQuantity < 1) {
-        this.$toast.warning(this.$t('checkout.minimumQuantity'));
-        return;
+  const newQuantity = item.quantity + change;
+  
+  if (newQuantity < 1) {
+    this.$toast.warning(this.$t('checkout.minimumQuantity'));
+    return;
+  }
+
+  try {
+    const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+      quantity: newQuantity
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        'Content-Type': 'application/json'
       }
-    
-      try {
-        const response = await axios.put(`${API_URL}/api/cart-items/${item.id}`, {
-          quantity: newQuantity
-        }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-          }
-        });
-    
-        if (response.data.success) {
-          item.quantity = newQuantity;
-          this.$toast.success(this.$t('checkout.quantityUpdated'));
-        } else {
-          this.$toast.error(this.$t('checkout.errorUpdatingQuantity'));
-        }
-      } catch (error) {
-        console.error('Error updating quantity:', error);
-        this.$toast.error(this.$t('checkout.errorUpdatingQuantity'));
-      }
-    },
+    });
+
+    if (response.data && response.data.success) {
+      const updatedItem = response.data.data;
+
+      // Update quantity and price from response or fallback
+      item.quantity = updatedItem.quantity ?? newQuantity;
+      item.price = updatedItem.price ?? item.price;
+
+      this.$toast.success(this.$t('checkout.quantityUpdated'));
+
+      // Trigger reactivity to update DOM immediately
+      this.cartItems = [...this.cartItems];
+    } else {
+      const errorMessage = response.data?.message || this.$t('checkout.errorUpdatingQuantity');
+      this.$toast.error(errorMessage);
+    }
+  } catch (error) {
+    console.error('Error updating quantity:', error);
+    const errorMessage = error.response?.data?.message || this.$t('checkout.errorUpdatingQuantity');
+    this.$toast.error(errorMessage);
+  }
+},
+
     async removeItem(itemId) {
       try {
         await axios.delete(`${API_URL}/api/cart-items/${itemId}`, {

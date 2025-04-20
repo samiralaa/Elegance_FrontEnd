@@ -139,18 +139,30 @@
 
         <!-- Cart List -->
         <div class="cart-content overflow-auto" style="max-height: 60vh;">
-
           <ul v-if="cartItems.length" class="list-unstyled">
-            <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2">
-              <img :src="getProductImageToCart(item)" alt="Product Image" class="product-image" />
+  <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2 gap-3">
+    <img :src="getProductImageToCart(item)" alt="Product Image" class="product-image" />
 
-              <div>
-                <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
-                <small class="text-muted">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar :
-                  item.currency.name_en }} × {{ item.quantity }}</small>
-              </div>
-            </li>
-          </ul>
+    <div class="flex-grow-1">
+      <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
+
+      <!-- Quantity and Price -->
+      <div class="d-flex align-items-center gap-2">
+        <small class="text-muted">
+          {{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }} ×
+        </small>
+        <input
+          type="number"
+          v-model.number="item.quantity"
+          @change="updateQuantity(item)"
+          min="1"
+          class="form-control form-control-sm"
+          style="width: 70px;"
+        />
+      </div>
+    </div>
+  </li>
+</ul>
 
           <div v-else class="text-center text-muted py-4">
             🛍️ {{ $t('Cart is empty') }}
@@ -288,6 +300,31 @@ export default {
       }
       this.$router.push('/checkout');
     },
+
+    async updateQuantity(item) {
+    const originalQuantity = item.quantity;
+    try {
+      const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+        quantity: item.quantity
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      });
+      
+      this.totalCartValue = this.calculateTotal();
+      this.$toast.success('Cart updated successfully');
+    } catch (error) {
+      console.error('Failed to update quantity', error);
+      item.quantity = originalQuantity;
+      this.totalCartValue = this.calculateTotal();
+      this.$toast.error('Failed to update cart');
+    }
+  },
+
+  calculateTotal() {
+    return this.cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  },
     async fetchUserProfile() {
       try {
         this.isLoadingProfile = true;
