@@ -127,6 +127,8 @@ const addToCart = async (product) => {
     if (response.data.message) {
       successMessage.value = response.data.message
       showSuccessDialog.value = true
+      // rteurn to home 
+     
     }
   } catch (error) {
     console.error('Cart error:', error)

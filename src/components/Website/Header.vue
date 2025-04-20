@@ -114,6 +114,7 @@
           @input="filterProducts" />
         <ul v-if="filteredProducts.length">
           <li v-for="product in filteredProducts" :key="product.id" class="product-item">
+
             <img :src="getProductImage(product)" alt="Product Image" class="product-image" />
             <div class="product-info">
               <h5>{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
@@ -127,51 +128,56 @@
     </div>
 
     <div v-if="showCartModalFlag" class="modal-overlay d-flex justify-content-center align-items-center">
-  <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
-    
-    <!-- Close Button (Top Right) -->
-    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="showCartModalFlag = false" aria-label="Close"></button>
+      <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
 
-    <!-- Title -->
-    <h4 class="mb-3">🛒 {{ $t('Cart Items') }}</h4>
+        <!-- Close Button (Top Right) -->
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="showCartModalFlag = false"
+          aria-label="Close"></button>
 
-    <!-- Cart List -->
-    <div class="cart-content overflow-auto" style="max-height: 60vh;">
-      <ul v-if="cartItems.length" class="list-unstyled">
-        <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2">
-          <img :src="getProductImage(item)" alt="Product" class="rounded border me-3" style="width: 70px; height: 70px; object-fit: cover;" />
-          <div>
-            <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
-            <small class="text-muted">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }} × {{ item.quantity }}</small>
+        <!-- Title -->
+        <h4 class="mb-3">🛒 {{ $t('Cart Items') }}</h4>
+
+        <!-- Cart List -->
+        <div class="cart-content overflow-auto" style="max-height: 60vh;">
+
+          <ul v-if="cartItems.length" class="list-unstyled">
+            <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2">
+              <img :src="getProductImageToCart(item)" alt="Product Image" class="product-image" />
+
+              <div>
+                <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
+                <small class="text-muted">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar :
+                  item.currency.name_en }} × {{ item.quantity }}</small>
+              </div>
+            </li>
+          </ul>
+
+          <div v-else class="text-center text-muted py-4">
+            🛍️ {{ $t('Cart is empty') }}
           </div>
-        </li>
-      </ul>
+        </div>
 
-      <div v-else class="text-center text-muted py-4">
-        🛍️ {{ $t('Cart is empty') }}
+        <!-- Total Price -->
+        <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
+          <span><strong>{{ $t('Total') }}:</strong></span>
+          <span>
+            {{ totalCartValue }} {{ currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en
+            }}
+          </span>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-secondary" @click="showCartModalFlag = false">
+            {{ $t('Close') }}
+          </button>
+          <button class="btn btn-primary" @click="checkout">
+            {{ $t('Checkout') }}
+          </button>
+        </div>
+
       </div>
     </div>
-
-    <!-- Total Price -->
-    <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
-      <span><strong>{{ $t('Total') }}:</strong></span>
-      <span>
-        {{ totalCartValue }} {{ currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en }}
-      </span>
-    </div>
-
-    <!-- Footer -->
-    <div class="d-flex justify-content-between mt-3">
-      <button class="btn btn-outline-secondary" @click="showCartModalFlag = false">
-        {{ $t('Close') }}
-      </button>
-      <button class="btn btn-primary" @click="checkout">
-        {{ $t('Checkout') }}
-      </button>
-    </div>
-
-  </div>
-</div>
 
 
 
@@ -257,9 +263,23 @@ export default {
         });
     },
 
-    getProductImage(item) {
-    return item.images && item.images.length > 0 ? item.images[0] : 'path/to/default-image.jpg';  // Fallback to a default image if none exists
-  },
+    getProductImage(product) {
+      // Replace with your actual logic if you have product image URLs
+      return product.images.path || '/images/default.jpg';
+    },
+    getProductImage(product) {
+      const imagePath = product.images && product.images[0]?.path ? product.images[0].path : '';
+      return `${API_URL}/${imagePath}`;
+    },
+    getProductImageToCart(item) {
+      if (item.images && Array.isArray(item.images)) {
+        return `${API_URL}/${item.images[0]}`;
+      }
+      return `${API_URL}/images/default.jpg`;
+    },
+    getFavoriteProductImage(fav) {
+      return `${API_URL}/${fav?.product?.images[0]?.path || ''}`;
+    },
 
     checkout() {
       if (this.cartItems.length === 0) {
@@ -267,13 +287,6 @@ export default {
         return;
       }
       this.$router.push('/checkout');
-    },
-    getProductImage(product) {
-      const imagePath = product.images && product.images[0]?.path ? product.images[0].path : '';
-      return `${API_URL}/${imagePath}`;
-    },
-    getFavoriteProductImage(fav) {
-      return `${API_URL}/${fav?.product?.images[0]?.path || ''}`;
     },
     async fetchUserProfile() {
       try {
