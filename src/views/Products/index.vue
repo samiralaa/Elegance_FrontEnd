@@ -38,19 +38,42 @@
         </el-table-column>
         <el-table-column prop="price" :label="$t('Products.Price')" />
         <el-table-column prop="currency.name_en" :label="$t('Products.Currency')" />
-        <el-table-column :label="$t('Products.Actions')" width="200">
+        <el-table-column :label="$t('Products.Actions')" width="250">
           <template #default="{ row }">
             <el-button-group>
               <el-button type="primary" :icon="View" @click="viewProduct(row.id)">{{ $t('Products.View') }}</el-button>
               <el-button type="warning" :icon="Edit" @click="editProduct(row)">{{ $t('Products.Edit') }}</el-button>
               <el-button type="danger" :icon="Delete" @click="deleteProduct(row)">{{ $t('Products.Delete') }}</el-button>
-              <el-button type="danger" :icon="Add" @click="addAmount(row)">{{ $t('add.amount') }}</el-button>
-
+              <el-button type="success" :icon="Plus" @click="addAmount(row)">{{ $t('add.amount') }}</el-button>
             </el-button-group>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
+
+    <!-- Add Amount Dialog -->
+    <el-dialog v-model="showAmountDialog" title="Add Product Amount" width="500px">
+      <el-form :model="amountForm" label-width="100px">
+        <el-form-item label="Unit">
+          <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
+            <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Weight">
+          <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
+        </el-form-item>
+
+        <el-form-item label="Price">
+          <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="showAmountDialog = false">Cancel</el-button>
+        <el-button type="primary" @click="submitAmount">Submit</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -141,6 +164,65 @@ const deleteProduct = async (product) => {
   }
 }
 
+// Add Amount Logic
+const showAmountDialog = ref(false)
+const selectedProduct = ref(null)
+const units = ref([])
+const amountForm = ref({
+  unit_id: '',
+  weight: '',
+  price: '',
+})
+
+const fetchUnits = async () => {
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const res = await axios.get(`${BASE_URL}/api/units`)
+    units.value = res.data.data
+  } catch (err) {
+    console.error('Failed to fetch units:', err)
+    ElMessage.error('Failed to load units')
+  }
+}
+
+const addAmount = (product) => {
+  selectedProduct.value = product
+  amountForm.value = {
+    unit_id: '',
+    weight: '',
+    price: ''
+  }
+  fetchUnits()
+  showAmountDialog.value = true
+}
+
+const submitAmount = async () => {
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+
+    const payload = {
+      product_id: selectedProduct.value.id,
+      unit_id: amountForm.value.unit_id,
+      weight: amountForm.value.weight,
+      price: amountForm.value.price
+    }
+
+    const res = await axios.post(`${BASE_URL}/api/amounts`, payload)
+
+    if (res.data.status) {
+      ElMessage.success('Amount added successfully')
+      showAmountDialog.value = false
+    } else {
+      ElMessage.error(res.data.message || 'Failed to add amount')
+    }
+  } catch (err) {
+    console.error(err)
+    ElMessage.error('Error occurred while saving amount')
+  }
+}
+
 onMounted(() => {
   fetchProducts()
 })
@@ -148,24 +230,45 @@ onMounted(() => {
 
 <style scoped>
 .products-container {
-  padding: 20px;
+  padding: 24px;
+  background-color: #f5f7fa;
+  min-height: 100vh;
 }
 
 .header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  gap: 12px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #303133;
 }
 
 .products-table {
-  margin-top: 20px;
+  background-color: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
 }
 
 .product-image {
   width: 100px;
   height: 60px;
-  border-radius: 4px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ebeef5;
 }
 
 .image-error {
@@ -174,8 +277,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f7fa;
-  border-radius: 4px;
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  border: 1px dashed #dcdfe6;
 }
 
 .image-error .el-icon {
@@ -183,20 +287,77 @@ onMounted(() => {
   color: #909399;
 }
 
+.el-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
 .el-button {
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+  border-radius: 8px;
+  white-space: nowrap;
 }
 
 .el-button:hover {
-  background-color: #409EFF;
+  filter: brightness(0.95);
 }
 
-.el-button-group {
-  display: flex;
-  gap: 10px;
+.el-dialog .el-form-item {
+  margin-bottom: 18px;
 }
 
-.el-button-group .el-button {
-  flex: 1;
+.el-dialog__footer {
+  padding-top: 12px;
+}
+
+.el-form .el-input,
+.el-form .el-select {
+  width: 100%;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header h2 {
+    font-size: 20px;
+  }
+
+  .el-button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .el-button-group .el-button {
+    width: 100%;
+  }
+
+  .products-table {
+    padding: 12px;
+  }
+
+  .product-image,
+  .image-error {
+    width: 80px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h2 {
+    font-size: 18px;
+  }
+
+  .product-image,
+  .image-error {
+    width: 60px;
+    height: 40px;
+  }
 }
 </style>
