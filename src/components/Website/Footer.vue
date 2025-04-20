@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer">
+  <!-- <footer class="footer">
     <div class="container">
       <div class="footer-section">
         <h3>Download App</h3>
@@ -47,7 +47,7 @@
     <div class="footer-bottom">
       <p>Powered by Webenia 2024 ©</p>
     </div>
-  </footer>
+  </footer> -->
 </template>
 
 <script setup>

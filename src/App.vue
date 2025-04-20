@@ -172,12 +172,11 @@ export default {
       { path: '/brands', name: 'common.menu.brands', icon: 'Trophy' },
       { path: '/categories', name: 'common.menu.categories', icon: 'Folder' },
       {
-        name: 'common.menu.addresses',
+        name: 'common.menu.input',
         icon: 'Location',
         children: [
-          { path: '/addresses/list', name: 'common.menu.addresses_list', icon: 'List' },
-          { path: '/addresses/create', name: 'common.menu.addresses_create', icon: 'Plus' },
-          { path: '/addresses/manage', name: 'common.menu.addresses_manage', icon: 'Setting' }
+          { path: '/units/list', name: 'common.menu.units', icon: 'List' },
+        
         ]
       },
       { path: '/orders', name: 'common.menu.orders', icon: 'ShoppingCartFull' },

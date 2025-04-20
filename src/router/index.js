@@ -121,6 +121,18 @@ const routes = [
     path: '/help',
     name: 'Help',
     component: () => import('../views/Help.vue'),
+  },
+  {
+    path: '/units/list',
+    name: 'UnitsList',
+    component: () => import('../views/Dashboard/Units/index.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/units/create',
+    name: 'UnitCreate',
+    component: () => import('../views/Dashboard/Units/CreateUnit.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

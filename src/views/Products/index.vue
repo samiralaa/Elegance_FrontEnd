@@ -44,6 +44,8 @@
               <el-button type="primary" :icon="View" @click="viewProduct(row.id)">{{ $t('Products.View') }}</el-button>
               <el-button type="warning" :icon="Edit" @click="editProduct(row)">{{ $t('Products.Edit') }}</el-button>
               <el-button type="danger" :icon="Delete" @click="deleteProduct(row)">{{ $t('Products.Delete') }}</el-button>
+              <el-button type="danger" :icon="Add" @click="addAmount(row)">{{ $t('add.amount') }}</el-button>
+
             </el-button-group>
           </template>
         </el-table-column>
@@ -179,5 +181,22 @@ onMounted(() => {
 .image-error .el-icon {
   font-size: 24px;
   color: #909399;
+}
+
+.el-button {
+  transition: background-color 0.3s ease;
+}
+
+.el-button:hover {
+  background-color: #409EFF;
+}
+
+.el-button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.el-button-group .el-button {
+  flex: 1;
 }
 </style>

@@ -4,7 +4,7 @@
       <div class="product-showcase">
         <img src="@/assets/images/EleganceLogo.png" alt="Elegance" class="logo">
         <div class="product-image">
-          <img src="@/assets/images/perfume-display.jpg" alt="Luxury Perfume" class="featured-product">
+          <!-- <img src="@/assets/images/perfume-display.jpg" alt="Luxury Perfume" class="featured-product"> -->
         </div>
       </div>
     </div>

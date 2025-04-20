@@ -116,7 +116,8 @@
     "menu": {
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
-    
+      "input": "الإدخال",
+      "units": "الوحدات",
       "brands": "العلامات التجارية",
       "addresses": "العناوين",
       "addresses_list": "قائمة العناوين",
