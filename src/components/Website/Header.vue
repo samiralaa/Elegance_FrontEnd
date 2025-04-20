@@ -49,13 +49,22 @@
           <button class="search-btn mx-2" @click="toggleSearchDialog">
             <fa icon="search" />
           </button>
-          <a class="cart-btn mx-2">
+
+          <!-- 🛒 Cart Button -->
+          <a class="cart-btn mx-2" @click="showCartModal()">
             <fa icon="shopping-cart" />
+            <span v-if="cartCount > 0" class="badge bg-danger">{{ cartCount }}</span>
           </a>
+
+
+
+          <!-- ❤️ Favorite Button -->
           <button class="favorite-btn mx-2" @click="fetchFavorites">
             <fa icon="heart" />
             <span v-if="favoritesCount > 0" class="favorite-count">{{ favoritesCount }}</span>
           </button>
+
+          <!-- Favorites Modal -->
           <div v-if="showFavoritesModal" class="favorites-modal">
             <div class="modal-content">
               <h4>My Favorites</h4>
@@ -63,16 +72,18 @@
                 <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
                   <img :src="getFavoriteProductImage(favorite)" alt="Product Image" class="product-image" />
                   <div class="product-info">
-                    <!-- {{ locale === 'ar' ? favorite.product.name_ar : favorite.product.name_en }} -->
                     <h5>{{ currentLang === 'ar' ? favorite.product.name_ar : favorite.product.name_en }}</h5>
                     <p>{{ favorite.product.price }}</p>
                   </div>
                 </li>
               </ul>
               <p v-else>No favorites yet</p>
-              <button class="btn btn-secondary mt-3" @click="showFavoritesModal = false">{{ $t('header.close') }}</button>
+              <button class="btn btn-secondary mt-3" @click="showFavoritesModal = false">{{ $t('header.close')
+              }}</button>
             </div>
           </div>
+
+          <!-- 👤 Auth Controls -->
           <template v-if="!isAuthenticated">
             <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
           </template>
@@ -95,6 +106,8 @@
         </div>
       </div>
     </nav>
+
+    <!-- 🔍 Search Modal -->
     <div v-if="showSearchDialog" class="custom-search-modal">
       <div class="modal-content">
         <input type="text" class="form-control search-input" placeholder="Search products..." v-model="searchQuery"
@@ -102,7 +115,6 @@
         <ul v-if="filteredProducts.length">
           <li v-for="product in filteredProducts" :key="product.id" class="product-item">
             <img :src="getProductImage(product)" alt="Product Image" class="product-image" />
-
             <div class="product-info">
               <h5>{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
               <p>{{ product.price }} {{ product.currency?.name_en }}</p>
@@ -110,14 +122,65 @@
           </li>
         </ul>
         <p v-else-if="searchQuery">No results found.</p>
-        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">{{ $t('header.close') }} </button>
+        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">{{ $t('header.close') }}</button>
       </div>
     </div>
+
+    <div v-if="showCartModalFlag" class="modal-overlay d-flex justify-content-center align-items-center">
+  <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
+    
+    <!-- Close Button (Top Right) -->
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="showCartModalFlag = false" aria-label="Close"></button>
+
+    <!-- Title -->
+    <h4 class="mb-3">🛒 {{ $t('Cart Items') }}</h4>
+
+    <!-- Cart List -->
+    <div class="cart-content overflow-auto" style="max-height: 60vh;">
+      <ul v-if="cartItems.length" class="list-unstyled">
+        <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2">
+          <img :src="getProductImage(item)" alt="Product" class="rounded border me-3" style="width: 70px; height: 70px; object-fit: cover;" />
+          <div>
+            <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
+            <small class="text-muted">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }} × {{ item.quantity }}</small>
+          </div>
+        </li>
+      </ul>
+
+      <div v-else class="text-center text-muted py-4">
+        🛍️ {{ $t('Cart is empty') }}
+      </div>
+    </div>
+
+    <!-- Total Price -->
+    <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
+      <span><strong>{{ $t('Total') }}:</strong></span>
+      <span>
+        {{ totalCartValue }} {{ currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en }}
+      </span>
+    </div>
+
+    <!-- Footer -->
+    <div class="d-flex justify-content-between mt-3">
+      <button class="btn btn-outline-secondary" @click="showCartModalFlag = false">
+        {{ $t('Close') }}
+      </button>
+      <button class="btn btn-primary" @click="checkout">
+        {{ $t('Checkout') }}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
   </header>
 </template>
 
 <script>
-
 import axios from 'axios';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
 import { API_URL } from '@/store/index.js';
@@ -140,9 +203,19 @@ export default {
       favorites: [],
       favoritesCount: 0,
       showFavoritesModal: false,
+      cartItems: [],
+      cartCount: 0,
+      showCartModalFlag: false,
+
+
     };
   },
   computed: {
+    totalCartValue() {
+      return this.cartItems.reduce((total, item) => {
+        return total + (parseFloat(item.price) * item.quantity);
+      }, 0).toFixed(2);
+    },
     isAuthenticated() {
       return localStorage.getItem('auth_token');
     },
@@ -150,32 +223,55 @@ export default {
       return this.userProfile?.name || '';
     },
     currentLang() {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        return localStorage.getItem('lang') || 'en';
-      }
-      return 'en';
+      return localStorage.getItem('lang') || 'en';
     }
   },
   created() {
+
     if (this.isAuthenticated) {
       this.fetchUserProfile();
+      this.fetchCartItems(); // ⬅️ Fetch cart items on load
     }
   },
   methods: {
-    getProductImage(product) {
-      return `${API_URL}/${product.images[0]?.path || ''}`;
+    showCartModal() {
+      if (!this.isAuthenticated) {
+        this.$router.push('/Account/Login');
+        return;
+      }
+      this.getCartItems(); // fetch data
+      this.showCartModalFlag = true; // show modal
     },
 
+    getCartItems() {
+      const token = localStorage.getItem('token'); // or wherever you store the token
+
+      axios.get('https://elegance_commers.test/api/cart-items', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+      })
+        .then(response => {
+          this.cartItems = response.data.data.original.data;
+        })
+        .catch(error => {
+          console.error("Failed to fetch cart items", error);
+        });
+    },
+
+    getProductImage(item) {
+    return item.images && item.images.length > 0 ? item.images[0].path : 'path/to/default-image.jpg';  // Fallback to a default image if none exists
+  },
+    getProductImage(product) {
+      const imagePath = product.images && product.images[0]?.path ? product.images[0].path : '';
+      return `${API_URL}/${imagePath}`;
+    },
     getFavoriteProductImage(fav) {
       return `${API_URL}/${fav?.product?.images[0]?.path || ''}`;
     },
     async fetchUserProfile() {
       try {
         this.isLoadingProfile = true;
-        const response = await axios.get('api/me', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-          }
+        const response = await axios.get(`${API_URL}/api/me`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
         });
         this.userProfile = response.data;
       } catch (error) {
@@ -183,6 +279,15 @@ export default {
         this.$toast.error('Failed to load user profile');
       } finally {
         this.isLoadingProfile = false;
+      }
+    },
+    async fetchProducts() {
+      try {
+        const response = await axios.get(`${API_URL}/api/website/products/section`);
+        this.products = response.data.data.slice(0, 5) || [];
+        this.filteredProducts = this.products;
+      } catch (error) {
+        console.error('Error fetching products:', error);
       }
     },
     toggleSearchDialog() {
@@ -196,14 +301,12 @@ export default {
         }
       }
     },
-    async fetchProducts() {
-      try {
-        const response = await axios.get('https://elegance_commers.test/api/website/products/section');
-        this.products = response.data.data.slice(0, 5) || [];
-        this.filteredProducts = this.products;
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
+    filterProducts() {
+      const query = this.searchQuery.toLowerCase();
+      this.filteredProducts = this.products.filter(product =>
+        product.name_en?.toLowerCase().includes(query) ||
+        product.name_ar?.toLowerCase().includes(query)
+      );
     },
     async fetchFavorites() {
       if (!this.isAuthenticated) {
@@ -211,9 +314,9 @@ export default {
         return;
       }
       try {
-        const response = await axios.get('https://elegance_commers.test/api/favorites', {
+        const response = await axios.get(`${API_URL}/api/favorites`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
         this.favorites = response.data;
@@ -224,22 +327,29 @@ export default {
         this.$toast.error('Failed to load favorites');
       }
     },
-    filterProducts() {
-  const query = this.searchQuery.toLowerCase();
-  this.filteredProducts = this.products.filter(product =>
-    product.name_en?.toLowerCase().includes(query) ||
-    product.name_ar?.toLowerCase().includes(query)
-  );
-},
+    async fetchCartItems() {
+      try {
+        const response = await axios.get(`${API_URL}/api/cart-items`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.cartItems = response.data;
+        this.cartCount = this.cartItems.length;
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+        this.$toast.error('Failed to load cart items');
+      }
+    },
     toggleProfileMenu() {
       this.showProfileMenu = !this.showProfileMenu;
     },
     async logout() {
       try {
         this.isLoggingOut = true;
-        await axios.post('api/logout', {}, {
+        await axios.post(`${API_URL}/api/logout`, {}, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
         localStorage.removeItem('auth_token');
@@ -248,15 +358,14 @@ export default {
         this.showProfileMenu = false;
         this.$toast.success('Logged out successfully');
       } catch (error) {
-        console.error('Error during logout:', error);
-        this.$toast.error('Failed to logout. Please try again.');
+        console.error('Logout error:', error);
+        this.$toast.error('Logout failed');
       } finally {
         this.isLoggingOut = false;
       }
-    },
-  },
+    }
+  }
 };
-
 </script>
 
 <style scoped>
@@ -647,5 +756,48 @@ export default {
   margin: 5px 0 0;
   color: #8b6b3d;
   font-weight: 500;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1050;
+  backdrop-filter: blur(2px);
+  padding: 1rem;
+}
+
+.cart-modal {
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: fadeInUp 0.3s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cart-content {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.cart-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cart-content::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
 }
 </style>

@@ -1,16 +1,12 @@
-  <template>
+<template>
   <div class="products-section">
     <div class="container">
       <div class="title mt-5">
-        <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
+        <fa class="fa-icon" :icon="['fas','shopping-basket']" />
         <h2>{{ $t('home.products') }}</h2>
       </div>
       <div class="row g-4">
-        <div 
-          class="col-6 col-md-4 col-lg-3" 
-          v-for="product in products" 
-          :key="product.id"
-        >
+        <div class="col-6 col-md-4 col-lg-3" v-for="product in products" :key="product.id">
           <div class="card h-100">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
@@ -23,13 +19,13 @@
               </router-link>
               <div class="card-btns">
                 <router-link :to="`/read/products/${product.id}`" class="eye-btn btn mx-2">
-                  <fa icon="eye"></fa>
+                  <fa icon="eye" />
                 </router-link>
                 <button @click="addToCart(product)" class="btn cart-btn disable">
                   {{ $t('home.add-to-cart') }}
                 </button>
                 <button @click="addToCart(product)" class="d-none btn cart-btn enable">
-                  <fa icon="cart-plus"></fa>
+                  <fa icon="cart-plus" />
                 </button>
                 <button @click="addToFavorites(product)" class="love-btn btn mx-2">
                   <fa icon="heart" /> 
@@ -48,7 +44,7 @@
     <!-- Success Dialog -->
     <el-dialog
       v-model="showSuccessDialog"
-      title=" Success"
+      title="Success"
       width="30%"
       :before-close="() => (showSuccessDialog = false)"
     >
@@ -63,14 +59,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { ElNotification, ElDialog, ElButton } from 'element-plus'
+import { ElNotification } from 'element-plus'
 
-// Reactive state
 const products = ref([])
 const showSuccessDialog = ref(false)
 const successMessage = ref('')
 
-// Fetch products from API
 const fetchProducts = async () => {
   try {
     const response = await axios.get('https://elegance_commers.test/api/website/products/section')
@@ -82,12 +76,8 @@ const fetchProducts = async () => {
   }
 }
 
-// Get full image URL
-const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`
-}
+const getImageUrl = (path) => `https://elegance_commers.test/storage/${path}`
 
-// Add to favorites
 const addToFavorites = async (product) => {
   try {
     const response = await axios.post(
@@ -95,45 +85,59 @@ const addToFavorites = async (product) => {
       { product_id: product.id },
       {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
         }
       }
     )
 
     if (response.data.message) {
       product.isFavorited = !product.isFavorited
-      successMessage.value = response.data.message || 'Product added to favorites'
+      successMessage.value = response.data.message
       showSuccessDialog.value = true
-
-      // ✅ Console log after success
-      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`)
     }
   } catch (error) {
-    console.error('Error adding to favorites:', error)
-
-    if (error.response?.status === 401) {
-      ElNotification({
-        title: '⚠️ Unauthorized',
-        message: 'Please login to add to favorites.',
-        type: 'error',
-      })
-    } else {
-      ElNotification({
-        title: '❌ Error',
-        message: error.response?.data?.message || 'Something went wrong.',
-        type: 'error',
-      })
-    }
+    console.error('Favorite error:', error)
+    ElNotification({
+      title: '⚠️',
+      message: error.response?.data?.message || 'Login required to favorite product',
+      type: 'error'
+    })
   }
 }
 
+const addToCart = async (product) => {
+  try {
+    const payload = {
+      product_id: product.id,
+      quantity: 1,
+      price: product.price,
+    }
 
-// Add to cart
-const addToCart = (product) => {
-  console.log('Add to Cart:', product)
+    if (product.amounts) {
+      console.log('Amounts:', product.amounts);
+      payload.amount_id = product.amount_id
+    }
+
+    const response = await axios.post('https://elegance_commers.test/api/cart-items', payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    })
+
+    if (response.data.message) {
+      successMessage.value = response.data.message
+      showSuccessDialog.value = true
+    }
+  } catch (error) {
+    console.error('Cart error:', error)
+    ElNotification({
+      title: '❌',
+      message: error.response?.data?.message || 'Login required to add to cart',
+      type: 'error'
+    })
+  }
 }
 
-// Load products on component mount
 onMounted(() => {
   fetchProducts()
 })
@@ -165,15 +169,6 @@ onMounted(() => {
   overflow: hidden;
   border-radius: 0.5rem;
   position: relative;
-}
-
-.card:hover {
-  color: #fff;
-}
-
-img {
-  z-index: 0;
-  transition: all 0.2s ease-in-out;
 }
 
 .card:hover img {
@@ -265,10 +260,6 @@ img {
   .card-text {
     text-align: center;
     font-size: 0.95rem;
-  }
-
-  .card .img-container {
-    height: auto;
   }
 }
 
