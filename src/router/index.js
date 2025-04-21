@@ -138,6 +138,11 @@ const routes = [
     name: 'UnitCreate',
     component: () => import('../views/Dashboard/Units/CreateUnit.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/product-listing',
+    name: 'ProductListing',
+    component: () => import('../views/Website/ProductListing.vue')
   }
 ]
 

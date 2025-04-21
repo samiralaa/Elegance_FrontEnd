@@ -32,7 +32,7 @@
               }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/products" class="nav-link" :class="{ active: $route.path === '/products' }">{{
+              <router-link to="/product-listing" class="nav-link" :class="{ active: $route.path === '/product-listing' }">{{
                 $t('header.products') }}</router-link>
             </li>
             <li class="nav-item">

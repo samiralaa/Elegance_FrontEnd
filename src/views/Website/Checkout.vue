@@ -1,4 +1,5 @@
 <template>
+   <Header />
   <div class="checkout-container">
     <!-- Progress Stepper -->
     <div class="stepper">
@@ -158,9 +159,13 @@
 <script>
 import { API_URL } from '@/store/index.js';
 import axios from 'axios';
+import Header from "@/components/Website/Header.vue";
 
 export default {
   name: 'Checkout',
+  components: {
+    Header 
+  },
   data() {
     return {
       step: 1,
