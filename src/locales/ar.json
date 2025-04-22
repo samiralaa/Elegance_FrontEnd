@@ -143,6 +143,13 @@
     }
   },
   "home": {
+    
+    "why": {
+      "fast_delivery": "توصيل سريع وآمن",
+      "guarantee": "ضمان 100٪ على المنتجات",
+      "return_policy": "سياسة إرجاع خلال 24 ساعة",
+      "pro_quality": "جودة احترافية من المستوى التالي"
+    },
     "categories": "الفئات",
     "brands":"العلامات التجارية",
     "products":"المنتجات",
@@ -239,6 +246,33 @@
   "Images": "الصور",
   "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
   "CreateButton": "إنشاء المنتج"
-}
+},
+
+  "Footer": {
+    "DownloadApp": "حمّل التطبيق",
+    "AppStore": "آب ستور",
+    "GooglePlay": "جوجل بلاي",
+    "QuickLink": "روابط سريعة",
+    "PrivacyPolicy": "سياسة الخصوصية",
+    "TermsOfService": "شروط الخدمة",
+    "RefundPolicy": "سياسة الاسترجاع",
+    "Contact": "اتصل بنا",
+    "Account": "الحساب",
+    "LoginRegister": "تسجيل الدخول / التسجيل",
+    "Support": "الدعم",
+    "FullAddress": "37 شارع كوار - النهیان - أبوظبي - الإمارات",
+    "AcceptFor": "نقبل عبر",
+    "PoweredBy": "تم التطوير بواسطة Webenia 2024 ©",
+    "SocialMedia": {
+      "Facebook": "فيسبوك",
+      "Instagram": "إنستجرام",
+      "Tiktok": "تيك توك",
+      "Whatsapp": "واتساب",
+      "Snapchat": "سناب شات",
+      "YouTube": "يوتيوب"
+    }
+  }
+
+
 
 }

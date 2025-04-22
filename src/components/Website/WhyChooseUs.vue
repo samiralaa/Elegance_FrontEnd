@@ -1,72 +1,71 @@
 <template>
-    <section class="why-choose-us">
-        <div class="container">
-            <div class="title mt-5">
-                <fa class="fa-icon" :icon="['fas','shopping-basket']"></fa>
-                <h2>{{ $t('home.why-us') }}</h2>
+  <section class="why-choose-us">
+    <div class="container">
+      <div class="title mt-5">
+        <fa class="fa-icon" :icon="['fas', 'shopping-basket']" />
+        <h2>{{ $t('home.why-us') }}</h2>
+      </div>
+      <div
+        class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 row--20 d-flex justify-content-around"
+      >
+        <div class="col">
+          <div class="service-box card">
+            <div class="icon">
+              <img src="@/assets/images/WhyChooseUs/3.png" class="img-fluid" alt="Service" />
             </div>
-            <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 row--20 d-flex justify-content-around">
-                <div class="col">
-                    <div class="service-box card">
-                        <div class="icon">
-                            <img src="@/assets/images/WhyChooseUs/3.png" class="img-fluid" alt="Service">
-                        </div>
-                        <h6 class="title">Fast &amp; Secure Delivery</h6>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="service-box card">
-                        <div class="icon">
-                            <img src="@/assets/images/WhyChooseUs/2.png" class="img-fluid" alt="Service">
-                        </div>
-                        <h6 class="title">100% Guarantee On Product</h6>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="service-box card">
-                        <div class="icon">
-                            <img src="@/assets/images/WhyChooseUs/icon 1 .png" class="img-fluid" alt="Service">
-                        </div>
-                        <h6 class="title">24 Hour Return Policy</h6>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="service-box card">
-                        <div class="icon">
-                            <img src="@/assets/images/WhyChooseUs/4.png" class="img-fluid" alt="Service">
-                        </div>
-                        <h6 class="title">Next Level Pro Quality</h6>
-                    </div>
-                </div>
-            </div>
+            <h6 class="title">{{ $t('home.why.fast_delivery') }}</h6>
+          </div>
         </div>
-    </section>
-    <div class="axil-poster mt-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 mb--30">
-                    <div class="single-poster">
-                        <a>
-                            <img src="@/assets/images/offers/elegancewebsiteleft.png">
-                            <!-- End .poster-content -->
-                        </a>
-                    </div>
-                    <!-- End .single-poster -->
-                </div>
-                <div class="col-lg-6 mb--30">
-                    <div class="single-poster">
-                        <a>
-                            <img src="@/assets/images/offers/elegancewebsiteright.png">
-
-                            <!-- End .poster-content -->
-                        </a>
-                    </div>
-                    <!-- End .single-poster -->
-                </div>
+        <div class="col">
+          <div class="service-box card">
+            <div class="icon">
+              <img src="@/assets/images/WhyChooseUs/2.png" class="img-fluid" alt="Service" />
             </div>
+            <h6 class="title">{{ $t('home.why.guarantee') }}</h6>
+          </div>
         </div>
+        <div class="col">
+          <div class="service-box card">
+            <div class="icon">
+              <img src="@/assets/images/WhyChooseUs/icon 1 .png" class="img-fluid" alt="Service" />
+            </div>
+            <h6 class="title">{{ $t('home.why.return_policy') }}</h6>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-box card">
+            <div class="icon">
+              <img src="@/assets/images/WhyChooseUs/4.png" class="img-fluid" alt="Service" />
+            </div>
+            <h6 class="title">{{ $t('home.why.pro_quality') }}</h6>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <div class="axil-poster mt-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mb--30">
+          <div class="single-poster">
+            <a>
+              <img src="@/assets/images/offers/elegancewebsiteleft.png" />
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 mb--30">
+          <div class="single-poster">
+            <a>
+              <img src="@/assets/images/offers/elegancewebsiteright.png" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
 
 <script>
 export default {

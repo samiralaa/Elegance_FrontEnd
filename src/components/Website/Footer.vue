@@ -2,45 +2,43 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-section col-lg-3 col-sm-6">
-        <h3>Download App</h3>
+        <h3>{{ $t('Footer.DownloadApp') }}</h3>
         <div class="app-links d-flex justify-content-center align-items-center">
-          <div class="d-flex flex-column justify-content-center align-items-center flex-column">
-            <a href=""><img src="@/assets/images/app-store.png" alt="App Store" /></a>
-            <a href=""><img src="@/assets/images/google-play.png" alt="Google Play" /></a>
+          <div class="d-flex flex-column justify-content-center align-items-center">
+            <a href=""><img src="@/assets/images/app-store.png" :alt="$t('Footer.AppStore')" /></a>
+            <a href=""><img src="@/assets/images/google-play.png" :alt="$t('Footer.GooglePlay')" /></a>
           </div>
           <img src="@/assets/images/qr-code.png" alt="QR Code" />
         </div>
       </div>
       <div class="footer-section col-lg-3 col-sm-6">
-        <h3>Quick Link</h3>
+        <h3>{{ $t('Footer.QuickLink') }}</h3>
         <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Refund Policy</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="#">{{ $t('Footer.PrivacyPolicy') }}</a></li>
+          <li><a href="#">{{ $t('Footer.TermsOfService') }}</a></li>
+          <li><a href="#">{{ $t('Footer.RefundPolicy') }}</a></li>
+          <li><a href="#">{{ $t('Footer.Contact') }}</a></li>
         </ul>
       </div>
       <div class="footer-section col-lg-3 col-sm-6">
-        <h3>Account</h3>
+        <h3>{{ $t('Footer.Account') }}</h3>
         <ul>
-          <li><a href="#">Login / Register</a></li>
+          <li><a href="#">{{ $t('Footer.LoginRegister') }}</a></li>
         </ul>
       </div>
       <div class="footer-section col-lg-3 col-sm-6">
-        <h3>Support</h3>
+        <h3>{{ $t('Footer.Support') }}</h3>
         <ul>
           <li class="address">
-            <fa icon="location-dot" class="fa"></fa>
-            <a href="">
-              37 Kwar St - Al Nahyan - E20-02 <br> - Abu Dhabi - United Arab Emirates
-            </a>
+            <fa icon="location-dot" class="fa" />
+            <a href="">{{ $t('Footer.FullAddress') }}</a>
           </li>
           <li class="email">
-            <fa icon="envelope" class="fa"></fa>
+            <fa icon="envelope" class="fa" />
             <a href="mailto:eleganceoud22@gmail.com">eleganceoud22@gmail.com</a>
           </li>
           <li class="phone">
-            <fa icon="phone" class="fa"></fa>
+            <fa icon="phone" class="fa" />
             <a href="">+971 54 488 7138</a>
           </li>
         </ul>
@@ -48,7 +46,7 @@
     </div>
     <div class="footer-bottom d-flex justify-content-between align-items-center">
       <div class="footer-section d-flex justify-content-center align-items-center">
-        <h6>Accept For</h6>
+        <h6>{{ $t('Footer.AcceptFor') }}</h6>
         <div class="payment-methods pb-2 ps-2">
           <img src="@/assets/images/payment/cart-5.png" alt="Visa" />
           <img src="@/assets/images/payment/cart-4.png" alt="Apple Pay" />
@@ -57,19 +55,31 @@
           <img src="@/assets/images/payment/cart-1.png" alt="Tabby" />
         </div>
       </div>
-      <p>Powered by Webenia 2024 ©</p>
+      <p>{{ $t('Footer.PoweredBy') }}</p>
       <div class="social-media d-flex justify-content-center align-items-center">
-        <a href="https://www.facebook.com/eleganceouduae?mibextid=ZbWKwL"><fa icon="fab fa-facebook-f"></fa></a>
-        <a href="https://www.instagram.com/eleganceoud?igsh=eWZicHkwY29weWlv"><fa icon="fab fa-instagram"></fa></a>
-        <a href="https://www.tiktok.com/@eleganceouduae?lang=en"><fa icon="fab fa-tiktok"></fa></a>
-        <a href="https://wa.me/+971544887138"><fa icon="fa-brands fa-whatsapp"></fa></a>
-        <a href="https://www.snapchat.com/add/elegant_oud"><fa icon="fa-brands fa-snapchat"></fa></a>
-        <a href="https://www.youtube.com/@eleganceoud"><fa icon="fa-brands fa-youtube"></fa></a>
+        <a href="https://www.facebook.com/eleganceouduae?mibextid=ZbWKwL">
+          <fa icon="fab fa-facebook-f" :title="$t('Footer.SocialMedia.Facebook')" />
+        </a>
+        <a href="https://www.instagram.com/eleganceoud?igsh=eWZicHkwY29weWlv">
+          <fa icon="fab fa-instagram" :title="$t('Footer.SocialMedia.Instagram')" />
+        </a>
+        <a href="https://www.tiktok.com/@eleganceouduae?lang=en">
+          <fa icon="fab fa-tiktok" :title="$t('Footer.SocialMedia.Tiktok')" />
+        </a>
+        <a href="https://wa.me/+971544887138">
+          <fa icon="fab fa-whatsapp" :title="$t('Footer.SocialMedia.Whatsapp')" />
+        </a>
+        <a href="https://www.snapchat.com/add/elegant_oud">
+          <fa icon="fab fa-snapchat" :title="$t('Footer.SocialMedia.Snapchat')" />
+        </a>
+        <a href="https://www.youtube.com/@eleganceoud">
+          <fa icon="fab fa-youtube" :title="$t('Footer.SocialMedia.YouTube')" />
+        </a>
       </div>
     </div>
   </footer>
-
 </template>
+
 
 <script setup>
 

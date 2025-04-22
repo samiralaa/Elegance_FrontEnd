@@ -135,6 +135,12 @@
     }
   },
   "home": {
+  "why": {
+    "fast_delivery": "Fast & Secure Delivery",
+    "guarantee": "100% Guarantee On Product",
+    "return_policy": "24 Hour Return Policy",
+    "pro_quality": "Next Level Pro Quality"
+  },
     "categories": "Categories",
     "brands": "Our Brands",
     "products":"Our Products",
@@ -223,5 +229,33 @@
     "No": "No",
     "DeletedSuccessfully": "Product deleted successfully",
     "NA": "N/A"
+  },
+  "Footer": {
+  "DownloadApp": "Download App",
+  "AppStore": "App Store",
+  "GooglePlay": "Google Play",
+  "QuickLink": "Quick Links",
+  "PrivacyPolicy": "Privacy Policy",
+  "TermsOfService": "Terms of Service",
+  "RefundPolicy": "Refund Policy",
+  "Contact": "Contact",
+  "Account": "Account",
+  "LoginRegister": "Login / Register",
+  "Support": "Support",
+  "Address": "Address",
+  "FullAddress": "37 Kwar St - Al Nahyan - E20-02 - Abu Dhabi - United Arab Emirates",
+  "Email": "Email",
+  "Phone": "Phone",
+  "AcceptFor": "Accept For",
+  "PoweredBy": "Powered by Webenia 2024 ©",
+  "FollowUs": "Follow us on",
+  "SocialMedia": {
+    "Facebook": "Facebook",
+    "Instagram": "Instagram",
+    "Tiktok": "TikTok",
+    "Whatsapp": "WhatsApp",
+    "Snapchat": "Snapchat",
+    "YouTube": "YouTube"
   }
+}
 }
