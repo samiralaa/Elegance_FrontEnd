@@ -26,8 +26,8 @@
         </div>
         <div class="slider-wrapper">
           <div class="scrollers ms-3 mb-2">
-            <button class="btn nav-button right" @click="scrollRight">&#8594;</button>
             <button class="btn nav-button left" @click="scrollLeft">&#8592;</button>
+            <button class="btn nav-button right" @click="scrollRight">&#8594;</button>
           </div>
           <div class="slider" ref="slider">
             <div v-for="category in categories" :key="category.id" class="card">
@@ -171,7 +171,7 @@ export default {
   cursor: pointer;
   color: #fff;
   z-index: 1;
-  
+  padding-top: 0;
 }
 
 .nav-button:hover{
