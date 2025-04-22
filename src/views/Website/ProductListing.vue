@@ -1,12 +1,12 @@
 <template>
      <Header />
-    <div class="shop-container" dir="rtl">
+    <div class="shop-container" :dir="direction">
       <!-- Sidebar Filters -->
       <aside class="sidebar">
-        <h3 class="sidebar-title">Categories</h3>
+        <h3 class="sidebar-title">{{ t('categories') }}</h3>
         <div v-for="cat in categories" :key="cat.id" class="filter-item">
           <label class="checkbox-container">
-            {{ cat.name }}
+            {{ $i18n.locale === 'ar' ? cat.name_ar : cat.name_en }}
             <input
               type="checkbox"
               v-model="selectedCategories"
@@ -16,8 +16,24 @@
           </label>
         </div>
   
-        <h3 class="sidebar-title">PRICE</h3>
-       
+        <h3 class="sidebar-title">{{ t('price') }}</h3>
+        <div class="price-range">
+          <input
+            type="range"
+            v-model="priceRange.min"
+            :min="priceRangeLimit.min"
+            :max="priceRangeLimit.max"
+          />
+          <input
+            type="range"
+            v-model="priceRange.max"
+            :min="priceRangeLimit.min"
+            :max="priceRangeLimit.max"
+          />
+          <div class="price-values">
+            <span>{{ priceRange.max }} - {{ priceRange.min }} :{{ t('price') }}</span>
+          </div>
+        </div>
       </aside>
   
       <!-- Product Grid -->
@@ -40,7 +56,7 @@
             </div>
           </div>
           <div class="product-info">
-            <h4>{{ product.name }}</h4>
+            <h4>{{ $i18n.locale === 'ar' ? product.name_ar : product.name_en }}</h4>
             <div class="prices">
               <span class="price-new">{{ product.price }} {{ product.currency?.name_en || 'AED' }}</span>
               <span v-if="product.old_price" class="price-old">{{ product.old_price }}</span>
@@ -53,13 +69,13 @@
     <!-- Success Dialog -->
     <el-dialog
       v-model="showSuccessDialog"
-      title="Success"
+      :title="t('success')"
       width="30%"
       :before-close="() => (showSuccessDialog = false)"
     >
       <span>{{ successMessage }}</span>
       <template #footer>
-        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
+        <el-button type="primary" @click="showSuccessDialog = false">{{ t('ok') }}</el-button>
       </template>
     </el-dialog>
   </template>
@@ -69,7 +85,9 @@
   import axios from 'axios'
   import { ElNotification } from 'element-plus'
   import Header from "@/components/Website/Header.vue";
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const categories = ref([])
   const products = ref([])
   const showSuccessDialog = ref(false)
@@ -79,12 +97,12 @@
   const priceRange = ref({ min: 0, max: 5000 })
   const priceRangeLimit = { min: 0, max: 5000 }
   
-  const getImageUrl = (path) => `http://127.0.0.1:8000/storage/${path}`
+  const getImageUrl = (path) => `https://elegance_commers.test/storage/${path}`
 
   const addToFavorites = async (product) => {
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/favorites',
+        'https://elegance_commers.test/api/favorites',
         { product_id: product.id },
         {
           headers: {
@@ -120,7 +138,7 @@
         payload.amount_id = product.amount_id
       }
 
-      const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+      const response = await axios.post('https://elegance_commers.test/api/cart-items', payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         },
@@ -142,7 +160,7 @@
   
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/website')
+      const res = await axios.get('https://elegance_commers.test/api/website')
       categories.value = res.data.data || []
     } catch (err) {
       console.error('Error loading categories', err)
@@ -151,7 +169,7 @@
   
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/website/products/section')
+      const res = await axios.get('https://elegance_commers.test/api/website/products/section')
       products.value = res.data.data || []
     } catch (err) {
       console.error('Error loading products', err)

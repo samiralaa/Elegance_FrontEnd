@@ -28,7 +28,7 @@
           </div>
 
           <div class="buttons-section">
-            <el-button class="add-to-cart" type="primary" size="large" round
+            <el-button class="add-to-cart" type="primary" size="large" round @click="addToCart"
               >{{ $t('add_to_cart') }}</el-button
             >
             <el-button class="favorite-btn" circle size="large">
@@ -74,6 +74,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import axios from "axios";
+import { ElNotification } from 'element-plus'
 const { locale, t } = useI18n();
 const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 const route = useRoute();
@@ -86,7 +87,7 @@ const selectedImage = ref(null);
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
+      `https://elegance_commers.test/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -100,7 +101,7 @@ const fetchProduct = async () => {
 };
 
 const getImageUrl = (path) => {
-  return `http://127.0.0.1:8000/storage/${path}`;
+  return `https://elegance_commers.test/storage/${path}`;
 };
 
 const increaseQty = () => {
@@ -116,6 +117,36 @@ const setSelectedImage = (path) => {
 };
 
 onMounted(fetchProduct);
+const addToCart = async () => {
+  try {
+    const payload = {
+      product_id: product.value.id,
+      quantity: quantity.value,
+      price: product.value.price,
+    };
+    if (product.value.amounts) {
+      payload.amount_id = product.value.amount_id;
+    }
+    const response = await axios.post('https://elegance_commers.test/api/cart-items', payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    });
+    if (response.data.message) {
+      ElNotification({
+        title: t('success'),
+        message: response.data.message,
+        type: 'success',
+      });
+    }
+  } catch (error) {
+    ElNotification({
+      title: '❌',
+      message: error.response?.data?.message || t('add_to_cart_error') || 'Login required to add to cart',
+      type: 'error',
+    });
+  }
+};
 </script>
 
 <style scoped>
