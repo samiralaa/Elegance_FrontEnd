@@ -6,7 +6,7 @@ import currency from './modules/currency'
 import websiteCategories from './modules/websiteCategories'
 
 
-export const API_URL = 'http://127.0.0.1:8000';
+export const API_URL = 'https://elegance_commers.test';
 
 const api = axios.create({
   baseURL: API_URL,

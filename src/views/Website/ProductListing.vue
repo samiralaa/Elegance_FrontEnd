@@ -97,12 +97,12 @@
   const priceRange = ref({ min: 0, max: 5000 })
   const priceRangeLimit = { min: 0, max: 5000 }
   
-  const getImageUrl = (path) => `http://127.0.0.1:8000/storage/${path}`
+  const getImageUrl = (path) => `https://elegance_commers.test/storage/${path}`
 
   const addToFavorites = async (product) => {
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/favorites',
+        'https://elegance_commers.test/api/favorites',
         { product_id: product.id },
         {
           headers: {
@@ -138,7 +138,7 @@
         payload.amount_id = product.amount_id
       }
 
-      const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+      const response = await axios.post('https://elegance_commers.test/api/cart-items', payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         },
@@ -160,7 +160,7 @@
   
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/website')
+      const res = await axios.get('https://elegance_commers.test/api/website')
       categories.value = res.data.data || []
     } catch (err) {
       console.error('Error loading categories', err)
@@ -169,7 +169,7 @@
   
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/website/products/section')
+      const res = await axios.get('https://elegance_commers.test/api/website/products/section')
       products.value = res.data.data || []
     } catch (err) {
       console.error('Error loading products', err)
