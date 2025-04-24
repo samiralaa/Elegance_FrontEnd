@@ -35,6 +35,12 @@ const routes = [
     name: 'ProductShowHomePage',
     component: () => import('../views/Website/showProduct.vue') 
   },
+
+  {
+    path:'/about',
+    name:'About',
+    component: () => import('../views/Website/About.vue'),
+  },
   {
     path: '/dashboard',
     name: 'Dashboard',
@@ -110,10 +116,11 @@ const routes = [
     component: () => import('../views/Analytics.vue'),
     meta: { requiresAuth: true }
   },
+
   {
     path: '/settings',
     name: 'Settings',
-    component: () => import('../views/Settings.vue'),
+    component: () => import('../views/Dashboard/Settings.vue'),
     meta: { requiresAuth: true }
   },
   {

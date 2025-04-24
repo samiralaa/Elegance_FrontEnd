@@ -16,7 +16,7 @@
           </label>
         </div>
   
-        <h3 class="sidebar-title">{{ t('price') }}</h3>
+        <h3 class="sidebar-title">{{ t('price') }} </h3>
         <div class="price-range">
           <input
             type="range"
