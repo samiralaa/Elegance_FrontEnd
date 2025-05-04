@@ -1,189 +1,306 @@
 <template>
-  <div class="settings-container p-6">
-    <h1 class="text-2xl font-semibold mb-6">Website Settings</h1>
+  <div class="container py-5">
+    <div class="card shadow rounded-4 p-4 border-0">
+      <h2 class="mb-4 text-center fw-bold">إعدادات الموقع</h2>
 
-    <!-- Module Toggles -->
-    <section class="mb-8 p-4 border rounded-lg shadow-sm">
-      <h2 class="text-xl font-medium mb-4">Module Management</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="flex items-center justify-between p-3 border rounded">
-          <label for="categories-toggle" class="font-medium">Categories</label>
-          <input type="checkbox" id="categories-toggle" v-model="settings.modules.categories" class="toggle-switch" />
-        </div>
-        <div class="flex items-center justify-between p-3 border rounded">
-          <label for="products-toggle" class="font-medium">Products</label>
-          <input type="checkbox" id="products-toggle" v-model="settings.modules.products" class="toggle-switch" />
-        </div>
-        <div class="flex items-center justify-between p-3 border rounded">
-          <label for="blog-toggle" class="font-medium">Blog</label>
-          <input type="checkbox" id="blog-toggle" v-model="settings.modules.blog" class="toggle-switch" />
-        </div>
-        <!-- Add more module toggles as needed -->
-      </div>
-    </section>
-
-    <!-- Theme Selection -->
-    <section class="mb-8 p-4 border rounded-lg shadow-sm">
-      <h2 class="text-xl font-medium mb-4">Appearance</h2>
-      <div class="flex items-center space-x-4">
-        <label class="font-medium">Theme:</label>
-        <div class="flex space-x-3">
-          <label class="flex items-center">
-            <input type="radio" name="theme" value="light" v-model="settings.theme" class="mr-1">
-            Light
-          </label>
-          <label class="flex items-center">
-            <input type="radio" name="theme" value="dark" v-model="settings.theme" class="mr-1">
-            Dark
-          </label>
-          <label class="flex items-center">
-            <input type="radio" name="theme" value="custom" v-model="settings.theme" class="mr-1">
-            Custom
-          </label>
+      <div v-if="loading" class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">جار التحميل...</span>
         </div>
       </div>
-      <!-- Add custom theme options if 'custom' is selected -->
-    </section>
 
-    <!-- Global Configurations -->
-    <section class="mb-8 p-4 border rounded-lg shadow-sm">
-      <h2 class="text-xl font-medium mb-4">Global Configuration</h2>
-      <div class="space-y-4">
-        <div class="flex flex-col">
-          <label for="site-title" class="mb-1 font-medium">Site Title</label>
-          <input type="text" id="site-title" v-model="settings.global.siteTitle" class="p-2 border rounded" />
+      <form v-else @submit.prevent="saveSettings">
+        <!-- Category setting -->
+        <div class="form-group mb-4">
+          <label class="form-label fw-semibold mb-2">عرض التصنيفات (Category)</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showCategoryTrue"
+                :value="true"
+                v-model="settings.show_category"
+              />
+              <label class="form-check-label" for="showCategoryTrue">تفعيل</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showCategoryFalse"
+                :value="false"
+                v-model="settings.show_category"
+              />
+              <label class="form-check-label" for="showCategoryFalse">تعطيل</label>
+            </div>
+          </div>
+          <small
+            class="d-block mt-2 fw-medium"
+            :class="settings.show_category ? 'text-success' : 'text-danger'"
+          >
+            الحالة الحالية: {{ settings.show_category ? 'مفعّل' : 'معطّل' }}
+          </small>
         </div>
-        <div class="flex flex-col">
-          <label for="site-logo" class="mb-1 font-medium">Logo URL</label>
-          <input type="text" id="site-logo" v-model="settings.global.logoUrl" placeholder="Enter URL or path to logo" class="p-2 border rounded" />
-          <!-- Consider adding a file upload component here -->
-        </div>
-        <div class="flex flex-col">
-          <label for="contact-email" class="mb-1 font-medium">Contact Email</label>
-          <input type="email" id="contact-email" v-model="settings.global.contactEmail" class="p-2 border rounded" />
-        </div>
-        <div class="flex flex-col">
-          <label for="homepage-layout" class="mb-1 font-medium">Homepage Layout</label>
-          <select id="homepage-layout" v-model="settings.global.homepageLayout" class="p-2 border rounded bg-white">
-            <option value="default">Default</option>
-            <option value="featured-products">Featured Products</option>
-            <option value="latest-blog">Latest Blog Posts</option>
-            <!-- Add more layout options -->
-          </select>
-        </div>
-      </div>
-    </section>
 
-    <div class="flex justify-end mt-6">
-      <button @click="saveSettings" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Save Settings
-      </button>
+        <!-- Brand setting -->
+        <div class="form-group mb-4">
+          <label class="form-label fw-semibold mb-2">عرض الماركات (Brand)</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showBrandTrue"
+                :value="true"
+                v-model="settings.show_brand"
+              />
+              <label class="form-check-label" for="showBrandTrue">تفعيل</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showBrandFalse"
+                :value="false"
+                v-model="settings.show_brand"
+              />
+              <label class="form-check-label" for="showBrandFalse">تعطيل</label>
+            </div>
+          </div>
+          <small
+            class="d-block mt-2 fw-medium"
+            :class="settings.show_brand ? 'text-success' : 'text-danger'"
+          >
+            الحالة الحالية: {{ settings.show_brand ? 'مفعّل' : 'معطّل' }}
+          </small>
+        </div>
+
+        <!-- Our Products setting -->
+        <div class="form-group mb-4">
+          <label class="form-label fw-semibold mb-2">عرض المنتجات لدينا (Our Products)</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showOurProductsTrue"
+                :value="true"
+                v-model="settings.show_our_products"
+              />
+              <label class="form-check-label" for="showOurProductsTrue">تفعيل</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showOurProductsFalse"
+                :value="false"
+                v-model="settings.show_our_products"
+              />
+              <label class="form-check-label" for="showOurProductsFalse">تعطيل</label>
+            </div>
+          </div>
+          <small
+            class="d-block mt-2 fw-medium"
+            :class="settings.show_our_products ? 'text-success' : 'text-danger'"
+          >
+            الحالة الحالية: {{ settings.show_our_products ? 'مفعّل' : 'معطّل' }}
+          </small>
+        </div>
+
+        <!-- Latest Products setting -->
+        <div class="form-group mb-4">
+          <label class="form-label fw-semibold mb-2">عرض المنتجات الجديدة (Latest Products)</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showLatestProductsTrue"
+                :value="true"
+                v-model="settings.show_latest_products"
+              />
+              <label class="form-check-label" for="showLatestProductsTrue">تفعيل</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showLatestProductsFalse"
+                :value="false"
+                v-model="settings.show_latest_products"
+              />
+              <label class="form-check-label" for="showLatestProductsFalse">تعطيل</label>
+            </div>
+          </div>
+          <small
+            class="d-block mt-2 fw-medium"
+            :class="settings.show_latest_products ? 'text-success' : 'text-danger'"
+          >
+            الحالة الحالية: {{ settings.show_latest_products ? 'مفعّل' : 'معطّل' }}
+          </small>
+        </div>
+
+        <!-- Best Selling Products setting -->
+        <div class="form-group mb-4">
+          <label class="form-label fw-semibold mb-2">عرض المنتجات الأكثر مبيعًا (Best Selling Products)</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showBestSellingProductsTrue"
+                :value="true"
+                v-model="settings.show_best_selling_products"
+              />
+              <label class="form-check-label" for="showBestSellingProductsTrue">تفعيل</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                id="showBestSellingProductsFalse"
+                :value="false"
+                v-model="settings.show_best_selling_products"
+              />
+              <label class="form-check-label" for="showBestSellingProductsFalse">تعطيل</label>
+            </div>
+          </div>
+          <small
+            class="d-block mt-2 fw-medium"
+            :class="settings.show_best_selling_products ? 'text-success' : 'text-danger'"
+          >
+            الحالة الحالية: {{ settings.show_best_selling_products ? 'مفعّل' : 'معطّل' }}
+          </small>
+        </div>
+
+        <!-- Save Button -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary px-5 py-2 rounded-3 shadow-sm">
+            حفظ التغييرات
+          </button>
+        </div>
+
+        <!-- Success Message -->
+        <div v-if="message" class="alert alert-success mt-4 text-center rounded-3">
+          {{ message }}
+        </div>
+
+        <!-- Error Message -->
+        <div v-if="errors.length" class="alert alert-danger mt-4 text-center rounded-3">
+          <ul>
+            <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+          </ul>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
-<script setup>
-import { reactive } from 'vue';
+<script>
+import axios from 'axios'
 
-const settings = reactive({
-  modules: {
-    categories: true,
-    products: true,
-    blog: false,
+export default {
+  name: 'SettingsComponent',
+  data() {
+    return {
+      settings: {
+        show_category: true,
+        show_brand: true,
+        show_our_products: true,
+        show_latest_products: true,
+        show_best_selling_products: true,
+      },
+      loading: true,
+      message: '',
+      errors: []
+    }
   },
-  theme: 'light', // 'light', 'dark', 'custom'
-  global: {
-    siteTitle: 'Elegance Website',
-    logoUrl: '/img/logo.png',
-    contactEmail: 'contact@elegance.com',
-    homepageLayout: 'default',
+  methods: {
+    fetchSettings() {
+  axios.get('/api/settings')
+    .then(response => {
+      const settingsArray = response.data.data;
+      const transformedSettings = {};
+
+      settingsArray.forEach(item => {
+        transformedSettings[item.key] = item.value === '1';
+      });
+
+      this.settings = {
+        show_category: transformedSettings.show_category ?? false,
+        show_brand: transformedSettings.show_brand ?? false,
+        show_our_products: transformedSettings.show_our_products ?? false,
+        show_latest_products: transformedSettings.show_latest_products ?? false,
+        show_best_selling_products: transformedSettings.show_best_selling_products ?? false
+      };
+
+      this.loading = false;
+    })
+    .catch(error => {
+      console.error('Error fetching settings:', error);
+      this.loading = false;
+    });
+},
+    saveSettings() {
+  const updatedSettings = {
+    show_category: this.settings.show_category ? '1' : '0',
+    show_brand: this.settings.show_brand ? '1' : '0',
+    show_our_products: this.settings.show_our_products ? '1' : '0',
+    show_latest_products: this.settings.show_latest_products ? '1' : '0',
+    show_best_selling_products: this.settings.show_best_selling_products ? '1' : '0'
+  };
+
+  axios.post('/api/settings', updatedSettings)
+    .then(response => {
+      this.message = response.data.message || 'تم الحفظ بنجاح';
+      this.errors = [];  // Clear any previous errors
+    })
+    .catch(error => {
+      if (error.response && error.response.data.errors) {
+        this.errors = Object.values(error.response.data.errors).flat();
+      } else {
+        console.error('Error saving settings:', error);
+      }
+    });
+}
+
+
   },
-});
-
-const saveSettings = () => {
-  // Placeholder for saving logic (e.g., API call, local storage)
-  console.log('Saving settings:', JSON.parse(JSON.stringify(settings)));
-  alert('Settings saved (check console)! Actual saving mechanism needs implementation.');
-};
-
+  mounted() {
+    this.fetchSettings();
+  }
+}
 </script>
 
 <style scoped>
-/* Basic styling for toggle switches - replace with your preferred UI library or custom styles */
-.toggle-switch {
-  /* Tailwind classes for a basic toggle switch appearance */
-  @apply relative inline-flex items-center h-6 rounded-full w-11 cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
-  /* Background color when off */
-  @apply bg-gray-200;
+.container {
+  max-width: 650px;
 }
 
-.toggle-switch::after {
-  @apply inline-block w-5 h-5 transform bg-white rounded-full shadow ring-0 transition-transform ease-in-out duration-200;
-  content: '';
-  /* Translate X when off */
-  @apply translate-x-0.5;
+.card {
+  background-color: #ffffff;
 }
 
-input:checked + .toggle-switch {
-  /* Background color when on */
-  @apply bg-indigo-600;
-}
-
-input:checked + .toggle-switch::after {
-  /* Translate X when on */
-  @apply translate-x-5;
-}
-
-/* Hide the actual checkbox */
-input[type="checkbox"].toggle-switch {
-  @apply sr-only;
-}
-
-/* Add other component-specific styles here */
-input[type="text"],
-input[type="email"],
-select {
-  width: 100%; /* Make inputs take full width of their container */
-  @apply shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md;
-}
-
-/* Ensure labels and inputs align nicely */
 label {
-    @apply block text-sm font-medium text-gray-700;
+  color: #333;
 }
 
-/* Adjust spacing and alignment for radio buttons */
-.flex.items-center.space-x-4 > .flex.space-x-3 label {
-    @apply text-sm font-medium text-gray-700;
+.form-check-label {
+  cursor: pointer;
 }
 
-/* Add padding and border to sections */
-section {
-    @apply bg-white p-6 rounded-lg border border-gray-200 shadow-md;
+.text-success {
+  color: #28a745 !important;
 }
 
-/* Style the save button */
-button {
-    @apply bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+.text-danger {
+  color: #dc3545 !important;
 }
 
-/* Add some overall padding if needed, though p-6 is on the container */
-.settings-container {
-    @apply max-w-4xl mx-auto;
+.alert {
+  border-radius: 5px;
+  padding: 10px;
 }
-
-/* Adjust grid layout for responsiveness */
-.grid {
-    @apply gap-6;
-}
-
-.flex.items-center.justify-between {
-    @apply bg-gray-50 p-4 rounded-md border border-gray-200;
-}
-
-/* Style the radio buttons */
-input[type="radio"] {
-    @apply focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300;
-}
-
 </style>

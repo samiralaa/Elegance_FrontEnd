@@ -4,7 +4,7 @@
 
     <!-- Hero Section with Ramadan Theme -->
 
-  
+
     <section class="hero-section">
       <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner">
@@ -29,12 +29,13 @@
       </div>
     </section>
     <Categories />
-    <HomeBrands />
-    <Products />
-    <LatestProducts />
-    <BestSelling />
+    <HomeBrands v-if="showBrand" />
+    <Products v-if="showOurProducts" />
+    <LatestProducts v-if="showLatestProducts" />
+    <BestSelling v-if="showBestSelling" />
     <WhyChooseUs />
     <Footer />
+
   </div>
 </template>
 
@@ -68,9 +69,40 @@ export default {
   },
   data() {
     return {
+      showBrand: false,
+      showOurProducts: false,
+      showLatestProducts: false,
+      showBestSelling: false,
+
     };
   },
+  mounted() {
+    this.fetchSettings();
+  },
   methods: {
+
+
+    async fetchSettings() {
+      try {
+        const response = await fetch('/api/settings');
+        const result = await response.json();
+
+        const settings = result.data;
+
+        const findSetting = key => {
+          const setting = settings.find(s => s.key === key);
+          return setting && setting.value === "1";
+        };
+
+        this.showBrand = findSetting('show_brand');
+        this.showOurProducts = findSetting('show_our_products');
+        this.showLatestProducts = findSetting('show_latest_products');
+        this.showBestSelling = findSetting('show_best_selling_products');
+
+      } catch (error) {
+        console.error('Failed to fetch settings:', error);
+      }
+    },
     scrollLeft() {
       const width = window.innerWidth;
       const card = this.$refs.slider.querySelector('.card');
@@ -90,6 +122,7 @@ export default {
         this.$refs.slider.scrollBy({ left: -(cardWidth * 7 + gap), behavior: 'smooth' });
       }
     },
+
     scrollRight() {
       const width = window.innerWidth;
       const card = this.$refs.slider.querySelector('.card');
@@ -111,7 +144,9 @@ export default {
     }
   }
 
+
 };
+
 </script>
 
 <style scoped>
