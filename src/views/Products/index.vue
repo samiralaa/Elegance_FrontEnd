@@ -9,23 +9,21 @@
       <el-table v-loading="loading" :data="products" style="width: 100%">
         <el-table-column :label="$t('Products.Image')" width="120">
           <template #default="{ row }">
-            <el-image
-              v-if="row.images && row.images.length > 0"
-              :src="`${BASE_URL}/${row.images[0].path}`"
-              fit="cover"
-              class="product-image"
-              :preview-src-list="[`${BASE_URL}/${row.images[0].path}`]"
-              :initial-index="0"
-              preview-teleported
-            >
+            <el-image v-if="row.images && row.images.length > 0" :src="`${BASE_URL}/${row.images[0].path}`" fit="cover"
+              class="product-image" :preview-src-list="[`${BASE_URL}/${row.images[0].path}`]" :initial-index="0"
+              preview-teleported>
               <template #error>
                 <div class="image-error">
-                  <el-icon><Picture /></el-icon>
+                  <el-icon>
+                    <Picture />
+                  </el-icon>
                 </div>
               </template>
             </el-image>
             <div v-else class="image-error">
-              <el-icon><Picture /></el-icon>
+              <el-icon>
+                <Picture />
+              </el-icon>
             </div>
           </template>
         </el-table-column>
@@ -43,7 +41,8 @@
             <el-button-group>
               <el-button type="primary" :icon="View" @click="viewProduct(row.id)">{{ $t('Products.View') }}</el-button>
               <el-button type="warning" :icon="Edit" @click="editProduct(row)">{{ $t('Products.Edit') }}</el-button>
-              <el-button type="danger" :icon="Delete" @click="deleteProduct(row)">{{ $t('Products.Delete') }}</el-button>
+              <el-button type="danger" :icon="Delete" @click="deleteProduct(row)">{{ $t('Products.Delete')
+                }}</el-button>
               <el-button type="success" :icon="Plus" @click="addAmount(row)">{{ $t('add.amount') }}</el-button>
             </el-button-group>
           </template>

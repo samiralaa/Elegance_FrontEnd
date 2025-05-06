@@ -19,32 +19,30 @@
         <template v-for="item in mainMenuItems" :key="item.path || item.name">
           <div v-if="item.children" class="menu-item-group">
             <div class="menu-item" @click="toggleDropdown(item)" :class="{ active: isDropdownOpen(item) }">
-              <el-icon><component :is="item.icon" /></el-icon>
+              <el-icon>
+                <component :is="item.icon" />
+              </el-icon>
               <span>{{ $t(item.name) }}</span>
-              <el-icon class="dropdown-icon" :class="{ 'is-open': isDropdownOpen(item) }"><ArrowDown /></el-icon>
+              <el-icon class="dropdown-icon" :class="{ 'is-open': isDropdownOpen(item) }">
+                <ArrowDown />
+              </el-icon>
             </div>
             <transition name="dropdown">
               <div v-show="isDropdownOpen(item)" class="submenu">
-                <router-link
-                  v-for="child in item.children"
-                  :key="child.path"
-                  :to="child.path"
-                  class="submenu-item"
-                  :class="{ active: currentRoute === child.path }"
-                >
-                  <el-icon><component :is="child.icon" /></el-icon>
+                <router-link v-for="child in item.children" :key="child.path" :to="child.path" class="submenu-item"
+                  :class="{ active: currentRoute === child.path }">
+                  <el-icon>
+                    <component :is="child.icon" />
+                  </el-icon>
                   <span>{{ $t(child.name) }}</span>
                 </router-link>
               </div>
             </transition>
           </div>
-          <router-link
-            v-else
-            :to="item.path"
-            class="menu-item"
-            :class="{ active: currentRoute === item.path }"
-          >
-            <el-icon><component :is="item.icon" /></el-icon>
+          <router-link v-else :to="item.path" class="menu-item" :class="{ active: currentRoute === item.path }">
+            <el-icon>
+              <component :is="item.icon" />
+            </el-icon>
             <span>{{ $t(item.name) }}</span>
           </router-link>
         </template>
@@ -52,14 +50,11 @@
         <div class="menu-divider"></div>
 
         <!-- Secondary Navigation -->
-        <router-link
-          v-for="item in secondaryMenuItems"
-          :key="item.path"
-          :to="item.path"
-          class="menu-item"
-          :class="{ active: currentRoute === item.path }"
-        >
-          <el-icon><component :is="item.icon" /></el-icon>
+        <router-link v-for="item in secondaryMenuItems" :key="item.path" :to="item.path" class="menu-item"
+          :class="{ active: currentRoute === item.path }">
+          <el-icon>
+            <component :is="item.icon" />
+          </el-icon>
           <span>{{ $t(item.name) }}</span>
         </router-link>
       </nav>
@@ -69,23 +64,18 @@
     <main class="dashboard-main">
       <header class="dashboard-header">
         <!-- Toggle Sidebar Button (Mobile) -->
-        <button
-          class="menu-toggle"
-          @click="toggleSidebar"
-          v-show="isMobile"
-        >
-          <el-icon><Menu /></el-icon>
+        <button class="menu-toggle" @click="toggleSidebar" v-show="isMobile">
+          <el-icon>
+            <Menu />
+          </el-icon>
         </button>
 
         <!-- Search Bar -->
         <div class="search-bar">
-          <el-icon><Search /></el-icon>
-          <input
-            type="text"
-            :placeholder="$t('common.search')"
-            v-model="searchQuery"
-            @input="handleSearch"
-          />
+          <el-icon>
+            <Search />
+          </el-icon>
+          <input type="text" :placeholder="$t('common.search')" v-model="searchQuery" @input="handleSearch" />
         </div>
 
         <div class="header-actions">
@@ -97,7 +87,9 @@
 
           <!-- Notifications -->
           <div class="notifications" @click="showNotifications">
-            <el-icon><Bell /></el-icon>
+            <el-icon>
+              <Bell />
+            </el-icon>
             <span v-if="unreadNotifications" class="notification-badge">
               {{ unreadNotifications }}
             </span>
@@ -117,13 +109,19 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="profile">
-                  <el-icon><User /></el-icon> {{ $t('common.menu.profile') }}
+                  <el-icon>
+                    <User />
+                  </el-icon> {{ $t('common.menu.profile') }}
                 </el-dropdown-item>
                 <el-dropdown-item command="settings">
-                  <el-icon><Setting /></el-icon> {{ $t('common.menu.settings') }}
+                  <el-icon>
+                    <Setting />
+                  </el-icon> {{ $t('common.menu.settings') }}
                 </el-dropdown-item>
                 <el-dropdown-item divided command="logout">
-                  <el-icon><SwitchButton /></el-icon> {{ $t('common.menu.logout') }}
+                  <el-icon>
+                    <SwitchButton />
+                  </el-icon> {{ $t('common.menu.logout') }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -175,8 +173,8 @@ export default {
         name: 'common.menu.input',
         icon: 'Location',
         children: [
-          { path: '/units/list', name: 'common.menu.units', icon: 'List' },
-        
+          { path: '/units', name: 'common.menu.units', icon: 'List' },
+          { path: 'currencies', name: 'common.menu.currencies', icon: 'Coin' }
         ]
       },
       { path: '/orders', name: 'common.menu.orders', icon: 'ShoppingCartFull' },
@@ -331,7 +329,7 @@ export default {
   .menu-toggle {
     display: block;
   }
-  
+
   .search-bar {
     width: 200px;
   }

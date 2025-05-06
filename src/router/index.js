@@ -33,12 +33,12 @@ const routes = [
   {
     path: '/read/products/:id',
     name: 'ProductShowHomePage',
-    component: () => import('../views/Website/showProduct.vue') 
+    component: () => import('../views/Website/showProduct.vue')
   },
 
   {
-    path:'/about',
-    name:'About',
+    path: '/about',
+    name: 'About',
     component: () => import('../views/Website/About.vue'),
   },
   {
@@ -63,6 +63,8 @@ const routes = [
     component: () => import('../views/Customers.vue'),
     meta: { requiresAuth: true }
   },
+ 
+
   {
     path: '/brands',
     name: 'Brands',
@@ -96,7 +98,7 @@ const routes = [
   {
     path: '/products/:id',
     name: 'ProductShow',
-    component: () => import('../views/Products/show.vue'), 
+    component: () => import('../views/Products/show.vue'),
   },
   {
     path: '/products/create',
@@ -123,11 +125,25 @@ const routes = [
     component: () => import('../views/Dashboard/Settings.vue'),
     meta: { requiresAuth: true }
   },
+  //
+  {
+    path: '/currencies',
+    name: 'Currencies',
+    component: () => import('../views/Dashboard/inputs/currencies/index.vue'),
+    meta: { requiresAuth: true }
+  },
+
+  {
+    path: '/currencies/create',
+    name: 'CustomersCreate',
+    component: () => import('../views/Dashboard/inputs/currencies/create.vue'),
+    meta: { requiresAuth: true }
+  },
   {
     path: '/profile',
     name: 'Profile',
     component: () => import('../views/Profile.vue'),
-   
+
   },
   {
     path: '/help',
@@ -135,7 +151,7 @@ const routes = [
     component: () => import('../views/Help.vue'),
   },
   {
-    path: '/units/list',
+    path: '/units',
     name: 'UnitsList',
     component: () => import('../views/Dashboard/Units/index.vue'),
     meta: { requiresAuth: true }
@@ -161,7 +177,7 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
   const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-  
+
   if (to.meta.requiresAuth && !tokenData?.token) {
     next('/login')
   } else {

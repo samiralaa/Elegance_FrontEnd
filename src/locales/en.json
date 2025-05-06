@@ -115,6 +115,7 @@
       "categories": "Categories",
       "orders": "Orders",
       "input": "Input",
+      "currencies":"currencies",
       "units": "Units",
       "customers": "Customers",
       "analytics": "Analytics",
