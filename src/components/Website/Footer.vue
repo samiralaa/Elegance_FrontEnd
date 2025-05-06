@@ -1,9 +1,9 @@
 <template>
   <footer class="footer">
     <div class="container">
-      <div class="footer-section col-lg-3 col-sm-6">
+      <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.DownloadApp') }}</h3>
-        <div class="app-links d-flex justify-content-center align-items-center">
+        <div class="app-links d-flex justify-content-start align-items-center">
           <div class="d-flex flex-column justify-content-center align-items-center">
             <a href=""><img src="@/assets/images/app-store.png" :alt="$t('Footer.AppStore')" /></a>
             <a href=""><img src="@/assets/images/google-play.png" :alt="$t('Footer.GooglePlay')" /></a>
@@ -11,7 +11,7 @@
           <img src="@/assets/images/qr-code.png" alt="QR Code" />
         </div>
       </div>
-      <div class="footer-section col-lg-3 col-sm-6">
+      <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.QuickLink') }}</h3>
         <ul>
           <li><a href="#">{{ $t('Footer.PrivacyPolicy') }}</a></li>
@@ -20,13 +20,13 @@
           <li><a href="#">{{ $t('Footer.Contact') }}</a></li>
         </ul>
       </div>
-      <div class="footer-section col-lg-3 col-sm-6">
+      <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.Account') }}</h3>
         <ul>
           <li><a href="#">{{ $t('Footer.LoginRegister') }}</a></li>
         </ul>
       </div>
-      <div class="footer-section col-lg-3 col-sm-6">
+      <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.Support') }}</h3>
         <ul>
           <li class="address">
@@ -100,7 +100,7 @@
 .footer .container {
   padding: 20px 0;
 }
-.app-links img,
+.app-links > img,
 .payment-methods img {
   width: 100%;
   max-width: 150px;
@@ -256,6 +256,33 @@
   .footer-bottom{
     flex-direction: column;
   }
+  .app-links img{
+    max-width: 100px;
+    padding: 5px 0;
+  }
+}
+@media (max-width: 576px) {
+  .footer-section {
+    margin-bottom: 20px;
+  }
+  .footer-section ul {
+    text-align: center;
+    align-items: center;
+  }
+  .footer-section ul li {
+    width: 100%;
+    text-align: center;
+  }
+  .footer-section h3{
+    text-align: center;
+  }
+  .footer-bottom{
+    padding: 0;
+  }
+  .app-links{
+    justify-content: center !important;
+  }
+  
 }
 
 </style>
