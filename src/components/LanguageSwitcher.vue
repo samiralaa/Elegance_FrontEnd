@@ -1,21 +1,23 @@
 <template>
   <div class="language-switcher">
-    <el-button-group>
-      <el-button 
+    <div class="button-group">
+      <a 
+        v-if="locale !== 'en'"
         :class="['lang-btn', { active: locale === 'en' }]"
         @click="switchLanguage('en')"
       >
         <span class="lang-code">EN</span>
-        <span class="lang-name">{{ $t('common.languages.english') }}</span>
-      </el-button>
-      <el-button 
+        <span class="lang-name">English</span>
+      </a>
+      <a 
+        v-if="locale !== 'ar'"
         :class="['lang-btn', { active: locale === 'ar' }]"
         @click="switchLanguage('ar')"
       >
         <span class="lang-code">ع</span>
         <span class="lang-name">{{ $t('common.languages.arabic') }}</span>
-      </el-button>
-    </el-button-group>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -25,12 +27,12 @@ import { setDirection } from '../utils/theme'
 
 const { locale } = useI18n()
 
-const switchLanguage = (lang) => {
-  const direction = lang === 'ar' ? 'rtl' : 'ltr'
-  setDirection(direction)
-  locale.value = lang
-  localStorage.setItem('lang', lang)
-}
+  const switchLanguage = (lang) => {
+    const direction = lang === 'ar' ? 'rtl' : 'ltr'
+    setDirection(direction)
+    locale.value = lang
+    localStorage.setItem('lang', lang)
+  }
 </script>
 
 <style scoped>
@@ -38,33 +40,83 @@ const switchLanguage = (lang) => {
   margin: 0 8px;
 }
 
-.lang-btn {
-  min-width: 100px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  transition: all 0.3s ease;
-  border: 1px solid var(--el-border-color);
+a.lang-btn {
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 5px 20px 5px 10px;
+  text-decoration: none;
+  color: #fff;
+  width: 150px;
+  border-radius: 5px;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  position: relative;
+  overflow: hidden;
 }
 
-.lang-btn.active {
-  background-color: var(--el-color-primary);
-  color: white;
-  border-color: var(--el-color-primary);
+a.lang-btn:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-color: #fff;
+  padding-left: 20px;
+  width: 130px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  letter-spacing: 2px;
 }
+
+a.lang-btn::after {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 100px;
+  background-color: #fcba68;
+  position: absolute;
+  top: 0px;
+  left: -10px;
+  transition: left 0.5s;
+}
+
+a.lang-btn:hover::after {
+  left: 0px;
+}
+
 
 .lang-code {
   font-weight: bold;
   font-size: 0.9em;
+  margin: 0 5px;
 }
 
 .lang-name {
   font-size: 0.9em;
 }
 
-:deep(.el-button-group .el-button) {
-  border-radius: 4px;
-  margin: 0 4px;
+.button-group a {
+  color: #fff;
+}
+@media (max-width: 576px ) {
+  a.lang-btn {
+    width: 100px;
+  }
+  a.lang-btn:hover {
+    width: 100%;
+    padding-left: 20px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  a.lang-btn::after {
+    left: -10px;
+  }
+
+  .lang-code {
+    font-size: 0.8em;
+  }
+  .lang-name {
+    font-size: 0.8em;
+  }
+  .button-group a {
+    width: 100%;
+  }
+
 }
 </style>

@@ -203,6 +203,7 @@ import axios from 'axios';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
 import { API_URL } from '@/store/index.js';
 
+
 export default {
   name: 'Header',
   components: {
@@ -857,5 +858,28 @@ export default {
 .cart-content::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 5px;
+}
+@media (max-width: 576px ) {
+  .navbar .container-fluid,
+  .top-bar .container-fluid > div{
+    margin: 0 !important;
+  }
+  .navbar-brand img {
+    height: 40px;
+  }
+  .navbar-toggler-icon {
+    width: 1.2em;
+    height: 1.2em;
+  }
+  .navbar-toggler {
+    padding: 0.5em;
+  }
+  .navbar-nav .nav-link {
+    padding: 0.5em 1em;
+  }
+  .navbar-nav .nav-link.active {
+    background-color: #8b6b3d;
+    color: #fff;
+  }
 }
 </style>
