@@ -22,6 +22,8 @@
   </template>
   
   <script setup>
+  import { useRouter } from 'vue-router'
+  const router = useRouter()
   import { ref, onMounted } from 'vue'
   import axios from 'axios'
   import { ElMessageBox } from 'element-plus';
@@ -63,11 +65,9 @@
   onMounted(() => {
     fetchcurrencies()
   })
-  
-  const handleUpdate = (currency) => {
-    // Logic to update the currency
-    console.log('Update currency:', currency);
-  }
+  const handleUpdate = (row) => {
+  router.push({ name: 'currencies.edit', params: { id: row.id } })
+}
   
   const handleDelete = async (currency) => {
     try {

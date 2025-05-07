@@ -1,5 +1,6 @@
 <template>
   <div class="home" :dir="direction">
+    <Loader v-if="loading" />
     <Header />
 
     <!-- Hero Section with Ramadan Theme -->
@@ -49,6 +50,7 @@ import WhyChooseUs from '@/components/Website/WhyChooseUs.vue'
 import LatestProducts from '@/components/Website/LatestProducts.vue'
 import i18n from '@/i18n.js'
 import Footer from '@/components/Website/Footer.vue'
+import Loader from '@/components/Loader.vue'
 
 export default {
   name: 'Home',
@@ -73,7 +75,7 @@ export default {
       showOurProducts: false,
       showLatestProducts: false,
       showBestSelling: false,
-
+      loading: true
     };
   },
   mounted() {
@@ -86,21 +88,19 @@ export default {
       try {
         const response = await fetch('/api/settings');
         const result = await response.json();
-
         const settings = result.data;
-
         const findSetting = key => {
           const setting = settings.find(s => s.key === key);
           return setting && setting.value === "1";
         };
-
         this.showBrand = findSetting('show_brand');
         this.showOurProducts = findSetting('show_our_products');
         this.showLatestProducts = findSetting('show_latest_products');
         this.showBestSelling = findSetting('show_best_selling_products');
-
       } catch (error) {
         console.error('Failed to fetch settings:', error);
+      } finally {
+        this.loading = false;
       }
     },
     scrollLeft() {

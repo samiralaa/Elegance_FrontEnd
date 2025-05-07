@@ -14,14 +14,14 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'https://elegance_commers.test',
         changeOrigin: true,
         secure: false,
         ws: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
         configure: (proxy, options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('origin', 'http://127.0.0.1:8000');
+            proxyReq.setHeader('origin', 'https://elegance_commers.test');
           });
         }
       }
