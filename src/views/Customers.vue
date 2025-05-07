@@ -4,40 +4,27 @@
       <h2 class="page-title">customers</h2>
       <div class="button-group">
         <el-button type="success" class="action-button" @click="showCreateDialog">
-          <el-icon><Plus /></el-icon>
+          <el-icon>
+            <Plus />
+          </el-icon>
           <span>Create User</span>
         </el-button>
         <el-button type="primary" class="action-button" @click="loadCustomers">
-          <el-icon><Refresh /></el-icon>
+          <el-icon>
+            <Refresh />
+          </el-icon>
           <span>Refresh</span>
         </el-button>
       </div>
     </div>
 
     <!-- Error Alert -->
-    <el-alert
-      v-if="error"
-      :title="error"
-      type="error"
-      show-icon
-      @close="clearError"
-      class="mb-md"
-    />
+    <el-alert v-if="error" :title="error" type="error" show-icon @close="clearError" class="mb-md" />
 
     <!-- Create User Dialog -->
-    <el-dialog
-      v-model="createDialogVisible"
-      title="Create New User"
-      width="500px"
-    >
-      <el-form
-        ref="createFormRef"
-        :model="createForm"
-        :rules="createRules"
-        label-width="120px"
-        class="form-container"
-        @submit.prevent="handleCreate"
-      >
+    <el-dialog v-model="createDialogVisible" title="Create New User" width="500px">
+      <el-form ref="createFormRef" :model="createForm" :rules="createRules" label-width="120px" class="form-container"
+        @submit.prevent="handleCreate">
         <el-form-item label="Name" prop="name">
           <el-input v-model="createForm.name" placeholder="Enter name" />
         </el-form-item>
@@ -54,31 +41,29 @@
             <el-option label="Manager" value="manager" />
           </el-select>
         </el-form-item>
+        <el-form-item label="Country" prop="country_id">
+  <el-select v-model="createForm.country_id" placeholder="Select country">
+    <el-option
+      v-for="country in countries"
+      :key="country.id"
+      :label="country.name_en"
+      :value="country.id"
+    />
+  </el-select>
+</el-form-item>
+
         <el-form-item label="Password" prop="password">
-          <el-input
-            v-model="createForm.password"
-            type="password"
-            placeholder="Enter password"
-            show-password
-          />
+          <el-input v-model="createForm.password" type="password" placeholder="Enter password" show-password />
         </el-form-item>
         <el-form-item label="Confirm" prop="password_confirmation">
-          <el-input
-            v-model="createForm.password_confirmation"
-            type="password"
-            placeholder="Confirm password"
-            show-password
-          />
+          <el-input v-model="createForm.password_confirmation" type="password" placeholder="Confirm password"
+            show-password />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="form-footer">
           <el-button @click="createDialogVisible = false">Cancel</el-button>
-          <el-button
-            type="primary"
-            :loading="isLoading"
-            @click="handleCreate"
-          >
+          <el-button type="primary" :loading="isLoading" @click="handleCreate">
             Create
           </el-button>
         </div>
@@ -92,21 +77,14 @@
 
     <!-- Users Table -->
     <div v-else class="table-container">
-      <el-table
-        :data="usersList"
-        style="width: 100%"
-        :border="true"
-      >
+      <el-table :data="usersList" style="width: 100%" :border="true">
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="name" label="Name" min-width="120" />
         <el-table-column prop="email" label="Email" min-width="180" />
         <el-table-column prop="phone" label="Phone" min-width="120" />
         <el-table-column prop="role" label="Role" width="120">
           <template #default="scope">
-            <el-tag
-              :type="getRoleType(scope.row.role)"
-              class="status-tag"
-            >
+            <el-tag :type="getRoleType(scope.row.role)" class="status-tag">
               {{ scope.row.role }}
             </el-tag>
           </template>
@@ -120,23 +98,17 @@
           <template #default="scope">
             <div class="button-group">
               <el-tooltip content="Edit User" placement="top">
-                <el-button
-                  type="primary"
-                  size="small"
-                  class="action-button"
-                  @click="handleEdit(scope.row)"
-                >
-                  <el-icon><Edit /></el-icon>
+                <el-button type="primary" size="small" class="action-button" @click="handleEdit(scope.row)">
+                  <el-icon>
+                    <Edit />
+                  </el-icon>
                 </el-button>
               </el-tooltip>
               <el-tooltip content="Delete User" placement="top">
-                <el-button
-                  type="danger"
-                  size="small"
-                  class="action-button"
-                  @click="handleDelete(scope.row)"
-                >
-                  <el-icon><Delete /></el-icon>
+                <el-button type="danger" size="small" class="action-button" @click="handleDelete(scope.row)">
+                  <el-icon>
+                    <Delete />
+                  </el-icon>
                 </el-button>
               </el-tooltip>
             </div>
@@ -145,10 +117,7 @@
       </el-table>
 
       <!-- Empty State -->
-      <el-empty
-        v-if="!isLoading && usersList.length === 0"
-        description="No users found"
-      />
+      <el-empty v-if="!isLoading && usersList.length === 0" description="No users found" />
     </div>
   </div>
 </template>
@@ -163,13 +132,14 @@ import axios from 'axios'
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: 'https://elegance_commers.test/api',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   },
   withCredentials: false
 });
+const countries = ref([])
 
 // Add request interceptor to include token
 api.interceptors.request.use(
@@ -219,10 +189,19 @@ export default defineComponent({
       email: '',
       phone: '',
       role: 'user',
+      country_id: '',
       password: '',
       password_confirmation: ''
     })
+    const fetchCountries = async () => {
+      try {
+        const response = await api.get('/countries')
+        countries.value = response.data.data;
 
+      } catch (err) {
+        console.error('Failed to load countries:', err)
+      }
+    }
     const createRules = {
       name: [
         { required: true, message: 'Please enter name', trigger: 'blur' },
@@ -238,6 +217,9 @@ export default defineComponent({
       ],
       role: [
         { required: true, message: 'Please select role', trigger: 'change' }
+      ],
+      country_id: [
+        { required: true, message: 'Please select country', trigger: 'change' }
       ],
       password: [
         { required: true, message: 'Please enter password', trigger: 'blur' },
@@ -273,6 +255,7 @@ export default defineComponent({
       createForm.email = ''
       createForm.phone = ''
       createForm.role = 'user'
+      createForm.country_id = ''
       createForm.password = ''
       createForm.password_confirmation = ''
     }
@@ -285,7 +268,7 @@ export default defineComponent({
         isLoading.value = true
 
         const response = await api.post('/users', createForm)
-        
+
         if (response.data.status) {
           ElMessage({
             message: 'User created successfully',
@@ -326,11 +309,11 @@ export default defineComponent({
 
         // Log the request details
         console.log('Fetching customers with token:', tokenData.token)
-        
+
         // Using Vuex store to load customers
         await store.dispatch('fetchCustomers')
         usersList.value = store.getters.getCustomers
-        
+
         console.log('Customers loaded from store:', usersList.value)
       } catch (err) {
         console.error('Error loading customers:', err)
@@ -339,11 +322,11 @@ export default defineComponent({
           response: err.response?.data,
           status: err.response?.status
         })
-        
-        error.value = err.response?.data?.message || 
-                     err.message || 
-                     'Failed to load customers'
-        
+
+        error.value = err.response?.data?.message ||
+          err.message ||
+          'Failed to load customers'
+
         if (err.response?.status === 401) {
           localStorage.removeItem('tokenData')
           router.push('/login')
@@ -356,7 +339,7 @@ export default defineComponent({
     const handleEdit = async (user) => {
       try {
         const response = await api.put(`/users/${user.id}`, user)
-        
+
         if (response.data.status) {
           ElMessage({
             message: 'User updated successfully',
@@ -390,7 +373,7 @@ export default defineComponent({
         )
 
         const response = await api.delete(`/users/${user.id}`)
-        
+
         if (response.data.status) {
           ElMessage({
             message: 'User deleted successfully',
@@ -428,6 +411,8 @@ export default defineComponent({
 
     onMounted(() => {
       loadCustomers()
+        fetchCountries()
+
     })
 
     return {
@@ -445,7 +430,8 @@ export default defineComponent({
       createFormRef,
       showCreateDialog,
       handleCreate,
-      getRoleType
+      getRoleType,
+      countries
     }
   }
 })
@@ -468,4 +454,4 @@ export default defineComponent({
   padding: var(--spacing-xl) 0;
   text-align: center;
 }
-</style> 
+</style>

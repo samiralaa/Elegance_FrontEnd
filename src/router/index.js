@@ -63,7 +63,7 @@ const routes = [
     component: () => import('../views/Customers.vue'),
     meta: { requiresAuth: true }
   },
- 
+
 
   {
     path: '/brands',
@@ -137,6 +137,13 @@ const routes = [
     path: '/currencies/create',
     name: 'CustomersCreate',
     component: () => import('../views/Dashboard/inputs/currencies/create.vue'),
+    meta: { requiresAuth: true }
+  },
+
+  {
+    path: '/currencies/edit/:id',
+    name: 'currencies.edit',
+    component: () => import('../views/Dashboard/inputs/currencies/Edit.vue'),
     meta: { requiresAuth: true }
   },
   {
