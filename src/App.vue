@@ -168,7 +168,7 @@ export default {
       { path: '/', name: 'common.menu.dashboard', icon: 'Monitor' },
       { path: '/products', name: 'common.menu.products', icon: 'Goods' },
       { path: '/brands', name: 'common.menu.brands', icon: 'Trophy' },
-      { path: '/categories', name: 'common.menu.categories', icon: 'Folder' },
+      { path: '/categories', name: 'common.menu.categories' , icon: 'Folder' },
       {
         name: 'common.menu.input',
         icon: 'Location',

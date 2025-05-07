@@ -48,7 +48,7 @@
           class="login-button"
           @click="handleLogin"
         >
-          {{ loading ? 'Logging in...' : 'Login' }}
+          {{ loading ? 'Logging in...' :  $t('Login.Login') }}
         </el-button>
       </el-form>
 

@@ -1,4 +1,5 @@
 {
+  
   "header": {
     "joinUs": "Join Us",
     "login": "Login",
@@ -152,17 +153,16 @@
   "LatestProducts": {
     "LatestProducts": "Latest Products"
   },
-  "login": {
-    "WelcomeBack": "Welcome Back",
-    "LoginToYourAccount": "Login To Your Account",
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot Password?",
-    "rememberMe": "Remember Me",
-    "login": "Login",
-    "register": "Register",
-    "Pleaselogintoyouraccount": "Please login to your account"
-  },
+  "Login": {
+  "WelcomeBack": "Welcome back",
+  "LoginToYourAccount": "Login to your account",
+  "Pleaselogintoyouraccount": "Please login to your account",
+  "Email": "Email",
+  "Password": "Password",
+  "RememberMe": "Remember me",
+  "ForgotPassword": "Forgot your password?",
+  "Login": "Login"
+},
   "Categories": {
     "AddCategory": "Add New Category",
     "NameEn": "Name (EN)",
