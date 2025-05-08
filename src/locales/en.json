@@ -11,22 +11,7 @@
     "searchProducts": "Search Products",
     "close": "Close"
   },
-  "loginPage": {
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot Password?",
-    "rememberMe": "Remember Me",
-    "login": "Login"
-  },
-  "registerPage": {
-    "tiile": "Register",
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot Password?",
-    "rememberMe": "Remember Me",
-    "login": "Login"
-  },
-  "brands": {
+  "Brands": {
     "AddBrands": "Add New Brand",
     "Management": "Brands Management",
     "Logo": "Logo",
@@ -71,6 +56,21 @@
       "nameRequired": "Brand name is required",
       "nameArRequired": "Arabic brand name is required"
     }
+  },
+  "loginPage": {
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "login": "Login"
+  },
+  "registerPage": {
+    "tiile": "Register",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "login": "Login"
   },
   "categories": {
     "title": "Categories",
@@ -258,5 +258,7 @@
     "Snapchat": "Snapchat",
     "YouTube": "YouTube"
   }
-}
+},
+  "Nobrandsfound" : "No brands found"
+
 }
