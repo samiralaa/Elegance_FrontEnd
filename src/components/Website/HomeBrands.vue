@@ -15,7 +15,7 @@
   </section>
 </template>
   
-  <script>
+<script>
   import axios from "axios";
   
   export default {
@@ -32,7 +32,7 @@
       async fetchBrands() {
         try {
           const response = await axios.get(
-            "https://elegance_commers.test/api/website/brands/section"
+            "http://127.0.0.1:8000/api/website/brands/section"
           );
           this.brands = response.data.data;
         } catch (error) {
@@ -40,14 +40,14 @@
         }
       },
       getImageUrl(path) {
-        return `https://elegance_commers.test/storage/${path}`;
+        return `http://127.0.0.1:8000/storage/${path}`;
       },
       likeBrand(id) {
         console.log(`Brand ${id} liked!`);
       },
     },
   };
-  </script>
+</script>
   
 <style scoped>
   .object-fit-contain {

@@ -265,7 +265,7 @@ export default {
     getCartItems() {
       const token = localStorage.getItem('token'); // or wherever you store the token
 
-      axios.get('https://elegance_commers.test/api/cart-items', {
+      axios.get('http://127.0.0.1:8000/api/cart-items', {
         headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
       })
         .then(response => {
@@ -428,6 +428,14 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .profile-dropdown {
   position: relative;
 }

@@ -42,6 +42,11 @@ const routes = [
     component: () => import('../views/Website/About.vue'),
   },
   {
+    path:'/contact',
+    name:'contact',
+    component: () => import('../views/Website/ContactUs.vue'),
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')

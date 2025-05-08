@@ -1,5 +1,5 @@
 <template>
-  <div class="home" :dir="direction">
+  <div class="home">
     <Loader v-if="loading" />
     <Header />
 

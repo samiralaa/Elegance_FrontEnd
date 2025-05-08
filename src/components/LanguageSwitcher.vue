@@ -62,6 +62,7 @@ a.lang-btn:hover {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   letter-spacing: 2px;
+  cursor: pointer;
 }
 
 a.lang-btn::after {
