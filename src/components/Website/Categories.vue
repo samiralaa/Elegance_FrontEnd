@@ -13,7 +13,7 @@
         <div class="slider" ref="slider">
           <a v-for="category in categories" :key="category.id" class="card" :href="`/category/${category.id}`">
             <div class="category-content">
-              <img src="@/assets/images/2b2fc142-883e-4055-9796-69e94c70f672..jpg" />
+              <img :src="category.image" />
               <p :class="{ 'rtl': $i18n.locale === 'ar' }">
                 {{ $i18n.locale === 'ar' ? category.name_ar : category.name }}
               </p>
