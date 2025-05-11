@@ -1,5 +1,5 @@
 <template>
-   <Header />
+  <Header />
   <div class="checkout-container">
     <!-- Progress Stepper -->
     <div class="stepper">
@@ -27,7 +27,8 @@
           <img :src="getProductImage(item)" :alt="item.product.name_en" class="item-image">
           <div class="item-details">
             <h3>{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h3>
-            <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }}</p>
+            <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar :
+              item.currency.name_en }}</p>
             <div class="quantity-controls">
               <button @click="updateQuantity(item, -1)" :disabled="item.quantity <= 1">-</button>
               <span>{{ item.quantity }}</span>
@@ -64,49 +65,25 @@
       <form @submit.prevent="nextStep" class="shipping-form">
         <div class="form-group">
           <label for="fullName">{{ $t('checkout.fullName') }}</label>
-          <input 
-            type="text" 
-            id="fullName" 
-            v-model="shippingDetails.fullName" 
-            required
-          >
+          <input type="text" id="fullName" v-model="shippingDetails.fullName" required>
         </div>
         <div class="form-group">
           <label for="address">{{ $t('checkout.address') }}</label>
-          <textarea 
-            id="address" 
-            v-model="shippingDetails.address" 
-            required
-          ></textarea>
+          <textarea id="address" v-model="shippingDetails.address" required></textarea>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="city">{{ $t('checkout.city') }}</label>
-            <input 
-              type="text" 
-              id="city" 
-              v-model="shippingDetails.city" 
-              required
-            >
+            <input type="text" id="city" v-model="shippingDetails.city" required>
           </div>
           <div class="form-group">
             <label for="postalCode">{{ $t('checkout.postalCode') }}</label>
-            <input 
-              type="text" 
-              id="postalCode" 
-              v-model="shippingDetails.postalCode" 
-              required
-            >
+            <input type="text" id="postalCode" v-model="shippingDetails.postalCode" required>
           </div>
         </div>
         <div class="form-group">
           <label for="phone">{{ $t('checkout.phone') }}</label>
-          <input 
-            type="tel" 
-            id="phone" 
-            v-model="shippingDetails.phone" 
-            required
-          >
+          <input type="tel" id="phone" v-model="shippingDetails.phone" required>
         </div>
         <div class="form-group">
           <label for="buildingName">{{ $t('checkout.buildingName') }}</label>
@@ -147,17 +124,21 @@
     <div v-if="step === 3" class="checkout-step">
       <h2>{{ $t('checkout.payment') }}</h2>
       <div class="payment-methods">
-        <div 
-          v-for="method in paymentMethods" 
-          :key="method.id" 
-          class="payment-method"
-          :class="{ active: selectedPaymentMethod === method.id }"
-          @click="selectedPaymentMethod = method.id"
-        >
+        <div v-for="method in paymentMethods" :key="method.id" class="payment-method"
+          :class="{ active: selectedPaymentMethod === method.id }" @click="selectedPaymentMethod = method.id">
           <fa :icon="method.icon" />
           <span>{{ method.name }}</span>
         </div>
       </div>
+      
+      <!-- Stripe Card Element (shows only when Stripe is selected) -->
+      <div v-if="selectedPaymentMethod === 1" class="stripe-container">
+        <div class="card-element-container">
+          <div id="card-element" class="card-element"></div>
+          <div id="card-errors" class="card-errors" role="alert"></div>
+        </div>
+      </div>
+
       <div class="order-summary">
         <h3>{{ $t('checkout.orderSummary') }}</h3>
         <div class="summary-details">
@@ -172,8 +153,9 @@
         <button class="btn-secondary" @click="previousStep">
           {{ $t('checkout.back') }}
         </button>
-        <button class="btn-primary" @click="placeOrder" :disabled="!selectedPaymentMethod">
-          {{ $t('checkout.placeOrder') }}
+        <button class="btn-primary" @click="placeOrder" :disabled="!selectedPaymentMethod || stripeLoading">
+          <span v-if="stripeLoading">{{ $t('checkout.processing') }}...</span>
+          <span v-else>{{ $t('checkout.placeOrder') }}</span>
         </button>
       </div>
     </div>
@@ -184,11 +166,12 @@
 import { API_URL } from '@/store/index.js';
 import axios from 'axios';
 import Header from "@/components/Website/Header.vue";
+import { loadStripe } from '@stripe/stripe-js';
 
 export default {
   name: 'Checkout',
   components: {
-    Header 
+    Header
   },
   data() {
     return {
@@ -203,11 +186,17 @@ export default {
       },
       selectedPaymentMethod: null,
       paymentMethods: [
-        { id: 1, name: 'Credit Card', icon: 'credit-card' },
-        { id: 2, name: 'PayPal', icon: 'paypal' },
+        { id: 1, name: 'Stripe', icon: 'credit-card' },
+        { id: 2, name: 'Tabby', icon: 'credit-card-alt' },
         { id: 3, name: 'Cash on Delivery', icon: 'money-bill' }
       ],
-      shippingCost: 10
+      stripeLoading: false,
+      tabbyLoading: false,
+      shippingCost: 10,
+      stripePromise: null,
+      stripeClientSecret: null,
+      stripeElements: null,
+      cardElement: null
     };
   },
   computed: {
@@ -215,7 +204,7 @@ export default {
       return localStorage.getItem('lang') || 'en';
     },
     currency() {
-      return this.cartItems.length > 0 ? 
+      return this.cartItems.length > 0 ?
         (this.currentLang === 'ar' ? this.cartItems[0].currency.name_ar : this.cartItems[0].currency.name_en) : '';
     },
     subtotal() {
@@ -229,6 +218,28 @@ export default {
   },
   created() {
     this.fetchCartItems();
+    // Initialize Stripe
+    this.stripePromise = loadStripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY || 'pk_test_your_stripe_key');
+  },
+  
+  mounted() {
+    // If Stripe is already selected on mount, initialize elements
+    if (this.selectedPaymentMethod === 1) {
+      this.$nextTick(() => {
+        this.initStripeElements();
+      });
+    }
+  },
+  
+  watch: {
+    selectedPaymentMethod(newValue) {
+      if (newValue === 1) {
+        // Initialize Stripe Elements when Stripe is selected
+        this.$nextTick(() => {
+          this.initStripeElements();
+        });
+      }
+    }
   },
   methods: {
     getProductImage(item) {
@@ -251,44 +262,44 @@ export default {
       }
     },
     async updateQuantity(item, change) {
-  const newQuantity = item.quantity + change;
-  
-  if (newQuantity < 1) {
-    this.$toast.warning(this.$t('checkout.minimumQuantity'));
-    return;
-  }
+      const newQuantity = item.quantity + change;
 
-  try {
-    const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
-      quantity: newQuantity
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-        'Content-Type': 'application/json'
+      if (newQuantity < 1) {
+        this.$toast.warning(this.$t('checkout.minimumQuantity'));
+        return;
       }
-    });
 
-    if (response.data && response.data.success) {
-      const updatedItem = response.data.data;
+      try {
+        const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+          quantity: newQuantity
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-      // Update quantity and price from response or fallback
-      item.quantity = updatedItem.quantity ?? newQuantity;
-      item.price = updatedItem.price ?? item.price;
+        if (response.data && response.data.success) {
+          const updatedItem = response.data.data;
 
-      this.$toast.success(this.$t('checkout.quantityUpdated'));
+          // Update quantity and price from response or fallback
+          item.quantity = updatedItem.quantity ?? newQuantity;
+          item.price = updatedItem.price ?? item.price;
 
-      // Trigger reactivity to update DOM immediately
-      this.cartItems = [...this.cartItems];
-    } else {
-      const errorMessage = response.data?.message || this.$t('checkout.errorUpdatingQuantity');
-      this.$toast.error(errorMessage);
-    }
-  } catch (error) {
-    console.error('Error updating quantity:', error);
-    const errorMessage = error.response?.data?.message || this.$t('checkout.errorUpdatingQuantity');
-    this.$toast.error(errorMessage);
-  }
-},
+          this.$toast.success(this.$t('checkout.quantityUpdated'));
+
+          // Trigger reactivity to update DOM immediately
+          this.cartItems = [...this.cartItems];
+        } else {
+          const errorMessage = response.data?.message || this.$t('checkout.errorUpdatingQuantity');
+          this.$toast.error(errorMessage);
+        }
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+        const errorMessage = error.response?.data?.message || this.$t('checkout.errorUpdatingQuantity');
+        this.$toast.error(errorMessage);
+      }
+    },
 
     async removeItem(itemId) {
       try {
@@ -310,8 +321,138 @@ export default {
     previousStep() {
       if (this.step > 1) this.step--;
     },
+    // Initialize Stripe Elements
+    async initStripeElements() {
+      if (!document.getElementById('card-element')) return;
+      
+      const stripe = await this.stripePromise;
+      this.stripeElements = stripe.elements();
+      
+      // Create card element
+      const cardElement = this.stripeElements.create('card', {
+        style: {
+          base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+              color: '#aab7c4'
+            }
+          },
+          invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+          }
+        }
+      });
+      
+      // Mount the card element
+      cardElement.mount('#card-element');
+      
+      // Handle real-time validation errors
+      cardElement.on('change', (event) => {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+          displayError.textContent = event.error.message;
+        } else {
+          displayError.textContent = '';
+        }
+      });
+      
+      this.cardElement = cardElement;
+    },
+    
     async placeOrder() {
       try {
+        // Handle different payment methods
+        if (this.selectedPaymentMethod === 1) { // Stripe
+          this.stripeLoading = true;
+          try {
+            // Create payment intent with Stripe
+            const paymentIntentResponse = await axios.post(`${API_URL}/api/payment/stripe/create-intent`, {
+              amount: this.total,
+              currency: 'usd',
+              items: this.cartItems.map(item => ({
+                product_id: item.product.id,
+                quantity: item.quantity,
+                price: item.price
+              }))
+            }, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+              }
+            });
+            
+            // Get the client secret from the response
+            this.stripeClientSecret = paymentIntentResponse.data.clientSecret;
+            
+            // Load Stripe.js
+            const stripe = await this.stripePromise;
+            
+            // Use Stripe Elements to confirm the payment
+            const { error, paymentIntent } = await stripe.confirmCardPayment(this.stripeClientSecret, {
+              payment_method: {
+                card: this.cardElement,
+                billing_details: {
+                  name: this.shippingDetails.fullName,
+                  email: localStorage.getItem('user_email') || '',
+                  address: {
+                    line1: this.shippingDetails.address,
+                    city: this.shippingDetails.city,
+                    postal_code: this.shippingDetails.postalCode,
+                    country: this.shippingDetails.country || 'US'
+                  }
+                }
+              }
+            });
+            
+            if (error) {
+              throw new Error(error.message);
+            }
+            
+            if (paymentIntent.status === 'succeeded') {
+              this.$toast.success(this.$t('checkout.paymentProcessed'));
+            } else {
+              throw new Error(this.$t('checkout.paymentNotCompleted'));
+            }
+          } catch (stripeError) {
+            console.error('Stripe payment error:', stripeError);
+            this.$toast.error(stripeError.message || this.$t('checkout.errorProcessingPayment'));
+            return; // Stop execution if payment fails
+          } finally {
+            this.stripeLoading = false;
+          }
+          
+        } else if (this.selectedPaymentMethod === 2) { // Tabby
+          this.tabbyLoading = true;
+          // Initialize Tabby payment
+          const tabbyResponse = await axios.post(`${API_URL}/api/payment/tabby/create-session`, {
+            amount: this.total,
+            items: this.cartItems.map(item => ({
+              product_id: item.product.id,
+              quantity: item.quantity,
+              price: item.price
+            })),
+            shipping: this.shippingDetails
+          }, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+            }
+          });
+          
+          // Redirect to Tabby checkout or handle the response
+          this.tabbyLoading = false;
+          this.$toast.success(this.$t('checkout.redirectingToTabby'));
+          
+          // In a real implementation, you would redirect to Tabby's checkout page
+          // window.location.href = tabbyResponse.data.redirectUrl;
+          
+        } else if (this.selectedPaymentMethod === 3) { // Cash on Delivery
+          // Process Cash on Delivery order
+        }
+        
+        // Create the order in your system
         const orderData = {
           shipping_details: this.shippingDetails,
           payment_method: this.selectedPaymentMethod,
@@ -333,6 +474,8 @@ export default {
       } catch (error) {
         console.error('Error placing order:', error);
         this.$toast.error(this.$t('checkout.errorPlacingOrder'));
+        this.stripeLoading = false;
+        this.tabbyLoading = false;
       }
     }
   }
@@ -515,7 +658,8 @@ label {
   color: #333;
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #dee2e6;
@@ -523,7 +667,8 @@ input, textarea {
   transition: border-color 0.3s ease;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   border-color: #8b6b3d;
   outline: none;
 }
@@ -571,7 +716,8 @@ input:focus, textarea:focus {
   margin-top: 2rem;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   padding: 0.75rem 2rem;
   border-radius: 4px;
   font-weight: 500;
@@ -604,6 +750,33 @@ input:focus, textarea:focus {
   background: #f8f9fa;
 }
 
+/* Stripe Elements Styles */
+.stripe-container {
+  margin: 2rem 0;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.card-element-container {
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.card-element {
+  padding: 10px;
+  min-height: 40px;
+}
+
+.card-errors {
+  color: #fa755a;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .stepper {
     flex-direction: column;
@@ -624,7 +797,8 @@ input:focus, textarea:focus {
     gap: 1rem;
   }
 
-  .btn-primary, .btn-secondary {
+  .btn-primary,
+  .btn-secondary {
     width: 100%;
   }
 }
