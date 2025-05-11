@@ -1,155 +1,117 @@
 <template>
-  <!-- <p>Categories</p>
-  <div class="categories-section">
-    <div class="categories-grid">
-      <div v-for="category in categories" :key="category.id" class="category-card">
-        <div class="category-image">
-          <img :src="category.image" :alt="$i18n.locale === 'ar' ? category.name_ar : category.name" />
-        </div>
-        <h3 class="category-name" :class="{ 'rtl': $i18n.locale === 'ar' }">
-          {{ $i18n.locale === 'ar' ? category.name_ar : category.name }}
-        </h3>
-      </div>
-      <div v-if="loading" class="loading-overlay">
-        <div class="loading-spinner"></div>
-      </div>
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
-    </div>
-  </div> -->
   <section class="all-categories py-4">
-      <div class="container">
-        <div class="title">
-          <fa class="fa-icon" :icon="['fas','cubes']"></fa>
-          <h2>{{ $t('home.categories') }}</h2>
+    <div class="container">
+      <div class="title">
+        <fa class="fa-icon" :icon="['fas', 'cubes']"></fa>
+        <h2>{{ $t('home.categories') }}</h2>
+      </div>
+
+      <div class="slider-wrapper">
+        <!-- Navigation Buttons -->
+        <div class="scrollers ms-3 mb-2">
+          <button class="btn nav-button left" @click="onPrev">&#8592;</button>
+          <button class="btn nav-button right" @click="onNext">&#8594;</button>
         </div>
-        <div class="slider-wrapper">
-          <div class="scrollers ms-3 mb-2">
-            <button class="btn nav-button left" @click="scrollLeft">&#8592;</button>
-            <button class="btn nav-button right" @click="scrollRight">&#8594;</button>
-          </div>
-          <div class="slider py-5" ref="slider">
-            <a v-for="category in categories" :key="category.id" class="card">
+
+        <!-- Swiper Slider -->
+        <swiper
+          ref="mySwiper"
+          :modules="modules"
+          :slides-per-view="7"
+          :space-between="30"
+          :loop="true"
+          :autoplay="{ delay: 3000, disableOnInteraction: false }"
+          :pagination="{ clickable: true }"
+          :mousewheel="true"
+          :keyboard="true"
+          :rtl="$i18n.locale === 'ar'"
+          :breakpoints="swiperBreakpoints"
+          class="slider"
+        >
+          <swiper-slide v-for="category in categories" :key="category.id">
+            <a class="card">
               <div class="category-content">
-                <img  :src="category.image" :alt="$i18n.locale === 'ar' ? category.name_ar : category.name"/>
-                <p :class="{ 'rtl': $i18n.locale === 'ar' }">{{ $i18n.locale === 'ar' ? category.name_ar : category.name }}</p>
+                <!-- Lazy Load Image -->
+                <img
+                  :data-src="category.image"
+                  class="swiper-lazy"
+                  :alt="$i18n.locale === 'ar' ? category.name_ar : category.name"
+                />
+                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                <p :class="{ rtl: $i18n.locale === 'ar' }">
+                  {{ $i18n.locale === 'ar' ? category.name_ar : category.name }}
+                </p>
               </div>
             </a>
-          </div>
-          <div v-if="loading" class="loading-overlay">
-            <div class="loading-spinner"></div>
-          </div>
-          <div v-if="error" class="error-message">
-            {{ error }}
-          </div>
+          </swiper-slide>
+
+          <!-- Pagination will appear automatically if enabled -->
+        </swiper>
+
+        <!-- Loading & Error States -->
+        <div v-if="loading" class="loading-overlay">
+          <div class="loading-spinner"></div>
         </div>
+        <div v-if="error" class="error-message">{{ error }}</div>
       </div>
-    </section>
+    </div>
+  </section>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { nextTick } from 'vue'
+// Import Swiper components
+import { Swiper, SwiperSlide } from 'swiper/vue'
 
-// import 'slick-carousel'
-// import 'slick-carousel/slick/slick.css'
-// import 'slick-carousel/slick/slick-theme.css'
+// Import required modules
+import { Navigation, Pagination, Autoplay, Keyboard, Mousewheel } from 'swiper/modules'
 
 export default {
   name: 'WebsiteCategories',
-  computed: {
-    ...mapState('websiteCategories', {
-      categories: state => state.items,
-      loading: state => state.loading,
-      error: state => state.error
-    })
+  components: {
+    Swiper,
+    SwiperSlide
   },
-  created() {
-    this.loadCategories()
-  },
-  methods: {
-    ...mapActions('websiteCategories', {
-      fetchCategories: 'fetchWebsiteCategories'
-    }),
-    async loadCategories() {
-      try {
-        // Fetch categories
-        await this.fetchCategories()
-
-        // Wait for DOM update
-        await nextTick()
-
-        // Destroy existing slider if it's already initialized
-        if (this.$refs.slider && $(this.$refs.slider).hasClass('slider')) {
-          $(this.$refs.slider).slick('unslick')
+  data() {
+    return {
+      modules: [Navigation, Pagination, Autoplay, Keyboard, Mousewheel],
+      swiperBreakpoints: {
+        1200: {
+          slidesPerView: 5
+        },
+        992: {
+          slidesPerView: 4
+        },
+        768: {
+          slidesPerView: 3
+        },
+        576: {
+          slidesPerView: 2
+        },
+        400: {
+          slidesPerView: 1
         }
-
-        // Initialize Slick Carousel
-        $(this.$refs.slider).slick({
-          slidesToShow: 7,
-          slidesToScroll: 1,
-          arrows: true,
-          infinite: true,
-          rtl: this.$i18n.locale === 'ar',
-          prevArrow: '<button type="button" class="slick-prev nav-btn left">❮</button>',
-          nextArrow: '<button type="button" class="slick-next nav-btn right">❯</button>',
-          responsive: [
-            {
-              breakpoint: 1200,
-              settings: {
-                slidesToShow: 5
-              }
-            },
-            {
-              breakpoint: 992,
-              settings: {
-                slidesToShow: 4
-              }
-            },
-            {
-              breakpoint: 768,
-              settings: {
-                slidesToShow: 3
-              }
-            },
-            {
-              breakpoint: 576,
-              settings: {
-                slidesToShow: 2
-              }
-            },
-            {
-              breakpoint: 400,
-              settings: {
-                slidesToShow: 1
-              }
-            }
-          ]
-        })
-
-      } catch (error) {
-        console.error('Error loading categories:', error)
       }
-    },
-    scrollLeft() {
-      if (this.$refs.slider) {
-        $(this.$refs.slider).slick('slickPrev')
-      }
-    },
-    scrollRight() {
-      if (this.$refs.slider) {
-        $(this.$refs.slider).slick('slickNext')
-      }
-    },
-    getAlt(category) {
-      return this.$i18n.locale === 'ar' ? category.name_ar : category.name
     }
   },
-  // Optional: Clean up slick carousel on component destruction
-  beforeUnmount() {
-    if (this.$refs.slider && $(this.$refs.slider).hasClass('slider')) {
-      $(this.$refs.slider).slick('unslick')
+  computed: {
+    ...mapState('websiteCategories', ['items', 'loading', 'error']),
+    categories() {
+      return this.items || []
+    }
+  },
+  created() {
+    this.fetchCategories()
+  },
+  methods: {
+    ...mapActions('websiteCategories', ['fetchCategories']),
+    onPrev() {
+      const swiper = this.$refs.mySwiper?.swiper
+      if (swiper) swiper.slidePrev()
+    },
+    onNext() {
+      const swiper = this.$refs.mySwiper?.swiper
+      if (swiper) swiper.slideNext()
     }
   }
 }
