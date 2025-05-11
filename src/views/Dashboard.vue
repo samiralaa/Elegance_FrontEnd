@@ -166,4 +166,4 @@ export default defineComponent({
 .chart-container {
   height: 300px;
 }
-</style>
+</style> 

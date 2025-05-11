@@ -17,7 +17,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://127.0.0.1:8000/api/units')
+    axios.get('https://elegance_commers.test/api/units')
       .then(response => {
         this.units = response.data;
       })
