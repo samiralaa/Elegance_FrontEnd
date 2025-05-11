@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Loader v-if="loading" />
+    <!-- <Loader v-if="loading" /> -->
     <Header />
 
     <!-- Hero Section with Ramadan Theme -->
