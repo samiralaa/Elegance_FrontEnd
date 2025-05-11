@@ -19,6 +19,7 @@
     "bootstrap": "^5.3.5",
     "chart.js": "^4.2.1",
     "element-plus": "^2.9.7",
+    "jquery": "^3.7.1",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.6",
     "vue": "^3.2.13",
