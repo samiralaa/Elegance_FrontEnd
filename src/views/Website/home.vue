@@ -63,6 +63,7 @@ export default {
     BestSelling,
     WhyChooseUs,
     Footer,
+    Loader,
   },
   computed: {
     direction() {
@@ -100,7 +101,9 @@ export default {
       } catch (error) {
         console.error('Failed to fetch settings:', error);
       } finally {
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); // 1 second delay
       }
     },
     scrollLeft() {

@@ -165,7 +165,7 @@ const BASE_URL = 'http://127.0.0.1:8000'
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`
 const CURRENCIES_API = `${BASE_URL}/api/currencies`
-const COUNTRIES_API = `${BASE_URL}/api/countries`
+const COUNTRIES_API = `${BASE_URL}/api/countries/get`
 
 // Fetch select options from API endpoints
 const fetchSelectOptions = async () => {
@@ -194,8 +194,7 @@ const fetchSelectOptions = async () => {
       countryRes.data.status === "success" &&
       countryRes.data.data &&
       countryRes.data.data.original &&
-      countryRes.data.data.original.status
-    ) {
+      countryRes.data.data.original.status    ) {
       countries.value = countryRes.data.data.original.data
     }
 

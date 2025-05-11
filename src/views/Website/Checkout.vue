@@ -108,6 +108,30 @@
             required
           >
         </div>
+        <div class="form-group">
+          <label for="buildingName">{{ $t('checkout.buildingName') }}</label>
+          <input type="text" id="buildingName" v-model="shippingDetails.buildingName" required>
+        </div>
+        <div class="form-group">
+          <label for="floorNumber">{{ $t('checkout.floorNumber') }}</label>
+          <input type="text" id="floorNumber" v-model="shippingDetails.floorNumber" required>
+        </div>
+        <div class="form-group">
+          <label for="apartmentNumber">{{ $t('checkout.apartmentNumber') }}</label>
+          <input type="text" id="apartmentNumber" v-model="shippingDetails.apartmentNumber" required>
+        </div>
+        <div class="form-group">
+          <label for="landmark">{{ $t('checkout.landmark') }}</label>
+          <input type="text" id="landmark" v-model="shippingDetails.landmark" required>
+        </div>
+        <div class="form-group">
+          <label for="street">{{ $t('checkout.street') }}</label>
+          <input type="text" id="street" v-model="shippingDetails.street" required>
+        </div>
+        <div class="form-group">
+          <label for="country">{{ $t('checkout.country') }}</label>
+          <input type="text" id="country" v-model="shippingDetails.country" required>
+        </div>
         <div class="button-group">
           <button type="button" class="btn-secondary" @click="previousStep">
             {{ $t('checkout.back') }}
