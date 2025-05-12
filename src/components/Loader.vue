@@ -105,4 +105,9 @@ export default {
     opacity: 0;
   }
 }
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
 </style>
