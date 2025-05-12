@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <!-- <Loader v-if="loading" /> -->
+    <Loader v-if="loading" />
     <Header />
 
     <!-- Hero Section with Ramadan Theme -->
@@ -103,7 +103,7 @@ export default {
       } finally {
         setTimeout(() => {
           this.loading = false;
-        }, 1000); // 1 second delay
+        }, 3000);
       }
     },
     scrollLeft() {
