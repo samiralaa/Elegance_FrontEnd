@@ -178,6 +178,11 @@ const routes = [
     path: '/product-listing',
     name: 'ProductListing',
     component: () => import('../views/Website/ProductListing.vue')
+  },
+  {
+    path: '/test-payment',
+    name: 'TestPayment',
+    component: () => import('../views/TestPayment.vue')
   }
 ]
 
