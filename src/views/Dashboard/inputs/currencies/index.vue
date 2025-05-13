@@ -30,7 +30,7 @@
   
   const currencies = ref([])
   const loading = ref(false)
-  const BASE_URL = 'https://elegance_commers.test'
+  const BASE_URL = 'http://127.0.0.1:8000'
   const API_URL = `${BASE_URL}/api/currencies`
   
   const fetchcurrencies = async () => {
