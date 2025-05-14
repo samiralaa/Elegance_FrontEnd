@@ -14,7 +14,10 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
+
         target: 'http://elegance_backend.test',
+
+
         changeOrigin: true,
         secure: false,
         ws: true,

@@ -162,6 +162,7 @@ const parentProducts = ref([])
 
 // Base URL and API endpoints
 const BASE_URL = 'http://elegance_backend.test'
+
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`
 const CURRENCIES_API = `${BASE_URL}/api/currencies`

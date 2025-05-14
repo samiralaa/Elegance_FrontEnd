@@ -86,6 +86,7 @@ export default {
 
         const response = await axios.get('http://elegance_backend.test/api/brands')
 
+
         if (response.data.status) {
           const data = response.data.data
           this.brands = Array.isArray(data) ? data : [data]
@@ -126,7 +127,9 @@ export default {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
 
+
         const response = await axios.post('http://elegance_backend.test/api/categories', formData, {
+
           headers: {
             'Content-Type': 'multipart/form-data',
           },

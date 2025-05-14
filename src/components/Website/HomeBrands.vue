@@ -32,7 +32,9 @@
       async fetchBrands() {
         try {
           const response = await axios.get(
+
             "http://elegance_backend.test/api/website/brands/section"
+
           );
           this.brands = response.data.data;
         } catch (error) {
@@ -40,7 +42,9 @@
         }
       },
       getImageUrl(path) {
+
         return `http://elegance_backend.test/storage/${path}`;
+
       },
       likeBrand(id) {
         console.log(`Brand ${id} liked!`);

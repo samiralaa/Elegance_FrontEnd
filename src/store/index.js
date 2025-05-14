@@ -10,6 +10,7 @@ import payment from './modules/payment'
 
 export const API_URL = 'http://elegance_backend.test';
 
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {

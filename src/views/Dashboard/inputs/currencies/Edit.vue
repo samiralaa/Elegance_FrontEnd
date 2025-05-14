@@ -56,7 +56,9 @@
     ]
   }
   
+
   const BASE_URL = 'http://elegance_backend.test'
+
   const CURRENCY_API = `${BASE_URL}/api/currencies`
   
   // Fetch existing data

@@ -53,8 +53,9 @@ const rules = {
   name_en: [{ required: true, message: 'Please input unit name (EN)', trigger: 'blur' }],
 }
 
-// Base URL and API endpoint
+
 const BASE_URL = 'http://elegance_backend.test'
+
 const UNITS_API = `${BASE_URL}/api/units`
 
 // Submit the unit creation form

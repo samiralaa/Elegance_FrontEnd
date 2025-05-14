@@ -87,7 +87,9 @@ const selectedImage = ref(null);
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
+
       `http://elegance_backend.test/api/website/show/products/${route.params.id}`
+
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -101,7 +103,9 @@ const fetchProduct = async () => {
 };
 
 const getImageUrl = (path) => {
+
   return `http://elegance_backend.test/storage/${path}`;
+
 };
 
 const increaseQty = () => {
@@ -127,7 +131,9 @@ const addToCart = async () => {
     if (product.value.amounts) {
       payload.amount_id = product.value.amount_id;
     }
+
     const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },

@@ -213,7 +213,9 @@ import axios from 'axios'
 
 // Create axios instance with default config
 const api = axios.create({
+
   baseURL: 'http://elegance_backend.test/api',
+
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'

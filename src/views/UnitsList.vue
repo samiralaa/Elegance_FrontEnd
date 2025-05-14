@@ -18,6 +18,7 @@ export default {
   },
   mounted() {
     axios.get('http://elegance_backend.test/api/units')
+
       .then(response => {
         this.units = response.data;
       })
