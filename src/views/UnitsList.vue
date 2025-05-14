@@ -17,7 +17,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('https://elegance_commers.test/api/units')
+    axios.get('http://elegance_backend.test/api/units')
       .then(response => {
         this.units = response.data;
       })

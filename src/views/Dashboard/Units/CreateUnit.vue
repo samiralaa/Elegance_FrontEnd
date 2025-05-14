@@ -54,7 +54,7 @@ const rules = {
 }
 
 // Base URL and API endpoint
-const BASE_URL = 'https://elegance_commers.test'
+const BASE_URL = 'http://elegance_backend.test'
 const UNITS_API = `${BASE_URL}/api/units`
 
 // Submit the unit creation form

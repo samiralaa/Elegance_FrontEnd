@@ -4,9 +4,11 @@ import categories from './modules/categories'
 import brands from './modules/brands'
 import currency from './modules/currency'
 import websiteCategories from './modules/websiteCategories'
+import orders from './modules/orders'
+import payment from './modules/payment'
 
 
-export const API_URL = 'https://elegance_commers.test';
+export const API_URL = 'http://elegance_backend.test';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -33,13 +35,14 @@ export default createStore({
     brands,
     currency,
     websiteCategories,
+    orders,
+    payment
   },
   state: {
     products: [],
-    orders: [],
     customers: [],
     brands: [],
-    salesData: {
+    salesData: {  
       daily: [],
       weekly: [],
       monthly: []
@@ -54,9 +57,7 @@ export default createStore({
     SET_PRODUCTS(state, products) {
       state.products = products
     },
-    SET_ORDERS(state, orders) {
-      state.orders = orders
-    },
+
     SET_CUSTOMERS(state, customers) {
       state.customers = customers
     },
@@ -202,17 +203,7 @@ export default createStore({
       }
     },
 
-    async fetchOrders({ commit }) {
-      try {
-        commit('SET_LOADING', true)
-        const response = await api.get('/orders')
-        commit('SET_ORDERS', response.data)
-      } catch (error) {
-        commit('SET_ERROR', 'Failed to fetch orders')
-      } finally {
-        commit('SET_LOADING', false)
-      }
-    },
+
 
     async registerUser({ commit }, userData) {
       try {
@@ -274,10 +265,8 @@ export default createStore({
   },
   getters: {
     totalProducts: state => state.products.length,
-    totalOrders: state => state.orders.length,
     totalCustomers: state => state.customers.length,
     totalBrands: state => state.brands.length,
-    totalRevenue: state => state.orders.reduce((total, order) => total + order.total, 0),
     getCustomers: state => state.customers,
     getBrands: state => state.brands,
     isLoading: state => state.loading,

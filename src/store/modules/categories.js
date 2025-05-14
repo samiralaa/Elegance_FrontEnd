@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const API_URL = 'https://elegance_commers.test'
-const IMAGE_BASE_URL = 'https://elegance_commers.test'
+const API_URL = 'http://elegance_backend.test'
+const IMAGE_BASE_URL = 'http://elegance_backend.test'
 
 const state = {
   items: [],

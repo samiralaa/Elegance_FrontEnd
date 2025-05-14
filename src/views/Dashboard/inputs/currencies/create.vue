@@ -55,7 +55,7 @@
     ]
   }
   
-  const BASE_URL = 'https://elegance_commers.test'
+  const BASE_URL = 'http://elegance_backend.test'
   const currencies_API = `${BASE_URL}/api/currencies`
   
   const submitForm = () => {

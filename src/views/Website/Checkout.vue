@@ -133,8 +133,34 @@ export default {
     previousStep() {
       if (this.step > 1) this.step--;
     },
-    handleOrderPlaced() {
-      this.$router.push('/orders');
+    async handleOrderPlaced() {
+      const orderData = {
+        payment_method: this.cartItems[0].payment_method || 'paypal',
+        user_id: localStorage.getItem('user_id'),
+        order: {
+          status: 'pending',
+          payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'cash',
+          shipping_address: `${this.shippingDetails.street}, ${this.shippingDetails.city}, ${this.shippingDetails.country}`
+        },
+        items: this.cartItems.map(item => ({
+          product_id: item.product_id,
+          product_name: item.product_name,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      };
+
+      try {
+        const response = await axios.post(`${API_URL}/api/orders`, orderData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.$router.push('/order-confirmation');
+      } catch (error) {
+        console.error('Error placing order:', error);
+        this.$toast.error(this.$t('checkout.errorPlacingOrder'));
+      }
     }
   }
 };

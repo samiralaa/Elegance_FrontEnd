@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   name: 'PaymentStep',
   props: {
@@ -48,15 +50,59 @@ export default {
     selectedPaymentMethod: Number,
     stripeLoading: Boolean
   },
+  data() {
+    return {
+      processing: false,
+      error: null
+    }
+  },
+  computed: {
+    ...mapGetters('payment', ['isLoading', 'getError'])
+  },
   methods: {
+    ...mapActions('payment', ['createOrder', 'confirmPayment']),
     selectPaymentMethod(methodId) {
       this.$emit('select-payment-method', methodId);
     },
     previousStep() {
       this.$emit('previous-step');
     },
-    placeOrder() {
-      this.$emit('place-order');
+    async placeOrder() {
+      try {
+        this.processing = true;
+        this.error = null;
+
+        // Create order and get payment intent
+        const { order, payment_intent } = await this.createOrder({
+          cartItems: this.cartItems,
+          shippingDetails: this.shippingDetails,
+          paymentMethod: this.selectedPaymentMethod,
+          total: this.total,
+          currency: this.currency
+        });
+
+        // Handle payment confirmation based on payment method
+        if (this.selectedPaymentMethod === 1) { // Stripe
+          const result = await this.confirmPayment({
+            paymentMethodId: payment_intent.payment_method_id,
+            paymentIntentId: payment_intent.id
+          });
+
+          if (result.status === 'succeeded') {
+            this.$emit('order-placed', order);
+          } else {
+            throw new Error('Payment failed');
+          }
+        } else {
+          // Handle other payment methods
+          this.$emit('order-placed', order);
+        }
+      } catch (error) {
+        this.error = error.message || 'An error occurred during payment';
+        console.error('Payment error:', error);
+      } finally {
+        this.processing = false;
+      }
     }
   }
 };

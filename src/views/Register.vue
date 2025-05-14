@@ -115,7 +115,7 @@ import { ref } from 'vue'
 import { ElSelect, ElOption } from 'element-plus'
 import axios from 'axios'
 
-const API_URL = 'https://elegance_commers.test/api/clients'
+const API_URL = 'http://elegance_backend.test/api/clients'
 
 export default {
   name: 'Register',

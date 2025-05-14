@@ -67,7 +67,7 @@ const successMessage = ref('')
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/products/section')
+    const response = await axios.get('http://elegance_backend.test/api/website/products/section')
     if (response.data.status && response.data.data) {
       products.value = response.data.data
     }
@@ -76,12 +76,12 @@ const fetchProducts = async () => {
   }
 }
 
-const getImageUrl = (path) => `https://elegance_commers.test/storage/${path}`
+const getImageUrl = (path) => `http://elegance_backend.test/storage/${path}`
 
 const addToFavorites = async (product) => {
   try {
     const response = await axios.post(
-      'https://elegance_commers.test/api/favorites',
+      'http://elegance_backend.test/api/favorites',
       { product_id: product.id },
       {
         headers: {
@@ -118,7 +118,7 @@ const addToCart = async (product) => {
       payload.amount_id = product.amount_id
     }
 
-    const response = await axios.post('https://elegance_commers.test/api/cart-items', payload, {
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },

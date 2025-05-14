@@ -74,7 +74,7 @@ const router = useRouter()
 const categories = ref([])
 const loading = ref(false)
 
-const BASE_URL = 'https://elegance_commers.test'
+const BASE_URL = 'http://elegance_backend.test'
 const API_URL = `${BASE_URL}/api/categories`
 
 const fetchCategories = async () => {

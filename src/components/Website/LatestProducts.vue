@@ -75,7 +75,7 @@ const successMessage = ref('');
 // Fetch products
 const fetchLatestProducts = async () => {
   try {
-    const response = await axios.get('https://elegance_commers.test/api/website/latest/products');
+    const response = await axios.get('http://elegance_backend.test/api/website/latest/products');
     if (response.data.status) {
       products.value = response.data.data;
     }
@@ -86,14 +86,14 @@ const fetchLatestProducts = async () => {
 
 // Get image URL
 const getImageUrl = (path) => {
-  return `https://elegance_commers.test/storage/${path}`;
+  return `http://elegance_backend.test/storage/${path}`;
 };
 
 // Add to favorites
 const addToFavorites = async (product) => {
   try {
     const response = await axios.post(
-      'https://elegance_commers.test/api/favorites',
+      'http://elegance_backend.test/api/favorites',
       { product_id: product.id },
       {
         headers: {

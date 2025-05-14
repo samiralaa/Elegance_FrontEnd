@@ -8,7 +8,7 @@
         <span>{{ method.name }}</span>
       </div>
     </div>
-    
+
     <!-- Stripe Card Element -->
     <div v-if="selectedPaymentMethod === 1" class="stripe-container">
       <div class="card-element-container">
@@ -97,10 +97,8 @@ export default {
     },
     async initStripeElements() {
       if (!document.getElementById('card-element')) return;
-      
       const stripe = await this.stripePromise;
       this.stripeElements = stripe.elements();
-      
       const cardElement = this.stripeElements.create('card', {
         style: {
           base: {
@@ -118,9 +116,7 @@ export default {
           }
         }
       });
-      
       cardElement.mount('#card-element');
-      
       cardElement.on('change', (event) => {
         const displayError = document.getElementById('card-errors');
         if (event.error) {
@@ -129,18 +125,36 @@ export default {
           displayError.textContent = '';
         }
       });
-      
       this.cardElement = cardElement;
     },
     async placeOrder() {
       try {
         this.loading = true;
+        const orderData = {
+          user_id: 1,
+          order: {
+            status: 'pending',
+            payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'tabby',
+            shipping_address: this.shippingDetails.address,
+            items: this.cartItems.map(item => ({
+              product_id: item.product.id,
+              product_name: item.product.name,
+              quantity: item.quantity,
+              price: item.price,
+              subtotal: item.price * item.quantity,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+          }
+        };
         if (this.selectedPaymentMethod === 1) { // Stripe Checkout
-          // Call backend to create Stripe Checkout Session
           const response = await axios.post(`${API_URL}/api/payment/process`, {
+            ...orderData,
             amount: parseFloat(this.total),
             currency: this.currency,
-            // Optionally pass more details (cartItems, shippingDetails, etc.)
+            payment_method: 'stripe'
           }, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('auth_token')}`
@@ -154,21 +168,19 @@ export default {
           }
         } else if (this.selectedPaymentMethod === 2) { // Tabby
           const tabbyResponse = await axios.post(`${API_URL}/api/payment/tabby/create-session`, {
-            amount: this.total,
-            items: this.cartItems.map(item => ({
-              product_id: item.product.id,
-              quantity: item.quantity,
-              price: item.price
-            })),
-            shipping: this.shippingDetails
+            ...orderData,
+            amount: this.total
           }, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('auth_token')}`
             }
           });
-          
-          this.$toast.success(this.$t('checkout.redirectingToTabby'));
-          // window.location.href = tabbyResponse.data.redirectUrl;
+          if (tabbyResponse.data.success) {
+            this.$toast.success(this.$t('checkout.redirectingToTabby'));
+            window.location.href = tabbyResponse.data.redirectUrl;
+          } else {
+            throw new Error(this.$t('checkout.errorCreatingPaymentSession'));
+          }
         } else if (this.selectedPaymentMethod === 3) { // Cash on Delivery
           await this.createOrder();
         }
@@ -197,6 +209,8 @@ export default {
       if (orderResponse.data.success) {
         this.$toast.success(this.$t('checkout.orderPlaced'));
         this.$emit('order-placed');
+        // Redirect to home page
+        window.location.href = '/';
       } else {
         throw new Error(this.$t('checkout.errorPlacingOrder'));
       }
@@ -453,4 +467,4 @@ export default {
     width: 100%;
   }
 }
-</style> 
+</style>
