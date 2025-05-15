@@ -232,33 +232,43 @@
     "NA": "N/A"
   },
   "Footer": {
-  "DownloadApp": "Download App",
-  "AppStore": "App Store",
-  "GooglePlay": "Google Play",
-  "QuickLink": "Quick Links",
-  "PrivacyPolicy": "Privacy Policy",
-  "TermsOfService": "Terms of Service",
-  "RefundPolicy": "Refund Policy",
-  "Contact": "Contact",
-  "Account": "Account",
-  "LoginRegister": "Login / Register",
-  "Support": "Support",
-  "Address": "Address",
-  "FullAddress": "37 Kwar St - Al Nahyan - E20-02 - Abu Dhabi - United Arab Emirates",
-  "Email": "Email",
-  "Phone": "Phone",
-  "AcceptFor": "Accept For",
-  "PoweredBy": "Powered by Webenia 2024 ©",
-  "FollowUs": "Follow us on",
-  "SocialMedia": {
-    "Facebook": "Facebook",
-    "Instagram": "Instagram",
-    "Tiktok": "TikTok",
-    "Whatsapp": "WhatsApp",
-    "Snapchat": "Snapchat",
-    "YouTube": "YouTube"
-  }
-},
+    "DownloadApp": "Download App",
+    "AppStore": "App Store",
+    "GooglePlay": "Google Play",
+    "QuickLink": "Quick Links",
+    "PrivacyPolicy": "Privacy Policy",
+    "TermsOfService": "Terms of Service",
+    "RefundPolicy": "Refund Policy",
+    "Contact": "Contact",
+    "Account": "Account",
+    "LoginRegister": "Login / Register",
+    "Support": "Support",
+    "Address": "Address",
+    "FullAddress": "37 Kwar St - Al Nahyan - E20-02 - Abu Dhabi - United Arab Emirates",
+    "Email": "Email",
+    "Phone": "Phone",
+    "AcceptFor": "Accept For",
+    "PoweredBy": "Powered by Webenia 2024 ©",
+    "FollowUs": "Follow us on",
+    "SocialMedia": {
+      "Facebook": "Facebook",
+      "Instagram": "Instagram",
+      "Tiktok": "TikTok",
+      "Whatsapp": "WhatsApp",
+      "Snapchat": "Snapchat",
+      "YouTube": "YouTube"
+    }
+  },
+    "orders" : {
+    "myOrders" : "My Orders",
+    "orderId" : "ID",
+    "orderDate" : "Date",
+    "total" : "Total",
+    "status" : "Status",
+    "actions" : "Actions",
+    "filterByStatus" : "Status",
+    "searchPlaceholder" : "Search..."
+  },
   "Nobrandsfound" : "No brands found"
 
 }
