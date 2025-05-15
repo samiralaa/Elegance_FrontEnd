@@ -161,6 +161,7 @@ export default {
             }
           });
           if (response.data.success && response.data.url) {
+           console.log('Stripe redirect URL:', response.data.url);
             window.location.href = response.data.url;
             return;
           } else {

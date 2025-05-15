@@ -95,7 +95,7 @@
               </button>
               <div v-if="showProfileMenu" class="dropdown-menu show">
                 <router-link to="/profile" class="dropdown-item">{{ $t('header.profile') }}</router-link>
-                <router-link to="/orders" class="dropdown-item">{{ $t('header.orders') }}</router-link>
+                <router-link to="/orders/user" class="dropdown-item">{{ $t('header.orders') }}</router-link>
                 <button class="dropdown-item" @click="logout" :disabled="isLoggingOut">
                   <span v-if="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status"></span>
                   {{ $t('header.logout') }}
@@ -211,7 +211,7 @@ export default {
   },
   data() {
     return {
-      searchQuery: '',
+      searchQuery: "",
       showSearchDialog: false,
       products: [],
       filteredProducts: [],
