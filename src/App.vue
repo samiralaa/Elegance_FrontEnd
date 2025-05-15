@@ -83,7 +83,7 @@
           <ThemeSwitcher class="header-item" />
 
           <!-- Language Switcher -->
-          <LanguageSwitcher class="header-item" />
+          <LanguageSwitcher class="header-item"/>
 
           <!-- Notifications -->
           <div class="notifications" @click="showNotifications">
@@ -313,6 +313,17 @@ export default {
 .header-item {
   display: flex;
   align-items: center;
+}
+
+.header-actions .language-switcher a.lang-btn {
+  background-color: #4a3c2b1a;
+  color: #333;
+  border-color: #333;
+}
+
+.header-actions .language-switcher a.lang-btn:hover {
+  background-color: #4a3c2b43;
+  /* color: #fff; */
 }
 
 .menu-toggle {
