@@ -116,7 +116,7 @@ import { ElSelect, ElOption } from 'element-plus'
 import axios from 'axios'
 
 
-const API_URL = 'http://127.0.0.1:8000/api/clients'
+const API_URL = 'http://elegance_backend.test/api/clients'
 
 export default {
   name: 'Register',

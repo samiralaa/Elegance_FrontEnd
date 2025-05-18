@@ -6,9 +6,11 @@ import currency from './modules/currency'
 import websiteCategories from './modules/websiteCategories'
 import orders from './modules/orders'
 import payment from './modules/payment'
+import countries from './modules/countries'
+import users from './modules/users'
 
 
-export const API_URL = 'http://127.0.0.1:8000';
+export const API_URL = 'http://elegance_backend.test';
 
 
 const api = axios.create({
@@ -37,7 +39,9 @@ export default createStore({
     currency,
     websiteCategories,
     orders,
-    payment
+    payment,
+    countries,
+    users
   },
   state: {
     products: [],

@@ -161,12 +161,12 @@ const countries = ref([])
 const parentProducts = ref([])
 
 // Base URL and API endpoints
-const BASE_URL = 'http://127.0.0.1:8000'
+const BASE_URL = 'http://elegance_backend.test'
 
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`
 const CURRENCIES_API = `${BASE_URL}/api/currencies`
-const COUNTRIES_API = `${BASE_URL}/api/countries/get`
+const COUNTRIES_API = `${BASE_URL}/api/countries`
 
 // Fetch select options from API endpoints
 const fetchSelectOptions = async () => {
@@ -189,24 +189,23 @@ const fetchSelectOptions = async () => {
       currencies.value = currencyRes.data.data
     }
 
-    // Fetch Countries (response nested inside data.original.data)
+    // Fetch Countries
     const countryRes = await axios.get(COUNTRIES_API)
-    if (
-      countryRes.data.status === "success" &&
-      countryRes.data.data &&
-      countryRes.data.data.original &&
-      countryRes.data.data.original.status    ) {
-      countries.value = countryRes.data.data.original.data
+    if (countryRes.data.status && countryRes.data.data) {
+      countries.value = countryRes.data.data
     }
 
     // Fetch Parent Products
-    const productsRes = await axios.get(PRODUCTS_API)
-    if (productsRes.data.status && productsRes.data.data) {
-      parentProducts.value = productsRes.data.data
+    const parentProductsRes = await axios.get(PRODUCTS_API)
+    if (parentProductsRes.data.status && parentProductsRes.data.data) {
+      parentProducts.value = parentProductsRes.data.data
     }
-  } catch (err) {
-    console.error('Error fetching select options:', err)
-    ElMessage.error(err.message || 'Failed to fetch select options')
+
+  } catch (error) {
+    console.error('Error fetching select options:', error)
+    ElMessage.error(error.response?.data?.message || 'Failed to load form options')
+  } finally {
+    // Any cleanup or final state updates can go here
   }
 }
 

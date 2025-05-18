@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       '/api': {
 
-        target: 'http://127.0.0.1:8000',
+        target: 'http://elegance_backend.test',
 
 
         changeOrigin: true,
@@ -24,7 +24,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, '/api'),
         configure: (proxy, options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('origin', 'http://127.0.0.1:8000');
+            proxyReq.setHeader('origin', 'http://elegance_backend.test');
           });
         }
       }

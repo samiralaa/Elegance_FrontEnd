@@ -65,19 +65,65 @@
         </div>
       </el-col>
     </el-row>
+
+    <!-- Children Products Section -->
+    <div v-if="product.children && product.children.length > 0" class="children-products-section">
+      <h2 class="section-title">{{ $t('related_products') }}</h2>
+      <el-row :gutter="20">
+        <el-col v-for="child in product.children" :key="child.id" :xs="24" :sm="12" :md="8" :lg="6">
+          <div class="product-card" @click="navigateToProduct(child.id)">
+            <div class="product-image">
+              <img
+                :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
+                :alt="locale === 'ar' ? child.name_ar : child.name_en"
+              />
+              <div class="product-overlay">
+                <div class="overlay-buttons">
+                  <el-button class="overlay-btn" circle @click.stop="navigateToProduct(child.id)">
+                    <el-icon><i class="el-icon-view"></i></el-icon>
+                  </el-button>
+                  <el-button 
+                    class="overlay-btn" 
+                    circle 
+                    @click.stop="addChildToCart(child)"
+                    :disabled="!child.is_available"
+                  >
+                    <el-icon><i class="el-icon-shopping-cart-2"></i></el-icon>
+                  </el-button>
+                </div>
+              </div>
+              <div class="sale-badge" v-if="child.old_price">Sale</div>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ locale === 'ar' ? child.name_ar : child.name_en }}</h3>
+              <div class="product-price">
+                <span class="current-price">{{ child.price }} {{ child.currency?.name_en }}</span>
+                <span class="old-price" v-if="child.old_price">{{ child.old_price }} {{ child.currency?.name_en }}</span>
+              </div>
+              <div class="product-meta">
+                <el-tag :type="child.is_available ? 'success' : 'danger'" size="small">
+                  {{ child.is_available ? $t('available') : $t('not_available') }}
+                </el-tag>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <script setup>
 import Header from "@/components/Website/Header.vue";
 import { ref, onMounted, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import axios from "axios";
 import { ElNotification } from 'element-plus'
 const { locale, t } = useI18n();
 const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 const route = useRoute();
+const router = useRouter();
 const product = ref({});
 const quantity = ref(1);
 
@@ -87,9 +133,7 @@ const selectedImage = ref(null);
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-
-      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
-
+      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -103,9 +147,7 @@ const fetchProduct = async () => {
 };
 
 const getImageUrl = (path) => {
-
-  return `http://127.0.0.1:8000/storage/${path}`;
-
+  return `http://elegance_backend.test/storage/${path}`;
 };
 
 const increaseQty = () => {
@@ -132,8 +174,43 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    });
+    if (response.data.message) {
+      ElNotification({
+        title: t('success'),
+        message: response.data.message,
+        type: 'success',
+      });
+    }
+  } catch (error) {
+    ElNotification({
+      title: '❌',
+      message: error.response?.data?.message || t('add_to_cart_error') || 'Login required to add to cart',
+      type: 'error',
+    });
+  }
+};
 
+const navigateToProduct = (productId) => {
+  router.push(`/products/${productId}`)
+}
+
+const addChildToCart = async (childProduct) => {
+  try {
+    const payload = {
+      product_id: childProduct.id,
+      quantity: 1,
+      price: childProduct.price,
+    };
+    if (childProduct.amounts) {
+      payload.amount_id = childProduct.amount_id;
+    }
+
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -392,6 +469,192 @@ const addToCart = async () => {
 
   .favorite-btn {
     width: 100%;
+  }
+}
+
+.children-products-section {
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #a3852c;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.1);
+}
+
+.product-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+  opacity: 1;
+}
+
+.overlay-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.overlay-btn {
+  background-color: #fff;
+  color: #2c3e50;
+  border: none;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+.overlay-btn:hover {
+  background-color: #a3852c;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.overlay-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.product-info {
+  padding: 15px;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  height: 44px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.current-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #a3852c;
+}
+
+.old-price {
+  font-size: 14px;
+  color: #95a5a6;
+  text-decoration: line-through;
+}
+
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .children-products-section {
+    padding: 10px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .product-name {
+    font-size: 14px;
+    height: 40px;
+  }
+
+  .current-price {
+    font-size: 16px;
+  }
+
+  .overlay-buttons {
+    gap: 5px;
+  }
+
+  .overlay-btn {
+    width: 35px;
+    height: 35px;
   }
 }
 </style>
