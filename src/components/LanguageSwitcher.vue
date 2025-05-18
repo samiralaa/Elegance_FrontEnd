@@ -55,7 +55,7 @@ a.lang-btn {
 }
 
 a.lang-btn:hover {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #00000066;
   border-color: #fff;
   padding-left: 20px;
   width: 130px;

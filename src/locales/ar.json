@@ -171,7 +171,7 @@
     "RememberMe":"تذكرني",
     "ForgotPassword":"هل نسيت كلمة المرور؟",
     "Login":"تسجيل الدخول"
-
+    
   },
   "Categories":{
     "Categories":"الفئات",
@@ -202,14 +202,14 @@
     }
   },
   "Global": {
- "View":"عرض",
- "Edit":"تعديل",
+    "View":"عرض",
+    "Edit":"تعديل",
     "Delete":"حذف",
     "Save":"حفظ"
- },
- "Products": {
+  },
+  "Products": {
   "NoImageAvailable": "لا توجد صورة متاحة",
-
+  
   "Availability": "التوافر",
   "Available": "متاح",
   "NotAvailable": "غير متاح",
@@ -235,10 +235,10 @@
   "DeletedSuccessfully": "تم حذف المنتج بنجاح",
   "NA": "غير متاح",
   "CreateProduct": "إنشاء منتج",
- 
+  
   "Category": "التصنيف",
   "SelectCategory": "اختار التصنيف",
- 
+  
   "SelectCurrency": "اختار العملة",
   "Country": "الدولة",
   "SelectCountry": "اختار الدولة",
@@ -274,10 +274,20 @@
       "YouTube": "يوتيوب"
     }
   },
+  "orders" : {
+    "myOrders" : "طلباتي",
+    "orderId" : "ID",
+    "orderDate" : "تاريخ",
+    "total" : "المجموع",
+    "status" : "الحالة",
+    "actions" : "الإجراءات",
+    "filterByStatus" : "الحالة",
+    "searchPlaceholder" : "بحث..."
+  },
   
-    "Nobrandsfound": "لا توجد علامات تجارية"
+  "Nobrandsfound": "لا توجد علامات تجارية"
   
-
-
-
+  
+  
+  
 }

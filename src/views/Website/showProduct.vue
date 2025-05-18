@@ -88,7 +88,7 @@ const fetchProduct = async () => {
   try {
     const res = await axios.get(
 
-      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
+      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
 
     );
     if (res.data.status) {
@@ -104,7 +104,7 @@ const fetchProduct = async () => {
 
 const getImageUrl = (path) => {
 
-  return `http://elegance_backend.test/storage/${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
 
 };
 
@@ -132,7 +132,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
 
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
