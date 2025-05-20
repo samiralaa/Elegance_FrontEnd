@@ -75,7 +75,7 @@ const successMessage = ref('');
 const fetchProducts = async () => {
   try {
 
-    const response = await axios.get('http://elegance_backend.test/api/website/products/section');
+    const response = await axios.get('http://127.0.0.1:8000/api/website/products/section');
 
     if (response.data.status && response.data.data) {
       products.value = response.data.data;
@@ -87,7 +87,7 @@ const fetchProducts = async () => {
 
 const getImageUrl = (path) => {
 
-  return `http://elegance_backend.test/storage/${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
 
 };
 
@@ -95,7 +95,7 @@ const addToFavorites = async (product) => {
   try {
     const response = await axios.post(
 
-      'http://elegance_backend.test/api/favorites',
+      'http://127.0.0.1:8000/api/favorites',
 
       { product_id: product.id },
       {
