@@ -133,8 +133,37 @@ const addToFavorites = async (product) => {
 };
 
 // Add to cart
-const addToCart = (product) => {
-  console.log('Add to Cart:', product);
+const addToCart = async (product) => {
+  try {
+    const payload = {
+      product_id: product.id,
+      quantity: 1,
+      price: product.price,
+    };
+
+    if (product.amounts) {
+      console.log('Amounts:', product.amounts);
+      payload.amount_id = product.amount_id;
+    }
+
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    });
+
+    if (response.data.message) {
+      successMessage.value = response.data.message;
+      showSuccessDialog.value = true;
+    }
+  } catch (error) {
+    console.error('Cart error:', error);
+    ElNotification({
+      title: '❌',
+      message: error.response?.data?.message || 'Login required to add to cart',
+      type: 'error',
+    });
+  }
 };
 
 // Load products on component mount

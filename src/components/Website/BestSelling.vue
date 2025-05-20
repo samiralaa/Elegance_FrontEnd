@@ -129,8 +129,39 @@ const addToFavorites = async (product) => {
   }
 };
 
-const addToCart = (product) => {
-  console.log('Add to Cart:', product);
+const addToCart = async (product) => {
+  try {
+    const userId = localStorage.getItem('user_id');
+    const response = await axios.post(
+      'http://elegance_backend.test/api/cart',
+      { product_id: product.id, user_id: userId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      }
+    );
+
+    if (response.data.message) {
+      successMessage.value = response.data.message || 'Product added to cart';
+      showSuccessDialog.value = true;
+      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to cart successfully.`);
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    if (error.response?.status === 401) {
+      ElNotification({
+        title: '⚠️ Unauthorized',
+        message: 'Please login to add to cart.',
+        type: 'error',
+      });
+    } else {
+      ElNotification({
+        title: '❌ Error',
+        message: error.response?.data?.message || 'Something went wrong.',
+      });
+    }
+  }
 };
 
 onMounted(() => {
