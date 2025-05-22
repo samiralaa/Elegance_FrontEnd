@@ -92,6 +92,46 @@
           </div>
         </el-col>
 
+        <el-col   :xs="24" :sm="24"  :md="12"  :lg="10"  class="image-col">
+          <div class="image-wrapper" ref="main">
+            <div class="slide">
+              <img
+                :src="
+                  selectedImage
+                  ? getImageUrl(selectedImage)
+                  : product.images?.length
+                  ? getImageUrl(product.images[0].path)
+                  : placeholder
+                "
+                class="main-image"
+              />
+            </div>
+
+            <div class="sale-badge" v-if="product.old_price">Sale</div>
+          </div>
+          <div class="slider-wrapper">
+            
+            <button class="btn nav-button left" @click="scrollLeft" v-if="numberOfSlides > 1"><fa icon="arrow-left"></fa></button>
+            <!-- Slider Container -->
+            <div class="slider-container" :class="{ 'centered-slides': slidesToShow < 3 }">
+              <div class="slider" ref="slider">
+                <div class="slide">
+                   <img
+                    :src="
+                      selectedImage
+                      ? getImageUrl(selectedImage)
+                      : product.images?.length
+                      ? getImageUrl(product.images[0].path)
+                      : placeholder
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+            <button class="btn nav-button right" @click="scrollRight" v-if="numberOfSlides > 1"><fa icon="arrow-right"></fa></button>
+          </div>
+        </el-col>
+
      
     </el-row>
 
@@ -180,12 +220,14 @@ const isFavorite = ref(false);
 // Slider Ref
 const slider = ref(null);
 const main = ref(null);
+const slidesToShow = ref(3);
+const numberOfSlides = ref(3);
 
 // Fetch product
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
+      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -200,7 +242,7 @@ const fetchProduct = async () => {
 
 // Helper methods
 const getImageUrl = (path) => {
-  return `http://elegance_backend.test/storage/${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
 };
 
 const increaseQty = () => quantity.value++;
@@ -224,7 +266,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -261,7 +303,7 @@ const addChildToCart = async (childProduct) => {
       payload.amount_id = childProduct.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -317,43 +359,43 @@ const resetActive = () => {
 const initializeSlick = () => {
   const $slider = $(slider.value);
   const $main = $(main.value);
-    
-  
+
   // Destroy existing instance if exists
   if ($slider.hasClass('slick-initialized')) {
     $slider.slick('unslick');
-    $slider.hasClass('slick-dots').style.left = '0';
-    document.getElementById("slick-dots").style.color = "blue";
   }
   if ($main.hasClass('slick-initialized')) {
     $main.slick('unslick');
   }
 
-  // Init slick
+  // Count the number of slides after they've been rendered
+  const numSlides = $slider.find('.slide').length;
+  numberOfSlides.value = numSlides;
+
+  // Set slidesToShow dynamically
+  slidesToShow.value = numSlides >= 4 ? 3 : 1;
+
+  // Init slick for thumbnail slider
   $slider.slick({
-    dots: true,
+    dots: numSlides > 1,
     centerMode: true,
     centerPadding: '0px',
-    slidesToShow: 3,
+    slidesToShow: slidesToShow.value,
     slidesToScroll: 1,
-    infinite: true,
+    infinite: numSlides > 1,
     focusOnSelect: true,
     rtl: locale.value === 'ar',
     asNavFor: $main,
   });
+
   $main.slick({
     slidesToShow: 1,
     slidesToScroll: 1,
-    infinite: true,
+    infinite: numSlides > 1,
     fade: true,
-    arrows : false,
+    arrows: false,
     dots: false,
     centerMode: true,
-    centerPadding: '0px',
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    infinite: true,
-    focusOnSelect: true,
     rtl: locale.value === 'ar',
     asNavFor: $slider,
   });
@@ -695,6 +737,7 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .slider {
@@ -750,7 +793,41 @@ onBeforeUnmount(() => {
 :deep(.slick-track) {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center !important;
+
+}
+
+
+:deep(.centered-slides.slider-container .slider .slide img) {
+  max-height: 120px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+:deep(.centered-slides.slider-container .slider .slide) {
+  width: auto !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1024px) {
+  :deep(.product-container){
+    flex-direction: row !important;
+  }
+  
+}
+@media (max-width: 1024px) {
+  :deep(.product-container){
+    flex-direction: column-reverse !important;
+  }
+  .weight-item {
+    font-size: 16px;
+
+  }
+  :deep(.centered-slides.slider-container .slider .slide img) {
+    max-height: 90px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -774,11 +851,18 @@ onBeforeUnmount(() => {
   .buttons-section {
     flex-direction: column;
   }
+}
 
-  .favorite-btn {
-    width: 100%;
+@media (max-width: 425px) {
+  .weight-item {
+    font-size: 12px;
+
+  }
+  :deep(.centered-slides.slider-container .slider .slide img) {
+    max-height: 40px;
   }
 }
+
 /* 
 .children-products-section {
   margin-top: 40px;
@@ -944,7 +1028,7 @@ onBeforeUnmount(() => {
   margin: 10px;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .children-products-section {
     padding: 10px;
   }
@@ -971,7 +1055,7 @@ onBeforeUnmount(() => {
     width: 35px;
     height: 35px;
   }
-}
+} */
 
 
 
