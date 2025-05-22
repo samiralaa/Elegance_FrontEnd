@@ -1,46 +1,41 @@
 <template>
   <div class="checkout-step">
-    <h2>{{ $t('checkout.reviewCart') }}</h2>
     <div class="cart-items">
       <div v-for="item in cartItems" :key="item.id" class="cart-item">
-        <img :src="getProductImage(item)" :alt="item.product.name_en" class="item-image">
+        <img :src="item.images[0]" alt="" class="item-image" />
         <div class="item-details">
           <h3>{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h3>
-          <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }}</p>
+          <p class="item-price">{{ item.price }} {{ currency }}</p>
           <div class="quantity-controls">
             <button @click="updateQuantity(item, -1)" :disabled="item.quantity <= 1">-</button>
             <span>{{ item.quantity }}</span>
             <button @click="updateQuantity(item, 1)">+</button>
           </div>
         </div>
-        <button class="remove-item" @click="removeItem(item.id)">
-          <fa icon="trash" />
-        </button>
+        <button class="remove-item" @click="removeItem(item.id)">✕</button>
       </div>
     </div>
+
     <div class="cart-summary">
       <div class="summary-row">
-        <span>{{ $t('checkout.subtotal') }}</span>
+        <span>Subtotal:</span>
         <span>{{ subtotal }} {{ currency }}</span>
       </div>
       <div class="summary-row">
-        <span>{{ $t('checkout.shipping') }}</span>
+        <span>Shipping:</span>
         <span>{{ shippingCost }} {{ currency }}</span>
       </div>
       <div class="summary-row total">
-        <span>{{ $t('checkout.total') }}</span>
+        <span>Total:</span>
         <span>{{ total }} {{ currency }}</span>
       </div>
+      <button @click="nextStep">Continue to Shipping</button>
     </div>
-    <button class="btn-primary" @click="nextStep" :disabled="!cartItems.length">
-      {{ $t('checkout.continueToShipping') }}
-    </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CartReview',
   props: {
     cartItems: Array,
     subtotal: Number,
@@ -49,18 +44,23 @@ export default {
     shippingCost: Number,
     currentLang: String
   },
+  emits: ['update-quantity', 'remove-item', 'next-step'],
   methods: {
-    getProductImage(item) {
-      if (item.images && Array.isArray(item.images)) {
-        return `${API_URL}/${item.images[0]}`;
-      }
-      return `${API_URL}/images/default.jpg`;
-    },
-    updateQuantity(item, change) {
-      this.$emit('update-quantity', item, change);
-    },
-    removeItem(itemId) {
-      this.$emit('remove-item', itemId);
+  async updateQuantity(item, change) {
+  try {
+    await this.$emit('update-quantity', item, change);
+  } catch (error) {
+    console.error(
+      'Error updating quantity:',
+      error?.response?.data?.error ||
+      error?.response?.data?.message ||
+      error?.message ||
+      error.toString()
+    );
+  }
+},
+    removeItem(id) {
+      this.$emit('remove-item', id);
     },
     nextStep() {
       this.$emit('next-step');

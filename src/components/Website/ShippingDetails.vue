@@ -1,6 +1,30 @@
 <template>
   <div class="checkout-step">
     <h2>{{ $t('checkout.shippingDetails') }}</h2>
+    
+    <!-- Saved Addresses Section -->
+    <p>test</p>
+    <div class="saved-addresses" v-if="savedAddresses.length">
+      <h3>{{ $t('checkout.savedAddresses') }}</h3>
+      <div class="address-list">
+        <div v-for="address in savedAddresses" :key="address.id" class="address-card" @click="selectAddress(address)">
+          <div class="address-info">
+            <p><strong>{{ address.fullName }}</strong></p>
+            <p>{{ address.address }}</p>
+            <p>{{ address.city }}, {{ address.postalCode }}</p>
+            <p>{{ address.phone }}</p>
+          </div>
+          <button class="btn-select" :class="{ 'selected': selectedAddressId === address.id }">
+            {{ selectedAddressId === address.id ? $t('checkout.selected') : $t('checkout.select') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-divider">
+      <span>{{ $t('checkout.or') }}</span>
+    </div>
+
     <form @submit.prevent="nextStep" class="shipping-form">
       <div class="form-group">
         <label for="fullName">{{ $t('checkout.fullName') }}</label>
@@ -61,18 +85,60 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'ShippingDetails',
   props: {
     shippingDetails: Object
   },
+  data() {
+    return {
+      savedAddresses: [],
+      selectedAddressId: null,
+      loading: false,
+      error: null
+    };
+  },
   methods: {
+    async fetchSavedAddresses() {
+      this.loading = true;
+      try {
+        const response = await axios.get('http://elegance_backend.test/api/address');
+        this.savedAddresses = response.data;
+      } catch (error) {
+        console.error('Error fetching addresses:', error);
+        this.error = error.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+    selectAddress(address) {
+      this.selectedAddressId = address.id;
+      // Update shipping details with selected address
+      Object.assign(this.shippingDetails, {
+        fullName: address.fullName,
+        address: address.address,
+        city: address.city,
+        postalCode: address.postalCode,
+        phone: address.phone,
+        buildingName: address.buildingName,
+        floorNumber: address.floorNumber,
+        apartmentNumber: address.apartmentNumber,
+        landmark: address.landmark,
+        street: address.street,
+        country: address.country
+      });
+    },
     nextStep() {
       this.$emit('next-step');
     },
     previousStep() {
       this.$emit('previous-step');
     }
+  },
+  mounted() {
+    this.fetchSavedAddresses();
   }
 };
 </script>
@@ -149,5 +215,88 @@ input, textarea {
 
 .btn-primary:hover {
   background-color: #6b4b2d;
+}
+
+.saved-addresses {
+  margin-bottom: 2rem;
+}
+
+.address-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.address-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.address-card:hover {
+  border-color: #8b6b3d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.address-info {
+  flex: 1;
+}
+
+.address-info p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+.btn-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #8b6b3d;
+  background: transparent;
+  color: #8b6b3d;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-select.selected {
+  background: #8b6b3d;
+  color: white;
+}
+
+.form-divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: #ddd;
+}
+
+.form-divider::before {
+  left: 0;
+}
+
+.form-divider::after {
+  right: 0;
+}
+
+.form-divider span {
+  background: white;
+  padding: 0 1rem;
+  color: #666;
+  position: relative;
+  z-index: 1;
 }
 </style>
