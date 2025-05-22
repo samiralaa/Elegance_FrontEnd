@@ -16,51 +16,53 @@
     "forgotPassword": "هل نسيت كلمة المرور؟",
     "rememberMe": "تذكرني",
     "close":"اغلاق"
- },
-"loginPage": {
-  "email": "البريد الإلكتروني",
-  "password": "كلمة المرور",
-  "forgotPassword": "هل نسيت كلمة المرور؟",
-  "rememberMe": "تذكرني",
-  "login": "تسجيل الدخول"
-},
+  },
 
-"registerPage": {
-  "tiile": "تسجيل حساب",
-  "email": "البريد الإلكتروني",
-  "password": "كلمة المرور",
-  "forgotPassword": "هل نسيت كلمة المرور؟",
-  "rememberMe": "تذكرني",
-  "login": "تسجيل الدخول"
-},
+  "loginPage": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني",
+    "login": "تسجيل الدخول"
+  },
+
+  "registerPage": {
+    "tiile": "تسجيل حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني",
+    "login": "تسجيل الدخول"
+  },
+
   "currencies":"العملات",
+
   "Brands": {
-  "AddBrands": "إضافة علامة تجارية جديدة",
-  "Management": "إدارة العلامات التجارية",
-  "Logo": "الشعار",
-  "NameAr": "الاسم (عربي)",
-  "NameEn": "الاسم (إنجليزي)",
-  "DescriptionAr": "الوصف (عربي)",
-  "DescriptionEn": "الوصف (إنجليزي)",
-  "Actions": "الإجراءات",
-  "Edit": "تعديل العلامة",
-  "Delete": "حذف العلامة",
-  "NoData": "لا توجد علامات تجارية",
-  "CreateTitle": "إضافة علامة تجارية جديدة",
-  "EditTitle": "تعديل العلامة التجارية",
-  "PlaceholderNameEn": "أدخل اسم العلامة باللغة الإنجليزية",
-  "PlaceholderNameAr": "أدخل اسم العلامة باللغة العربية",
-  "PlaceholderDescriptionEn": "أدخل وصف العلامة باللغة الإنجليزية",
-  "PlaceholderDescriptionAr": "أدخل وصف العلامة باللغة العربية",
-  "Create": "إضافة",
-  "Update": "تحديث",
-  "Cancel": "إلغاء",
-  "DeleteTitle": "حذف العلامة التجارية",
-  "DeleteConfirmText": "هل أنت متأكد أنك تريد حذف هذه العلامة؟ لا يمكن التراجع عن هذا الإجراء."
-}
-,
+    "AddBrands": "إضافة علامة تجارية جديدة",
+    "Management": "إدارة العلامات التجارية",
+    "Logo": "الشعار",
+    "NameAr": "الاسم (عربي)",
+    "NameEn": "الاسم (إنجليزي)",
+    "DescriptionAr": "الوصف (عربي)",
+    "DescriptionEn": "الوصف (إنجليزي)",
+    "Actions": "الإجراءات",
+    "Edit": "تعديل العلامة",
+    "Delete": "حذف العلامة",
+    "NoData": "لا توجد علامات تجارية",
+    "CreateTitle": "إضافة علامة تجارية جديدة",
+    "EditTitle": "تعديل العلامة التجارية",
+    "PlaceholderNameEn": "أدخل اسم العلامة باللغة الإنجليزية",
+    "PlaceholderNameAr": "أدخل اسم العلامة باللغة العربية",
+    "PlaceholderDescriptionEn": "أدخل وصف العلامة باللغة الإنجليزية",
+    "PlaceholderDescriptionAr": "أدخل وصف العلامة باللغة العربية",
+    "Create": "إضافة",
+    "Update": "تحديث",
+    "Cancel": "إلغاء",
+    "DeleteTitle": "حذف العلامة التجارية",
+    "DeleteConfirmText": "هل أنت متأكد أنك تريد حذف هذه العلامة؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+
   "brands": {
-      
     "title": "العلامات التجارية",
     "addBrand": "إضافة علامة تجارية",
     "editBrand": "تعديل علامة تجارية",
@@ -69,27 +71,28 @@
     "description": "الوصف",
     "descriptionAr": "الوصف (عربي)",
     "logo": "الشعار",
-    "status": "الحالة",
     "products": "المنتجات",
     "deleteConfirm": "هل أنت متأكد من حذف هذه العلامة التجارية؟",
     "deleteSuccess": "تم حذف العلامة التجارية بنجاح",
     "updateSuccess": "تم تحديث العلامة التجارية بنجاح",
     "createSuccess": "تم إنشاء العلامة التجارية بنجاح",
     "status": {
+      "status": "الحالة",
       "active": "نشط",
       "inactive": "غير نشط"
     },
+
     "validation": {
       "nameRequired": "اسم العلامة التجارية مطلوب",
       "nameArRequired": "اسم العلامة التجارية بالعربية مطلوب"
     }
   },
+
   "common": {
     "search": "بحث...",
     "crunsses":"العملات",
     "status": "الحالة",
     "cancel": "إلغاء",
-
     "save": "حفظ",
     "warning": "تحذير",
     "yes": "نعم",
@@ -100,19 +103,23 @@
       "english": "الإنجليزية",
       "arabic": "العربية"
     },
+
     "theme": "المظهر",
     "themes": {
       "light": "فاتح",
       "dark": "داكن"
     },
+
     "directions": {
       "ltr": "من اليسار لليمين",
       "rtl": "من اليمين لليسار"
     },
+    
     "brand": {
       "tagline": "لوحة تحكم مميزة"
       
     },
+
     "menu": {
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
@@ -138,20 +145,22 @@
       "support": "الدعم",
       "logout": "تسجيل الخروج"
     },
+
     "user": {
       "profile": "الملف الشخصي",
       "settings": "الإعدادات",
       "logout": "تسجيل الخروج"
     }
   },
+
   "home": {
-    
     "why": {
       "fast_delivery": "توصيل سريع وآمن",
       "guarantee": "ضمان 100٪ على المنتجات",
       "return_policy": "سياسة إرجاع خلال 24 ساعة",
       "pro_quality": "جودة احترافية من المستوى التالي"
     },
+
     "categories": "الفئات",
     "brands":"العلامات التجارية",
     "products":"المنتجات",
@@ -159,9 +168,11 @@
     "best-selling":"المنتجات أفضل مبيعًا",
     "why-us":"لماذا تختارنا؟"
   },
+
   "LatestProducts":{
     "LatestProducts":"أحدث المنتجات"
   },
+
   "Login":{
     "WelcomeBack":"مرحبًا بعودتك",
     "LoginToYourAccount":"تسجيل الدخول إلى حسابك",
@@ -173,6 +184,7 @@
     "Login":"تسجيل الدخول"
     
   },
+
   "Categories":{
     "Categories":"الفئات",
     "AddCategory":"إضافة فئة",
@@ -186,69 +198,73 @@
     "Description":"الوصف",
     "DescriptionEn":"الوصف (إنجليزي)",
     "DescriptionAr":"الوصف (عربي)",
-    "Status":"الحالة",
     "Products":"المنتجات",
     "DeleteConfirm":"هل أنت متأكد من حذف هذه الفئة؟",
     "DeleteSuccess":"تم حذف الفئة بنجاح",
     "UpdateSuccess":"تم تحديث الفئة بنجاح",
     "CreateSuccess":"تم إنشاء الفئة بنجاح",
+
     "Status":{
+      "Status":"الحالة",
       "Active":"نشط",
       "Inactive":"غير نشط"
     },
+
     "Validation":{
       "NameRequired":"اسم الفئة مطلوب",
       "NameArRequired":"اسم الفئة بالعربية مطلوب"
     }
   },
+
   "Global": {
     "View":"عرض",
     "Edit":"تعديل",
     "Delete":"حذف",
     "Save":"حفظ"
   },
+
   "Products": {
-  "NoImageAvailable": "لا توجد صورة متاحة",
-  
-  "Availability": "التوافر",
-  "Available": "متاح",
-  "NotAvailable": "غير متاح",
-  "DescriptionEn": "الوصف (إنجليزي)",
-  "DescriptionAr": "الوصف (عربي)",
-  
-  "Loading": "جاري التحميل...",
-  "Products": "المنتجات",
-  "AddProduct": "إضافة منتج",
-  "Image": "الصورة",
-  "NameEn": "الاسم (إنجليزي)",
-  "NameAr": "الاسم (عربي)",
-  "Price": "السعر",
-  "Currency": "العملة",
-  "Actions": "العمليات",
-  "View": "عرض",
-  "Edit": "تعديل",
-  "Delete": "حذف",
-  "DeleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
-  "Warning": "تحذير",
-  "Yes": "نعم",
-  "No": "لا",
-  "DeletedSuccessfully": "تم حذف المنتج بنجاح",
-  "NA": "غير متاح",
-  "CreateProduct": "إنشاء منتج",
-  
-  "Category": "التصنيف",
-  "SelectCategory": "اختار التصنيف",
-  
-  "SelectCurrency": "اختار العملة",
-  "Country": "الدولة",
-  "SelectCountry": "اختار الدولة",
-  "ParentProduct": "منتج رئيسي",
-  "SelectParentProduct": "اختار منتج رئيسي",
-  "None": "لا شيء",
-  "Images": "الصور",
-  "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
-  "CreateButton": "إنشاء المنتج"
-},
+    "NoImageAvailable": "لا توجد صورة متاحة",
+    
+    "Availability": "التوافر",
+    "Available": "متاح",
+    "NotAvailable": "غير متاح",
+    "DescriptionEn": "الوصف (إنجليزي)",
+    "DescriptionAr": "الوصف (عربي)",
+    
+    "Loading": "جاري التحميل...",
+    "Products": "المنتجات",
+    "AddProduct": "إضافة منتج",
+    "Image": "الصورة",
+    "NameEn": "الاسم (إنجليزي)",
+    "NameAr": "الاسم (عربي)",
+    "Price": "السعر",
+    "Currency": "العملة",
+    "Actions": "العمليات",
+    "View": "عرض",
+    "Edit": "تعديل",
+    "Delete": "حذف",
+    "DeleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
+    "Warning": "تحذير",
+    "Yes": "نعم",
+    "No": "لا",
+    "DeletedSuccessfully": "تم حذف المنتج بنجاح",
+    "NA": "غير متاح",
+    "CreateProduct": "إنشاء منتج",
+    
+    "Category": "التصنيف",
+    "SelectCategory": "اختار التصنيف",
+    
+    "SelectCurrency": "اختار العملة",
+    "Country": "الدولة",
+    "SelectCountry": "اختار الدولة",
+    "ParentProduct": "منتج رئيسي",
+    "SelectParentProduct": "اختار منتج رئيسي",
+    "None": "لا شيء",
+    "Images": "الصور",
+    "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
+    "CreateButton": "إنشاء المنتج"
+  },
 
   "Footer": {
     "DownloadApp": "حمّل التطبيق",
@@ -274,6 +290,7 @@
       "YouTube": "يوتيوب"
     }
   },
+
   "orders" : {
     "myOrders" : "طلباتي",
     "orderId" : "ID",
@@ -284,10 +301,40 @@
     "filterByStatus" : "الحالة",
     "searchPlaceholder" : "بحث..."
   },
+
+  "checkout": {
+    "checkout": "الدفع",
+    "city": "المدينة",
+    "country": "الدولة",
+    "items": "العناصر",
+    "cart" : "السلة",
+    "shipping": "الشحن",
+    "subtotal": "المجموع الفرعي",
+    "total": "المجموع",
+    "payment": "الدفع",
+    "reviewCart": "مراجعة السلة",
+    "continueToShipping": "متابعة إلى الشحن",
+    "shippingDetails": "تفاصيل الشحن",
+    "selectExistingAddress": "اختيار عنوان موجود",
+    "savedAddresses": "العناوين المحفوظة",
+    "selected": "المحدد",
+    "primaryAddress": "العنوان الرئيسي",
+    "createNewAddress": "إنشاء عنوان جديد",
+    "buildingName": "اسم المبنى",
+    "floorNumber": "رقم الطابق",
+    "apartmentNumber": "رقم الشقة",
+    "landmark": "معلم",
+    "postalCode": "الرمز البريدي",
+    "continueToPayment": "متابعة إلى الدفع",
+    "back": "رجوع",
+    "orderSummary": "ملخص الطلب",
+    "deliveryTo": "التوصيل إلى",
+    "tabbyInfo": "معلومات تابي",
+    "processing": "جاري المعالجة",
+    "select": "اختيار",
+    "totalAmount": "المبلغ الإجمالي",
+    "placeOrder": "إتمام الطلب"
+  },
   
   "Nobrandsfound": "لا توجد علامات تجارية"
-  
-  
-  
-  
 }

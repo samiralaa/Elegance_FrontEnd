@@ -11,6 +11,7 @@
     "searchProducts": "Search Products",
     "close": "Close"
   },
+
   "Brands": {
     "AddBrands": "Add New Brand",
     "Management": "Brands Management",
@@ -42,21 +43,24 @@
     "description": "Description",
     "descriptionAr": "Description (Arabic)",
     "logo": "Logo",
-    "status": "Status",
     "products": "Products",
     "deleteConfirm": "Are you sure you want to delete this brand?",
     "deleteSuccess": "Brand deleted successfully",
     "updateSuccess": "Brand updated successfully",
     "createSuccess": "Brand created successfully",
+
     "status": {
+      "status": "Status",
       "active": "Active",
       "inactive": "Inactive"
     },
+
     "validation": {
       "nameRequired": "Brand name is required",
       "nameArRequired": "Arabic brand name is required"
     }
   },
+
   "loginPage": {
     "email": "Email",
     "password": "Password",
@@ -64,6 +68,7 @@
     "rememberMe": "Remember Me",
     "login": "Login"
   },
+
   "registerPage": {
     "tiile": "Register",
     "email": "Email",
@@ -72,6 +77,7 @@
     "rememberMe": "Remember Me",
     "login": "Login"
   },
+
   "categories": {
     "title": "Categories",
     "addCategory": "Add Category",
@@ -83,6 +89,7 @@
     "updateSuccess": "Category updated successfully",
     "createSuccess": "Category created successfully"
   },
+  
   "common": {
     "search": "Search...",
     "status": "Status",
@@ -93,22 +100,28 @@
     "no": "No",
     "ltr": "LTR",
     "rtl": "RTL",
+
     "languages": {
       "english": "English",
       "arabic": "Arabic"
     },
+
     "theme": "Theme",
+
     "themes": {
       "light": "Light",
       "dark": "Dark"
     },
+
     "directions": {
       "ltr": "Left to Right",
       "rtl": "Right to Left"
     },
+
     "brand": {
       "tagline": "Premium Dashboard"
     },
+
     "menu": {
       "dashboard": "Dashboard",
       "products": "Products",
@@ -130,19 +143,22 @@
       "support": "Support",
       "logout": "Logout"
     },
+
     "user": {
       "profile": "Profile",
       "settings": "Settings",
       "logout": "Logout"
     }
   },
+  
   "home": {
-  "why": {
-    "fast_delivery": "Fast & Secure Delivery",
-    "guarantee": "100% Guarantee On Product",
-    "return_policy": "24 Hour Return Policy",
-    "pro_quality": "Next Level Pro Quality"
-  },
+    "why": {
+      "fast_delivery": "Fast & Secure Delivery",
+      "guarantee": "100% Guarantee On Product",
+      "return_policy": "24 Hour Return Policy",
+      "pro_quality": "Next Level Pro Quality"
+    },
+
     "categories": "Categories",
     "brands": "Our Brands",
     "products":"Our Products",
@@ -150,19 +166,22 @@
     "best-selling": "Best-selling products",
     "why-us": "Why Choose Us?"
   },
+  
   "LatestProducts": {
     "LatestProducts": "Latest Products"
   },
+  
   "Login": {
-  "WelcomeBack": "Welcome back",
-  "LoginToYourAccount": "Login to your account",
-  "Pleaselogintoyouraccount": "Please login to your account",
-  "Email": "Email",
-  "Password": "Password",
-  "RememberMe": "Remember me",
-  "ForgotPassword": "Forgot your password?",
-  "Login": "Login"
-},
+    "WelcomeBack": "Welcome back",
+    "LoginToYourAccount": "Login to your account",
+    "Pleaselogintoyouraccount": "Please login to your account",
+    "Email": "Email",
+    "Password": "Password",
+    "RememberMe": "Remember me",
+    "ForgotPassword": "Forgot your password?",
+    "Login": "Login"
+  },
+  
   "Categories": {
     "AddCategory": "Add New Category",
     "NameEn": "Name (EN)",
@@ -187,12 +206,14 @@
     "updateSuccess": "Category updated successfully",
     "createSuccess": "Category created successfully"
   },
+  
   "Global": {
     "View": "View",
     "Edit": "Edit",
     "Delete": "Delete",
     "Save": "Save"
   },
+  
   "Products": {
     "NoImageAvailable": "No Image Available",
     "Availability": "Availability",
@@ -231,6 +252,7 @@
     "DeletedSuccessfully": "Product deleted successfully",
     "NA": "N/A"
   },
+  
   "Footer": {
     "DownloadApp": "Download App",
     "AppStore": "App Store",
@@ -250,6 +272,7 @@
     "AcceptFor": "Accept For",
     "PoweredBy": "Powered by Webenia 2024 ©",
     "FollowUs": "Follow us on",
+
     "SocialMedia": {
       "Facebook": "Facebook",
       "Instagram": "Instagram",
@@ -259,7 +282,8 @@
       "YouTube": "YouTube"
     }
   },
-    "orders" : {
+  
+  "orders" : {
     "myOrders" : "My Orders",
     "orderId" : "ID",
     "orderDate" : "Date",
@@ -269,6 +293,40 @@
     "filterByStatus" : "Status",
     "searchPlaceholder" : "Search..."
   },
+  
+  "checkout": {
+    "checkout": "Checkout",
+    "city": "City",
+    "country": "Country",
+    "items": "Items",
+    "cart": "Cart",
+    "shipping": "Shipping",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "payment": "Payment",
+    "reviewCart": "Review Cart",
+    "continueToShipping": "Continue to Shipping",
+    "shippingDetails": "Shipping Details",
+    "selectExistingAddress": "Select Existing Address",
+    "savedAddresses": "Saved Addresses",
+    "selected": "Selected",
+    "primaryAddress": "Primary Address",
+    "createNewAddress": "Create New Address",
+    "buildingName": "Building Name",
+    "floorNumber": "Floor Number",
+    "apartmentNumber": "Apartment Number",
+    "landmark": "Landmark",
+    "postalCode": "Postal Code",
+    "continueToPayment": "Continue to Payment",
+    "back": "Back",
+    "orderSummary": "Order Summary",
+    "deliveryTo": "Delivery To",
+    "tabbyInfo": "Tabby Info",
+    "processing": "Processing",
+    "select": "Select",
+    "totalAmount": "Total Amount",
+    "placeOrder": "Place Order"
+  },
+  
   "Nobrandsfound" : "No brands found"
-
 }

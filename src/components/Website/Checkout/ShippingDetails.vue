@@ -59,14 +59,14 @@
       </div>
       <div class="form-group">
         <label for="city">{{ $t('checkout.city') }}</label>
-        <select id="city" v-model="shippingDetails.cityId" required>
-          <option value="1">Dubai</option>
-          <option value="2">Abu Dhabi</option>
-          <option value="3">Sharjah</option>
-          <option value="4">Ajman</option>
-          <option value="5">Ras Al Khaimah</option>
-          <option value="6">Umm Al Quwain</option>
-          <option value="7">Fujairah</option>
+        <select id="city" class="form-select" aria-label="Default select example" v-model="shippingDetails.cityId" required>
+          <option value="1" class="option">Dubai</option>
+          <option value="2" class="option">Abu Dhabi</option>
+          <option value="3" class="option">Sharjah</option>
+          <option value="4" class="option">Ajman</option>
+          <option value="5" class="option">Ras Al Khaimah</option>
+          <option value="6" class="option">Umm Al Quwain</option>
+          <option value="7" class="option">Fujairah</option>
         </select>
       </div>
       <div class="form-group">
@@ -90,6 +90,7 @@
         <input type="text" id="postalCode" v-model="shippingDetails.postalCode" required>
       </div>
     </form>
+
 
     <div class="button-group">
       <button type="button" class="btn-secondary" @click="$emit('previous-step')">
@@ -214,7 +215,7 @@ export default {
           is_primary: this.savedAddresses.length === 0
         };
 
-        const response = await axios.post('http://elegance_backend.test/api/address', addressData, {
+        const response = await axios.post('http://127.0.0.1:8000/api/address', addressData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
@@ -254,6 +255,14 @@ export default {
           this.$toast.error(errorMessage);
         }
       }
+    },
+    toggle() {
+      this.isOpen = !this.isOpen;
+    },
+    selectOption(option) {
+      this.selectedValue = option.value;
+      this.$emit('update:modelValue', option.value);
+      this.isOpen = false;
     }
   },
   mounted() {
@@ -273,46 +282,6 @@ export default {
 .shipping-form {
   max-width: 600px;
   margin: 0 auto;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
-
-.form-row .form-group {
-  flex: 1;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  transition: border-color 0.3s ease;
-}
-
-input:focus,
-textarea:focus {
-  border-color: #8b6b3d;
-  outline: none;
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 2rem;
 }
 
 .btn-primary,
@@ -342,22 +311,6 @@ textarea:focus {
 
 .btn-secondary:hover {
   background: #f8f9fa;
-}
-
-@media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
-  }
-
-  .button-group {
-    flex-direction: column-reverse;
-    gap: 1rem;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-  }
 }
 
 .saved-addresses {
@@ -452,16 +405,10 @@ textarea:focus {
   z-index: 1;
 }
 
-@media (max-width: 768px) {
-  .address-list {
-    grid-template-columns: 1fr;
-  }
-}
-
 .primary-badge {
   display: inline-block;
   background-color: #8b6b3d;
-  color: white;
+  color: white !important;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -532,9 +479,104 @@ textarea:focus {
   .address-type-selector {
     flex-direction: column;
   }
-  
+  .address-list {
+    grid-template-columns: 1fr;
+  }
   .button-group {
     flex-direction: column-reverse;
   }
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .button-group {
+    flex-direction: column-reverse;
+    gap: 1rem;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+/* New Address Form */
+.contact-form {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 1.2rem;
+  color: #a3852c;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+input,
+select,
+textarea {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(163, 133, 44, 0.3);
+}
+
+select {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 100%;
+  appearance: none; /* Remove default arrow */
+  background-image: url("@/assets/images/arrow-down.svg");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 20px auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(163, 133, 44, 0.3);
+}
+/* Option styles – will only work in some browsers */
+select option {
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+}
+select option:checked {
+  background-color: #a3852c !important;
+  color: white !important;
+}
+select option:hover {
+  background-color: #f1f1f1;
 }
 </style> 
