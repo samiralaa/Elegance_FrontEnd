@@ -5,8 +5,8 @@
         <fa class="fa-icon" :icon="['fas','diagram-project']"></fa>
         <h2>{{ $t('home.brands') }}</h2>
       </div>
-      <div v-for="brand in brands" :key="brand.id" class="content">
-        <div class="brand-img">
+      <div class="content">
+        <div v-for="brand in brands" :key="brand.id" class="brand-img">
           <img v-if="brand.images.length" :src="getImageUrl(brand.images[0].path)" :alt="brand.name_en" class="img-fluid"/>
           <span v-else class="text-muted small">No Image</span>
         </div>
@@ -33,7 +33,7 @@
         try {
           const response = await axios.get(
 
-            "http://elegance_backend.test/api/website/brands/section"
+            "http://127.0.0.1:8000/api/website/brands/section"
 
           );
           this.brands = response.data.data;
@@ -43,7 +43,7 @@
       },
       getImageUrl(path) {
 
-        return `http://elegance_backend.test/storage/${path}`;
+        return `http://127.0.0.1:8000/storage/${path}`;
 
       },
       likeBrand(id) {

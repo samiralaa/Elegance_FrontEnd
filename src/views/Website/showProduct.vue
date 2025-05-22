@@ -158,50 +158,18 @@
     </el-row>
 
     <!-- Children Products Section -->
-    <div v-if="product.children && product.children.length > 0" class="children-products-section">
-      <h2 class="section-title">{{ $t('related_products') }}</h2>
-      <el-row :gutter="20">
-        <el-col v-for="child in product.children" :key="child.id" :xs="24" :sm="12" :md="8" :lg="6">
-          <div class="product-card" @click="navigateToProduct(child.id)">
-            <div class="product-image">
-              <img
-                :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
-                :alt="locale === 'ar' ? child.name_ar : child.name_en"
-              />
-              <div class="product-overlay">
-                <div class="overlay-buttons">
-                  <el-button class="overlay-btn" circle @click.stop="navigateToProduct(child.id)">
-                    <el-icon><i class="el-icon-view"></i></el-icon>
-                  </el-button>
-                  <el-button 
-                    class="overlay-btn" 
-                    circle 
-                    @click.stop="addChildToCart(child)"
-                    :disabled="!child.is_available"
-                  >
-                    <el-icon><i class="el-icon-shopping-cart-2"></i></el-icon>
-                  </el-button>
-                </div>
-              </div>
-              <div class="sale-badge" v-if="child.old_price">Sale</div>
-            </div>
-            <div class="product-info">
-              <h3 class="product-name">{{ locale === 'ar' ? child.name_ar : child.name_en }}</h3>
-              <div class="product-price">
-                <span class="current-price">{{ child.price }} {{ child.currency?.name_en }}</span>
-                <span class="old-price" v-if="child.old_price">{{ child.old_price }} {{ child.currency?.name_en }}</span>
-              </div>
-              <div class="product-meta">
-                <el-tag :type="child.is_available ? 'success' : 'danger'" size="small">
-                  {{ child.is_available ? $t('available') : $t('not_available') }}
-                </el-tag>
-              </div>
-            </div>
+      <div class="axil-breadcrumb-area mt-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-8">
+          <div class="inner">
+            <h1 class="title">All Products</h1>
           </div>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
     </div>
-      <!-- <div v-if="product.children && product.children.length > 0" class="shop-container" :dir="direction">
+  </div>
+      <div v-if="product.children && product.children.length > 0" class="shop-container" :dir="direction">
     <div class="container">
       <section class="products-grid">
         <div v-for="child in product.children" :key="child.id" class="product-card">
@@ -226,14 +194,21 @@
               <span class="price-new">{{ child.price }} {{ child.currency?.name_en || 'AED' }}</span>
               <span v-if="child.old_price" class="price-old">{{ child.old_price }} {{ child.currency?.name_en || 'AED' }}</span>
             </div>
+            <div class="product-meta mb-2">
+              <el-tag :type="child.is_available ? 'success' : 'danger'" size="small">
+                {{ child.is_available ? $t('available') : $t('not_available') }}
+              </el-tag>
+            </div>
             <div class="addToCart-btn">
-              <a  @click="addToCart(product)" class="btn">Add To Cart</a>
+              <button  circle 
+                    @click.stop="addChildToCart(child)"
+                    :disabled="!child.is_available" class="btn">Add To Cart</button>
             </div>
           </div>
         </div>
       </section>
     </div>
-  </div> -->
+  </div>
     </div>
   </div>
 </template>
@@ -272,7 +247,7 @@ const main = ref(null);
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
+      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -287,7 +262,7 @@ const fetchProduct = async () => {
 
 // Helper methods
 const getImageUrl = (path) => {
-  return `http://elegance_backend.test/storage/${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
 };
 
 const increaseQty = () => quantity.value++;
@@ -311,7 +286,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -348,7 +323,7 @@ const addChildToCart = async (childProduct) => {
       payload.amount_id = childProduct.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -866,7 +841,7 @@ onBeforeUnmount(() => {
     width: 100%;
   }
 }
-
+/* 
 .children-products-section {
   margin-top: 40px;
   padding: 20px;
@@ -1019,6 +994,16 @@ onBeforeUnmount(() => {
   font-size: 12px;
   font-weight: 600;
   z-index: 1;
+} */
+
+.product-meta {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
 }
 
 @media (max-width: 768px) {
@@ -1049,4 +1034,159 @@ onBeforeUnmount(() => {
     height: 35px;
   }
 }
+
+
+
+
+
+
+
+  .shop-container .container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem 0;
+    background: #fff;
+    font-family: 'Cairo', sans-serif;
+    flex-wrap: wrap;
+  }
+.products-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  .product-card {
+    position: relative;
+    background: #fff;
+    text-align: center;
+    transition: box-shadow 0.3s;
+    height: fit-content;
+  }
+  .image-container {
+    position: relative;
+    background: #f9f9f9;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+  .image-container img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  .product-card:hover .image-container img {
+    transform: scale(1.1);
+  }
+  .product-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .product-card:hover .product-actions {
+    transform: translateY(0);
+  }
+  .action-btn {
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    height: 45px;
+    display: flex;
+    margin: 1rem;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .icon {
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+  }
+  .action-btn:hover .icon {
+    transform: scale(1.2);
+  }
+  .cart-btn {
+    background-color: #fff;
+    color: #8b6b3d;
+  }
+  .love-btn {
+    background-color: #8b6b3d;
+    color: #fff;
+  }
+  .sale-badge {
+    position: absolute;
+    top: 10px;
+    left: -15px;
+    background: #ff4c4c;
+    color: white;
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+  .product-info {
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+  .product-info .product-title {
+    font-weight: bolder;
+    font-size: 1.4rem;
+  }
+  .prices {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .price-new {
+    color: #8b6500;
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+  .price-old {
+    text-decoration: line-through;
+    color: #aaa;
+    font-size: 1.2rem;
+    margin-right: 8px;
+  }
+  .addToCart-btn {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+  }
+  .addToCart-btn button {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    color: #8b6b3d;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    overflow: hidden;
+    z-index: 0;
+    border-radius: 0;
+  }
+  .addToCart-btn button::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #8b6b3d;
+    transition: height 0.3s ease;
+    z-index: -1;
+  }
+  .addToCart-btn button:hover {
+    color: #fff;
+    border-radius: 6px;
+  }
+  .addToCart-btn button:hover::before {
+    height: 100%;
+  }
 </style>
