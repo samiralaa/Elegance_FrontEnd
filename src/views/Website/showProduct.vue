@@ -92,69 +92,7 @@
           </div>
         </el-col>
 
-        <el-col   :xs="24" :sm="24"  :md="12"  :lg="10"  class="image-col">
-          <div class="image-wrapper" ref="main">
-            <div class="slide">
-              <img
-                :src="
-                  selectedImage
-                  ? getImageUrl(selectedImage)
-                  : product.images?.length
-                  ? getImageUrl(product.images[0].path)
-                  : placeholder
-                "
-                class="main-image"
-              />
-            </div>
-            <div class="slide">
-              <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" class="main-image" alt="Slide" />
-            </div>
-            <div class="slide">
-              <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" class="main-image" alt="Slide" />
-            </div>
-            <div class="slide">
-              <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" class="main-image" alt="Slide" />
-            </div>
-            <div class="slide">
-              <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" class="main-image" alt="Slide" />
-            </div>
-            <div class="sale-badge" v-if="product.old_price">Sale</div>
-          </div>
-          <div class="slider-wrapper">
-            
-            <button class="btn nav-button left" @click="scrollLeft"><fa icon="arrow-left"></fa></button>
-            <!-- Slider Container -->
-            <div class="slider-container">
-              <div class="slider" ref="slider">
-                <div class="slide">
-                  <img
-                    :src="
-                      selectedImage
-                      ? getImageUrl(selectedImage)
-                      : product.images?.length
-                      ? getImageUrl(product.images[0].path)
-                      : placeholder
-                    "
-                    class="main-image"
-                  />
-                </div>
-                <div class="slide">
-                  <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" alt="Slide" />
-                </div>
-                <div class="slide">
-                  <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" alt="Slide" />
-                </div>
-                <div class="slide">
-                  <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" alt="Slide" />
-                </div>
-                <div class="slide">
-                  <img src="@/assets/images/36894352-3094-4b4b-add0-c6ca46e58362..jpg" alt="Slide" />
-                </div>
-              </div>
-            </div>
-            <button class="btn nav-button right" @click="scrollRight"><fa icon="arrow-right"></fa></button>
-          </div>
-        </el-col>
+     
     </el-row>
 
     <!-- Children Products Section -->
