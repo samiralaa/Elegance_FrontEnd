@@ -266,7 +266,7 @@ export default {
       const token = localStorage.getItem('token'); // or wherever you store the token
 
 
-      axios.get('http://127.0.0.1:8000/api/cart-items', {
+      axios.get('http://elegance_backend.test/api/cart-items', {
 
         headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
       })

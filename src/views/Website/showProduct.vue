@@ -185,7 +185,7 @@ const main = ref(null);
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
+      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -200,7 +200,7 @@ const fetchProduct = async () => {
 
 // Helper methods
 const getImageUrl = (path) => {
-  return `http://127.0.0.1:8000/storage/${path}`;
+  return `http://elegance_backend.test/storage/${path}`;
 };
 
 const increaseQty = () => quantity.value++;
@@ -224,7 +224,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -261,7 +261,7 @@ const addChildToCart = async (childProduct) => {
       payload.amount_id = childProduct.amount_id;
     }
 
-    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
