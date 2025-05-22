@@ -159,6 +159,7 @@ export default {
             status: 'pending',
             payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'tabby',
             shipping_address: this.shippingDetails.address,
+            address_id: this.shippingDetails.addressId,
             items: this.cartItems.map(item => ({
               product_id: item.product.id,
               product_name: item.product.name,

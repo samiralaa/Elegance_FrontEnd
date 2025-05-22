@@ -47,6 +47,29 @@
     <!-- New Address Form -->
     <form v-if="isNewAddress" @submit.prevent="handleSubmit" class="shipping-form">
       <div class="form-group">
+        <label for="country">{{ $t('checkout.country') }}</label>
+        <select id="country" v-model="shippingDetails.countryId" required>
+          <option value="1">United Arab Emirates</option>
+          <option value="2">Saudi Arabia</option>
+          <option value="3">Kuwait</option>
+          <option value="4">Qatar</option>
+          <option value="5">Bahrain</option>
+          <option value="6">Oman</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="city">{{ $t('checkout.city') }}</label>
+        <select id="city" v-model="shippingDetails.cityId" required>
+          <option value="1">Dubai</option>
+          <option value="2">Abu Dhabi</option>
+          <option value="3">Sharjah</option>
+          <option value="4">Ajman</option>
+          <option value="5">Ras Al Khaimah</option>
+          <option value="6">Umm Al Quwain</option>
+          <option value="7">Fujairah</option>
+        </select>
+      </div>
+      <div class="form-group">
         <label for="buildingName">{{ $t('checkout.buildingName') }}</label>
         <input type="text" id="buildingName" v-model="shippingDetails.buildingName" required>
       </div>
@@ -120,7 +143,9 @@ export default {
                this.shippingDetails.floorNumber && 
                this.shippingDetails.apartmentNumber && 
                this.shippingDetails.landmark && 
-               this.shippingDetails.postalCode;
+               this.shippingDetails.postalCode &&
+               this.shippingDetails.cityId &&
+               this.shippingDetails.countryId;
       }
       return this.selectedAddressId !== null;
     }
@@ -161,13 +186,73 @@ export default {
         addressId: address.id
       };
     },
-    handleSubmit() {
-      if (this.isValid) {
-        const orderData = {
-          ...this.shippingDetails,
-          addressId: this.isNewAddress ? null : this.selectedAddressId
+    async saveNewAddress() {
+      try {
+        // Get user ID from localStorage token
+        const token = localStorage.getItem('auth_token');
+        let userId = 1; // Default to 1 if no token
+        
+        if (token) {
+          try {
+            // Decode the JWT token to get user ID
+            const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+            userId = tokenPayload.sub || 1;
+          } catch (e) {
+            console.error('Error decoding token:', e);
+          }
+        }
+
+        const addressData = {
+          user_id: userId,
+          city_id: this.shippingDetails.cityId || 1,
+          country_id: this.shippingDetails.countryId || 1,
+          building_name: this.shippingDetails.buildingName,
+          floor_number: this.shippingDetails.floorNumber,
+          apartment_number: this.shippingDetails.apartmentNumber,
+          landmark: this.shippingDetails.landmark,
+          postal_code: this.shippingDetails.postalCode,
+          is_primary: this.savedAddresses.length === 0
         };
-        this.$emit('next-step', orderData);
+
+        const response = await axios.post('http://elegance_backend.test/api/address', addressData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.data.status) {
+          const newAddress = response.data.data;
+          this.savedAddresses.push(newAddress);
+          this.selectAddress(newAddress);
+          return newAddress.id;
+        }
+        throw new Error(response.data.message || 'Failed to save address');
+      } catch (error) {
+        console.error('Error saving address:', error);
+        this.error = error.response?.data?.message || error.message;
+        throw error;
+      }
+    },
+    async handleSubmit() {
+      if (this.isValid) {
+        try {
+          let addressId = this.selectedAddressId;
+          
+          if (this.isNewAddress) {
+            addressId = await this.saveNewAddress();
+          }
+
+          const orderData = {
+            ...this.shippingDetails,
+            addressId: addressId
+          };
+          this.$emit('next-step', orderData);
+        } catch (error) {
+          // Use error.message if available, otherwise use a default message
+          const errorMessage = error.message || this.$t('checkout.errorSavingAddress');
+          this.$toast.error(errorMessage);
+        }
       }
     }
   },
