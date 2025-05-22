@@ -129,7 +129,7 @@ export default {
     async fetchSavedAddresses() {
       this.loading = true;
       try {
-        const response = await axios.get('http://elegance_backend.test/api/address', {
+        const response = await axios.get('http://127.0.0.1:8000/api/address', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
