@@ -65,20 +65,22 @@
           <div class="form-group">
             <label for="country">{{ $t('register.country') }}</label>
             <el-select
-              v-model="formData.country"
+              v-model="formData.country_id"
               class="country-select"
               :placeholder="$t('register.countryPlaceholder')"
+              :loading="loading"
               required
             >
               <el-option
                 v-for="country in countries"
-                :key="country.code"
-                :label="country.name"
-                :value="country.code"
+                :key="country.id"
+                :label="getCountryName(country)"
+                :value="country.id"
               >
-                {{ country.name }} ({{ country.dialCode }})
+                {{ getCountryName(country) }}
               </el-option>
             </el-select>
+            <span class="error-message" v-if="errors.country_id">{{ errors.country_id }}</span>
           </div>
           <div class="form-group phone-group">
             <label for="phoneNumber">{{ $t('register.phoneNumber') }}</label>
@@ -93,8 +95,8 @@
                 :placeholder="$t('register.phoneNumberPlaceholder')"
                 :class="{ 'error': errors.phoneNumber, 'valid': formData.phoneNumber && !errors.phoneNumber }"
                 required
-                pattern="[0-9]{9}"
-                maxlength="9"
+                minlength="10"
+                maxlength="18"
               >
             </div>
             <span class="error-message" v-if="errors.phoneNumber">{{ errors.phoneNumber }}</span>
@@ -115,8 +117,7 @@ import { ref } from 'vue'
 import { ElSelect, ElOption } from 'element-plus'
 import axios from 'axios'
 
-
-const API_URL = 'http://127.0.0.1:8000/api/clients'
+const API_URL = 'https://backendtest.test/api'
 
 export default {
   name: 'Register',
@@ -131,7 +132,7 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
-        country: '',
+        country_id: '',
         phoneNumber: ''
       },
       errors: {
@@ -140,23 +141,23 @@ export default {
         password: '',
         confirmPassword: '',
         phoneNumber: '',
-        country: ''
+        country_id: ''
       },
-      countries: [
-        { code: 'SA', name: 'Saudi Arabia', dialCode: '+966' },
-        { code: 'AE', name: 'United Arab Emirates', dialCode: '+971' },
-        { code: 'KW', name: 'Kuwait', dialCode: '+965' },
-        { code: 'BH', name: 'Bahrain', dialCode: '+973' },
-        { code: 'QA', name: 'Qatar', dialCode: '+974' },
-        { code: 'OM', name: 'Oman', dialCode: '+968' }
-      ]
+      countries: [],
+      loading: false
     }
   },
   computed: {
     selectedCountryDialCode() {
-      const country = this.countries.find(c => c.code === this.formData.country)
-      return country ? country.dialCode : ''
+      const country = this.countries.find(c => c.id === this.formData.country_id)
+      return country ? country.phone_code : ''
+    },
+    currentLocale() {
+      return this.$i18n?.locale || 'en'
     }
+  },
+  created() {
+    this.fetchCountries()
   },
   watch: {
     'formData.fullName'(value) {
@@ -177,16 +178,37 @@ export default {
     'formData.phoneNumber'(value) {
       this.validatePhoneNumber(value)
     },
-    'formData.country'(value) {
+    'formData.country_id'(value) {
       this.validateCountry(value)
     }
   },
   methods: {
+    getCountryName(country) {
+      return this.currentLocale === 'ar' ? country.name_ar : country.name_en
+    },
+    async fetchCountries() {
+      try {
+        this.loading = true
+        const response = await axios.get(`${API_URL}/countries`)
+        if (response.data.status === 'success') {
+          this.countries = response.data.data || []
+        } else {
+          throw new Error(response.data.message || 'Failed to fetch countries')
+        }
+      } catch (error) {
+        console.error('Error fetching countries:', error)
+        this.$toast?.error?.(this.$t?.('register.errorFetchingCountries') || 'Failed to fetch countries')
+      } finally {
+        this.loading = false
+      }
+    },
     validateFullName(value) {
       if (!value) {
         this.errors.fullName = this.$t('register.validation.fullNameRequired')
       } else if (value.length < 3) {
-        this.errors.fullName = this.$t('register.validation.fullNameLength')
+        this.errors.fullName = this.$t('register.validation.fullNameMinLength')
+      } else if (value.length > 255) {
+        this.errors.fullName = this.$t('register.validation.fullNameMaxLength')
       } else if (!/^[\p{L}\s'-]+$/u.test(value)) {
         this.errors.fullName = this.$t('register.validation.fullNameInvalid')
       } else {
@@ -207,15 +229,7 @@ export default {
       if (!value) {
         this.errors.password = this.$t('register.validation.passwordRequired')
       } else if (value.length < 8) {
-        this.errors.password = this.$t('register.validation.passwordLength')
-      } else if (!/[A-Z]/.test(value)) {
-        this.errors.password = this.$t('register.validation.passwordUppercase')
-      } else if (!/[a-z]/.test(value)) {
-        this.errors.password = this.$t('register.validation.passwordLowercase')
-      } else if (!/[0-9]/.test(value)) {
-        this.errors.password = this.$t('register.validation.passwordNumber')
-      } else if (!/[!@#$%^&*]/.test(value)) {
-        this.errors.password = this.$t('register.validation.passwordSpecial')
+        this.errors.password = this.$t('register.validation.passwordMinLength')
       } else {
         this.errors.password = ''
       }
@@ -232,7 +246,9 @@ export default {
     validatePhoneNumber(value) {
       if (!value) {
         this.errors.phoneNumber = this.$t('register.validation.phoneRequired')
-      } else if (!/^[0-9]{9}$/.test(value)) {
+      } else if (value.length < 10 || value.length > 18) {
+        this.errors.phoneNumber = this.$t('register.validation.phoneLength')
+      } else if (!/^[0-9+\s-()]+$/.test(value)) {
         this.errors.phoneNumber = this.$t('register.validation.phoneInvalid')
       } else {
         this.errors.phoneNumber = ''
@@ -240,8 +256,11 @@ export default {
     },
     validateCountry(value) {
       if (!value) {
+        this.errors.country_id = this.$t('register.validation.countryRequired')
+      } else if (!this.countries.some(country => country.id === value)) {
+        this.errors.country_id = this.$t('register.validation.countryInvalid')
       } else {
-        this.errors.country = ''
+        this.errors.country_id = ''
       }
     },
     async handleRegister() {
@@ -251,57 +270,56 @@ export default {
       this.validatePassword(this.formData.password)
       this.validateConfirmPassword(this.formData.confirmPassword)
       this.validatePhoneNumber(this.formData.phoneNumber)
-      this.validateCountry(this.formData.country)
+      this.validateCountry(this.formData.country_id)
       
       // Check if there are any errors
-      const hasErrors = Object.values(this.errors).some(error => error !== '')
-      if (!hasErrors) {
-        try {
-          const registrationData = {
-            name: this.formData.fullName,
-            email: this.formData.email,
-            password: this.formData.password,
-            phone: this.selectedCountryDialCode + this.formData.phoneNumber,
-            country_id: this.formData.country
-          }
+      if (Object.values(this.errors).some(error => error)) {
+        return
+      }
+
+      try {
+        const response = await axios.post(`${API_URL}/clients/register`, {
+          name: this.formData.fullName,
+          email: this.formData.email,
+          password: this.formData.password,
+          password_confirmation: this.formData.confirmPassword,
+          country_id: this.formData.country_id,
+          phone: this.formData.phoneNumber,
+          role: 'user' // Default role
+        })
+
+        // Check if we have the expected response structure
+        if (response.data && response.data.data) {
+          // Store user data
+          localStorage.setItem('user', JSON.stringify(response.data.data.user))
+          localStorage.setItem('auth_token', response.data.data.token)
           
-          const response = await axios.post(API_URL, registrationData)
+          this.$toast?.success?.(response.data.message || 'Registration successful')
           
-          if (response.status === 201) {
-    const data = response.data;
-
-    console.log("Registration Successful");
-    console.log("Message:", data.message);
-    console.log("User:", data.user);
-
-    // Optionally save the user info
-    localStorage.setItem('user', JSON.stringify(data.user));
-
-    // Redirect to /otp route
-    this.$router.push({ name: 'Otp' });
-}
-
-        } catch (error) {
-          if (error.response && error.response.data) {
-            // Handle validation errors from the server
-            const serverErrors = error.response.data.errors
-            if (serverErrors) {
-              Object.keys(serverErrors).forEach(field => {
-                this.errors[field] = serverErrors[field][0]
-              })
-            } else {
-              // Handle general error
-              console.error('Registration failed:', error.response.data.message)
+          // Redirect to OTP page
+          this.$router.push('/otp')
+        } else {
+          throw new Error('Invalid response format')
+        }
+      } catch (error) {
+        console.error('Registration error:', error)
+        if (error.response?.data?.errors) {
+          // Handle validation errors from backend
+          const backendErrors = error.response.data.errors
+          Object.keys(backendErrors).forEach(field => {
+            if (this.errors.hasOwnProperty(field)) {
+              this.errors[field] = backendErrors[field][0]
             }
-          } else {
-            console.error('Registration failed:', error)
-          }
+          })
+        } else {
+          const errorMessage = error.response?.data?.message || this.$t?.('register.error') || 'Registration failed'
+          this.$toast?.error?.(errorMessage)
         }
       }
     },
     formatPhoneNumber(value) {
       // Remove non-numeric characters
-      const numeric = value.replace(/[^0-9]/g, '')
+      const numeric = value.replace(/[^0-16]/g, '')
       // Format as needed (example: XXX-XXX-XXXX)
       return numeric.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3')
     }
@@ -318,7 +336,7 @@ export default {
 
 .register-left {
   flex: 1;
-  background: linear-gradient(135deg, #8B6B3D 0%, #725932 100%);
+  background: linear-gradient(135deg, #8B6B3D 0%, #7251632 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -416,7 +434,7 @@ input.valid {
 
 input:focus {
   border-color: #8B6B3D;
-  box-shadow: 0 0 0 0.2rem rgba(139, 107, 61, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(1316, 107, 61, 0.25);
   outline: none;
 }
 
@@ -433,7 +451,7 @@ input:focus {
 }
 
 .register-btn:hover {
-  background-color: #725932;
+  background-color: #7251632;
 }
 
 .country-select {

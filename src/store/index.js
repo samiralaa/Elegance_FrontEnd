@@ -10,7 +10,7 @@ import countries from './modules/countries'
 import users from './modules/users'
 
 
-export const API_URL = 'http://127.0.0.1:8000';
+export const API_URL = 'https://backendtest.test';
 
 
 const api = axios.create({
