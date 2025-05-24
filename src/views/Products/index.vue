@@ -79,11 +79,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Plus, Edit, Delete, Picture, View } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 
 const router = useRouter()
+const { t } = useI18n()
 const products = ref([])
 const loading = ref(false)
 
@@ -130,11 +132,11 @@ const editProduct = (product) => {
 const deleteProduct = async (product) => {
   try {
     const result = await ElMessageBox.confirm(
-      $t('Products.DeleteConfirmation'),
-      $t('Products.Warning'),
+      t('Products.DeleteConfirmation'),
+      t('Products.Warning'),
       {
-        confirmButtonText: $t('Products.Yes'),
-        cancelButtonText: $t('Products.No'),
+        confirmButtonText: t('Products.Yes'),
+        cancelButtonText: t('Products.No'),
         type: 'warning',
       }
     )
@@ -149,7 +151,7 @@ const deleteProduct = async (product) => {
       const response = await axios.delete(`${API_URL}/${product.id}`)
 
       if (response.data.status) {
-        ElMessage.success($t('Products.DeletedSuccessfully'))
+        ElMessage.success(t('Products.DeletedSuccessfully'))
         products.value = products.value.filter(p => p.id !== product.id)
       } else {
         throw new Error(response.data.message || 'Failed to delete product')

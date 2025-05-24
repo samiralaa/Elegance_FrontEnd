@@ -98,26 +98,42 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'DashboardView',
   setup() {
     const store = useStore()
+    const totalRevenue = ref(0)
+    const totalOrders = ref(0)
+    const totalCustomers = ref(0)
+    const totalProducts = ref(0)
+    const orders = ref([])
 
-    onMounted(() => {
-      store.dispatch('fetchOrders')
-      store.dispatch('fetchCustomers')
-      store.dispatch('fetchProducts')
+    onMounted(async () => {
+      try {
+        await store.dispatch('fetchOrders')
+        await store.dispatch('fetchCustomers')
+        await store.dispatch('fetchProducts')
+        
+        // Update values after fetching data
+        totalRevenue.value = store.getters.totalRevenue || 0
+        totalOrders.value = store.getters.totalOrders || 0
+        totalCustomers.value = store.getters.totalCustomers || 0
+        totalProducts.value = store.getters.totalProducts || 0
+        orders.value = store.state.orders || []
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error)
+      }
     })
 
     return {
-      totalRevenue: computed(() => store.getters.totalRevenue),
-      totalOrders: computed(() => store.getters.totalOrders),
-      totalCustomers: computed(() => store.getters.totalCustomers),
-      totalProducts: computed(() => store.getters.totalProducts),
-      orders: computed(() => store.state.orders)
+      totalRevenue,
+      totalOrders,
+      totalCustomers,
+      totalProducts,
+      orders
     }
   }
 })
