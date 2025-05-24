@@ -78,6 +78,13 @@ export default {
         })
 
         if (response.data.success) {
+          // Save user ID to localStorage
+          const userData = {
+            ...this.user,
+            id: response.data.user.id
+          };
+          localStorage.setItem('user', JSON.stringify(userData));
+          
           this.$toast?.success?.(this.$t?.('otp.success') || 'OTP verified successfully')
           this.$router.push('/')
         }

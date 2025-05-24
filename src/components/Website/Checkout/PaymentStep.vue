@@ -154,7 +154,7 @@ export default {
         const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         
         const orderData = {
-          user_id: 101,
+          user_id: JSON.parse(localStorage.getItem('user'))?.id || 102,
           order: {
             status: 'pending',
             payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'tabby',
