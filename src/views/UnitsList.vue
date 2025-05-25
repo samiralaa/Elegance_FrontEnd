@@ -17,7 +17,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('https://backendtest.test/api/units')
+    axios.get('http://127.0.0.1:8000/api/units')
 
       .then(response => {
         this.units = response.data;

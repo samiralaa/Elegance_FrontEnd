@@ -61,7 +61,7 @@
 
         <el-col   :xs="24" :sm="24"  :md="12"  :lg="10"  class="image-col">
           <div class="image-wrapper" ref="main">
-            <div class="slide">
+            <div v-for="(image, index) in product.images" :key="image.id" class="slide">
               <img
                 :src="getImageUrl(selectedImage)"
                 class="main-image"
@@ -183,7 +183,7 @@ const numberOfSlides = ref(3);
 // Helper methods
 const getImageUrl = (path) => {
   if (!path) return placeholder;
-  return `https://backendtest.test/storage/${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
 };
 
 const handleImageError = (e) => {
@@ -205,7 +205,7 @@ const setSelectedImage = (path) => {
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `https://backendtest.test/api/website/show/products/${route.params.id}`
+      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -235,7 +235,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('https://backendtest.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -272,7 +272,7 @@ const addChildToCart = async (childProduct) => {
       payload.amount_id = childProduct.amount_id;
     }
 
-    const response = await axios.post('https://backendtest.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -410,7 +410,7 @@ const updateSelectedImage = () => {
   const $slider = $(slider.value);
   if ($slider.length && $slider.hasClass('slick-initialized')) {
     const currentSlide = $slider.find('.slick-current');
-    const imagePath = currentSlide.find('img').attr('src').replace('https://backendtest.test/storage/', '');
+    const imagePath = currentSlide.find('img').attr('src').replace('http://127.0.0.1:8000/storage/', '');
     setSelectedImage(imagePath);
   }
 };
@@ -742,20 +742,22 @@ onBeforeUnmount(() => {
 
 .slide {
   text-align: center;
-  padding: 20px;
+  padding: 10px;
 }
 
 .slide img {
   width: 100%;
   height: auto;
-  max-height: 120px;
   object-fit: contain;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
+.slider .slide img {
+  max-height: 100px !important;
+}
+
 .slide img.active {
-  border: 2px solid #a3852c;
   border-radius: 8px;
 }
 

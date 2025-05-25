@@ -33,7 +33,7 @@
         try {
           const response = await axios.get(
 
-            "https://backendtest.test/api/website/brands/section"
+            "http://127.0.0.1:8000/api/website/brands/section"
 
           );
           this.brands = response.data.data;
@@ -43,7 +43,7 @@
       },
       getImageUrl(path) {
 
-        return `https://backendtest.test/storage/${path}`;
+        return `http://127.0.0.1:8000/storage/${path}`;
 
       },
       likeBrand(id) {

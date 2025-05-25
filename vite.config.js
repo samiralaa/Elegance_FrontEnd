@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       '/api': {
 
-        target: 'https://backendtest.test',
+        target: 'http://127.0.0.1:8000',
 
 
         changeOrigin: true,
@@ -24,7 +24,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, '/api'),
         configure: (proxy, options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('origin', 'https://backendtest.test');
+            proxyReq.setHeader('origin', 'http://127.0.0.1:8000');
           });
         }
       }

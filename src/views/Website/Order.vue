@@ -78,7 +78,7 @@ export default {
           return;
         }
 
-        const res = await axios.get('https://backendtest.test/api/orders/user', {
+        const res = await axios.get('http://127.0.0.1:8000/api/orders/user', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -103,7 +103,7 @@ export default {
       }
     },
     imageUrl(path) {
-      return `https://backendtest.test/storage/${path}`;
+      return `http://127.0.0.1:8000/storage/${path}`;
     },
     formatDate(datetime) {
       return new Date(datetime).toLocaleString();

@@ -39,7 +39,7 @@ export default {
 
     const fetchCurrencies = async () => {
       try {
-        const response = await axios.get('https://backendtest.test/api/currencies')
+        const response = await axios.get('http://127.0.0.1:8000/api/currencies')
         if (response.data.status === 'success') {
           // Remove duplicates based on name_en
           const uniqueCurrencies = response.data.data.reduce((acc, current) => {

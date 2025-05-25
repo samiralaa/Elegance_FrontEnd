@@ -155,7 +155,7 @@ export default {
     async fetchSavedAddresses() {
       this.loading = true;
       try {
-        const response = await axios.get('https://backendtest.test/api/address', {
+        const response = await axios.get('http://127.0.0.1:8000/api/address', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
@@ -215,7 +215,7 @@ export default {
           is_primary: this.savedAddresses.length === 0
         };
 
-        const response = await axios.post('https://backendtest.test/api/address', addressData, {
+        const response = await axios.post('http://127.0.0.1:8000/api/address', addressData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
