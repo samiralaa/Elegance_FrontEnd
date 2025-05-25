@@ -227,7 +227,7 @@ input:focus {
 }
 
 .form-links {
-  text-align: right;
+  text-align: start !important;
   margin-top: -0.5rem;
 }
 

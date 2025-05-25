@@ -8,8 +8,18 @@
     "contactUs": "Contact Us",
     "products": "Products",
     "home": "Home",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "password": "Password",
     "searchProducts": "Search Products",
-    "close": "Close"
+    "close": "Close",
+    "profile": "Profile",
+    "logout": "Logout",
+    "orders": "Orders",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name"
   },
 
   "Brands": {
@@ -327,6 +337,35 @@
     "totalAmount": "Total Amount",
     "placeOrder": "Place Order"
   },
+
+  "joinUs": {
+    "title": "Join Us",
+    "description": "Join our team and be part of our success journey. We are looking for talented and passionate individuals to join our family.",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show Password",
+    "hidePassword": "Hide Password",
+    "forgotPassword": "Forgot Password?",
+    "login": "Login",
+    "registerHere": "Register Here",
+    "notMember": "Not a member?"
+  },
   
+    "register": {
+    "confirmPasswordPlaceholder" : "Confirm Password",
+    "country": "Country",
+    "countryPlaceholder": "Select Country",
+    "phoneNumber" : "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "submit": "Submit",
+    "registrationSuccess": "Registration successful! Please check your email to verify your account.",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here",
+    "validation" :{
+      "passwordRequired": "Password is required",
+      "emailRequired": "Email is required"
+    }
+  },
+
   "Nobrandsfound" : "No brands found"
 }

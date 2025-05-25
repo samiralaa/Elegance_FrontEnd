@@ -39,8 +39,8 @@
       "submit": "Login",
       "loggingIn": "Logging in...",
       "forgotPassword": "Forgot Password?",
-      "register": "Create a New Account",
       "register": {
+        "register": "Create a New Account",
         "title": "Create a New Account",
         "subtitle": "Join our community",
         "fullName": "Full Name",
