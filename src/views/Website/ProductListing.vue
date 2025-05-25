@@ -5,7 +5,7 @@
       <div class="row align-items-center">
         <div class="col-lg-6 col-md-8">
           <div class="inner">
-            <h1 class="title">Explore All Products</h1>
+            <h1 class="title">{{ $t('products.title') }}</h1>
           </div>
         </div>
       </div>
@@ -16,7 +16,7 @@
     <div class="container">
       <!-- Mobile Filter Button -->
       <div class="filter col-12">
-        <a href="#" @click.prevent="toggleSidebar">Filter</a>
+        <a href="#" @click.prevent="toggleSidebar">{{ $t('products.filter') }}</a>
       </div>
 
       <!-- Sidebar Filters -->
@@ -26,7 +26,7 @@
           <button class="close-btn" @click="toggleSidebar">&times;</button>
 
           <!-- Categories -->
-          <h3 class="sidebar-title">{{ t('categories') }}</h3>
+          <h3 class="sidebar-title">{{ t('products.categories') }}</h3>
           <hr style="color: #8b6b3d; opacity: 1; border-top: 3px solid;" />
           <div v-for="cat in categories" :key="cat.id" class="filter-item">
             <label class="checkbox-container">
@@ -41,7 +41,7 @@
           </div>
 
           <!-- Price Range -->
-          <h3 class="sidebar-title">{{ t('price') }}</h3>
+          <h3 class="sidebar-title">{{ t('products.price') }}</h3>
           <hr style="color: #8b6b3d; opacity: 1; border-top: 3px solid;" />
           <div class="price-range">
             <input
@@ -75,7 +75,7 @@
               :src="getImageUrl(product.images[0].path)"
               :alt="product.name" 
             />
-            <div v-if="product.sale" class="sale-badge">Sale</div>
+            <div v-if="product.sale" class="sale-badge">{{ $t('products.sale') }}</div>
             <div class="product-actions">
               <router-link :to="`/read/products/${product.id}`" class="action-btn cart-btn">
                 <fa icon="eye" />
@@ -92,7 +92,7 @@
               <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency?.name_en || 'AED' }}</span>
             </div>
             <div class="addToCart-btn">
-              <a  @click="addToCart(product)" class="btn">Add To Cart</a>
+              <a  @click="addToCart(product)" class="btn">{{ $t('products.addToCart') }}</a>
             </div>
           </div>
         </div>
@@ -151,13 +151,13 @@
   }
 
   // Helpers
-  const getImageUrl = (path) => `http://elegance_backend.test/storage/${path}`
+  const getImageUrl = (path) => `http://127.0.0.1:8000/storage/${path}`
 
   // API Actions
   const addToFavorites = async (product) => {
     try {
       const response = await axios.post(
-        'http://elegance_backend.test/api/favorites',
+        'http://127.0.0.1:8000/api/favorites',
         { product_id: product.id },
         {
           headers: {
@@ -182,7 +182,7 @@
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://elegance_backend.test/api/website')
+      const res = await axios.get('http://127.0.0.1:8000/api/website')
       categories.value = res.data.data || []
     } catch (err) {
       console.error('Error loading categories', err)
@@ -191,7 +191,7 @@
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://elegance_backend.test/api/website/products/section')
+      const res = await axios.get('http://127.0.0.1:8000/api/website/products/section')
       products.value = res.data.data || []
     } catch (err) {
       console.error('Error loading products', err)

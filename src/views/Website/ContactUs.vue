@@ -10,30 +10,28 @@
       <div class="contact-container pb-5 mb-5">
         <div class="contact-body">
           <div class="content-info">
-            <h2>
-              We are always ready to assist
-              you and answer any questions
-              you may have
-            </h2>
-            <p>If you've got great products your making or looking to work
-              with us then drop us a line.</p>
+            <h2>{{ $t('contact.subtitle') }}</h2>
+            <p>{{ $t('contact.description') }}</p>
           </div>
           <div class="content-info">
-            <h5>Our Store:</h5>
+            <h5>{{ $t('contact.ourStore.title') }}:</h5>
             <div class="info">
               <fa icon="location-dot" class="icon" />
-              <a href="https://www.google.com/maps/place/37+%D8%B4%D8%A7%D8%B1%D8%B9+%D9%83%D9%92%D9%88%D9%8E%D8%A7%D8%B1+-+%D8%A2%D9%84+%D9%86%D9%87%D9%8A%D8%A7%D9%86+-+Zone+1+-+%D8%A3%D8%A8%D9%88+%D8%B8%D8%A8%D9%8A%E2%80%AD/@24.46297,54.383641,16z/data=!4m6!3m5!1s0x3e5e6629e81bf275:0xe4551295f406885e!8m2!3d24.4629696!4d54.3836411!16s%2Fg%2F11f6xf4mf4?hl=ar&entry=ttu&g_ep=EgoyMDI1MDUwNS4wIKXMDSoASAFQAw%3D%3D">37 Kwar St - Al Nahyan - E20-02 <br> Abu Dhabi - United Arab Emirates</a>
+              <a href="https://www.google.com/maps/place/37+%D8%B4%D8%A7%D8%B1%D8%B9+%D9%83%D9%92%D9%88%D9%8E%D8%A7%D8%B1+-+%D8%A2%D9%84+%D9%86%D9%87%D9%8A%D8%A7%D9%86+-+Zone+1+-+%D8%A3%D8%A8%D9%88+%D8%B8%D8%A8%D9%8A%E2%80%AD/@24.46297,54.383641,16z/data=!4m6!3m5!1s0x3e5e6629e81bf275:0xe4551295f406885e!8m2!3d24.4629696!4d54.3836411!16s%2Fg%2F11f6xf4mf4?hl=ar&entry=ttu&g_ep=EgoyMDI1MDUwNS4wIKXMDSoASAFQAw%3D%3D">
+                {{ $t('contact.ourStore.address1') }} <br>
+                {{ $t('contact.ourStore.address2') }}
+              </a>
             </div>
           </div>  
           <div class="content-info">
-            <h5>Working Hours:</h5>
+            <h5>{{ $t('contact.workingHours.title') }}:</h5>
             <div class="info">
               <fa icon="clock" class="icon" />
-              <p>From <span>10:00 AM</span> to <span>10:00 AM</span></p>
+              <p>{{ $t('contact.workingHours.from') }} <span>10:00 AM</span> {{ $t('contact.workingHours.to') }} <span>10:00 PM</span></p>
             </div>
           </div>  
           <div class="content-info">
-            <h5>Contact Us:</h5>
+            <h5>{{ $t('contact.title') }}:</h5>
             <div class="info">
               <fa icon="envelope" class="icon" />
               <a href="mailto:Eleganceoud22@gmail.com">Eleganceoud22@gmail.com</a>
@@ -47,25 +45,38 @@
         <form @submit.prevent="submitForm" class="contact-form">
           <div class="container">
             <div class="form-group">
-              <label for="name">Name</label>
+              <label for="name">
+                {{ $t('contact.name') }}
+              </label>
               <input v-model="form.name" type="text" id="name" required />
             </div>
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email">
+                {{ $t('contact.email') }}
+              </label>
               <input v-model="form.email" type="email" id="email" required />
             </div>
             <div class="form-group">
-              <label for="subject">Subject</label>
+              <label for="subject">
+                {{ $t('contact.subject') }}
+              </label>
               <input v-model="form.subject" type="text" id="subject" required />
             </div>
             <div class="form-group">
-              <label for="message">Message</label>
+              <label for="message">
+                {{ $t('contact.message') }}
+              </label>
               <textarea v-model="form.message" id="message" rows="5" required></textarea>
             </div>
             <div class="submit-btn">
-              <button class="btn" type="submit" :disabled="loading">Send Message</button>
+              <button class="btn" type="submit" :disabled="loading">
+                <span v-if="loading">{{ $t('contact.sending') }}</span>
+                <span v-else>{{ $t('contact.sendMessage') }}</span>
+              </button>
             </div>
-            <p v-if="success" class="success">Your message has been sent!</p>
+            <p v-if="success" class="success">
+              {{ $t('contact.successMessage') }}
+            </p>
             <p v-if="error" class="error">{{ error }}</p>
           </div>
         </form>
@@ -73,9 +84,7 @@
       <div class="contact-footer mb-5">
         <div class="content-info col-md-12 col-lg-6">
           <h2>
-            We are always ready to assist
-            you and answer any questions
-            you may have
+            {{ $t('contact.mapTitle') }}
           </h2>
         </div>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3631.6485909291746!2d54.386216025984375!3d24.462974461050244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e6629e81bf275%3A0xe4551295f406885e!2zMzcg2LTYp9ix2Lkg2YPZktmI2Y7Yp9ixIC0g2KLZhCDZhtmH2YrYp9mGIC0gWm9uZSAxIC0g2KPYqNmIINi42KjZig!5e0!3m2!1sar!2sae!4v1723272974133!5m2!1sar!2sae" frameborder="0" width="100%" height="500"></iframe>
@@ -125,7 +134,7 @@ export default {
         this.success = true;
         this.form = { name: '', email: '', subject: '', message: '' };
       } catch (e) {
-        this.error = 'Failed to send message. Please try again.';
+        this.error = '{{ $t("contact.errorMessage") }}';
       } finally {
         this.loading = false;
       }
