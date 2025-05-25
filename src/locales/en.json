@@ -367,5 +367,11 @@
     }
   },
 
+  "about": {
+    "title": "About Our Store",
+    "descriptionTitle": "Elegance Perfumes and Oud , is a company specializing in oud and perfume products. This brand was created by an oud lover, ensuring specialization and expertise.",
+    "description": "Our motto is honesty and quality, which confirms its commitment to providing high-quality products. The company pledges to provide distinguished customer service to ensure customer satisfaction. This is to provide assistance and leadership in choosing the most effective methods."
+  },
+
   "Nobrandsfound" : "No brands found"
 }

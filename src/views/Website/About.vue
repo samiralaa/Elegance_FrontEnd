@@ -10,8 +10,8 @@
                 <div class="about-content">
                     <div class="container">
                         <div class="discription">
-                            <h4>{{ $t('about.discription-title') }}</h4>
-                            <p>{{ $t('about.discription') }}</p>
+                            <h4>{{ $t('about.descriptionTitle') }}</h4>
+                            <p>{{ $t('about.description') }}</p>
                         </div>
                         <div class="about-img">
                             <img src="@/assets/images/about.png" alt="About Us" class="img-fluid" />
@@ -96,11 +96,12 @@
     align-items: center;
     height: fit-content;
     width: 100%;
-    padding: 50px 0;
+    margin-bottom: 50px;
 }
 .discription {
     width: 50%;
     padding: 0 20px;
+    padding-top: 50px;
 }
 .discription p{
     color: #7c7c7c;
