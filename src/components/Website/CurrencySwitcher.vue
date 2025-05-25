@@ -1,57 +1,132 @@
 <template>
-  <div class="currency-switcher">
-    <select v-model="selectedCurrency" @change="changeCurrency" class="currency-select">
-      <option value="" disabled>{{ $t('common.currency.select') }}</option>
-      <option value="AED">{{ $t('common.currency.AED') }}</option>
-      <option value="USD">{{ $t('common.currency.USD') }}</option>
-    </select>
-  </div>
+  <el-dropdown @command="handleCurrencyChange" trigger="click">
+    <span class="currency-dropdown">
+      {{ getCurrencyName(selectedCurrency) }}
+      <el-icon class="el-icon--right"><arrow-down /></el-icon>
+    </span>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item v-for="currency in currencies" :key="currency.id" :command="currency">
+          <div class="currency-item">
+            <span class="currency-name-ar">{{ currency.name_ar }}</span>
+            <span class="currency-name-en">{{ currency.name_en }}</span>
+          </div>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useStore } from 'vuex'
+import { ref, onMounted } from 'vue'
+import { ArrowDown } from '@element-plus/icons-vue'
+import axios from 'axios'
 
 export default {
   name: 'CurrencySwitcher',
+  components: {
+    ArrowDown
+  },
   setup() {
-    const store = useStore()
-    const selectedCurrency = ref(localStorage.getItem('currency') || 'AED')
+    const currencies = ref([])
+    const selectedCurrency = ref(null)
 
-    const changeCurrency = () => {
-      localStorage.setItem('currency', selectedCurrency.value)
-      store.commit('setCurrency', selectedCurrency.value)
+    const getCurrencyName = (currency) => {
+      if (!currency) return 'Select Currency'
+      const lang = localStorage.getItem('lang') || 'en'
+      return lang === 'ar' ? currency.name_ar : currency.name_en
     }
 
+    const fetchCurrencies = async () => {
+      try {
+        const response = await axios.get('https://backendtest.test/api/currencies')
+        if (response.data.status === 'success') {
+          // Remove duplicates based on name_en
+          const uniqueCurrencies = response.data.data.reduce((acc, current) => {
+            const x = acc.find(item => item.name_en === current.name_en)
+            if (!x) {
+              return acc.concat([current])
+            } else {
+              return acc
+            }
+          }, [])
+          currencies.value = uniqueCurrencies
+          
+          // Set default currency (US Dollar) if not already set
+          if (!selectedCurrency.value) {
+            selectedCurrency.value = currencies.value.find(c => c.name_en === 'US Dollar')
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching currencies:', error)
+      }
+    }
+
+    const handleCurrencyChange = (currency) => {
+      selectedCurrency.value = currency
+      // Emit event to parent component
+      window.dispatchEvent(new CustomEvent('currency-changed', { 
+        detail: { currency } 
+      }))
+      // Save to localStorage
+      localStorage.setItem('selectedCurrency', JSON.stringify(currency))
+    }
+
+    onMounted(() => {
+      // Load saved currency from localStorage
+      const savedCurrency = localStorage.getItem('selectedCurrency')
+      if (savedCurrency) {
+        selectedCurrency.value = JSON.parse(savedCurrency)
+      }
+      fetchCurrencies()
+    })
+
     return {
+      currencies,
       selectedCurrency,
-      changeCurrency
+      handleCurrencyChange,
+      getCurrencyName
     }
   }
 }
 </script>
 
 <style scoped>
-.currency-switcher {
-  display: inline-block;
-  margin-left: 1rem;
-}
-
-.currency-select {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
+.currency-dropdown {
   cursor: pointer;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #fff;
+  font-size: 14px;
 }
 
-.currency-select:focus {
-  outline: none;
-  border-color: #4a5568;
+.currency-dropdown:hover {
+  opacity: 0.8;
 }
 
-:deep(.currency-select option) {
-  padding: 0.5rem;
+.el-dropdown-menu {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.currency-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.currency-name-ar {
+  font-size: 14px;
+  color: #333;
+}
+
+.currency-name-en {
+  font-size: 12px;
+  color: #666;
+}
+
+[dir="rtl"] .currency-item {
+  text-align: right;
 }
 </style>

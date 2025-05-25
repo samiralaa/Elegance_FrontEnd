@@ -18,7 +18,7 @@
               <span class="price-new">{{ product.price }} {{ product.currency?.name_en }}</span>
             </div>
             
-            <div class="weight">
+            <div class="weight" v-if="product.amounts && product.amounts.length > 0">
               <h1 class="weight-title">Select Weight</h1>
               <div class="reset" @click="resetActive">
                 <fa icon="rotate-right"></fa>
@@ -27,46 +27,13 @@
               <div class="weight-container">
                 <div class="row g-4">
                   <div
+                    v-for="(amount, index) in product.amounts"
+                    :key="amount.id"
                     class="weight-item"
-                    :class="{ active: activeIndex === 0 }"
-                    @click="setActive(0)"
+                    :class="{ active: activeIndex === index }"
+                    @click="setActive(index, amount)"
                   >
-                    <p>12MG For 100AED</p>
-                  </div>
-                  <div
-                    class="weight-item"
-                    :class="{ active: activeIndex === 1 }"
-                    @click="setActive(1)"
-                  >
-                    <p>12MG For 100AED</p>
-                  </div>
-                  <div
-                    class="weight-item"
-                    :class="{ active: activeIndex === 2 }"
-                    @click="setActive(2)"
-                  >
-                    <p>12MG For 100AED</p>
-                  </div>
-                  <div
-                    class="weight-item"
-                    :class="{ active: activeIndex === 3 }"
-                    @click="setActive(3)"
-                  >
-                    <p>12MG For 100AED</p>
-                  </div>
-                  <div
-                    class="weight-item"
-                    :class="{ active: activeIndex === 4 }"
-                    @click="setActive(4)"
-                  >
-                    <p>12MG For 100AED</p>
-                  </div>
-                  <div
-                    class="weight-item"
-                    :class="{ active: activeIndex === 5 }"
-                    @click="setActive(5)"
-                  >
-                    <p>12MG For 100AED</p>
+                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency?.name_en }}</p>
                   </div>
                 </div>
               </div>
@@ -96,34 +63,23 @@
           <div class="image-wrapper" ref="main">
             <div class="slide">
               <img
-                :src="
-                  selectedImage
-                  ? getImageUrl(selectedImage)
-                  : product.images?.length
-                  ? getImageUrl(product.images[0].path)
-                  : placeholder
-                "
+                :src="getImageUrl(selectedImage)"
                 class="main-image"
+                @error="handleImageError"
               />
             </div>
 
             <div class="sale-badge" v-if="product.old_price">Sale</div>
           </div>
           <div class="slider-wrapper">
-            
             <button class="btn nav-button left" @click="scrollLeft" v-if="numberOfSlides > 1"><fa icon="arrow-left"></fa></button>
-            <!-- Slider Container -->
             <div class="slider-container" :class="{ 'centered-slides': slidesToShow < 3 }">
               <div class="slider" ref="slider">
-                <div class="slide">
-                   <img
-                    :src="
-                      selectedImage
-                      ? getImageUrl(selectedImage)
-                      : product.images?.length
-                      ? getImageUrl(product.images[0].path)
-                      : placeholder
-                    "
+                <div v-for="(image, index) in product.images" :key="image.id" class="slide" @click="setSelectedImage(image.path)">
+                  <img
+                    :src="getImageUrl(image.path)"
+                    :class="{ active: selectedImage === image.path }"
+                    @error="handleImageError"
                   />
                 </div>
               </div>
@@ -193,7 +149,7 @@
 
 <script setup>
 import Header from "@/components/Website/Header.vue";
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import axios from "axios";
@@ -216,6 +172,7 @@ const quantity = ref(1);
 const placeholder = "/default-image.jpg";
 const selectedImage = ref(null);
 const isFavorite = ref(false);
+const currentSlideIndex = ref(0);
 
 // Slider Ref
 const slider = ref(null);
@@ -223,35 +180,47 @@ const main = ref(null);
 const slidesToShow = ref(3);
 const numberOfSlides = ref(3);
 
+// Helper methods
+const getImageUrl = (path) => {
+  if (!path) return placeholder;
+  return `https://backendtest.test/storage/${path}`;
+};
+
+const handleImageError = (e) => {
+  e.target.src = placeholder;
+};
+
+const setSelectedImage = (path) => {
+  selectedImage.value = path;
+  // Force update the main image
+  nextTick(() => {
+    const mainImage = document.querySelector('.main-image');
+    if (mainImage) {
+      mainImage.src = getImageUrl(path);
+    }
+  });
+};
+
 // Fetch product
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
+      `https://backendtest.test/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
       if (product.value.images?.length) {
+        // Set initial image
         selectedImage.value = product.value.images[0].path;
+        // Initialize slider after data is loaded
+        nextTick(() => {
+          initializeSlick();
+        });
       }
     }
   } catch (err) {
     console.error("Error fetching product:", err);
   }
-};
-
-// Helper methods
-const getImageUrl = (path) => {
-  return `http://elegance_backend.test/storage/${path}`;
-};
-
-const increaseQty = () => quantity.value++;
-const decreaseQty = () => {
-  if (quantity.value > 1) quantity.value--;
-};
-
-const setSelectedImage = (path) => {
-  selectedImage.value = path;
 };
 
 // Add to Cart
@@ -266,7 +235,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('https://backendtest.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -303,7 +272,7 @@ const addChildToCart = async (childProduct) => {
       payload.amount_id = childProduct.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('https://backendtest.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -347,12 +316,16 @@ const toggleFavorite = () => {
 const activeIndex = ref(); // default selected
 
 // Set active item
-const setActive = (index) => {
+const setActive = (index, amount) => {
   activeIndex.value = index;
+  product.value.amount_id = amount.id;
+  product.value.price = amount.price;
 };
 
 const resetActive = () => {
   activeIndex.value = null;
+  product.value.amount_id = null;
+  product.value.price = product.value.original_price;
 };
 
 // Slick Carousel Logic
@@ -369,7 +342,7 @@ const initializeSlick = () => {
   }
 
   // Count the number of slides after they've been rendered
-  const numSlides = $slider.find('.slide').length;
+  const numSlides = product.value.images?.length || 0;
   numberOfSlides.value = numSlides;
 
   // Set slidesToShow dynamically
@@ -386,6 +359,12 @@ const initializeSlick = () => {
     focusOnSelect: true,
     rtl: locale.value === 'ar',
     asNavFor: $main,
+    afterChange: function(currentSlide) {
+      const currentImage = product.value.images[currentSlide];
+      if (currentImage) {
+        setSelectedImage(currentImage.path);
+      }
+    }
   });
 
   $main.slick({
@@ -398,6 +377,12 @@ const initializeSlick = () => {
     centerMode: true,
     rtl: locale.value === 'ar',
     asNavFor: $slider,
+    afterChange: function(currentSlide) {
+      const currentImage = product.value.images[currentSlide];
+      if (currentImage) {
+        setSelectedImage(currentImage.path);
+      }
+    }
   });
 };
 
@@ -407,8 +392,8 @@ const scrollLeft = () => {
   if ($slider.length && $slider.hasClass('slick-initialized')) {
     $slider.slick('slickPrev');
     $main.slick('slickPrev');
+    updateSelectedImage();
   }
-
 };
 
 const scrollRight = () => {
@@ -417,6 +402,16 @@ const scrollRight = () => {
   if ($slider.length && $slider.hasClass('slick-initialized')) {
     $slider.slick('slickNext');
     $main.slick('slickNext');
+    updateSelectedImage();
+  }
+};
+
+const updateSelectedImage = () => {
+  const $slider = $(slider.value);
+  if ($slider.length && $slider.hasClass('slick-initialized')) {
+    const currentSlide = $slider.find('.slick-current');
+    const imagePath = currentSlide.find('img').attr('src').replace('https://backendtest.test/storage/', '');
+    setSelectedImage(imagePath);
   }
 };
 
@@ -540,6 +535,7 @@ onBeforeUnmount(() => {
   padding: 0;
   
   transition: all 0.3s ease;
+
 }
 .weight-item::after {
   content: "";
@@ -664,10 +660,9 @@ onBeforeUnmount(() => {
 
 .main-image {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 0.5s ease;
+  height: auto;
   max-height: 400px;
+  object-fit: contain;
 }
 
 .image-wrapper:hover .main-image {
@@ -753,7 +748,19 @@ onBeforeUnmount(() => {
 .slide img {
   width: 100%;
   height: auto;
-  pointer-events: fill;
+  max-height: 120px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slide img.active {
+  border: 2px solid #a3852c;
+  border-radius: 8px;
+}
+
+.slide img:hover {
+  transform: scale(1.05);
 }
 
 .slider .slide.slick-current {

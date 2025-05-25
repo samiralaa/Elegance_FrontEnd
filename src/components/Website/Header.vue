@@ -8,7 +8,7 @@
             <router-link to="/register" class="btn join-link">{{ $t('header.joinUs') }}</router-link>
           </div>
           <div class="top-bar-right">
-            <div class="currency">{{ $t('currencies') }}</div>
+            <currency-switcher />
             <language-switcher />
           </div>
         </div>
@@ -201,6 +201,7 @@
 <script>
 import axios from 'axios';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
+import CurrencySwitcher from './CurrencySwitcher.vue';
 import { API_URL } from '@/store/index.js';
 
 
@@ -208,6 +209,7 @@ export default {
   name: 'Header',
   components: {
     LanguageSwitcher,
+    CurrencySwitcher
   },
   data() {
     return {
