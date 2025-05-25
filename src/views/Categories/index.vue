@@ -75,7 +75,7 @@ const categories = ref([])
 const loading = ref(false)
 
 
-const BASE_URL = 'http://127.0.0.1:8000'
+const BASE_URL = 'http://elegance_backend.test'
 
 const API_URL = `${BASE_URL}/api/categories`
 
@@ -91,10 +91,10 @@ const fetchCategories = async () => {
 
     const response = await axios.get(API_URL)
 
-    if (response.data.status === 'success') {
+    if (response.data.status === true) {
       categories.value = response.data.data
     } else {
-      throw new Error(response.data.message || 'Failed to fetch categories')
+      ElMessage.error(response.data.message || 'Failed to fetch categories')
     }
   } catch (error) {
     console.error('Fetch categories error:', error)

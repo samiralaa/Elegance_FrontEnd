@@ -29,6 +29,7 @@
 
     <!-- Orders Table -->
     <el-table
+      v-loading="loading"
       :data="paginatedOrders"
       style="width: 100%"
       class="orders-table"
@@ -43,7 +44,7 @@
       </el-table-column>
       <el-table-column label="Total" width="150">
         <template #default="scope">
-          {{ scope.row.total_price }}
+          ${{ scope.row.total_price }}
         </template>
       </el-table-column>
       <el-table-column prop="status" label="Status" width="150">
@@ -90,53 +91,61 @@
       >
         <el-table-column prop="product_id" label="Product ID" />
         <el-table-column prop="quantity" label="Quantity" />
-        <el-table-column prop="price" label="Price" />
-        <el-table-column prop="subtotal" label="Subtotal" />
+        <el-table-column prop="price" label="Price">
+          <template #default="scope">
+            ${{ scope.row.price }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="subtotal" label="Subtotal">
+          <template #default="scope">
+            ${{ scope.row.subtotal }}
+          </template>
+        </el-table-column>
       </el-table>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Search, View, Close, Refresh } from '@element-plus/icons-vue'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
-// Sample orders
-const orders = ref([
-  {
-    id: 29,
-    user_id: 1,
-    status: 'completed',
-    total_price: '366.00',
-    payment_method: 'stripe',
-    ordered_at: '2025-05-15 06:55:02',
-    items: [
-      { id: 38, order_id: 29, product_id: 1, quantity: 1, price: '183.00', subtotal: '183.00' },
-      { id: 39, order_id: 29, product_id: 1, quantity: 1, price: '183.00', subtotal: '183.00' }
-    ]
-  },
-  {
-    id: 30,
-    user_id: 1,
-    status: 'completed',
-    total_price: '366.00',
-    payment_method: 'stripe',
-    ordered_at: '2025-05-15 06:56:26',
-    items: [
-      { id: 40, order_id: 30, product_id: 1, quantity: 1, price: '183.00', subtotal: '183.00' },
-      { id: 41, order_id: 30, product_id: 1, quantity: 1, price: '183.00', subtotal: '183.00' }
-    ]
-  }
-])
-
+const orders = ref([])
 const searchQuery = ref('')
 const statusFilter = ref('')
 const currentPage = ref(1)
 const pageSize = 5
 const showDetails = ref(false)
 const selectedOrder = ref(null)
+const loading = ref(false)
 
 const orderStatuses = ['completed', 'pending', 'processing', 'cancelled']
+
+const fetchOrders = async () => {
+  loading.value = true
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    if (!tokenData || !tokenData.token) {
+      throw new Error('Authentication token not found')
+    }
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const response = await axios.get('http://elegance_backend.test/api/orders')
+
+    if (response.data.status === true) {
+      orders.value = response.data.data
+    } else {
+      throw new Error(response.data.message || 'Failed to fetch orders')
+    }
+  } catch (error) {
+    console.error('Error fetching orders:', error)
+    ElMessage.error(error.message || 'Failed to fetch orders')
+  } finally {
+    loading.value = false
+  }
+}
 
 const filteredOrders = computed(() => {
   return orders.value.filter(order => {
@@ -182,17 +191,36 @@ const getStatusType = (status) => {
   return types[status.toLowerCase()] || 'info'
 }
 
-const cancelOrder = (order) => {
-  // Simulate API call
-  setTimeout(() => {
-    order.status = 'cancelled'
-  }, 500)
+const cancelOrder = async (order) => {
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    if (!tokenData || !tokenData.token) {
+      throw new Error('Authentication token not found')
+    }
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const response = await axios.put(`http://elegance_backend.test/api/orders/${order.id}/cancel`)
+
+    if (response.data.status === true) {
+      order.status = 'cancelled'
+      ElMessage.success('Order cancelled successfully')
+    } else {
+      throw new Error(response.data.message || 'Failed to cancel order')
+    }
+  } catch (error) {
+    console.error('Error cancelling order:', error)
+    ElMessage.error(error.message || 'Failed to cancel order')
+  }
 }
 
 const reorder = (order) => {
   // Simulate reorder logic (e.g., add items to cart)
-  alert('Reordered items from order #' + order.id)
+  ElMessage.info('Reordered items from order #' + order.id)
 }
+
+onMounted(() => {
+  fetchOrders()
+})
 </script>
 
 <style scoped>

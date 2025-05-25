@@ -154,7 +154,7 @@ export default {
         const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         
         const orderData = {
-          user_id: JSON.parse(localStorage.getItem('user'))?.id || 102,
+          user_id: JSON.parse(localStorage.getItem('auth_user'))?.id,
           order: {
             status: 'pending',
             payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'tabby',
@@ -280,7 +280,7 @@ export default {
           total_price: totalPrice
         };
 
-        const orderResponse = await axios.post('http://127.0.0.1:8000/api/orders', orderData, {
+        const orderResponse = await axios.post('http://elegance_backend.test/api/orders', orderData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
