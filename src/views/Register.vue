@@ -1,14 +1,18 @@
 <template>
   
   <div class="register-container">
-    <div class="register-left">
-      <div class="product-showcase">
-        <img src="@/assets/images/EleganceLogo.png" alt="Elegance" class="logo">
-        <div class="product-image">
-          <!-- <img src="@/assets/images/perfume-display.jpg" alt="Luxury Perfume" class="featured-product"> -->
+    <div class="left">
+      <div class="register-left">
+
+        <div class="product-showcase">
+          <img src="@/assets/images/EleganceLogo.png" alt="Elegance" class="logo">
+          <div class="product-image">
+            <!-- <img src="@/assets/images/perfume-display.jpg" alt="Luxury Perfume" class="featured-product"> -->
+          </div>
         </div>
       </div>
     </div>
+    <div style="width: 50%;"></div>
     <div class="register-right">
       <div class="register-form-container">
         <h2>{{ $t('header.register') }}</h2>
@@ -330,17 +334,28 @@ export default {
 <style scoped>
 .register-container {
   display: flex;
-  min-height: 100vh;
   background-color: #fff;
+  width: 100%;
 }
 
-.register-left {
+.left{
+  width: 50%;
   flex: 1;
-  background: linear-gradient(135deg, #8B6B3D 0%, #7251632 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  background: linear-gradient(135deg, #8B6B3D 0%, #725164 100%);
+  height: 100vh;
+  position: fixed;
+}
+
+.register-left {
+  width: 50%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-showcase {
@@ -451,7 +466,7 @@ input:focus {
 }
 
 .register-btn:hover {
-  background-color: #7251632;
+  background-color: #725164;
 }
 
 .country-select {
@@ -466,6 +481,10 @@ input:focus {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+[dir="rtl"] .phone-input-container input {
+  text-align: right !important;
 }
 
 .country-code {
@@ -486,6 +505,15 @@ input:focus {
   background-color: #fff !important;
   border: 1px solid #ddd;
   box-shadow: none;
+}
+
+:deep(.el-select__wrapper) {
+  padding: 0.75rem !important;
+  text-align: start !important;
+}
+
+:deep(.el-select__input-wrapper){
+  position: relative !important;
 }
 
 :deep(.el-select .el-input__wrapper:hover) {

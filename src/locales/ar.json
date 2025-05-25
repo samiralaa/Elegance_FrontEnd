@@ -10,12 +10,17 @@
     "email":"البريد الالكتروني",
     "fullNamePlaceholder":"الاسم الكامل",
     "emailPlaceholder":"البريد الالكتروني",
+    "passwordPlaceholder":"كلمة المرور",
     "home":"الرئيسية",
     "search products":"ابحث عن المنتجات",
     "password": "كلمة المرور",
     "forgotPassword": "هل نسيت كلمة المرور؟",
     "rememberMe": "تذكرني",
-    "close":"اغلاق"
+    "close":"اغلاق",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج", 
+    "orders": "الطلبات",
+    "confirmPassword": "تأكيد كلمة المرور"
   },
 
   "loginPage": {
@@ -335,6 +340,31 @@
     "totalAmount": "المبلغ الإجمالي",
     "placeOrder": "إتمام الطلب"
   },
-  
+
+  "joinUs" : {
+    "title": "انضم إلينا",
+    "description": "انضم إلى فريقنا وكن جزءًا من رحلة نجاحنا. نحن نبحث عن أشخاص موهوبين ومتحمسين للانضمام إلى عائلتنا.",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "login": "تسجيل الدخول",
+    "registerHere": "سجل هنا",
+    "notMember": "لست عضوًا؟"
+  },
+
+  "register": {
+    "confirmPasswordPlaceholder" : "تأكيد كلمة المرور",
+    "country": "الدولة",
+    "countryPlaceholder": "اختر الدولة",
+    "phoneNumber" : "رقم الهاتف",
+    "phoneNumberPlaceholder": "أدخل رقم الهاتف",
+    "submit": "إرسال",
+    "registrationSuccess": "تم التسجيل بنجاح",
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+    "loginHere": "تسجيل الدخول هنا"
+  },
+
   "Nobrandsfound": "لا توجد علامات تجارية"
 }
