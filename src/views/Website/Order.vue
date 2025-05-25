@@ -105,7 +105,7 @@ export default {
           return;
         }
 
-        const res = await axios.get('http://127.0.0.1:8000/api/orders/user', {
+        const res = await axios.get('http://elegance_backend.test/api/orders/user', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -130,7 +130,7 @@ export default {
       }
     },
     imageUrl(path) {
-      return `http://127.0.0.1:8000/storage/${path}`;
+      return `http://elegance_backend.test/storage/${path}`;
     },
     formatDate(datetime) {
       return new Date(datetime).toLocaleString();
@@ -192,7 +192,7 @@ export default {
   gap: 10px;
 }
 
-.orders-header .order-stage {
+.order-stage {
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -205,7 +205,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.order-stage .num {
+.num {
   background-color: #fff;
   aspect-ratio: 1 / 1;
   padding: 0.15rem 0.3rem;
@@ -216,15 +216,15 @@ export default {
   font-size: 0.8rem !important;
 }
 
-.orders-header .order-stage:active{
+.order-stage:active{
   background-color: #fff;
 }
-.orders-header .order-stage:hover {
+.order-stage:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: #8b6b3d;
 }
 
-.orders-header .order-stage:active .num {
+.order-stage:active .num {
   color: #fff;
   background-color: #8b6b3d;
 }

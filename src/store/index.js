@@ -10,7 +10,7 @@ import countries from './modules/countries'
 import users from './modules/users'
 
 
-export const API_URL = 'http://127.0.0.1:8000';
+export const API_URL = 'http://elegance_backend.test';
 
 
 const api = axios.create({
@@ -125,7 +125,7 @@ export default createStore({
       } catch (error) {
         console.error('Login error:', error)
         const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.'
-        commit('SET_ERROR', errorMessage)
+        commit('SET_ERROR', errorMessage) 
         throw error
       } finally {
         commit('SET_LOADING', false)
