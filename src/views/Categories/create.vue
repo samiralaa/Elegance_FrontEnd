@@ -84,7 +84,7 @@ export default {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
 
-        const response = await axios.get('http://127.0.0.1:8000/api/brands')
+        const response = await axios.get('http://elegance_backend.test/api/brands')
 
 
         if (response.data.status) {
@@ -128,7 +128,7 @@ export default {
         }
 
 
-        const response = await axios.post('http://127.0.0.1:8000/api/categories', formData, {
+        const response = await axios.post('http://elegance_backend.test/api/categories', formData, {
 
           headers: {
             'Content-Type': 'multipart/form-data',

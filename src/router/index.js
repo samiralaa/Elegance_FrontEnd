@@ -8,6 +8,8 @@ import Categories from '../views/Categories/index.vue'
 import Settings from '../views/Settings.vue'
 import Profile from '../views/Profile.vue'
 import Help from '../views/Help.vue'
+import BrandDetail from '@/views/BrandDetail.vue'
+import CategoryDetail from '@/views/CategoryDetail.vue'
 
 const routes = [
   {
@@ -188,6 +190,16 @@ const routes = [
     path: '/test-payment',
     name: 'TestPayment',
     component: () => import('../views/TestPayment.vue')
+  },
+  {
+    path: '/brand/:id',
+    name: 'BrandDetail',
+    component: BrandDetail
+  },
+  {
+    path: '/category/:id',
+    name: 'CategoryDetail',
+    component: CategoryDetail
   }
 ]
 

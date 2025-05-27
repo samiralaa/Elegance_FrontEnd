@@ -280,7 +280,7 @@ export default {
           total_price: totalPrice
         };
 
-        const orderResponse = await axios.post('http://127.0.0.1:8000/api/orders', orderData, {
+        const orderResponse = await axios.post('http://elegance_backend.test/api/orders', orderData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'

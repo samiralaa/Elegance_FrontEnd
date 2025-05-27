@@ -28,173 +28,94 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' }">{{ $t('header.home')
-              }}</router-link>
+              <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' }">{{ $t('header.home') }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/product-listing" class="nav-link" :class="{ active: $route.path === '/product-listing' }">{{
-                $t('header.products') }}</router-link>
+              <router-link to="/product-listing" class="nav-link" :class="{ active: $route.path === '/product-listing' }">{{ $t('header.products') }}</router-link>
+            </li>
+            <li class="nav-item dropdown" @mouseenter="showBrandsDropdown = true" @mouseleave="showBrandsDropdown = false">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ $t('header.brands') }}
+              </a>
+              <ul class="dropdown-menu" :class="{ 'show': showBrandsDropdown }">
+                <li v-for="brand in brands" :key="brand.id">
+                  <router-link :to="`/brand/${brand.id}`" class="dropdown-item">
+                    <div class="d-flex align-items-center">
+                      <img :src="getBrandImage(brand)" :alt="currentLang === 'ar' ? brand.name_ar : brand.name_en" class="brand-image me-2">
+                      <span>{{ currentLang === 'ar' ? brand.name_ar : brand.name_en }}</span>
+                    </div>
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown" @mouseenter="showCategoriesDropdown = true" @mouseleave="showCategoriesDropdown = false">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ $t('header.categories') }}
+              </a>
+              <ul class="dropdown-menu" :class="{ 'show': showCategoriesDropdown }">
+                <li v-for="category in categories" :key="category.id">
+                  <router-link :to="`/category/${category.id}`" class="dropdown-item">
+                    <div class="d-flex align-items-center">
+                      <img :src="getCategoryImage(category)" :alt="currentLang === 'ar' ? category.name_ar : category.name_en" class="category-image me-2">
+                      <span>{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</span>
+                    </div>
+                  </router-link>
+                </li>
+              </ul>
             </li>
             <li class="nav-item">
-              <router-link to="/contact" class="nav-link" :class="{ active: $route.path === '/contact' }">{{
-                $t('header.contactUs') }}</router-link>
+              <router-link to="/contact" class="nav-link" :class="{ active: $route.path === '/contact' }">{{ $t('header.contactUs') }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/about" class="nav-link" :class="{ active: $route.path === '/about' }">{{
-                $t('header.aboutUs') }}</router-link>
+              <router-link to="/about" class="nav-link" :class="{ active: $route.path === '/about' }">{{ $t('header.aboutUs') }}</router-link>
             </li>
           </ul>
 
           <!-- Action Buttons -->
-          <button class="search-btn mx-2" @click="toggleSearchDialog">
-            <fa icon="search" />
-          </button>
+          <search-button @toggle="toggleSearchDialog" />
+          <cart-button @show="showCartModal" :count="cartCount" />
+          <favorite-button @show="fetchFavorites" :count="favoritesCount" />
 
-          <!-- 🛒 Cart Button -->
-          <a class="cart-btn mx-2" @click="showCartModal()">
-            <fa icon="shopping-cart" />
-            <span v-if="cartCount > 0" class="badge bg-danger">{{ cartCount }}</span>
-          </a>
-
-
-
-          <!-- ❤️ Favorite Button -->
-          <button class="favorite-btn mx-2" @click="fetchFavorites">
-            <fa icon="heart" />
-            <span v-if="favoritesCount > 0" class="favorite-count">{{ favoritesCount }}</span>
-          </button>
-
-          <!-- Favorites Modal -->
-          <div v-if="showFavoritesModal" class="favorites-modal">
-            <div class="modal-content">
-              <h4>My Favorites</h4>
-              <ul v-if="favorites.length">
-                <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
-                  <img :src="getFavoriteProductImage(favorite)" alt="Product Image" class="product-image" />
-                  <div class="product-info">
-                    <h5>{{ currentLang === 'ar' ? favorite.product.name_ar : favorite.product.name_en }}</h5>
-                    <p>{{ favorite.product.price }}</p>
-                  </div>
-                </li>
-              </ul>
-              <p v-else>No favorites yet</p>
-              <button class="btn btn-secondary mt-3" @click="showFavoritesModal = false">{{ $t('header.close')
-              }}</button>
-            </div>
-          </div>
-
-          <!-- 👤 Auth Controls -->
+          <!-- Auth Controls -->
           <template v-if="!isAuthenticated">
             <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
           </template>
           <template v-else>
-            <div class="profile-dropdown">
-              <button class="profile-btn" @click="toggleProfileMenu">
-                <span class="user-name me-2">{{ userName }}</span>
-                <fa icon="user" />
-              </button>
-              <div v-if="showProfileMenu" class="dropdown-menu show">
-                <router-link to="/profile" class="dropdown-item">{{ $t('header.profile') }}</router-link>
-                <router-link to="/orders/user" class="dropdown-item">{{ $t('header.orders') }}</router-link>
-                <button class="dropdown-item" @click="logout" :disabled="isLoggingOut">
-                  <span v-if="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                  {{ $t('header.logout') }}
-                </button>
-              </div>
-            </div>
+            <profile-dropdown 
+              :user-name="userName"
+              :is-logging-out="isLoggingOut"
+              @logout="logout"
+            />
           </template>
         </div>
       </div>
     </nav>
 
-    <!-- 🔍 Search Modal -->
-    <div v-if="showSearchDialog" class="custom-search-modal">
-      <div class="modal-content">
-        <input type="text" class="form-control search-input" placeholder="Search products..." v-model="searchQuery"
-          @input="filterProducts" />
-        <ul v-if="filteredProducts.length">
-          <li v-for="product in filteredProducts" :key="product.id" class="product-item">
+    <!-- Modals -->
+    <search-modal 
+      v-if="showSearchDialog"
+      :products="filteredProducts"
+      :search-query="searchQuery"
+      @close="toggleSearchDialog"
+      @search="filterProducts"
+    />
 
-            <img :src="getProductImage(product)" alt="Product Image" class="product-image" />
-            <div class="product-info">
-              <h5>{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
-              <p>{{ product.price }} {{ product.currency?.name_en }}</p>
-            </div>
-          </li>
-        </ul>
-        <p v-else-if="searchQuery">No results found.</p>
-        <button class="btn btn-secondary mt-3" @click="toggleSearchDialog">{{ $t('header.close') }}</button>
-      </div>
-    </div>
+    <cart-modal 
+      v-if="showCartModalFlag"
+      :cart-items="cartItems"
+      :total-value="totalCartValue"
+      :current-lang="currentLang"
+      @close="showCartModalFlag = false"
+      @checkout="checkout"
+      @update-quantity="updateQuantity"
+    />
 
-    <div v-if="showCartModalFlag" class="modal-overlay d-flex justify-content-center align-items-center">
-      <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
-
-        <!-- Close Button (Top Right) -->
-        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="showCartModalFlag = false"
-          aria-label="Close"></button>
-
-        <!-- Title -->
-        <h4 class="mb-3">🛒 {{ $t('Cart Items') }}</h4>
-
-        <!-- Cart List -->
-        <div class="cart-content overflow-auto" style="max-height: 60vh;">
-          <ul v-if="cartItems.length" class="list-unstyled">
-  <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2 gap-3">
-    <img :src="getProductImageToCart(item)" alt="Product Image" class="product-image" />
-
-    <div class="flex-grow-1">
-      <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
-
-      <!-- Quantity and Price -->
-      <div class="d-flex align-items-center gap-2">
-        <small class="text-muted">
-          {{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }} ×
-        </small>
-        <input
-          type="number"
-          v-model.number="item.quantity"
-          @change="updateQuantity(item)"
-          min="1"
-          class="form-control form-control-sm"
-          style="width: 70px;"
-        />
-      </div>
-    </div>
-  </li>
-</ul>
-
-          <div v-else class="text-center text-muted py-4">
-            🛍️ {{ $t('Cart is empty') }}
-          </div>
-        </div>
-
-        <!-- Total Price -->
-        <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
-          <span><strong>{{ $t('Total') }}:</strong></span>
-          <span>
-            {{ totalCartValue }} {{ currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en
-            }}
-          </span>
-        </div>
-
-        <!-- Footer -->
-        <div class="d-flex justify-content-between mt-3">
-          <button class="btn btn-outline-secondary" @click="showCartModalFlag = false">
-            {{ $t('Close') }}
-          </button>
-          <button class="btn btn-primary" @click="checkout">
-            {{ $t('Checkout') }}
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-
-
-
-
+    <favorites-modal 
+      v-if="showFavoritesModal"
+      :favorites="favorites"
+      :current-lang="currentLang"
+      @close="showFavoritesModal = false"
+    />
   </header>
 </template>
 
@@ -202,14 +123,27 @@
 import axios from 'axios';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
 import CurrencySwitcher from './CurrencySwitcher.vue';
+import SearchButton from './Header/SearchButton.vue';
+import CartButton from './Header/CartButton.vue';
+import FavoriteButton from './Header/FavoriteButton.vue';
+import ProfileDropdown from './Header/ProfileDropdown.vue';
+import SearchModal from './Header/SearchModal.vue';
+import CartModal from './Header/CartModal.vue';
+import FavoritesModal from './Header/FavoritesModal.vue';
 import { API_URL } from '@/store/index.js';
-
 
 export default {
   name: 'Header',
   components: {
     LanguageSwitcher,
-    CurrencySwitcher
+    CurrencySwitcher,
+    SearchButton,
+    CartButton,
+    FavoriteButton,
+    ProfileDropdown,
+    SearchModal,
+    CartModal,
+    FavoritesModal
   },
   data() {
     return {
@@ -217,18 +151,20 @@ export default {
       showSearchDialog: false,
       products: [],
       filteredProducts: [],
-      showProfileMenu: false,
-      isLoggingOut: false,
-      userProfile: null,
-      isLoadingProfile: false,
       favorites: [],
       favoritesCount: 0,
       showFavoritesModal: false,
       cartItems: [],
       cartCount: 0,
       showCartModalFlag: false,
-
-
+      userProfile: null,
+      isLoadingProfile: false,
+      isLoggingOut: false,
+      showProfileMenu: false,
+      brands: [],
+      categories: [],
+      showBrandsDropdown: false,
+      showCategoriesDropdown: false
     };
   },
   computed: {
@@ -248,13 +184,30 @@ export default {
     }
   },
   created() {
-
     if (this.isAuthenticated) {
       this.fetchUserProfile();
-      this.fetchCartItems(); // ⬅️ Fetch cart items on load
+      this.fetchCartItems();
     }
+    this.fetchBrands();
+    this.fetchCategories();
   },
   methods: {
+    async fetchBrands() {
+      try {
+        const response = await axios.get(`${API_URL}/api/website/brands/section`);
+        this.brands = response.data.data;
+      } catch (error) {
+        console.error('Error fetching brands:', error);
+      }
+    },
+    async fetchCategories() {
+      try {
+        const response = await axios.get(`${API_URL}/api/website/categories`);
+        this.categories = response.data.data;
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    },
     showCartModal() {
       if (!this.isAuthenticated) {
         this.$router.push('/Account/Login');
@@ -267,9 +220,7 @@ export default {
     getCartItems() {
       const token = localStorage.getItem('token'); // or wherever you store the token
 
-
-      axios.get('http://127.0.0.1:8000/api/cart-items', {
-
+      axios.get('http://elegance_backend.test/api/cart-items', {
         headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
       })
         .then(response => {
@@ -307,29 +258,29 @@ export default {
     },
 
     async updateQuantity(item) {
-    const originalQuantity = item.quantity;
-    try {
-      const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
-        quantity: item.quantity
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-        }
-      });
-      
-      this.totalCartValue = this.calculateTotal();
-      this.$toast.success('Cart updated successfully');
-    } catch (error) {
-      console.error('Failed to update quantity', error);
-      item.quantity = originalQuantity;
-      this.totalCartValue = this.calculateTotal();
-      this.$toast.error('Failed to update cart');
-    }
-  },
+      const originalQuantity = item.quantity;
+      try {
+        const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+          quantity: item.quantity
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        
+        this.totalCartValue = this.calculateTotal();
+        this.$toast.success('Cart updated successfully');
+      } catch (error) {
+        console.error('Failed to update quantity', error);
+        item.quantity = originalQuantity;
+        this.totalCartValue = this.calculateTotal();
+        this.$toast.error('Failed to update cart');
+      }
+    },
 
-  calculateTotal() {
-    return this.cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
-  },
+    calculateTotal() {
+      return this.cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    },
     async fetchUserProfile() {
       try {
         this.isLoadingProfile = true;
@@ -426,6 +377,18 @@ export default {
       } finally {
         this.isLoggingOut = false;
       }
+    },
+    getBrandImage(brand) {
+      if (brand.images && brand.images.length > 0 && brand.images[0].path) {
+        return `${API_URL}/${brand.images[0].path}`;
+      }
+      return '/placeholder-image.jpg';
+    },
+    getCategoryImage(category) {
+      if (category.images && category.images.length > 0 && category.images[0].path) {
+        return `${API_URL}/${category.images[0].path}`;
+      }
+      return '/placeholder-image.jpg';
     }
   }
 };
@@ -440,147 +403,61 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.profile-dropdown {
-  position: relative;
+.top-bar {
+  background: #8B6B3D;
+  color: #fff;
+  padding: 8px 0;
 }
 
-.profile-btn {
-  background: transparent;
-  border: none;
-  color: #8b6b3d;
-  cursor: pointer;
-  padding: 0.5em;
+.nav-link.active,
+.nav-link:hover {
+  color: #8B6B3D;
+}
+
+.nav-link {
+  color: #333;
+  font-weight: 500;
 }
 
 .dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
   min-width: 200px;
-  z-index: 1000;
-}
-
-.dropdown-menu.show {
-  display: block;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .dropdown-item {
+  padding: 0.5rem 1rem;
   display: block;
-  padding: 8px 16px;
-  color: #333;
-  text-decoration: none;
-  transition: background-color 0.2s;
+  width: 100%;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  transition: background-color 0.3s ease;
 }
 
 .dropdown-item:hover {
   background-color: #f8f9fa;
-  color: #8b6b3d;
 }
 
-.custom-search-modal {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  z-index: 9999;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  width: 80%;
-  max-width: 600px;
-  overflow-y: auto;
-  max-height: 80vh;
-}
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.search-input {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-.product-item {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
-}
-
-.product-image {
-  width: 80px;
-  height: 80px;
+.brand-image,
+.category-image {
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
-.product-info {
-  flex-grow: 1;
-}
-
-.product-info h5 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.product-info p {
-  margin: 5px 0 0;
-  color: #8b6b3d;
-}
-
-.search-btn,
-.cart-btn,
-.favorite-btn {
+.nav-item.dropdown {
   position: relative;
-  padding: 1em;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  isolation: isolate;
-  overflow: hidden;
-  color: #8b6b3d;
-  border-radius: 50%;
 }
 
-.search-btn::after,
-.cart-btn::after,
-.favorite-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
-
-.search-btn:hover,
-.cart-btn:hover,
-.favorite-btn:hover {
-  color: #fff;
-}
-
-.search-btn:hover::after,
-.cart-btn:hover::after,
-.favorite-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 .login-btn {
@@ -596,302 +473,24 @@ export default {
   color: #fff !important;
 }
 
-.nav-link.active,
-.nav-link:hover {
-  color: #8B6B3D;
-}
-
-.nav-link {
-  color: #333;
-  font-weight: 500;
-}
-
-.header {
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.top-bar {
-  background: #8B6B3D;
-  color: #fff;
-  padding: 8px 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.top-bar .container-fluid {
-  font-size: 0.9rem;
-}
-
-.top-bar-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.join-link {
-  color: #fff;
-  text-decoration: none;
-}
-
-[dir="rtl"] .top-bar-right {
-  flex-direction: row-reverse;
-}
-
-[dir="rtl"] .main-nav ul {
-  flex-direction: row-reverse;
-}
-
 @media (max-width: 768px) {
-  .main-nav {
-    display: none;
+  .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    width: 100%;
+    margin-top: 0.5rem;
+    border: none;
+    box-shadow: none;
   }
 
-  .header-actions {
-    gap: 0.5rem;
+  .dropdown-item {
+    padding: 0.75rem 1rem;
   }
 
-  .auth-btn {
-    padding: 0.5rem 1rem;
-  }
-}
-
-.custom-search-modal {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  z-index: 9999;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
-}
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.search-input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.search-btn,
-.cart-btn,
-.favorite-btn {
-  position: relative;
-  padding: 1em;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  isolation: isolate;
-  overflow: hidden;
-  color: #8b6b3d;
-  border-radius: 50%;
-}
-
-.search-btn::after,
-.cart-btn::after,
-.favorite-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
-
-.search-btn:hover,
-.cart-btn:hover,
-.favorite-btn:hover {
-  color: #fff;
-}
-
-.search-btn:hover::after,
-.cart-btn:hover::after,
-.favorite-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.favorite-count {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: #ff4757;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transform: scale(1);
-  transition: transform 0.2s ease;
-}
-
-.favorite-btn:hover .favorite-count {
-  transform: scale(1.1);
-}
-
-.favorites-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-.favorites-modal .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.modal-title {
-  color: #8b6b3d;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.favorite-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  transition: all 0.2s ease;
-}
-
-.favorite-item:hover {
-  background-color: #f8f9fa;
-  transform: translateX(5px);
-}
-
-.favorite-item img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-right: 15px;
-}
-
-.favorite-item .product-info h5 {
-  margin: 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.favorite-item .product-info p {
-  margin: 5px 0 0;
-  color: #8b6b3d;
-  font-weight: 500;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1050;
-  backdrop-filter: blur(2px);
-  padding: 1rem;
-}
-
-.cart-modal {
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow: hidden;
-  animation: fadeInUp 0.3s ease-in-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.cart-content {
-  scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
-}
-
-.cart-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.cart-content::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 5px;
-}
-@media (max-width: 576px ) {
-  .navbar .container-fluid,
-  .top-bar .container-fluid > div{
-    margin: 0 !important;
-  }
-  .navbar-brand img {
-    height: 40px;
-  }
-  .navbar-toggler-icon {
-    width: 1.2em;
-    height: 1.2em;
-  }
-  .navbar-toggler {
-    padding: 0.5em;
-  }
-  .navbar-nav .nav-link {
-    padding: 0.5em 1em;
-  }
-  .navbar-nav .nav-link.active {
-    background-color: #8b6b3d;
-    color: #fff;
+  .brand-image,
+  .category-image {
+    width: 30px;
+    height: 30px;
   }
 }
 </style>

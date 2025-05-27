@@ -5,21 +5,21 @@
     <h2 class="mb-4 fw-bold">My Orders</h2>
 
     <div class="orders-header">
-      <a class="order-stage" href="#">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('pending')">
         <h3>In Progress</h3>
-        <h3 class="num">4</h3>
+        <h3 class="num">{{ pendingOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('shipped')">
         <h3>On Shipping</h3>
-        <h3 class="num">4</h3>
+        <h3 class="num">{{ shippedOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('completed')">
         <h3>Delivered</h3>
-        <h3 class="num">2</h3>
+        <h3 class="num">{{ completedOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('cancelled')">
         <h3>Cancelled</h3>
-        <h3 class="num">1</h3>
+        <h3 class="num">{{ cancelledOrdersCount }}</h3>
       </a>
     </div>
 
@@ -27,9 +27,9 @@
       <div class="spinner-border" role="status"></div>
     </div>
 
-    <div v-else-if="orders.length > 0" class="row g-4">
+    <div v-else-if="filteredOrders.length > 0" class="row g-4">
       <div 
-        v-for="order in orders"
+        v-for="order in filteredOrders"
         :key="order.id"
         class="col-12 col-md-6"
       >
@@ -42,10 +42,9 @@
             <div class="text-end">
               <small class="text-muted">{{ formatDate(order.ordered_at) }}</small><br>
               <small class="text-muted">Estimated arrival:</small><br />
-              <span class="badge bg-primary">In Progress</span>
-              <span class="badge bg-info">On Deliver</span>
-              <span class="badge bg-success">Completed</span>
-              <span class="badge bg-danger">Canceled</span>
+              <span :class="['badge', getStatusBadgeClass(order.status)]">
+                {{ formatStatus(order.status) }}
+              </span>
             </div>
           </div>
 
@@ -93,7 +92,35 @@ export default {
     return {
       loading: true,
       orders: [],
+      currentFilter: null
     };
+  },
+  computed: {
+    pendingOrdersCount() {
+      return this.orders.filter(order => order.status === 'pending').length;
+    },
+    shippedOrdersCount() {
+      return this.orders.filter(order => order.status === 'shipped').length;
+    },
+    completedOrdersCount() {
+      return this.orders.filter(order => 
+        order.status === 'completed' || order.status === 'delivered'
+      ).length;
+    },
+    cancelledOrdersCount() {
+      return this.orders.filter(order => order.status === 'cancelled').length;
+    },
+    filteredOrders() {
+      if (!this.currentFilter) {
+        return this.orders;
+      }
+      return this.orders.filter(order => {
+        if (this.currentFilter === 'completed') {
+          return order.status === 'completed' || order.status === 'delivered';
+        }
+        return order.status === this.currentFilter;
+      });
+    }
   },
   methods: {
     async fetchOrders() {
@@ -105,7 +132,7 @@ export default {
           return;
         }
 
-        const res = await axios.get('http://127.0.0.1:8000/api/orders/user', {
+        const res = await axios.get('http://elegance_backend.test/api/orders/user', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -129,12 +156,45 @@ export default {
         this.loading = false;
       }
     },
+    filterOrders(status) {
+      this.currentFilter = this.currentFilter === status ? null : status;
+    },
     imageUrl(path) {
-      return `http://127.0.0.1:8000/storage/${path}`;
+      return `http://elegance_backend.test/storage/${path}`;
     },
     formatDate(datetime) {
-      return new Date(datetime).toLocaleString();
+      const date = new Date(datetime);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
     },
+    formatStatus(status) {
+      const statusMap = {
+        'pending': 'In Progress',
+        'processing': 'Processing',
+        'shipped': 'On Delivery',
+        'delivered': 'Delivered',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled'
+      };
+      return statusMap[status.toLowerCase()] || status;
+    },
+    getStatusBadgeClass(status) {
+      const statusClasses = {
+        'pending': 'bg-warning',
+        'processing': 'bg-info',
+        'shipped': 'bg-primary',
+        'delivered': 'bg-success',
+        'completed': 'bg-success',
+        'cancelled': 'bg-danger'
+      };
+      return statusClasses[status.toLowerCase()] || 'bg-secondary';
+    }
   },
   mounted() {
     this.fetchOrders();
@@ -203,6 +263,18 @@ export default {
   width: 100%;
   padding: 10px;
   transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.order-stage.active {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #8b6b3d;
+}
+
+.order-stage.active .num {
+  color: #fff;
+  background-color: #8b6b3d;
 }
 
 .num {
@@ -216,19 +288,6 @@ export default {
   font-size: 0.8rem !important;
 }
 
-.order-stage:active{
-  background-color: #fff;
-}
-.order-stage:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  color: #8b6b3d;
-}
-
-.order-stage:active .num {
-  color: #fff;
-  background-color: #8b6b3d;
-}
-
 .orders-header h3 {
   margin: 0;
   font-size: 1rem !important;
@@ -240,6 +299,13 @@ export default {
 }
 .order-card:hover {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 0.5em 0.8em;
+  font-weight: 500;
+  text-transform: capitalize;
 }
 
 </style>
