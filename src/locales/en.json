@@ -19,7 +19,9 @@
     "orders": "Orders",
     "confirmPassword": "Confirm Password",
     "fullName": "Full Name",
-    "fullNamePlaceholder": "Enter your full name"
+    "fullNamePlaceholder": "Enter your full name",
+    "brands": "Brands",
+    "categories": "Categories"
   },
 
   "Brands": {
