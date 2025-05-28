@@ -2,17 +2,38 @@
   <div class="review-cart">
     <div class="cart-items" v-if="cartItems.length">
       <div v-for="item in cartItems" :key="item.id" class="cart-item">
-        <img :src="item.image" :alt="item.name">
+        <img :src="getImageUrl(item)" :alt="item.name">
         <div class="item-details">
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.price }} x {{ item.quantity }}</p>
+          <h3>{{ item.product ? (currentLang === 'ar' ? item.product.name_ar : item.product.name_en) : 'Product not available' }}</h3>
+          <div class="price-quantity">
+            <span class="price">{{ item.price }} {{ item.currency?.name_en || 'AED' }}</span>
+            <div class="quantity-control">
+              <el-button 
+                size="small" 
+                @click="decreaseQuantity(item)"
+                :disabled="item.quantity <= 1"
+                class="qty-btn"
+              >
+                <fa icon="minus" />
+              </el-button>
+              <span class="qty-number">{{ item.quantity }}</span>
+              <el-button 
+                size="small" 
+                @click="increaseQuantity(item)"
+                :disabled="item.quantity >= 99"
+                class="qty-btn"
+              >
+                <fa icon="plus" />
+              </el-button>
+            </div>
+          </div>
         </div>
         <div class="item-total">
-          {{ calculateItemTotal(item) }}
+          {{ calculateItemTotal(item) }} {{ item.currency?.name_en || 'AED' }}
         </div>
       </div>
       <div class="cart-total">
-        <h3>Total: {{ cartTotal }}</h3>
+        <h3>{{ $t('Total') }}: {{ cartTotal }} {{ cartItems[0]?.currency?.name_en || 'AED' }}</h3>
       </div>
     </div>
 
@@ -23,7 +44,7 @@
           <div id="card-errors" role="alert" v-if="error">{{ error }}</div>
         </div>
         <button type="submit" :disabled="processing">
-          {{ processing ? 'Processing...' : 'Pay Now' }}
+          {{ processing ? $t('Processing') : $t('Pay Now') }}
         </button>
       </form>
     </div>
@@ -32,18 +53,50 @@
 
 <script>
 import { loadStripe } from '@stripe/stripe-js';
+import { ElNotification } from 'element-plus';
+import { useI18n } from 'vue-i18n';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+
+// Add icons to library
+library.add(faMinus, faPlus);
 
 export default {
   name: 'ReviewCart',
+  components: {
+    'fa': FontAwesomeIcon
+  },
+  props: {
+    cartItems: {
+      type: Array,
+      required: true
+    },
+    currentLang: {
+      type: String,
+      default: 'en'
+    }
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       stripe: null,
       card: null,
       error: null,
       processing: false,
-      cartItems: [],
       cartTotal: 0
     };
+  },
+  watch: {
+    cartItems: {
+      handler(newItems) {
+        this.calculateTotal();
+      },
+      deep: true
+    }
   },
   async mounted() {
     // Initialize Stripe
@@ -63,14 +116,14 @@ export default {
       }
     });
 
-    // Load cart items
-    this.loadCartItems();
+    this.calculateTotal();
   },
   methods: {
-    loadCartItems() {
-      // Implement cart items loading logic
-      this.cartItems = [];
-      this.calculateTotal();
+    getImageUrl(item) {
+      if (item.product?.images?.length) {
+        return `http://elegance_backend.test/storage/${item.product.images[0].path}`;
+      }
+      return '/placeholder-image.jpg';
     },
     calculateItemTotal(item) {
       return (item.price * item.quantity).toFixed(2);
@@ -79,6 +132,78 @@ export default {
       this.cartTotal = this.cartItems.reduce((total, item) => {
         return total + (item.price * item.quantity);
       }, 0).toFixed(2);
+    },
+    async increaseQuantity(item) {
+      try {
+        if (item.quantity < 99) {
+          const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            },
+            body: JSON.stringify({
+              quantity: item.quantity + 1
+            })
+          });
+
+          if (response.ok) {
+            item.quantity++;
+            this.calculateTotal();
+            this.$emit('update-quantity', item);
+          } else {
+            throw new Error('Failed to update quantity');
+          }
+        } else {
+          ElNotification({
+            title: this.t('warning'),
+            message: this.t('max_quantity_reached'),
+            type: 'warning',
+          });
+        }
+      } catch (error) {
+        ElNotification({
+          title: this.t('error'),
+          message: error.message || this.t('update_quantity_error'),
+          type: 'error',
+        });
+      }
+    },
+    async decreaseQuantity(item) {
+      try {
+        if (item.quantity > 1) {
+          const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            },
+            body: JSON.stringify({
+              quantity: item.quantity - 1
+            })
+          });
+
+          if (response.ok) {
+            item.quantity--;
+            this.calculateTotal();
+            this.$emit('update-quantity', item);
+          } else {
+            throw new Error('Failed to update quantity');
+          }
+        } else {
+          ElNotification({
+            title: this.t('warning'),
+            message: this.t('min_quantity_reached'),
+            type: 'warning',
+          });
+        }
+      } catch (error) {
+        ElNotification({
+          title: this.t('error'),
+          message: error.message || this.t('update_quantity_error'),
+          type: 'error',
+        });
+      }
     },
     async handleSubmit() {
       this.processing = true;
@@ -196,5 +321,74 @@ button {
 button:disabled {
   background-color: #879fff;
   cursor: not-allowed;
+}
+
+.price-quantity {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.price {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f8f8f8;
+  padding: 5px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  color: #a3852c;
+  transition: all 0.3s ease;
+}
+
+.qty-btn:hover:not(:disabled) {
+  background-color: #a3852c;
+  color: #fff;
+  border-color: #a3852c;
+}
+
+.qty-btn:disabled {
+  background-color: #f5f5f5;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.qty-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  min-width: 25px;
+  text-align: center;
+  padding: 0 5px;
+}
+
+@media (max-width: 768px) {
+  .price-quantity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .quantity-control {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

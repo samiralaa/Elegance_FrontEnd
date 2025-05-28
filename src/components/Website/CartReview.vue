@@ -46,19 +46,38 @@ export default {
   },
   emits: ['update-quantity', 'remove-item', 'next-step'],
   methods: {
-  async updateQuantity(item, change) {
-  try {
-    await this.$emit('update-quantity', item, change);
-  } catch (error) {
-    console.error(
-      'Error updating quantity:',
-      error?.response?.data?.error ||
-      error?.response?.data?.message ||
-      error?.message ||
-      error.toString()
-    );
-  }
-},
+    async updateQuantity(item, newQuantity) {
+      try {
+        const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          },
+          body: JSON.stringify({
+            quantity: newQuantity
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to update quantity');
+        }
+
+        // Update local state
+        item.quantity = newQuantity;
+        this.calculateTotal();
+        this.$emit('update-cart', this.cartItems);
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+        ElNotification({
+          title: this.t('error'),
+          message: error.message || this.t('update_quantity_error'),
+          type: 'error',
+        });
+      }
+    },
     removeItem(id) {
       this.$emit('remove-item', id);
     },

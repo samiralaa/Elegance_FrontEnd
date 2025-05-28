@@ -202,7 +202,7 @@ export default {
     },
     async fetchCategories() {
       try {
-        const response = await axios.get(`${API_URL}/api/website/categories`);
+        const response = await axios.get(`${API_URL}/api/website`);
         this.categories = response.data.data;
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -220,7 +220,7 @@ export default {
     getCartItems() {
       const token = localStorage.getItem('token'); // or wherever you store the token
 
-      axios.get('http://127.0.0.1:8000/api/cart-items', {
+      axios.get('http://elegance_backend.test/api/cart-items', {
         headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
       })
         .then(response => {

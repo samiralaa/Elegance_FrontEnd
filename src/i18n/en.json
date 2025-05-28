@@ -96,5 +96,10 @@
     "profile": "Profile",
     "help": "Help",
     "logout": "Logout"
-  }
+  },
+  "error": "Error",
+  "update_quantity_error": "Failed to update quantity. Please try again.",
+  "max_quantity_reached": "Maximum quantity reached",
+  "min_quantity_reached": "Minimum quantity reached",
+  "warning": "Warning"
 }

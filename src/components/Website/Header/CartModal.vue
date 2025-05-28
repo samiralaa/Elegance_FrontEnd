@@ -14,21 +14,32 @@
             <img :src="getProductImage(item)" alt="Product Image" class="product-image" />
 
             <div class="flex-grow-1">
-              <h6 class="mb-1">{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h6>
+              <h6 class="mb-1">{{ item.product ? (currentLang === 'ar' ? item.product.name_ar : item.product.name_en) : 'Product not available' }}</h6>
 
               <!-- Quantity and Price -->
               <div class="d-flex align-items-center gap-2">
                 <small class="text-muted">
-                  {{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }} ×
+                  {{ item.price }} {{ item.currency ? (currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en) : '' }} ×
                 </small>
-                <input
-                  type="number"
-                  v-model.number="item.quantity"
-                  @change="$emit('update-quantity', item)"
-                  min="1"
-                  class="form-control form-control-sm"
-                  style="width: 70px;"
-                />
+                <div class="quantity-control">
+                  <el-button 
+                    size="small" 
+                    @click="decreaseQuantity(item)"
+                    :disabled="item.quantity <= 1"
+                    class="qty-btn"
+                  >
+                    <fa icon="minus" />
+                  </el-button>
+                  <span class="qty-number">{{ item.quantity }}</span>
+                  <el-button 
+                    size="small" 
+                    @click="increaseQuantity(item)"
+                    :disabled="item.quantity >= 99"
+                    class="qty-btn"
+                  >
+                    <fa icon="plus" />
+                  </el-button>
+                </div>
               </div>
             </div>
           </li>
@@ -43,7 +54,7 @@
       <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
         <span><strong>{{ $t('Total') }}:</strong></span>
         <span>
-          {{ totalValue }} {{ currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en }}
+          {{ totalValue }} {{ cartItems[0]?.currency ? (currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en) : '' }}
         </span>
       </div>
 
@@ -62,6 +73,8 @@
 
 <script>
 import { API_URL } from '@/store/index.js';
+import { ElNotification } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'CartModal',
@@ -79,20 +92,40 @@ export default {
       default: 'en'
     }
   },
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   methods: {
     getProductImage(item) {
-      // Check if the item has a product and images array
-      if (item.product && item.product.images && item.product.images.length > 0) {
-        // If the image is a string (path), use it directly
-        if (typeof item.product.images[0] === 'string') {
-          return `${API_URL}/${item.product.images[0]}`;
-        }
-        // If the image is an object with path property
-        if (item.product.images[0].path) {
-          return `${API_URL}/${item.product.images[0].path}`;
-        }
+      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        return `${API_URL}/${item.images[0]}`;
       }
       return '/placeholder-image.jpg';
+    },
+    increaseQuantity(item) {
+      if (item.quantity < 99) {
+        item.quantity++;
+        this.$emit('update-quantity', item);
+      } else {
+        ElNotification({
+          title: this.t('warning'),
+          message: this.t('max_quantity_reached'),
+          type: 'warning',
+        });
+      }
+    },
+    decreaseQuantity(item) {
+      if (item.quantity > 1) {
+        item.quantity--;
+        this.$emit('update-quantity', item);
+      } else {
+        ElNotification({
+          title: this.t('warning'),
+          message: this.t('min_quantity_reached'),
+          type: 'warning',
+        });
+      }
     }
   },
   emits: ['close', 'checkout', 'update-quantity']
@@ -147,5 +180,60 @@ export default {
   height: 60px;
   object-fit: cover;
   border-radius: 4px;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f8f8f8;
+  padding: 5px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  color: #a3852c;
+  transition: all 0.3s ease;
+}
+
+.qty-btn:hover:not(:disabled) {
+  background-color: #a3852c;
+  color: #fff;
+  border-color: #a3852c;
+}
+
+.qty-btn:disabled {
+  background-color: #f5f5f5;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.qty-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  min-width: 30px;
+  text-align: center;
+  padding: 0 8px;
+}
+
+@media (max-width: 768px) {
+  .quantity-control {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .qty-number {
+    min-width: 25px;
+  }
 }
 </style> 

@@ -13,7 +13,7 @@ export default {
   methods: {
     async fetchOrders() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/orders/user', {
+        const response = await axios.get('http://elegance_backend.test/api/orders/user', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
@@ -35,7 +35,7 @@ export default {
     },
     getImageUrl(path) {
       if (!path) return '';
-      return `http://127.0.0.1:8000/storage/${path}`;
+      return `http://elegance_backend.test/storage/${path}`;
     },
     statusClass(status) {
       const classes = {
