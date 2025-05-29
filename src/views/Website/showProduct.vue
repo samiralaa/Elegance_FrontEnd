@@ -1,23 +1,27 @@
 <template>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <Header />
 
   <div class="product-show" :dir="direction">
     <div class="container">
       <el-row :gutter="20" class="product-container full-height-row flex-md-row flex-column-reverse">
-        <el-col  :xs="24" :sm="24" :md="12"  :lg="14">
+        <el-col :xs="24" :sm="24" :md="12" :lg="14">
           <div class="product-details">
             <h1 class="product-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h1>
             <div v-html="locale === 'ar' ? product.description_ar : product.description_en" class="description"></div>
 
             <div class="price-block">
-              <span class="price-old" v-if="product.old_price">{{ product.old_price }} {{ product.currency?.name_en }}</span>
+              <span class="price-old" v-if="product.old_price">{{ product.old_price }} {{ product.currency?.name_en
+                }}</span>
               <span class="price-new">{{ product.price }} {{ product.currency?.name_en }}</span>
             </div>
-            
+
+            <div class="product-actions">
+              <button @click="addToFavorites" class="action-btn love-btn" :class="{ 'active': isFavorite }">
+                <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></fa>
+              </button>
+            </div>
+
             <div class="weight" v-if="product.amounts && product.amounts.length > 0">
               <h1 class="weight-title">Select Weight</h1>
               <div class="reset" @click="resetActive">
@@ -26,130 +30,104 @@
               </div>
               <div class="weight-container">
                 <div class="row g-4">
-                  <div
-                    v-for="(amount, index) in product.amounts"
-                    :key="amount.id"
-                    class="weight-item"
-                    :class="{ active: activeIndex === index }"
-                    @click="setActive(index, amount)"
-                  >
-                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency?.name_en }}</p>
+                  <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
+                    :class="{ active: activeIndex === index }" @click="setActive(index, amount)">
+                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency?.name_en
+                      }}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="buttons-section">
-              <el-button class="add-to-cart" type="primary" size="large" round @click="addToCart"
-              >{{ $t('add_to_cart') }}</el-button
-              >
-  
+              <el-button class="add-to-cart" type="primary" size="large" round @click="addToCart">{{ $t('add_to_cart')
+                }}</el-button>
+
               <div class="quantity-section">
                 <div class="quantity-control">
-                  <el-button 
-                    size="small" 
-                    @click="decreaseQty"
-                    :disabled="quantity <= minQuantity"
-                    class="qty-btn"
-                  >
+                  <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
                   <span class="qty-number">{{ quantity }}</span>
-                  <el-button 
-                    size="small" 
-                    @click="increaseQty"
-                    :disabled="quantity >= maxQuantity"
-                    class="qty-btn"
-                  >
+                  <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />
                   </el-button>
                 </div>
               </div>
-              
-              <el-button id="favorite-btn" class="favorite-btn" circle size="large" @click="toggleFavorite">
-                  <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></fa>
-              </el-button>
             </div>
           </div>
         </el-col>
 
-        <el-col   :xs="24" :sm="24"  :md="12"  :lg="10"  class="image-col">
+        <el-col :xs="24" :sm="24" :md="12" :lg="10" class="image-col">
           <div class="image-wrapper" ref="main">
             <div v-for="(image, index) in product.images" :key="image.id" class="slide">
-              <img
-                :src="getImageUrl(selectedImage)"
-                class="main-image"
-                @error="handleImageError"
-              />
+              <img :src="getImageUrl(selectedImage)" class="main-image" @error="handleImageError" />
             </div>
 
             <div class="sale-badge" v-if="product.old_price">Sale</div>
           </div>
           <div class="slider-wrapper">
-            <button class="btn nav-button left" @click="scrollLeft" v-if="numberOfSlides > 1"><fa icon="arrow-left"></fa></button>
+            <button class="btn nav-button left" @click="scrollLeft" v-if="numberOfSlides > 1">
+              <fa icon="arrow-left"></fa>
+            </button>
             <div class="slider-container" :class="{ 'centered-slides': slidesToShow < 3 }">
               <div class="slider" ref="slider">
-                <div v-for="(image, index) in product.images" :key="image.id" class="slide" @click="setSelectedImage(image.path)">
-                  <img
-                    :src="getImageUrl(image.path)"
-                    :class="{ active: selectedImage === image.path }"
-                    @error="handleImageError"
-                  />
+                <div v-for="(image, index) in product.images" :key="image.id" class="slide"
+                  @click="setSelectedImage(image.path)">
+                  <img :src="getImageUrl(image.path)" :class="{ active: selectedImage === image.path }"
+                    @error="handleImageError" />
                 </div>
               </div>
             </div>
-            <button class="btn nav-button right" @click="scrollRight" v-if="numberOfSlides > 1"><fa icon="arrow-right"></fa></button>
+            <button class="btn nav-button right" @click="scrollRight" v-if="numberOfSlides > 1">
+              <fa icon="arrow-right"></fa>
+            </button>
           </div>
         </el-col>
 
-     
-    </el-row>
 
-    <!-- Children Products Section -->
-    <div v-if="product.children && product.children.length > 0" class="children-products-section">
-      <div class="section-header">
-        <h2 class="section-title">{{ t('related_products') }}</h2>
-      </div>
-      <div class="shop-container" :dir="direction">
-        <div class="container">
-          <section class="products-grid">
-            <div v-for="child in product.children" :key="child.id" class="product-card">
-              <div class="image-container">
-                <img 
-                  :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
-                  :alt="locale === 'ar' ? child.name_ar : child.name_en"
-                />
-                <div v-if="child.old_price" class="sale-badge">Sale</div>
-                <div class="product-actions">
-                  <button @click="navigateToProduct(child.id)" class="action-btn cart-btn">
-                    <fa icon="eye" />
-                  </button>
-                  <button @click="toggleChildFavorite(child)" class="action-btn love-btn">
-                    <fa :icon="isChildFavorite(child) ? 'fas fa-heart' : 'far fa-heart'" />
-                  </button>
+      </el-row>
+
+      <!-- Children Products Section -->
+      <div v-if="product.children && product.children.length > 0" class="children-products-section">
+        <div class="section-header">
+          <h2 class="section-title">{{ t('related_products') }}</h2>
+        </div>
+        <div class="shop-container" :dir="direction">
+          <div class="container">
+            <section class="products-grid">
+              <div v-for="child in product.children" :key="child.id" class="product-card">
+                <div class="image-container">
+                  <img :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
+                    :alt="locale === 'ar' ? child.name_ar : child.name_en" />
+                  <div v-if="child.old_price" class="sale-badge">Sale</div>
+                  <div class="product-actions">
+                    <button @click="navigateToProduct(child.id)" class="action-btn cart-btn">
+                      <fa icon="eye" />
+                    </button>
+                    <button @click="toggleChildFavorite(child)" class="action-btn love-btn">
+                      <fa :icon="isChildFavorite(child) ? 'fas fa-heart' : 'far fa-heart'" />
+                    </button>
+                  </div>
+                </div>
+                <div class="product-info">
+                  <h4>{{ locale === 'ar' ? child.name_ar : child.name_en }}</h4>
+                  <div class="prices">
+                    <span class="price-new">{{ child.price }} {{ child.currency?.name_en || 'AED' }}</span>
+                    <span v-if="child.old_price" class="price-old">{{ child.old_price }} {{ child.currency?.name_en ||
+                      'AED' }}</span>
+                  </div>
+                  <div class="addToCart-btn">
+                    <button @click.stop="addChildToCart(child)" :disabled="!child.is_available" class="btn">
+                      {{ t('add_to_cart') }}
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div class="product-info">
-                <h4>{{ locale === 'ar' ? child.name_ar : child.name_en }}</h4>
-                <div class="prices">
-                  <span class="price-new">{{ child.price }} {{ child.currency?.name_en || 'AED' }}</span>
-                  <span v-if="child.old_price" class="price-old">{{ child.old_price }} {{ child.currency?.name_en || 'AED' }}</span>
-                </div>
-                <div class="addToCart-btn">
-                  <button 
-                    @click.stop="addChildToCart(child)"
-                    :disabled="!child.is_available" 
-                    class="btn"
-                  >
-                    {{ t('add_to_cart') }}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -165,6 +143,7 @@ import $ from 'jquery';
 import 'slick-carousel/slick/slick.min.js';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useFavoritesStore } from '@/store/favorites';
 
 
 // Setup
@@ -172,6 +151,7 @@ const { locale, t } = useI18n();
 const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 const route = useRoute();
 const router = useRouter();
+const favoritesStore = useFavoritesStore();
 
 // Product data
 const product = ref({});
@@ -190,7 +170,6 @@ const slidesToShow = ref(3);
 const numberOfSlides = ref(3);
 
 // Add these new functions for child products
-const childFavorites = ref(new Set());
 
 // Helper methods
 const getImageUrl = (path) => {
@@ -227,6 +206,7 @@ const fetchProduct = async () => {
         // Initialize slider after data is loaded
         nextTick(() => {
           initializeSlick();
+          checkFavoriteStatus();
         });
       }
     }
@@ -280,6 +260,13 @@ const addChildToCart = async (childProduct) => {
       quantity: 1,
       price: childProduct.price,
     };
+    const userId = JSON.parse(localStorage.getItem('auth_user'))?.id;
+    console.log(userId)
+
+    if (userId) {
+      payload.user_id = userId;
+    }
+
     if (childProduct.amounts) {
       payload.amount_id = childProduct.amount_id;
     }
@@ -298,28 +285,11 @@ const addChildToCart = async (childProduct) => {
       });
     }
   } catch (error) {
+    console.error('Error adding child product to cart:', error);
     ElNotification({
       title: '❌',
       message: error.response?.data?.message || t('add_to_cart_error') || 'Login required to add to cart',
       type: 'error',
-    });
-  }
-};
-
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
-
-  if (isFavorite.value) {
-    ElNotification({
-      title: t('Added To Favorites'),
-      message: t('Product Added To Favorites'),
-      type: 'success',
-    });
-  } else {
-    ElNotification({
-      title: t('Removed From Favorites'),
-      message: t('Product Removed From Favorites'),
-      type: 'success',
     });
   }
 };
@@ -337,7 +307,7 @@ const setActive = (index, amount) => {
 const resetActive = () => {
   activeIndex.value = null;
   product.value.amount_id = null;
-  product.value.price = product.value.original_price;
+  product.value.original_price;
 };
 
 // Slick Carousel Logic
@@ -371,7 +341,7 @@ const initializeSlick = () => {
     focusOnSelect: true,
     rtl: locale.value === 'ar',
     asNavFor: $main,
-    afterChange: function(currentSlide) {
+    afterChange: function (currentSlide) {
       const currentImage = product.value.images[currentSlide];
       if (currentImage) {
         setSelectedImage(currentImage.path);
@@ -389,7 +359,7 @@ const initializeSlick = () => {
     centerMode: true,
     rtl: locale.value === 'ar',
     asNavFor: $slider,
-    afterChange: function(currentSlide) {
+    afterChange: function (currentSlide) {
       const currentImage = product.value.images[currentSlide];
       if (currentImage) {
         setSelectedImage(currentImage.path);
@@ -443,23 +413,42 @@ onBeforeUnmount(() => {
 
 // Add these new functions for child products
 const isChildFavorite = (child) => {
-  return childFavorites.value.has(child.id);
+  return favoritesStore.isInFavorites(child.id);
 };
 
-const toggleChildFavorite = (child) => {
-  if (childFavorites.value.has(child.id)) {
-    childFavorites.value.delete(child.id);
+const toggleChildFavorite = async (child) => {
+  try {
+    if (isChildFavorite(child)) {
+      // If already favorite, remove it
+      const favoriteItem = favoritesStore.favorites.find(fav => fav.product_id === child.id);
+      if (favoriteItem) {
+        await favoritesStore.removeFromFavorites(favoriteItem.id);
+        // No need to update local state, store handles it
+        ElNotification({
+          title: t('Removed From Favorites'),
+          message: t('Product Removed From Favorites'),
+          type: 'success',
+        });
+      }
+    } else {
+      // If not favorite, add it
+      const response = await favoritesStore.addToFavorites(child.id);
+      // Assuming store action returns a truthy value on success
+      if (response) {
+        // No need to update local state, store handles it
+        ElNotification({
+          title: t('Added To Favorites'),
+          message: t('Product Added To Favorites'),
+          type: 'success',
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error toggling child favorites:', error);
     ElNotification({
-      title: t('Removed From Favorites'),
-      message: t('Product Removed From Favorites'),
-      type: 'success',
-    });
-  } else {
-    childFavorites.value.add(child.id);
-    ElNotification({
-      title: t('Added To Favorites'),
-      message: t('Product Added To Favorites'),
-      type: 'success',
+      title: t('error'),
+      message: error.message || t('failed_to_toggle_favorite'),
+      type: 'error',
     });
   }
 };
@@ -486,6 +475,49 @@ const decreaseQty = () => {
       type: 'warning',
     });
   }
+};
+
+// Add to Favorites
+const addToFavorites = async () => {
+  try {
+    if (isFavorite.value) {
+      // If already favorite, remove it
+      const favoriteItem = favoritesStore.favorites.find(fav => fav.product_id === product.value.id);
+      if (favoriteItem) {
+        await favoritesStore.removeFromFavorites(favoriteItem.id);
+        isFavorite.value = false; // Update local state
+        ElNotification({
+          title: t('Removed From Favorites'),
+          message: t('Product Removed From Favorites'),
+          type: 'success',
+        });
+      }
+    } else {
+      // If not favorite, add it
+      const response = await favoritesStore.addToFavorites(product.value.id);
+      // Assuming store action returns a truthy value on success
+      if (response) {
+        isFavorite.value = true; // Update local state
+        ElNotification({
+          title: t('Added To Favorites'),
+          message: t('Product Added To Favorites'),
+          type: 'success',
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error toggling favorites:', error);
+    ElNotification({
+      title: t('error'),
+      message: error.message || t('failed_to_toggle_favorite'),
+      type: 'error',
+    });
+  }
+};
+
+// Check if product is in favorites
+const checkFavoriteStatus = () => {
+  isFavorite.value = favoritesStore.isInFavorites(product.value.id);
 };
 
 </script>
@@ -548,9 +580,9 @@ const decreaseQty = () => {
   margin: 20px 0;
 }
 
-.weight-container .row{
+.weight-container .row {
   display: flex;
-  gap: 0  30px;
+  gap: 0 30px;
 }
 
 .weight-title {
@@ -589,13 +621,14 @@ const decreaseQty = () => {
   position: relative;
 }
 
-.weight-item p{
+.weight-item p {
   margin: 0;
   padding: 0;
-  
+
   transition: all 0.3s ease;
 
 }
+
 .weight-item::after {
   content: "";
   position: absolute;
@@ -606,7 +639,8 @@ const decreaseQty = () => {
   bottom: -5px;
   transition: all 0.3s ease;
 }
-.weight-item.active:after{
+
+.weight-item.active:after {
   content: "";
   position: absolute;
   width: 100%;
@@ -862,6 +896,7 @@ const decreaseQty = () => {
 :deep(.slick-dots .slick-active button::before) {
   color: #a3852c;
 }
+
 :deep(.slick-track) {
   display: flex;
   align-items: center;
@@ -884,19 +919,22 @@ const decreaseQty = () => {
 }
 
 @media (min-width: 1024px) {
-  :deep(.product-container){
+  :deep(.product-container) {
     flex-direction: row !important;
   }
-  
+
 }
+
 @media (max-width: 1024px) {
-  :deep(.product-container){
+  :deep(.product-container) {
     flex-direction: column-reverse !important;
   }
+
   .weight-item {
     font-size: 16px;
 
   }
+
   :deep(.centered-slides.slider-container .slider .slide img) {
     max-height: 90px;
   }
@@ -928,7 +966,7 @@ const decreaseQty = () => {
     width: 100%;
     justify-content: center;
   }
-  
+
   .qty-number {
     width: 50px;
   }
@@ -939,6 +977,7 @@ const decreaseQty = () => {
     font-size: 12px;
 
   }
+
   :deep(.centered-slides.slider-container .slider .slide img) {
     max-height: 40px;
   }
@@ -1015,28 +1054,17 @@ const decreaseQty = () => {
 }
 
 .product-actions {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
-  justify-content: center;
   gap: 10px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
-}
-
-.product-card:hover .product-actions {
-  transform: translateY(0);
+  margin: 20px 0;
 }
 
 .action-btn {
+  background: white;
+  border: 1px solid #a3852c;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1044,19 +1072,33 @@ const decreaseQty = () => {
   transition: all 0.3s ease;
 }
 
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.love-btn {
+  color: #a3852c;
+}
+
+.love-btn.active {
+  background: #a3852c;
+  color: white;
+}
+
+.love-btn i {
+  font-size: 18px;
+}
+
+.love-btn.active .fa,
+.love-btn.active i {
+  color: #ff0000;
+  /* Red color for active heart */
+}
+
 .cart-btn {
   background: #fff;
   color: #a3852c;
   border: 1px solid #a3852c;
-}
-
-.love-btn {
-  background: #a3852c;
-  color: #fff;
-}
-
-.action-btn:hover {
-  transform: scale(1.1);
 }
 
 .product-info {
@@ -1107,10 +1149,9 @@ const decreaseQty = () => {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
   }
-  
+
   .section-title {
     font-size: 24px;
   }
 }
 </style>
-

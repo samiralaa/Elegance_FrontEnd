@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <div class="d-flex justify-content-between mx-5">
           <div class="top-bar-left">
-            <router-link to="/register" class="btn join-link">{{ $t('header.joinUs') }}</router-link>
+            <router-link v-if="!isAuthenticated" to="/register" class="btn join-link">{{ $t('header.joinUs') }}</router-link>
           </div>
           <div class="top-bar-right">
             <currency-switcher />
@@ -18,9 +18,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid mx-5">
-        <a class="navbar-brand" href="#">
+        <router-link to="/" class="navbar-brand">
           <img src="@/assets/images/EleganceLogo.png" alt="Logo" height="50" />
-        </a>
+        </router-link>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -115,6 +115,7 @@
       :favorites="favorites"
       :current-lang="currentLang"
       @close="showFavoritesModal = false"
+      @favorite-removed="handleFavoriteRemoved"
     />
   </header>
 </template>
@@ -131,6 +132,7 @@ import SearchModal from './Header/SearchModal.vue';
 import CartModal from './Header/CartModal.vue';
 import FavoritesModal from './Header/FavoritesModal.vue';
 import { API_URL } from '@/store/index.js';
+import { useFavoritesStore } from '@/store/favorites';
 
 export default {
   name: 'Header',
@@ -164,7 +166,8 @@ export default {
       brands: [],
       categories: [],
       showBrandsDropdown: false,
-      showCategoriesDropdown: false
+      showCategoriesDropdown: false,
+      isLoadingFavorites: false
     };
   },
   computed: {
@@ -174,7 +177,7 @@ export default {
       }, 0).toFixed(2);
     },
     isAuthenticated() {
-      return localStorage.getItem('auth_token');
+      return !!localStorage.getItem('auth_token');
     },
     userName() {
       return this.userProfile?.name || '';
@@ -190,6 +193,10 @@ export default {
     }
     this.fetchBrands();
     this.fetchCategories();
+  },
+  setup() {
+    const favoritesStore = useFavoritesStore();
+    return { favoritesStore };
   },
   methods: {
     async fetchBrands() {
@@ -328,18 +335,40 @@ export default {
         return;
       }
       try {
+        this.isLoadingFavorites = true;
         const response = await axios.get(`${API_URL}/api/favorites`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
-        this.favorites = response.data;
+        
+        // Handle the response data structure
+        if (response.data && Array.isArray(response.data)) {
+          this.favorites = response.data;
+        } else if (response.data && response.data.data) {
+          this.favorites = response.data.data;
+        } else {
+          this.favorites = [];
+        }
+        
         this.favoritesCount = this.favorites.length;
         this.showFavoritesModal = true;
       } catch (error) {
         console.error('Error fetching favorites:', error);
-        this.$toast.error('Failed to load favorites');
+        ElNotification({
+          title: this.t('error'),
+          message: this.t('fetch_favorites_error'),
+          type: 'error',
+        });
+        this.favorites = [];
+        this.favoritesCount = 0;
+      } finally {
+        this.isLoadingFavorites = false;
       }
+    },
+    handleFavoriteRemoved(favoriteId) {
+      this.favorites = this.favorites.filter(fav => fav.id !== favoriteId);
+      this.favoritesCount = this.favorites.length;
     },
     async fetchCartItems() {
       try {

@@ -37,9 +37,10 @@
               </button>
               <button
                 @click="addToFavorites(product)"
-                :class="['btn love-btn', { 'is-favorited': product.isFavorited }]"
+                class="btn love-btn"
+                :class="{ 'active': isInFavorites(product.id) }"
               >
-                <fa icon="heart" />
+                <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
               </button>
             </div>
           </div>
@@ -67,65 +68,80 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
+import { useFavoritesStore } from '@/store/favorites'
 
 const products = ref([]);
 const showSuccessDialog = ref(false);
 const successMessage = ref('');
+const favoritesStore = useFavoritesStore()
 
 const fetchProducts = async () => {
   try {
-
     const response = await axios.get('http://elegance_backend.test/api/website/products/section');
 
     if (response.data.status && response.data.data) {
       products.value = response.data.data;
+      // Fetch favorites after getting products
+      await fetchFavorites();
     }
   } catch (error) {
     console.error('Error fetching products:', error);
   }
 };
 
+const fetchFavorites = async () => {
+  try {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+      }
+    })
+    
+    if (response.data.status && response.data.data) {
+      // Update favorites store with the fetched favorites
+      favoritesStore.setFavorites(response.data.data)
+    }
+  } catch (error) {
+    console.error('Error fetching favorites:', error)
+  }
+}
+
 const getImageUrl = (path) => {
-
   return `http://elegance_backend.test/storage/${path}`;
-
 };
+
+const isInFavorites = (productId) => {
+  return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
+}
+
+const getFavoriteId = (productId) => {
+  const favorite = favoritesStore.favorites.find(favorite => favorite.product_id === productId)
+  return favorite ? favorite.id : null
+}
 
 const addToFavorites = async (product) => {
   try {
-    const response = await axios.post(
-
-      'http://elegance_backend.test/api/favorites',
-
-      { product_id: product.id },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-        },
+    // Check if product is already in favorites
+    if (isInFavorites(product.id)) {
+      // Get the favorite ID and remove from favorites
+      const favoriteId = getFavoriteId(product.id)
+      if (favoriteId) {
+        await favoritesStore.removeFromFavorites(favoriteId)
+        successMessage.value = 'Product removed from favorites'
       }
-    );
-
-    if (response.data.message) {
-      product.isFavorited = !product.isFavorited;
-      successMessage.value = response.data.message || 'Product added to favorites';
-      showSuccessDialog.value = true;
-      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`);
-    }
-  } catch (error) {
-    console.error('Error adding to favorites:', error);
-    if (error.response?.status === 401) {
-      ElNotification({
-        title: '⚠️ Unauthorized',
-        message: 'Please login to add to favorites.',
-        type: 'error',
-      });
     } else {
-      ElNotification({
-        title: '❌ Error',
-        message: error.response?.data?.message || 'Something went wrong.',
-        type: 'error',
-      });
+      // Add to favorites
+      const response = await favoritesStore.addToFavorites(product.id)
+      successMessage.value = response.message
     }
+    showSuccessDialog.value = true
+  } catch (error) {
+    console.error('Favorite error:', error)
+    ElNotification({
+      title: '⚠️',
+      message: error.response?.data?.message || 'Login required to favorite product',
+      type: 'error'
+    })
   }
 };
 
@@ -133,8 +149,13 @@ const addToCart = async (product) => {
   try {
     const userId = localStorage.getItem('user_id');
     const response = await axios.post(
-      'http://elegance_backend.test/api/cart',
-      { product_id: product.id, user_id: userId },
+      'http://elegance_backend.test/api/cart-items',
+      {
+        product_id: product.id,
+        quantity: 1,
+        price: product.price,
+        user_id: userId
+      },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -313,7 +334,25 @@ img{
   color: #fff;
 }
 
+.love-btn {
+  background-color: #8b6b3d;
+  color: #fff;
+  transition: all 0.2s ease-in-out;
+}
 
+.love-btn.active {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+.love-btn i {
+  font-size: 1.2rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.love-btn:hover {
+  scale: 1.2;
+}
 
 @media (max-width: 768px) {
   .card {

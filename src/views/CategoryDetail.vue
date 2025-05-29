@@ -1,6 +1,7 @@
 <template>
   <div>
     <Header />
+    
     <div class="category-detail">
       <!-- Category Header -->
       <div class="category-header">
@@ -47,9 +48,7 @@
                     <h3 class="product-name">{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h3>
                     <p class="product-description">{{ currentLang === 'ar' ? product.description_ar : product.description_en }}</p>
                     <div class="product-price">{{ product.price }} {{ $t('SAR') }}</div>
-                    <div class="product-status" :class="{ 'available': product.is_available }">
-                      {{ product.is_available ? $t('Available') : $t('Not Available') }}
-                    </div>
+                  
                   </router-link>
                   <div class="product-actions-bottom">
                     <button 

@@ -1,20 +1,39 @@
 <template>
-  <button class="favorite-btn mx-2" @click="$emit('show')">
+  <button class="favorite-btn mx-2" @click="handleClick">
     <fa icon="heart" />
-    <span v-if="count > 0" class="favorite-count">{{ count }}</span>
+    <span v-if="favoritesStore.count > 0" class="favorite-count">{{ favoritesStore.count }}</span>
   </button>
 </template>
 
 <script>
+import { useFavoritesStore } from '@/store/favorites';
+import { onMounted } from 'vue';
+
 export default {
   name: 'FavoriteButton',
-  props: {
-    count: {
-      type: Number,
-      default: 0
-    }
-  },
-  emits: ['show']
+  emits: ['show'],
+  setup(props, { emit }) {
+    const favoritesStore = useFavoritesStore();
+
+    const handleClick = () => {
+      if (!localStorage.getItem('auth_token')) {
+        // Redirect to login if not authenticated
+        window.location.href = '/Account/Login';
+        return;
+      }
+      emit('show');
+    };
+
+    // Fetch favorites count when component is mounted
+    onMounted(async () => {
+      await favoritesStore.fetchFavorites();
+    });
+
+    return {
+      favoritesStore,
+      handleClick
+    };
+  }
 }
 </script>
 

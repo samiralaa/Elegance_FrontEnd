@@ -2,7 +2,7 @@
   <div class="products-section">
     <div class="container">
       <div class="title mt-5">
-        <fa class="fa-icon" :icon="['fas', 'shopping-basket']"></fa>
+        <fa class="fa-icon" :icon="['fas', 'shopping-basket']" />
         <h2>{{ $t('LatestProducts.LatestProducts') }}</h2>
       </div>
       <div class="row justify-content-center align-items-center">
@@ -15,7 +15,7 @@
           :lg="6"
           class="d-flex justify-content-center"
         >
-          <div class="card">
+          <div class="card h-100">
             <div class="img-container">
               <router-link :to="`/read/products/${product.id}`">
                 <img
@@ -28,15 +28,20 @@
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
-              <div class="card-btns">
-                <router-link :to="`/read/products/${product.id}`"  class="eye-btn btn">
+              <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
+              <div class="card-btns mt-3">
+                <router-link :to="`/read/products/${product.id}`" class="eye-btn btn mx-1">
                   <fa icon="eye" />
                 </router-link>
-                <button @click="addToCart(product)" class="cart-btn btn">
+                <button @click="addToCart(product)" class="cart-btn btn mx-1">
                   {{ $t('home.add-to-cart') }}
                 </button>
-                <button @click="addToFavorites(product)" class="love-btn btn">
-                  <fa icon="heart" />
+                <button
+                  @click="addToFavorites(product)"
+                  class="love-btn btn mx-1"
+                  :class="{ active: isInFavorites(product.id) }"
+                >
+                  <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
                 </button>
               </div>
             </div>
@@ -44,297 +49,219 @@
         </el-col>
       </div>
     </div>
-  </div>
 
-  <!-- Success Dialog -->
-  <el-dialog
-    v-model="showSuccessDialog"
-    title="🎉 Success"
-    width="30%"
-    :before-close="() => (showSuccessDialog = false)"
-    :center="true"
-    :close-on-click-modal="false"
-    :show-close="false"
-  >
-    <span>{{ successMessage }}</span>
-    <template #footer>
-      <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
-    </template>
-  </el-dialog>
+    <!-- Success Dialog -->
+    <el-dialog
+      v-model="showSuccessDialog"
+      title="🎉 Success"
+      width="30%"
+      :before-close="() => (showSuccessDialog = false)"
+      :center="true"
+      :close-on-click-modal="false"
+      :show-close="false"
+    >
+      <span>{{ successMessage }}</span>
+      <template #footer>
+        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { ElNotification } from 'element-plus';
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { ElNotification } from 'element-plus'
+import { useFavoritesStore } from '@/store/favorites'
+import { storeToRefs } from 'pinia'
 
-const products = ref([]);
-const showSuccessDialog = ref(false);
-const successMessage = ref('');
+const products = ref([])
+const showSuccessDialog = ref(false)
+const successMessage = ref('')
+const favoritesStore = useFavoritesStore()
 
-// Fetch products
-const fetchLatestProducts = async () => {
+const fetchProducts = async () => {
   try {
-
-    const response = await axios.get('http://elegance_backend.test/api/website/latest/products');
-
-    if (response.data.status) {
-      products.value = response.data.data;
+    const response = await axios.get('http://elegance_backend.test/api/website/products/section', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    })
+    if (response.data.status && response.data.data) {
+      products.value = response.data.data
+      await fetchFavorites()
     }
   } catch (error) {
-    console.error('Error fetching latest products:', error);
+    console.error('Error fetching products:', error)
   }
-};
+}
 
-// Get image URL
-const getImageUrl = (path) => {
+const fetchFavorites = async () => {
+  try {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+      }
+    })
+    if (response.data.status && response.data.data) {
+      favoritesStore.setFavorites(response.data.data)
+    }
+  } catch (error) {
+    console.error('Error fetching favorites:', error)
+  }
+}
 
-  return `http://elegance_backend.test/storage/${path}`;
+const getImageUrl = (path) => `http://elegance_backend.test/storage/${path}`
 
-};
+const isInFavorites = (productId) => {
+  return favoritesStore.favorites.some(fav => fav.product_id === productId)
+}
 
-// Add to favorites
+const getFavoriteId = (productId) => {
+  return favoritesStore.favorites.find(fav => fav.product_id === productId)?.id
+}
+
 const addToFavorites = async (product) => {
   try {
-    const response = await axios.post(
-
-      'http://elegance_backend.test/api/favorites',
-
-      { product_id: product.id },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-        },
+    if (isInFavorites(product.id)) {
+      const favoriteId = getFavoriteId(product.id)
+      if (favoriteId) {
+        await favoritesStore.removeFromFavorites(favoriteId)
+        successMessage.value = 'Product removed from favorites'
       }
-    );
-
-    if (response.data.message) {
-      product.isFavorited = !product.isFavorited;
-      successMessage.value = response.data.message || 'Product added to favorites';
-      showSuccessDialog.value = true;
-      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`);
-    }
-  } catch (error) {
-    console.error('Error adding to favorites:', error);
-    if (error.response?.status === 401) {
-      ElNotification({
-        title: '⚠️ Unauthorized',
-        message: 'Please login to add to favorites.',
-        type: 'error',
-      });
     } else {
-      ElNotification({
-        title: '❌ Error',
-        message: error.response?.data?.message || 'Something went wrong.',
-        type: 'error',
-      });
+      const response = await favoritesStore.addToFavorites(product.id)
+      successMessage.value = response.message
     }
+    showSuccessDialog.value = true
+  } catch (error) {
+    console.error('Favorite error:', error)
+    ElNotification({
+      title: '⚠️',
+      message: error.response?.data?.message || 'Login required to favorite product',
+      type: 'error'
+    })
   }
-};
+}
 
-// Add to cart
 const addToCart = async (product) => {
   try {
     const payload = {
       product_id: product.id,
       quantity: 1,
       price: product.price,
-    };
+    }
 
     if (product.amounts) {
-      console.log('Amounts:', product.amounts);
-      payload.amount_id = product.amount_id;
+      payload.amount_id = product.amount_id
     }
 
     const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
-    });
+    })
 
     if (response.data.message) {
-      successMessage.value = response.data.message;
-      showSuccessDialog.value = true;
+      successMessage.value = response.data.message
+      showSuccessDialog.value = true
     }
   } catch (error) {
-    console.error('Cart error:', error);
+    console.error('Cart error:', error)
     ElNotification({
       title: '❌',
       message: error.response?.data?.message || 'Login required to add to cart',
-      type: 'error',
-    });
+      type: 'error'
+    })
   }
-};
+}
 
-// Load products on component mount
-onMounted(fetchLatestProducts);
+onMounted(() => {
+  fetchProducts()
+})
 </script>
+
 <style scoped>
-/* .latest-products {
-  padding: 20px;
-}
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  color: #8b6b3d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.product-card {
-  transition: box-shadow 0.3s ease;
+
+.fa-icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
 }
-.image-wrapper {
+
+.card {
+  padding: 0;
+  border: none;
+  box-shadow: 0 10px 20px #2334de1a;
+  transition: all 0.2s ease-in;
+  z-index: 1;
+  width: 100%;
+}
+
+.img-container {
+  overflow: hidden;
+  border-radius: 0.5rem;
   position: relative;
 }
-.image-wrapper{
-  height: 220px !important;
-  width: 220px !important;
+
+.card:hover img {
+  scale: 1.1;
 }
 
-.product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 50%;
+.card:hover .card-btns {
+  transform: translateY(0px);
 }
-.product-info {
-  text-align: center;
-  margin-top: 10px;
-}
-.product-title {
-  color: inherit;
-  text-decoration: none;
-}
-.product-title:hover {
-  color: #409EFF;
-}
-.category {
-  font-size: 13px;
-  color: #999;
-}
-.action-icons {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+
+.card-btns {
   display: flex;
-  gap: 10px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
-.product-card:hover .action-icons {
-  opacity: 1;
+
+.love-btn,
+.eye-btn {
+  background-color: #8b6b3d;
+  color: #fff;
+  transition: all 0.2s ease-in-out;
 }
-.action-icons > * {
-  background-color: white;
-  padding: 6px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  transition: transform 0.2s;
+
+.love-btn.active {
+  background-color: #ff0000;
+  color: #fff;
 }
-.action-icons > *:hover {
-  transform: scale(1.2);
-} */
 
-/* new */
-  .title{
-    margin-bottom: 15px;
-    color: #8b6b3d;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.love-btn:hover {
+  scale: 1.2;
+}
 
-  .fa-icon{
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-  }
-  .card{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    border: none;
-    box-shadow: none !important;
-    transition: all 0.2s ease-in;
-    z-index: 1;
-    width: 100%;
-    max-width: 250px;
-  }
-  .img-container{
-    display: flex;
-    overflow: hidden;
-    border-radius: 50%;
-    position: relative;
-    width: 100%;
-    max-width: 220px;
-    height: auto;
-    aspect-ratio: 1/1;
-  }
-  .card:hover{
-    color: #fff;
-  }
-  img{
-    z-index: 0;
-    transition: all 0.2s ease-in-out;
+.cart-btn {
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
 
-  }
-  .card:hover img{
-    scale: 1.1;
-  }
-  .card::after{
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    height: 105%;
-    width: 105%;
-    background-color: #8b6b3d;
-    border-radius: 8px;
-    transform: translate(-50%, -50%) scale(0);
-    z-index: -1;
-    transition: transform 0.3s ease;
-  }
-  .card:hover::after {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  .card-btns{
-    display: flex;
-    width: fit-content;
-    z-index: 1;
-    justify-content: center;
-    margin:0;
-    transition: all 0.5s ease-in-out;
-    gap: 10px;
-  }
-  .love-btn,
-  .eye-btn{
-    background-color: #8b6b3d;
-    color: #fff;
-    transition: all 0.2s ease-in-out;
-  }
-  .cart-btn{
-    background-color: #fff;
-    transition: all 0.2s ease-in-out;
-    
-  }
-  .cart-btn:hover{
-    color: #333;
-  }
-  .cart-btn:hover,
-  .love-btn:hover,
-  .eye-btn:hover{
-    scale: 1.1;
-  }
-  .card:hover .love-btn,
-  .card:hover .eye-btn{
-    background-color: #fff;
-    color: #333;
-  }
-  .card-title{
-    color: #8b6b3d;
-    text-align: center;
-    transition: all 0.2s ease-in;
-  }
-  .card:hover .card-title{
-    color: #fff;
-  }
+.cart-btn:hover {
+  color: #333;
+}
+
+.cart-btn:hover,
+.eye-btn:hover {
+  scale: 1.2;
+}
+
+.card-title {
+  color: #8b6b3d;
+  transition: all 0.2s ease-in;
+  text-align: center;
+}
+
+.card-text {
+  text-align: center;
+}
 </style>
