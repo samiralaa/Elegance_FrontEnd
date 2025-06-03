@@ -5,13 +5,13 @@
       <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="$emit('close')" aria-label="Close"></button>
 
       <!-- Title -->
-      <h4 class="mb-3">❤️ {{ $t('Favorites') }}</h4>
+      <h4 class="mb-3">❤️ {{ $t('favorites.title') }}</h4>
 
       <!-- Favorites List -->
       <div class="favorites-content overflow-auto" style="max-height: 60vh;">
         <div v-if="isLoading" class="text-center py-4">
           <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{{ $t('favorites.loading') }}</span>
           </div>
         </div>
         <ul v-else-if="favorites && favorites.length" class="list-unstyled">
@@ -53,14 +53,14 @@
         </ul>
 
         <div v-else class="text-center text-muted py-4">
-          ❤️ {{ $t('No favorites yet') }}
+          ❤️ {{ $t('favorites.emptyFavoritesMessage') }}
         </div>
       </div>
 
       <!-- Footer -->
       <div class="d-flex justify-content-end mt-3">
         <button class="btn btn-outline-secondary" @click="$emit('close')">
-          {{ $t('Close') }}
+          {{ $t('favorites.close') }}
         </button>
       </div>
     </div>

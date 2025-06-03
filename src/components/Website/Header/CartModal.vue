@@ -5,7 +5,7 @@
       <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="$emit('close')" aria-label="Close"></button>
 
       <!-- Title -->
-      <h4 class="mb-3">🛒 {{ $t('Cart Items') }}</h4>
+      <h4 class="mb-3">🛒 {{ $t('cart.title') }}</h4>
 
       <!-- Cart List -->
       <div class="cart-content overflow-auto" style="max-height: 60vh;">
@@ -46,13 +46,13 @@
         </ul>
 
         <div v-else class="text-center text-muted py-4">
-          🛍️ {{ $t('Cart is empty') }}
+          🛍️ {{ $t('cart.emptyCartMessage') }}
         </div>
       </div>
 
       <!-- Total Price -->
       <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
-        <span><strong>{{ $t('Total') }}:</strong></span>
+        <span><strong>{{ $t('cart.total') }}:</strong></span>
         <span>
           {{ totalValue }} {{ cartItems[0]?.currency ? (currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en) : '' }}
         </span>
@@ -61,10 +61,10 @@
       <!-- Footer -->
       <div class="d-flex justify-content-between mt-3">
         <button class="btn btn-outline-secondary" @click="$emit('close')">
-          {{ $t('Close') }}
+          {{ $t('cart.close') }}
         </button>
         <button class="btn btn-primary" @click="$emit('checkout')">
-          {{ $t('Checkout') }}
+          {{ $t('cart.checkout') }}
         </button>
       </div>
     </div>

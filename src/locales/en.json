@@ -21,7 +21,8 @@
     "fullName": "Full Name",
     "fullNamePlaceholder": "Enter your full name",
     "brands": "Brands",
-    "categories": "Categories"
+    "categories": "Categories",
+    "searchPlaceholder": "Search for products..."
   },
 
   "Brands": {
@@ -407,6 +408,50 @@
     "categories": "Categories",
     "addToCart": "Add to Cart"
   },
+
+  "cart": {
+    "title": "Shopping Cart",
+    "emptyCart": "Your cart is empty",
+    "continueShopping": "Continue Shopping",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "checkout": "Checkout",
+    "close": "Close",
+    "remove": "Remove",
+    "updateCart": "Update Cart",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "grandTotal": "Grand Total",
+    "emptyCartMessage": "Your cart is currently empty. Start adding products to your cart."
+  },
+
+  "favorites": {
+    "title": "Favorites",
+    "continueShopping": "Continue Shopping",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "remove": "Remove",
+    "updateFavorites": "Update Favorites",
+    "emptyFavoritesMessage": "Your favorites list is currently empty. Start adding products to your favorites.",
+    "close": "Close",
+    "loading": "Loading..."
+  },
+
+  "profile": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "role": "Role",
+    "emailVerified": "Email Verified",
+    "memberSince": "Member Since",
+    "loading": "Loading..."
+  },
+
 
   "Nobrandsfound" : "No brands found"
 }

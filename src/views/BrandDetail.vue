@@ -176,7 +176,7 @@ export default {
     async addToFavorites(product) {
       try {
         const response = await axios.post(
-          'http://elegance_backend.test/api/favorites',
+          'http://127.0.0.1:8000/api/favorites',
           { product_id: product.id },
           {
             headers: {
@@ -223,7 +223,7 @@ export default {
         }
 
         const response = await axios.post(
-          'http://elegance_backend.test/api/cart-items',
+          'http://127.0.0.1:8000/api/cart-items',
           payload,
           {
             headers: {

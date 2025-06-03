@@ -74,7 +74,7 @@ const favoritesStore = useFavoritesStore()
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('http://elegance_backend.test/api/website/products/section', {
+    const response = await axios.get('http://127.0.0.1:8000/api/website/products/section', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -92,7 +92,7 @@ const fetchProducts = async () => {
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('http://elegance_backend.test/api/favorites', {
+    const response = await axios.get('http://127.0.0.1:8000/api/favorites', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
@@ -107,7 +107,7 @@ const fetchFavorites = async () => {
   }
 }
 
-const getImageUrl = (path) => `http://elegance_backend.test/storage/${path}`
+const getImageUrl = (path) => `http://127.0.0.1:8000/storage/${path}`
 
 const isInFavorites = (productId) => {
   return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
@@ -157,7 +157,7 @@ const addToCart = async (product) => {
     }
 
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
 
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,

@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <div v-if="loading">Loading...</div>
+  <div v-if="loading">{{ $t('profile.loading') }}</div>
   <div v-else-if="error">{{ error }}</div>
   <div v-else class="profile-container">
     <div class="profile-header">
@@ -10,12 +10,12 @@
       </div>
     </div>
     <div class="profile-details">
-      <p><strong>Name:</strong> {{ user.name }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Role:</strong> {{ user.role }}</p>
-      <p><strong>Phone:</strong> {{ user.phone }}</p>
-      <p><strong>Email Verified:</strong> {{ formatDate(user.email_verified_at) }}</p>
-      <p><strong>Member Since:</strong> {{ formatDate(user.created_at) }}</p>
+      <p><strong>{{ $t('profile.name') }}:</strong> {{ user.name }}</p>
+      <p><strong>{{ $t('profile.email') }}:</strong> {{ user.email }}</p>
+      <p><strong>{{ $t('profile.role') }}:</strong> {{ user.role }}</p>
+      <p><strong>{{ $t('profile.phone') }}:</strong> {{ user.phone }}</p>
+      <p><strong>{{ $t('profile.emailVerified') }}:</strong> {{ formatDate(user.email_verified_at) }}</p>
+      <p><strong>{{ $t('profile.memberSince') }}:</strong> {{ formatDate(user.created_at) }}</p>
     </div>
   </div>
 </template>
