@@ -22,7 +22,8 @@
     "orders": "الطلبات",
     "confirmPassword": "تأكيد كلمة المرور",
     "brands": "العلامات التجارية",
-    "categories": "الفئات"
+    "categories": "الفئات",
+    "searchPlaceholder": "ابحث عن المنتجات..."
   },
 
   "loginPage": {
@@ -404,6 +405,47 @@
     "price": "السعر",
     "categories": "الفئات",
     "addToCart": "أضف إلى السلة"
+  },
+
+  "cart": {
+    "title": "عربة التسوق",
+    "emptyCart": "عربة التسوق فارغة",
+    "item": "العنصر",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "total": "المجموع",
+    "checkout": "الدفع",
+    "close": "إغلاق",
+    "continueShopping": "متابعة التسوق",
+    "removeItem": "إزالة العنصر",
+    "updateQuantity": "تحديث الكمية",
+    "subtotal": "المجموع الفرعي",
+    "emptyCartMessage": "عربة التسوق الخاصة بك فارغة. ابدأ في إضافة المنتجات!"
+  },
+
+  "favorites": {
+    "title": "المفضلة",
+    "continueShopping": "متابعة التسوق",
+    "item": "العنصر",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "total": "المجموع",
+    "addToCart": "أضف إلى السلة",
+    "removeFromFavorites": "إزالة من المفضلة",
+    "emptyFavoritesMessage": "قائمة المفضلة فارغة. أضف بعض المنتجات لتظهر هنا!",
+    "close": "إغلاق",
+    "loading": "جاري التحميل..."
+  },
+
+  "profile": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "role": "الدور",
+    "emailVerified": "التحقق من الايميل",
+    "memberSince": "عضو منذ",
+    "loading": "جاري التحميل..."
   },
 
   "Nobrandsfound": "لا توجد علامات تجارية"

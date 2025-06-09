@@ -89,7 +89,7 @@ const { t } = useI18n()
 const products = ref([])
 const loading = ref(false)
 
-const BASE_URL = 'http://elegance_backend.test'
+const BASE_URL = 'http://127.0.0.1:8000'
 
 const API_URL = `${BASE_URL}/api/products`
 

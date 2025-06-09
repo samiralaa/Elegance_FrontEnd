@@ -176,7 +176,7 @@ const numberOfSlides = ref(3);
 // Helper methods
 const getImageUrl = (path) => {
   if (!path) return placeholder;
-  return `http://elegance_backend.test/storage/${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
 };
 
 const handleImageError = (e) => {
@@ -198,7 +198,7 @@ const setSelectedImage = (path) => {
 const fetchProduct = async () => {
   try {
     const res = await axios.get(
-      `http://elegance_backend.test/api/website/show/products/${route.params.id}`
+      `http://127.0.0.1:8000/api/website/show/products/${route.params.id}`
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -227,7 +227,17 @@ const addToCart = async () => {
       product.value.amount_id
     );
 
+
     if (success) {
+
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    });
+
+    if (response.data.message) {
+
       ElNotification({
         title: t('success'),
         message: t('Product added to cart successfully'),
@@ -256,7 +266,25 @@ const addChildToCart = async (childProduct) => {
       childProduct.amount_id
     );
 
+
     if (success) {
+
+    if (userId) {
+      payload.user_id = userId;
+    }
+
+    if (childProduct.amounts) {
+      payload.amount_id = childProduct.amount_id;
+    }
+
+    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    });
+
+    if (response.data.message) {
+
       ElNotification({
         title: t('success'),
         message: t('Product added to cart successfully'),
@@ -371,7 +399,7 @@ const updateSelectedImage = () => {
   const $slider = $(slider.value);
   if ($slider.length && $slider.hasClass('slick-initialized')) {
     const currentSlide = $slider.find('.slick-current');
-    const imagePath = currentSlide.find('img').attr('src').replace('http://elegance_backend.test/storage/', '');
+    const imagePath = currentSlide.find('img').attr('src').replace('http://127.0.0.1:8000/storage/', '');
     setSelectedImage(imagePath);
   }
 };

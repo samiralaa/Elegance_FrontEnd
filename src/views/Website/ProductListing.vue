@@ -151,13 +151,13 @@
   }
 
   // Helpers
-  const getImageUrl = (path) => `http://elegance_backend.test/storage/${path}`
+  const getImageUrl = (path) => `http://127.0.0.1:8000/storage/${path}`
 
   // API Actions
   const addToFavorites = async (product) => {
     try {
       const response = await axios.post(
-        'http://elegance_backend.test/api/favorites',
+        'http://127.0.0.1:8000/api/favorites',
         { product_id: product.id },
         {
           headers: {
@@ -182,7 +182,7 @@
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://elegance_backend.test/api/website')
+      const res = await axios.get('http://127.0.0.1:8000/api/website')
       categories.value = res.data.data || []
     } catch (err) {
       console.error('Error loading categories', err)
@@ -191,7 +191,7 @@
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://elegance_backend.test/api/website/products/section')
+      const res = await axios.get('http://127.0.0.1:8000/api/website/products/section')
       products.value = res.data.data || []
     } catch (err) {
       console.error('Error loading products', err)
