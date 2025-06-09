@@ -144,6 +144,7 @@ import 'slick-carousel/slick/slick.min.js';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useFavoritesStore } from '@/store/favorites';
+import { useCartStore } from '@/store/modules/cart';
 
 
 // Setup
@@ -152,6 +153,7 @@ const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 const route = useRoute();
 const router = useRouter();
 const favoritesStore = useFavoritesStore();
+const cartStore = useCartStore();
 
 // Product data
 const product = ref({});
@@ -218,25 +220,17 @@ const fetchProduct = async () => {
 // Add to Cart
 const addToCart = async () => {
   try {
-    const payload = {
-      product_id: product.value.id,
-      quantity: quantity.value,
-      price: product.value.price,
-    };
-    if (product.value.amounts) {
-      payload.amount_id = product.value.amount_id;
-    }
+    const success = await cartStore.addToCart(
+      product.value.id,
+      quantity.value,
+      product.value.price,
+      product.value.amount_id
+    );
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-    });
-
-    if (response.data.message) {
+    if (success) {
       ElNotification({
         title: t('success'),
-        message: response.data.message,
+        message: t('Product added to cart successfully'),
         type: 'success',
       });
     }
@@ -255,32 +249,17 @@ const navigateToProduct = (productId) => {
 
 const addChildToCart = async (childProduct) => {
   try {
-    const payload = {
-      product_id: childProduct.id,
-      quantity: 1,
-      price: childProduct.price,
-    };
-    const userId = JSON.parse(localStorage.getItem('auth_user'))?.id;
-    console.log(userId)
+    const success = await cartStore.addToCart(
+      childProduct.id,
+      1,
+      childProduct.price,
+      childProduct.amount_id
+    );
 
-    if (userId) {
-      payload.user_id = userId;
-    }
-
-    if (childProduct.amounts) {
-      payload.amount_id = childProduct.amount_id;
-    }
-
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-    });
-
-    if (response.data.message) {
+    if (success) {
       ElNotification({
         title: t('success'),
-        message: response.data.message,
+        message: t('Product added to cart successfully'),
         type: 'success',
       });
     }
