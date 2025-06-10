@@ -1,71 +1,60 @@
 <template>
-  <a class="cart-btn mx-2" @click="$emit('show')">
+  <div class="cart-button" @click="$emit('show')">
     <fa icon="shopping-cart" />
-    <span v-if="count > 0" class="badge bg-danger">{{ count }}</span>
-  </a>
+    <span v-if="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+  </div>
 </template>
 
 <script>
+import { useCartStore } from '@/store/cart'
+import { storeToRefs } from 'pinia'
+
 export default {
   name: 'CartButton',
-  props: {
-    count: {
-      type: Number,
-      default: 0
+  emits: ['show'],
+  setup() {
+    const cartStore = useCartStore()
+    const { cartCount } = storeToRefs(cartStore)
+    
+    // Fetch cart count when component is mounted
+    if (localStorage.getItem('auth_token')) {
+      cartStore.fetchCartCount()
     }
-  },
-  emits: ['show']
+    
+    return { cartCount }
+  }
 }
 </script>
 
 <style scoped>
-.cart-btn {
+.cart-button {
   position: relative;
-  padding: 1em;
-  background: transparent;
-  border: none;
   cursor: pointer;
-  isolation: isolate;
-  overflow: hidden;
+  padding: 8px;
+  margin: 0 10px;
   color: #8b6b3d;
-  border-radius: 50%;
-  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
-.cart-btn::after {
-  content: "";
+.cart-button:hover {
+  color: #6b4d2d;
+}
+
+.cart-count {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
+  top: -5px;
+  right: -5px;
+  background-color: #ff0000;
+  color: white;
   border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
-
-.cart-btn:hover {
-  color: #fff;
-}
-
-.cart-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.badge {
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  padding: 2px 6px;
   font-size: 12px;
-  padding: 4px 6px;
-  border-radius: 50%;
-  transform: scale(1);
-  transition: transform 0.2s ease;
+  min-width: 18px;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
-.cart-btn:hover .badge {
+.cart-button:hover .cart-count {
   transform: scale(1.1);
 }
 </style> 

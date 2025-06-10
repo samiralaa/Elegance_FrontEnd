@@ -133,6 +133,8 @@ import CartModal from './Header/CartModal.vue';
 import FavoritesModal from './Header/FavoritesModal.vue';
 import { API_URL } from '@/store/index.js';
 import { useFavoritesStore } from '@/store/favorites';
+import { useCartStore } from '@/store/cart';
+import { storeToRefs } from 'pinia';
 
 export default {
   name: 'Header',
@@ -157,7 +159,6 @@ export default {
       favoritesCount: 0,
       showFavoritesModal: false,
       cartItems: [],
-      cartCount: 0,
       showCartModalFlag: false,
       userProfile: null,
       isLoadingProfile: false,
@@ -196,7 +197,15 @@ export default {
   },
   setup() {
     const favoritesStore = useFavoritesStore();
-    return { favoritesStore };
+    const cartStore = useCartStore();
+    const { cartCount } = storeToRefs(cartStore);
+    
+    // Fetch initial cart count
+    if (localStorage.getItem('auth_token')) {
+      cartStore.fetchCartCount();
+    }
+    
+    return { favoritesStore, cartStore, cartCount };
   },
   methods: {
     async fetchBrands() {
@@ -215,29 +224,30 @@ export default {
         console.error('Error fetching categories:', error);
       }
     },
-    showCartModal() {
-      if (!this.isAuthenticated) {
-        this.$router.push('/Account/Login');
-        return;
-      }
-      this.getCartItems(); // fetch data
-      this.showCartModalFlag = true; // show modal
-    },
-
-    getCartItems() {
-      const token = localStorage.getItem('token'); // or wherever you store the token
-
-      axios.get('http://127.0.0.1:8000/api/cart-items', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
-      })
-        .then(response => {
-          this.cartItems = response.data.data.original.data;
-        })
-        .catch(error => {
-          console.error("Failed to fetch cart items", error);
+    async fetchCartItems() {
+      try {
+        const response = await axios.get(`${API_URL}/api/cart-items`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
         });
+        this.cartItems = response.data.data.original.data || [];
+        await this.cartStore.fetchCartCount();
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+        this.$toast.error('Failed to load cart items');
+        this.cartItems = [];
+        this.cartStore.resetCount();
+      }
     },
-
+    async showCartModal() {
+      if (this.isAuthenticated) {
+        await this.fetchCartItems();
+        this.showCartModalFlag = true;
+      } else {
+        this.$router.push('/Account/Login');
+      }
+    },
     getProductImage(product) {
       // Replace with your actual logic if you have product image URLs
       return product.images.path || '/images/default.jpg';
@@ -255,36 +265,28 @@ export default {
     getFavoriteProductImage(fav) {
       return `${API_URL}/${fav?.product?.images[0]?.path || ''}`;
     },
-
-    checkout() {
-      if (this.cartItems.length === 0) {
-        this.$toast.warning('Your cart is empty.');
-        return;
-      }
-      this.$router.push('/checkout');
-    },
-
-    async updateQuantity(item) {
-      const originalQuantity = item.quantity;
+    async updateQuantity(itemId, newQuantity) {
       try {
-        const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
-          quantity: item.quantity
+        const response = await axios.put(`${API_URL}/api/cart-items/${itemId}`, {
+          quantity: newQuantity
         }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
-        
-        this.totalCartValue = this.calculateTotal();
-        this.$toast.success('Cart updated successfully');
+
+        if (response.data.status) {
+          await this.fetchCartItems();
+          await this.cartStore.fetchCartCount();
+        }
       } catch (error) {
-        console.error('Failed to update quantity', error);
-        item.quantity = originalQuantity;
-        this.totalCartValue = this.calculateTotal();
-        this.$toast.error('Failed to update cart');
+        console.error('Error updating quantity:', error);
+        this.$toast.error('Failed to update quantity');
       }
     },
-
+    async checkout() {
+      this.$router.push('/checkout');
+    },
     calculateTotal() {
       return this.cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
     },
@@ -369,20 +371,6 @@ export default {
     handleFavoriteRemoved(favoriteId) {
       this.favorites = this.favorites.filter(fav => fav.id !== favoriteId);
       this.favoritesCount = this.favorites.length;
-    },
-    async fetchCartItems() {
-      try {
-        const response = await axios.get(`${API_URL}/api/cart-items`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-          }
-        });
-        this.cartItems = response.data;
-        this.cartCount = this.cartItems.length;
-      } catch (error) {
-        console.error('Error fetching cart items:', error);
-        this.$toast.error('Failed to load cart items');
-      }
     },
     toggleProfileMenu() {
       this.showProfileMenu = !this.showProfileMenu;

@@ -69,15 +69,16 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
 import { useFavoritesStore } from '@/store/favorites'
-
+import { useCartStore } from '@/store/cart'
 const products = ref([]);
 const showSuccessDialog = ref(false);
 const successMessage = ref('');
 const favoritesStore = useFavoritesStore()
+const cartStore = useCartStore()
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/website/products/section');
+    const response = await axios.get('http://elegance_backend.test/api/website/products/section');
 
     if (response.data.status && response.data.data) {
       products.value = response.data.data;
@@ -91,7 +92,7 @@ const fetchProducts = async () => {
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/favorites', {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
@@ -107,7 +108,7 @@ const fetchFavorites = async () => {
 }
 
 const getImageUrl = (path) => {
-  return `http://127.0.0.1:8000/storage/${path}`;
+  return `http://elegance_backend.test/storage/${path}`;
 };
 
 const isInFavorites = (productId) => {
@@ -149,7 +150,7 @@ const addToCart = async (product) => {
   try {
     const userId = localStorage.getItem('user_id');
     const response = await axios.post(
-      'http://127.0.0.1:8000/api/cart-items',
+      'http://elegance_backend.test/api/cart-items',
       {
         product_id: product.id,
         quantity: 1,
@@ -166,6 +167,10 @@ const addToCart = async (product) => {
     if (response.data.message) {
       successMessage.value = response.data.message || 'Product added to cart';
       showSuccessDialog.value = true;
+      cartStore.incrementCount()
+      
+      // Then fetch the actual count from the server
+      await cartStore.fetchCartCount()
       console.log(`Product "${product.name_en}" (ID: ${product.id}) added to cart successfully.`);
     }
   } catch (error) {

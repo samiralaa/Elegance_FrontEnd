@@ -74,15 +74,17 @@ import axios from 'axios'
 import { ElNotification } from 'element-plus'
 import { useFavoritesStore } from '@/store/favorites'
 import { storeToRefs } from 'pinia'
+import { useCartStore } from '@/store/cart'
 
 const products = ref([])
 const showSuccessDialog = ref(false)
 const successMessage = ref('')
 const favoritesStore = useFavoritesStore()
+const cartStore = useCartStore()
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/website/products/section', {
+    const response = await axios.get('http://elegance_backend.test/api/website/products/section', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -98,7 +100,7 @@ const fetchProducts = async () => {
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/favorites', {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
@@ -111,7 +113,7 @@ const fetchFavorites = async () => {
   }
 }
 
-const getImageUrl = (path) => `http://127.0.0.1:8000/storage/${path}`
+const getImageUrl = (path) => `http://elegance_backend.test/storage/${path}`
 
 const isInFavorites = (productId) => {
   return favoritesStore.favorites.some(fav => fav.product_id === productId)
@@ -156,7 +158,7 @@ const addToCart = async (product) => {
       payload.amount_id = product.amount_id
     }
 
-    const response = await axios.post('http://127.0.0.1:8000/api/cart-items', payload, {
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -165,6 +167,10 @@ const addToCart = async (product) => {
     if (response.data.message) {
       successMessage.value = response.data.message
       showSuccessDialog.value = true
+      cartStore.incrementCount()
+      
+      // Then fetch the actual count from the server
+      await cartStore.fetchCartCount()
     }
   } catch (error) {
     console.error('Cart error:', error)

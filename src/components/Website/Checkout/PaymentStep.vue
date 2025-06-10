@@ -154,12 +154,11 @@ export default {
         const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         
         const orderData = {
-          user_id: JSON.parse(localStorage.getItem('auth_user'))?.id,
+          user_id: 1,
           order: {
             status: 'pending',
             payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'tabby',
             shipping_address: this.shippingDetails.address,
-            address_id: this.shippingDetails.addressId,
             items: this.cartItems.map(item => ({
               product_id: item.product.id,
               product_name: item.product.name,
@@ -187,11 +186,12 @@ export default {
             }
           });
 
-          if (response?.data?.success && response?.data?.url) {
+          if (response.data.success && response.data.url) {
+            console.log('Stripe redirect URL:', response.data.url);
             window.location.href = response.data.url;
             return;
           } else {
-            throw new Error(response?.data?.error || this.$t('checkout.errorCreatingPaymentSession'));
+            throw new Error(response.data.error || this.$t('checkout.errorCreatingPaymentSession'));
           }
         } else if (this.selectedPaymentMethod === 2) { // Tabby
           const tabbyResponse = await axios.post(`${API_URL}/api/payment/tabby/create-session`, {
@@ -227,77 +227,49 @@ export default {
             }
           });
 
-          if (tabbyResponse?.data?.success) {
+          if (tabbyResponse.data.success) {
             this.$toast.success(this.$t('checkout.redirectingToTabby'));
             window.location.href = tabbyResponse.data.redirectUrl;
           } else {
-            throw new Error(tabbyResponse?.data?.error || this.$t('checkout.errorCreatingPaymentSession'));
+            throw new Error(tabbyResponse.data.error || this.$t('checkout.errorCreatingPaymentSession'));
           }
         } else if (this.selectedPaymentMethod === 3) { // Cash on Delivery
           await this.createOrder();
         }
       } catch (error) {
         console.error('Error placing order:', error);
-        let errorMessage = this.$t('checkout.errorPlacingOrder');
-        
-        if (error.response?.data?.message) {
-          errorMessage = error.response.data.message;
-        } else if (error.message) {
-          errorMessage = error.message;
-        }
-        
-        this.$toast.error(errorMessage);
+        this.$toast.error(error.message || this.$t('checkout.errorPlacingOrder'));
       } finally {
         this.loading = false;
       }
     },
     async createOrder() {
-      try {
-        const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        const orderData = {
-          items: this.cartItems.map(item => ({
-            product_id: parseInt(item.product_id),
-            quantity: parseInt(item.quantity),
-            price: item.price.toString(),
-            subtotal: item.price * item.quantity
-          })),
-          payment_method: 'cod',
-          address_id: parseInt(this.shippingDetails.addressId),
-          shipping_details: {
-            fullName: this.shippingDetails.fullName || '',
-            address: this.shippingDetails.address || '',
-            city: this.shippingDetails.city || '',
-            postalCode: this.shippingDetails.postalCode || '',
-            phone: this.shippingDetails.phone || '',
-            buildingName: this.shippingDetails.buildingName || '',
-            floorNumber: this.shippingDetails.floorNumber || '',
-            apartmentNumber: this.shippingDetails.apartmentNumber || '',
-            landmark: this.shippingDetails.landmark || '',
-            country: this.shippingDetails.country || '',
-            street: this.shippingDetails.street || ''
-          },
-          total_price: totalPrice
-        };
+      const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      
+      const orderData = {
+        shipping_details: this.shippingDetails,
+        payment_method: this.selectedPaymentMethod,
+        items: this.cartItems.map(item => ({
+          product_id: item.product.id,
+          quantity: item.quantity,
+          price: item.price,
+          subtotal: item.price * item.quantity
+        })),
+        total_price: totalPrice
+      };
 
-        const orderResponse = await axios.post('http://127.0.0.1:8000/api/orders', orderData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (orderResponse?.data?.status) {
-        
-          this.$router.push('/orders/user');
-        } else {
-          throw new Error(orderResponse?.data?.message || this.$t('checkout.errorPlacingOrder'));
+      const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
         }
-      } catch (error) {
-        console.error('Error placing order:', error);
-        const errorMessage = error.response?.data?.message || error.message || this.$t('checkout.errorPlacingOrder');
-        this.$toast.error(errorMessage);
-        throw error;
+      });
+
+      if (orderResponse.data.success) {
+        this.$toast.success(this.$t('checkout.orderPlaced'));
+        this.$emit('order-placed');
+        window.location.href = '/';
+      } else {
+        throw new Error(this.$t('checkout.errorPlacingOrder'));
       }
     },
     getCountryCode(countryName) {

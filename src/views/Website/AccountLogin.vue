@@ -54,7 +54,7 @@ export default {
     async handleSubmit() {
       try {
 
-        const response = await axios.post('http://127.0.0.1:8000/api/client/login', this.formData);
+        const response = await axios.post('http://elegance_backend.test/api/client/login', this.formData);
 
 
         if (response.data.status) {
