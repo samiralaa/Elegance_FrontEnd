@@ -2,7 +2,7 @@
   <section class="all-categories py-4">
     <div class="container">
       <div class="title">
-        <fa class="fa-icon" :icon="['fas','cubes']"></fa>
+        <fa class="fa-icon" :icon="['fas', 'cubes']"></fa>
         <h2>{{ $t('home.categories') }}</h2>
       </div>
       <div class="slider-wrapper">
@@ -13,12 +13,13 @@
         <div class="slider" ref="slider">
           <a v-for="category in categories" :key="category.id" class="card" :href="`/category/${category.id}`">
             <div class="category-content">
-              <img :src="category.image" />
+              <img :src="getProductImage(category)" />
               <p :class="{ 'rtl': $i18n.locale === 'ar' }">
                 {{ $i18n.locale === 'ar' ? category.name_ar : category.name }}
               </p>
             </div>
           </a>
+
         </div>
         <div v-if="loading" class="loading-overlay">
           <div class="loading-spinner"></div>
@@ -38,7 +39,7 @@ import $ from 'jquery'
 import 'slick-carousel/slick/slick.min.js'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-
+import { API_URL } from '@/store/index.js';
 export default {
   name: 'WebsiteCategories',
   computed: {
@@ -55,6 +56,37 @@ export default {
     ...mapActions('websiteCategories', {
       fetchCategories: 'fetchWebsiteCategories'
     }),
+
+    getProductImage(category) {
+      if (!category.image) {
+        return '/placeholder-image.jpg';
+      }
+
+      const imageUrl = category.image;
+      const publicStorageBase = `${API_URL}/public/storage/`;
+
+      // If the image URL is already a full URL and contains the public storage path, return as is.
+      if (imageUrl.startsWith(publicStorageBase)) {
+        return imageUrl;
+      }
+
+      // If the image URL is an absolute URL but from the same domain as API_URL
+      // and is missing the /public/storage/ segment, then construct the correct URL.
+      if (imageUrl.startsWith(API_URL)) {
+        const relativePath = imageUrl.substring(API_URL.length);
+        return `${publicStorageBase}${relativePath.startsWith('/') ? relativePath.substring(1) : relativePath}`;
+      }
+
+      // If it's an external URL that doesn't match API_URL, return as is.
+      if (imageUrl.startsWith('http')) {
+        return imageUrl;
+      }
+
+      // If it's a relative path (e.g., "images/category/...")
+      return `${publicStorageBase}${imageUrl}`;
+    },
+
+
     async loadCategories() {
       try {
         await this.fetchCategories()
@@ -165,8 +197,13 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {
@@ -201,7 +238,7 @@ export default {
   margin-bottom: 8px;
 }
 
-.slick-track{
+.slick-track {
   width: 100%;
   overflow: hidden !important;
 }
@@ -292,6 +329,7 @@ export default {
     transform: scale(1);
     color: #333 !important;
   }
+
   .card:hover::after {
     transform: translate(-50%, -50%) scale(0);
   }

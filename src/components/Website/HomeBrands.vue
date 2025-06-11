@@ -33,7 +33,7 @@
         try {
           const response = await axios.get(
 
-            "http://elegance_backend.test/api/website/brands/section"
+            "https://backend.webenia.org/api/website/brands/section"
 
           );
           this.brands = response.data.data;
@@ -43,7 +43,7 @@
       },
       getImageUrl(path) {
 
-        return `http://elegance_backend.test/storage/${path}`;
+        return `https://backend.webenia.org/public/storage/${path}`;
 
       },
       likeBrand(id) {

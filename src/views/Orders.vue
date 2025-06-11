@@ -132,7 +132,7 @@ const fetchOrders = async () => {
     }
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-    const response = await axios.get('http://elegance_backend.test/api/orders')
+    const response = await axios.get('https://backend.webenia.org/api/orders')
 
     if (response.data.status === true) {
       orders.value = response.data.data
@@ -199,7 +199,7 @@ const cancelOrder = async (order) => {
     }
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-    const response = await axios.put(`http://elegance_backend.test/api/orders/${order.id}/cancel`)
+    const response = await axios.put(`https://backend.webenia.org/api/orders/${order.id}/cancel`)
 
     if (response.data.status === true) {
       order.status = 'cancelled'
