@@ -176,7 +176,7 @@ export default {
     async addToFavorites(product) {
       try {
         const response = await axios.post(
-          'https://backend.webenia.org/api/favorites',
+          'http://elegance_backend.test/api/favorites',
           { product_id: product.id },
           {
             headers: {
@@ -223,7 +223,7 @@ export default {
         }
 
         const response = await axios.post(
-          'https://backend.webenia.org/api/cart-items',
+          'http://elegance_backend.test/api/cart-items',
           payload,
           {
             headers: {

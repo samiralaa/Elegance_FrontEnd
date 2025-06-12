@@ -130,16 +130,21 @@ export default {
     async placeOrder() {
       try {
         this.loading = true;
-        
+        // Validate addressId
+        if (!this.shippingDetails.addressId) {
+          this.$toast.error('The address id field is required.');
+          this.loading = false;
+          return;
+        }
         // Calculate total price from items
         const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
         const orderData = {
           user_id: 1,
           order: {
             status: 'pending',
-            payment_method: this.selectedPaymentMethod === 1 ? 'stripe' : 'tabby',
+            payment_method: String(this.selectedPaymentMethod === 1 ? 'stripe' : this.selectedPaymentMethod === 2 ? 'tabby' : 'cash'),
             shipping_address: this.shippingDetails.address,
+            address_id: this.shippingDetails.addressId,
             items: this.cartItems.map(item => ({
               product_id: item.product.id,
               product_name: item.product.name,
@@ -201,11 +206,16 @@ export default {
       }
     },
     async createOrder() {
+      // Validate addressId
+      if (!this.shippingDetails.addressId) {
+        this.$toast.error('The address id field is required.');
+        return;
+      }
       const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      
       const orderData = {
         shipping_details: this.shippingDetails,
-        payment_method: this.selectedPaymentMethod,
+        address_id: this.shippingDetails.addressId,
+        payment_method: String(this.selectedPaymentMethod),
         items: this.cartItems.map(item => ({
           product_id: item.product.id,
           quantity: item.quantity,

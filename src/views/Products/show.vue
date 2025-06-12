@@ -48,7 +48,7 @@ const error = ref(null)
 
 // Base URL for API and images
 
-const BASE_URL = 'https://backend.webenia.org'
+const BASE_URL = 'http://elegance_backend.test'
 
 const API_URL = `${BASE_URL}/api/products`
 
