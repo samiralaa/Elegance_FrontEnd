@@ -56,7 +56,7 @@
                       class="btn btn-primary add-to-cart-btn"
                       :disabled="!product.is_available"
                     >
-                      <i class="fas fa-shopping-cart"></i> {{ $t('Add to Cart') }}
+                      <fa icon="fa-shopping-cart"></fa> {{ $t('Add to Cart') }}
                     </button>
                   </div>
                 </div>

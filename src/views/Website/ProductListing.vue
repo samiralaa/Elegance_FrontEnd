@@ -69,31 +69,42 @@
       <!-- Product Grid -->
       <section class="products-grid">
         <div v-for="product in filteredProducts" :key="product.id" class="product-card">
-          <div class="image-container">
+          <div class="image-container mb-3 bg-light rounded">
             <img 
               v-if="product.images && product.images.length"
               :src="getImageUrl(product.images[0].path)"
               :alt="product.name" 
             />
             <div v-if="product.sale" class="sale-badge">{{ $t('products.sale') }}</div>
-            <div class="product-actions">
-              <router-link :to="`/read/products/${product.id}`" class="action-btn cart-btn">
+            <div class="product-actions d-flex justify-content-center gap-5 w-100">
+              <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
                 <fa icon="eye" />
               </router-link>
-              <button  @click="addToFavorites(product)" class="action-btn love-btn">
-                <fa icon="heart" />
+              <button
+                @click="addToFavorites(product)"
+                class="btn rounded-circle shadow-sm btn-light"
+                :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
+              >
+                <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
               </button>
             </div>
           </div>
-          <div class="product-info">
-            <h4>{{ $i18n.locale === 'ar' ? product.name_ar : product.name_en }}</h4>
-            <div class="prices">
-              <span class="price-new">{{ product.price }} {{ product.currency?.name_en || 'AED' }}</span>
-              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency?.name_en || 'AED' }}</span>
-            </div>
-            <div class="addToCart-btn">
-              <a  @click="addToCart(product)" class="btn">{{ $t('products.addToCart') }}</a>
-            </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name_en }}</h5>
+            <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
+            <span class="card-text card-price">
+              {{ product.price }} {{ product.currency.name_en }}
+            </span>
+          </div>
+          <div class="addToCart-btn">
+            <button 
+              :disabled="!product.is_available" 
+              @click="addToCart(product)" 
+              class="btn"
+            >
+              {{ $t('products.addToCart') }}
+            </button>
           </div>
         </div>
       </section>
@@ -120,6 +131,7 @@
   import { ElNotification, ElDialog, ElButton } from 'element-plus'
   import Header from '@/components/Website/Header.vue'
   import { useI18n } from 'vue-i18n'
+  import { useFavoritesStore } from '@/store/favorites'
 
   const { t } = useI18n()
   const direction = ref(document.documentElement.dir || 'ltr')
@@ -133,6 +145,7 @@
   const priceRange = ref({ min: 0, max: 5000 })
   const priceRangeLimit = { min: 0, max: 5000 }
   const isSidebarActive = ref(false)
+  const favoritesStore = useFavoritesStore()
 
   // Toggle Sidebar
   const toggleSidebar = () => {
@@ -153,9 +166,18 @@
   // Helpers
   const getImageUrl = (path) => `http://elegance_backend.test/public/storage/${path}`
 
-  // API Actions
+  const isInFavorites = (productId) => {
+    return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
+  }
+
+  const getFavoriteId = (productId) => {
+    const favorite = favoritesStore.favorites.find(favorite => favorite.product_id === productId)
+    return favorite ? favorite.id : null
+  }
+
   const addToFavorites = async (product) => {
     try {
+
       const response = await axios.post(
         'http://elegance_backend.test/api/favorites',
         { product_id: product.id },
@@ -163,13 +185,22 @@
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
+
+      // Check if product is already in favorites
+      if (isInFavorites(product.id)) {
+        // Get the favorite ID and remove from favorites
+        const favoriteId = getFavoriteId(product.id)
+        if (favoriteId) {
+          await favoritesStore.removeFromFavorites(favoriteId)
+          successMessage.value = 'Product removed from favorites'
+
         }
-      )
-      if (response.data.message) {
-        product.isFavorited = !product.isFavorited
-        successMessage.value = response.data.message
-        showSuccessDialog.value = true
+      } else {
+        // Add to favorites
+        const response = await favoritesStore.addToFavorites(product.id)
+        successMessage.value = response.message
       }
+      showSuccessDialog.value = true
     } catch (error) {
       console.error('Favorite error:', error)
       ElNotification({
@@ -178,7 +209,7 @@
         type: 'error'
       })
     }
-  }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -348,17 +379,23 @@
   }
   .product-actions {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    z-index: 10;
   }
+
   .product-card:hover .product-actions {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(-30%);
+    opacity: 1;
   }
+
+  .btn {
+    font-size: 1.5rem;
+  }
+
   .action-btn {
     border: none;
     border-radius: 10px;
@@ -395,39 +432,52 @@
     font-size: 12px;
     border-radius: 5px;
   }
-  .product-info {
-    padding: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-  }
-  .product-info .product-title {
-    font-weight: bolder;
-    font-size: 1.4rem;
-  }
-  .prices {
+  .card-body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
   }
-  .price-new {
-    color: #8b6500;
-    font-size: 1.4rem;
-    font-weight: bold;
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
   }
+
+  .card-price {
+    background-color: #e8f5e9;
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
   .price-old {
     text-decoration: line-through;
     color: #aaa;
-    font-size: 1.2rem;
-    margin-right: 8px;
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    text-align: center;
   }
+
+  .card-title {
+    color: #8b6b3d;
+    transition: all 0.2s ease-in;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
   .addToCart-btn {
     display: flex;
     justify-content: end;
     align-items: center;
     width: 100%;
   }
-  .addToCart-btn a {
+  .addToCart-btn button {
     position: relative;
     padding: 0.75rem 1.5rem;
     color: #8b6b3d;
@@ -441,7 +491,7 @@
     z-index: 0;
     border-radius: 0;
   }
-  .addToCart-btn a::before {
+  .addToCart-btn button::before {
     content: "";
     position: absolute;
     bottom: 0;
@@ -452,11 +502,11 @@
     transition: height 0.3s ease;
     z-index: -1;
   }
-  .addToCart-btn a:hover {
+  .addToCart-btn button:hover {
     color: #fff;
     border-radius: 6px;
   }
-  .addToCart-btn a:hover::before {
+  .addToCart-btn button:hover::before {
     height: 100%;
   }
 
@@ -469,6 +519,25 @@
     font-size: 1.2rem;
     margin-right: 8px;
   }
+
+  @media (max-width: 1200px) {
+  .product-actions {
+    position: absolute;
+    bottom: 5%;
+    left: 0%;
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+    z-index: 10;
+  }
+
+  
+  .product-card:hover .product-actions {
+    transform: translateX(0) translateY(0);
+  }
+  .card-body {
+    flex-direction: column;
+  }
+}
 
   @media (max-width: 768px) {
 

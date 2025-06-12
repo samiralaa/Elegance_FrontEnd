@@ -7,7 +7,7 @@
           <div class="top-bar-left">
             <router-link v-if="!isAuthenticated" to="/register" class="btn join-link">{{ $t('header.joinUs') }}</router-link>
           </div>
-          <div class="top-bar-right">
+          <div class="top-bar-right d-flex align-items-center justify-content-between w-100">
             <currency-switcher />
             <language-switcher />
           </div>

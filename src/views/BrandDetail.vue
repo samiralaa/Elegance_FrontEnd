@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div class="brand-detail">
     <!-- Brand Header -->
     <div class="brand-header">
@@ -62,30 +63,35 @@
           <div class="products-grid">
             <div v-for="product in category.products" :key="product.id" class="product-card">
 
-              <div class="image-container">
+              <div class="image-container mb-3 bg-light rounded">
                 <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en" />
 
-                <div class="product-actions">
-                  <router-link :to="`/read/products/${product.id}`" class="action-btn cart-btn">
-                    <i class="fas fa-shopping-cart icon"></i>
+                <div class="product-actions d-flex justify-content-center gap-5 w-100">
+                  <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                    <fa icon="eye" />
                   </router-link>
-                  <button @click="addToFavorites(product)" class="action-btn love-btn">
-                    <i class="fas fa-heart icon"></i>
+                  <button
+                    @click="addToFavorites(product)"
+                    class="btn rounded-circle shadow-sm btn-light"
+                    :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                    :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
+                  >
+                    <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
                   </button>
                 </div>
 
                 <div v-if="product.discount" class="sale-badge">{{ $t('Sale') }}</div>
               </div>
 
-              <div class="product-info">
-                <h4 class="product-title">{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h4>
-                <div class="prices">
-                  <span class="price-new">{{ product.price }} {{ $t('SAR') }}</span>
-                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ $t('SAR') }}</span>
-                </div>
-                <div class="addToCart-btn mt-3">
-                  <a  @click="addToCart(product)">{{ $t('products.addToCart') }}</a>
-                </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name_en }}</h5>
+                <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ $t('SAR') }}</span>
+                <span class="card-text card-price">
+                  {{ product.price }} {{ $t('SAR') }}
+                </span>
+              </div>
+              <div class="addToCart-btn">
+                <button :disabled="!product.is_available" @click="addToCart(product)">{{ $t('products.addToCart') }}</button>
               </div>
 
             </div>
@@ -110,68 +116,32 @@
       <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
     </template>
   </el-dialog>
-  </div>
+</div>
+<Footer />
 </template>
 
-<script>
-import axios from 'axios';
-import { API_URL } from '@/store/index.js';
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import axios from 'axios'
+import { ElNotification } from 'element-plus'
 
-export default {
-  name: 'BrandDetail',
-  data() {
-    return {
-      brand: {
-        categories: []
-      },
-      loading: true,
-      error: null,
-      successMessage: '',
-      showSuccessDialog: false,
-    };
-  },
-  computed: {
-    currentLang() {
-      return localStorage.getItem('lang') || 'en';
-    }
-  },
-  created() {
-    this.fetchBrandDetails();
-  },
-  methods: {
-    async fetchBrandDetails() {
-      try {
-        const brandId = this.$route.params.id;
-        const response = await axios.get(`${API_URL}/api/website/brands/${brandId}`);
-        this.brand = response.data.data;
-      } catch (error) {
-        console.error('Error fetching brand details:', error);
-        this.error = 'Failed to load brand details';
-      } finally {
-        this.loading = false;
-      }
-    },
+import Header from '@/components/Website/Header.vue'
+import Footer from '@/components/Website/Footer.vue'
+import { API_URL } from '@/store/index.js'
+import { useFavoritesStore } from '@/store/favorites'
 
-    getBrandImage(brand) {
-      if (brand.images && brand.images.length > 0 && brand.images[0].path) {
-        return `${API_URL}/public/storage/${brand.images[0].path}`;
-      }
-      return '/placeholder-image.jpg';
-    },
+const route = useRoute()
+const brand = ref({ categories: [] })
+const loading = ref(true)
+const error = ref(null)
+const showSuccessDialog = ref(false)
+const successMessage = ref('')
 
-    getCategoryImage(category) {
-      if (category.images && category.images.length > 0 && category.images[0].path) {
-        return `${API_URL}/public/storage/${category.images[0].path}`;
-      }
-      return '/placeholder-image.jpg';
-    },
+const currentLang = computed(() => localStorage.getItem('lang') || 'en')
 
-    getProductImage(product) {
-      if (product.images && product.images.length > 0 && product.images[0].path) {
-        return `${API_URL}/public/storage/${product.images[0].path}`;
-      }
-      return '/placeholder-image.jpg';
-    },
+const favoritesStore = useFavoritesStore()
+
 
     async addToFavorites(product) {
       try {
@@ -245,16 +215,115 @@ export default {
         });
       }
     },
+
+const fetchBrandDetails = async () => {
+  try {
+    const brandId = route.params.id
+    const response = await axios.get(`${API_URL}/api/website/brands/${brandId}`)
+    brand.value = response.data.data
+  } catch (err) {
+    console.error('Error fetching brand details:', err)
+    error.value = 'Failed to load brand details'
+  } finally {
+    loading.value = false
+
   }
-
-};
-</script>
-
-<style scoped>
-.brand-detail {
-  padding-top: 2rem;
 }
 
+onMounted(() => {
+  fetchBrandDetails()
+})
+
+// Helpers
+const getBrandImage = (brandObj) => {
+  return brandObj?.images?.[0]?.path
+    ? `${API_URL}/public/storage/${brandObj.images[0].path}`
+    : '/placeholder-image.jpg'
+}
+
+const getCategoryImage = (category) => {
+  return category?.images?.[0]?.path
+    ? `${API_URL}/public/storage/${category.images[0].path}`
+    : '/placeholder-image.jpg'
+}
+
+const getProductImage = (product) => {
+  return product?.images?.[0]?.path
+    ? `${API_URL}/public/storage/${product.images[0].path}`
+    : '/placeholder-image.jpg'
+}
+
+const isInFavorites = (productId) => {
+  return favoritesStore.favorites.some(fav => fav.product_id === productId)
+}
+
+const getFavoriteId = (productId) => {
+  const fav = favoritesStore.favorites.find(f => f.product_id === productId)
+  return fav?.id || null
+}
+
+const addToFavorites = async (product) => {
+  try {
+    if (isInFavorites(product.id)) {
+      const favId = getFavoriteId(product.id)
+      if (favId) {
+        await favoritesStore.removeFromFavorites(favId)
+        successMessage.value = 'Product removed from favorites'
+      }
+    } else {
+      const res = await favoritesStore.addToFavorites(product.id)
+      successMessage.value = res.message
+    }
+    showSuccessDialog.value = true
+  } catch (err) {
+    console.error('Favorite error:', err)
+    ElNotification({
+      title: '⚠️',
+      message: err.response?.data?.message || 'Login required to favorite product',
+      type: 'error',
+    })
+  }
+}
+
+const addToCart = async (product) => {
+  try {
+    const payload = {
+      product_id: product.id,
+      quantity: 1,
+      price: product.price,
+    }
+
+    if (product.amounts) {
+      payload.amount_id = product.amount_id
+    }
+
+    const res = await axios.post(
+      `${API_URL}/api/cart-items`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      }
+    )
+
+    if (res.data.message) {
+      successMessage.value = res.data.message
+      showSuccessDialog.value = true
+    }
+  } catch (err) {
+    console.error('Cart error:', err)
+    ElNotification({
+      title: '❌',
+      message: err.response?.data?.message || 'Login required to add to cart',
+      type: 'error',
+    })
+  }
+}
+</script>
+
+
+<style scoped>
 .brand-header {
   background-color: #f8f9fa;
   padding: 3rem 0;
@@ -396,7 +465,7 @@ export default {
 }
 
 
-.products-grid {
+  .products-grid {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -425,17 +494,23 @@ export default {
   }
   .product-actions {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    z-index: 10;
   }
+
   .product-card:hover .product-actions {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(-30%);
+    opacity: 1;
   }
+
+  .btn {
+    font-size: 1.5rem;
+  }
+
   .action-btn {
     border: none;
     border-radius: 10px;
@@ -472,39 +547,52 @@ export default {
     font-size: 12px;
     border-radius: 5px;
   }
-  .product-info {
-    padding: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-  }
-  .product-info .product-title {
-    font-weight: bolder;
-    font-size: 1.4rem;
-  }
-  .prices {
+  .card-body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
   }
-  .price-new {
-    color: #8b6500;
-    font-size: 1.4rem;
-    font-weight: bold;
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
   }
+
+  .card-price {
+    background-color: #e8f5e9;
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
   .price-old {
     text-decoration: line-through;
     color: #aaa;
-    font-size: 1.2rem;
-    margin-right: 8px;
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    text-align: center;
   }
+
+  .card-title {
+    color: #8b6b3d;
+    transition: all 0.2s ease-in;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
   .addToCart-btn {
     display: flex;
     justify-content: end;
     align-items: center;
     width: 100%;
   }
-  .addToCart-btn a {
+  .addToCart-btn button {
     position: relative;
     padding: 0.75rem 1.5rem;
     color: #8b6b3d;
@@ -517,8 +605,9 @@ export default {
     overflow: hidden;
     z-index: 0;
     border-radius: 0;
+    background-color: #fff;
   }
-  .addToCart-btn a::before {
+  .addToCart-btn button::before {
     content: "";
     position: absolute;
     bottom: 0;
@@ -529,11 +618,30 @@ export default {
     transition: height 0.3s ease;
     z-index: -1;
   }
-  .addToCart-btn a:hover {
+  .addToCart-btn button:hover {
     color: #fff;
     border-radius: 6px;
   }
-  .addToCart-btn a:hover::before {
+  .addToCart-btn button:hover::before {
     height: 100%;
+  }
+
+  @media (max-width: 1200px) {
+    .product-actions {
+      position: absolute;
+      bottom: 5%;
+      left: 0%;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      z-index: 10;
+    }
+
+    
+    .product-card:hover .product-actions {
+      transform: translateX(0) translateY(0);
+    }
+    .card-body {
+      flex-direction: column;
+    }
   }
 </style> 
