@@ -406,7 +406,8 @@
     "title": "Explore All Products",
     "price": "Price",
     "categories": "Categories",
-    "addToCart": "Add to Cart"
+    "addToCart": "Add to Cart",
+    "filter": "Filter"
   },
 
   "cart": {

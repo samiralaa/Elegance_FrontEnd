@@ -5,7 +5,7 @@
         <fa class="fa-icon" :icon="['fas', 'star']"></fa>
         <h2>{{ $t('home.best-selling') }}</h2>
       </div>
-      <div class="row">
+      <div class="row g-4">
         <el-col
           v-for="product in products"
           :key="product.id"
@@ -15,35 +15,41 @@
           :lg="12"
         >
           <div class="card my-3">
-            <div class="img-container">
+            <div class="img-container p-3 rounded">
               <router-link :to="`/read/products/${product.id}`">
                 <img
                   v-if="product.images.length"
                   :src="getImageUrl(product.images[0].path)"
                   :alt="product.name_en"
+                  class="product-img card-img bg-light"
                 />
               </router-link>
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
-              <p class="card-text">{{ product.price }} {{ product.currency.name_en }}</p>
+              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
+              <span class="card-text card-price">
+                {{ product.price }} {{ product.currency.name_en }}
+              </span>
             </div>
-            <div class="card-btns">
-              <router-link :to="`/read/products/${product.id}`" class="btn eye-btn">
-                <fa icon="eye"></fa>
+            <div class="product-actions d-flex justify-content-center flex-wrap gap-2">
+              <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                <fa icon="eye" />
               </router-link>
-              <button @click="addToCart(product)" class="btn cart-btn">
-                <fa icon="cart-plus"></fa>
+              <button @click="addToCart(product)" class="btn btn-light shadow-sm rounded-circle">
+                <fa icon="cart-plus" />
               </button>
               <button
                 @click="addToFavorites(product)"
-                class="btn love-btn"
-                :class="{ 'active': isInFavorites(product.id) }"
+                class="btn rounded-circle shadow-sm btn-light"
+                :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
               >
                 <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
               </button>
             </div>
           </div>
+
         </el-col>
       </div>
     </div>
@@ -212,151 +218,80 @@ onMounted(() => {
   padding: 8px;
   color: #fff;
 }
+
 .card {
-  display: flex;
   flex-direction: row;
   align-items: center;
-  background: #fff;
-  border-radius: 16px;
-  border: none;
-  box-shadow: 0 10px 20px #2334de1a;
+  border-radius: 20px;
   overflow: hidden;
-  transition: 0.3s ease-in-out;
-  padding: 1rem;
-  gap: 1rem;
-  z-index: 0;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
 .img-container {
-  flex: 0 0 150px;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 12px;
+  width: 150px;
+  height: 150px;
+  position: relative;
+  aspect-ratio: 1 / 1;
 }
 
 .img-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: scale 0.3s ease;
 }
 
-.card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.card-title {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #8b6b3d;
-  margin-bottom: 0.5rem;
-  transition: all 0.2s ease-in;
-
-}
-
-.card-text {
-  color: #333;
-  font-size: 1rem;
-  transition: all 0.2s ease-in;
-
-}
-
-.card:hover{
-  color: #fff;
-}
-
-img{
-  z-index: 0;
-  transition: all 0.2s ease-in-out;
-
-}
-
-.card:hover img{
+.card:hover img {
   scale: 1.1;
 }
 
-.card::after{
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 105%;
-  width: 105%;
-  background-color: #8b6b3d;
-  border-radius: 8px;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
+.card-title {
+  font-size: 1.2rem;
+  color: #a67c52;
 }
 
-.card:hover::after {
-  transform: translate(-50%, -50%) scale(1);
+.card-text {
+  font-size: 1rem;
+  color: #444;
 }
 
-.card-btns{
+
+.card-body{
   display: flex;
   flex-direction: column;
-  z-index: 1;
-  gap: 10px;
-  justify-content: center;
-  margin: 30px;
-  transition: all 0.5s ease-in-out;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  width: 100%;
 }
 
-.love-btn,
-.eye-btn{
-  background-color: #8b6b3d;
-  color: #fff;
-  transition: all 0.2s ease-in-out;
+.card-price {
+  background-color: #e8f5e9;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
-.cart-btn{
-  background-color: #fff;
-  transition: all 0.2s ease-in-out;
-  
-}
-
-.cart-btn:hover{
-  color: #333;
-}
-
-.cart-btn:hover,
-.love-btn:hover,
-.eye-btn:hover{
-  scale: 1.2;
-}
-
-.card:hover .love-btn,
-.card:hover .eye-btn{
-  background-color: #fff;
-  color: #333;
-}
-
-.card:hover .card-title,
-.card:hover .card-text{
-  color: #fff;
-}
-
-.love-btn {
-  background-color: #8b6b3d;
-  color: #fff;
-  transition: all 0.2s ease-in-out;
+.price-old {
+  text-decoration: line-through;
+  color: #aaa;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
 .love-btn.active {
-  background-color: #ff0000;
-  color: #fff;
-}
-
-.love-btn i {
-  font-size: 1.2rem;
-  transition: all 0.2s ease-in-out;
-}
-
-.love-btn:hover {
-  scale: 1.2;
+  background-color: #ff4d4d;
+  color: white;
 }
 
 @media (max-width: 768px) {
