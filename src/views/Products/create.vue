@@ -161,7 +161,7 @@ const countries = ref([])
 const parentProducts = ref([])
 
 // Base URL and API endpoints
-const BASE_URL = 'http://elegance_backend.test'
+const BASE_URL = 'https://backend.webenia.org'
 
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`

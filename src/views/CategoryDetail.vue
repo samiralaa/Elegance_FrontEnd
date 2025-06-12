@@ -119,19 +119,28 @@ export default {
     },
     getCategoryImage(category) {
       if (category.images && category.images.length > 0 && category.images[0].path) {
-        return `${API_URL}/${category.images[0].path}`;
+        return `${API_URL}/public/storage/${category.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },
     getBrandImage(brand) {
-      if (brand.images && brand.images.length > 0 && brand.images[0].path) {
-        return `${API_URL}/${brand.images[0].path}`;
+      if (brand.images && brand.images.length > 0) {
+        const imagePath = brand.images[0].path;
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+          return imagePath;
+        } else if (imagePath.startsWith('/')) {
+          // Assuming absolute path from root, but might need /public/storage
+          return `${API_URL}/public/storage${imagePath}`;
+        } else {
+          // Relative path, prepend with /public/storage
+          return `${API_URL}/public/storage/${imagePath}`;
+        }
       }
       return '/placeholder-image.jpg';
     },
     getProductImage(product) {
       if (product.images && product.images.length > 0 && product.images[0].path) {
-        return `${API_URL}/${product.images[0].path}`;
+        return `${API_URL}/public/storage/${product.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },

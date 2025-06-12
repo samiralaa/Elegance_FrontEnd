@@ -262,7 +262,7 @@ export default defineComponent({
         }
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('http://elegance_backend.test/api/dashboard/sales-overview')
+        const response = await axios.get('https://backend.webenia.org/api/dashboard/sales-overview')
 
         if (response.data.status === true) {
           salesOverview.value = response.data.data
@@ -282,7 +282,7 @@ export default defineComponent({
         }
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('http://elegance_backend.test/api/dashboard/total-products')
+        const response = await axios.get('https://backend.webenia.org/api/dashboard/total-products')
 
         if (response.data.status === true) {
           totalProducts.value = response.data.data.total_products
@@ -300,7 +300,7 @@ export default defineComponent({
         }
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('http://elegance_backend.test/api/dashboard/total-orders')
+        const response = await axios.get('https://backend.webenia.org/api/dashboard/total-orders')
 
         if (response.data.status === true) {
           totalOrders.value = response.data.data.total_orders
@@ -318,7 +318,7 @@ export default defineComponent({
         }
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('http://elegance_backend.test/api/dashboard/recent-orders')
+        const response = await axios.get('https://backend.webenia.org/api/dashboard/recent-orders')
 
         if (response.data.status === true) {
           orders.value = response.data.data
