@@ -154,21 +154,21 @@ export default {
 
     getBrandImage(brand) {
       if (brand.images && brand.images.length > 0 && brand.images[0].path) {
-        return `${API_URL}/public/storage/${brand.images[0].path}`;
+        return `${API_URL}/${brand.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },
 
     getCategoryImage(category) {
       if (category.images && category.images.length > 0 && category.images[0].path) {
-        return `${API_URL}/public/storage/${category.images[0].path}`;
+        return `${API_URL}/${category.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },
 
     getProductImage(product) {
       if (product.images && product.images.length > 0 && product.images[0].path) {
-        return `${API_URL}/public/storage/${product.images[0].path}`;
+        return `${API_URL}/${product.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },
@@ -176,7 +176,7 @@ export default {
     async addToFavorites(product) {
       try {
         const response = await axios.post(
-          'https://backend.webenia.org/api/favorites',
+          'http://elegance_backend.test/api/favorites',
           { product_id: product.id },
           {
             headers: {
@@ -223,7 +223,7 @@ export default {
         }
 
         const response = await axios.post(
-          'https://backend.webenia.org/api/cart-items',
+          'http://elegance_backend.test/api/cart-items',
           payload,
           {
             headers: {

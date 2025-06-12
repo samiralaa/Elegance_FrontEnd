@@ -13,7 +13,7 @@ export const useCartStore = defineStore('cart', {
   actions: {
     async fetchCartCount() {
       try {
-        const response = await axios.get('https://backend.webenia.org/api/cart-items', {
+        const response = await axios.get('http://elegance_backend.test/api/cart-items', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }

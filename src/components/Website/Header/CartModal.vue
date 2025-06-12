@@ -99,7 +99,7 @@ export default {
   methods: {
     getProductImage(item) {
       if (item.images && Array.isArray(item.images) && item.images.length > 0) {
-        return `${API_URL}/public/storage/${item.images[0]}`;
+        return `${API_URL}/${item.images[0]}`;
       }
       return '/placeholder-image.jpg';
     },

@@ -103,33 +103,11 @@ export default {
     await this.favoritesStore.fetchFavorites();
   },
   methods: {
-  getProductImage(product) {
-      if (!product.images || !product.images[0]?.path) {
-        return '/placeholder-image.jpg';
+    getProductImage(product) {
+      if (product && product.images && product.images.length > 0) {
+        return `${API_URL}/${product.images[0].path}`;
       }
-
-      const imageUrl = product.images[0].path;
-      const publicStorageBase = `${API_URL}/public/storage/`;
-
-      // If the image URL is already a full URL and contains the public storage path, return as is.
-      if (imageUrl.startsWith(publicStorageBase)) {
-        return imageUrl;
-      }
-
-      // If the image URL is an absolute URL but from the same domain as API_URL
-      // and is missing the /public/storage/ segment, then construct the correct URL.
-      if (imageUrl.startsWith(API_URL)) {
-        const relativePath = imageUrl.substring(API_URL.length);
-        return `${publicStorageBase}${relativePath.startsWith('/') ? relativePath.substring(1) : relativePath}`;
-      }
-
-      // If it's an external URL that doesn't match API_URL, return as is.
-      if (imageUrl.startsWith('http')) {
-        return imageUrl;
-      }
-
-      // If it's a relative path (e.g., "images/product/...")
-      return `${publicStorageBase}${imageUrl}`;
+      return '/placeholder-image.jpg';
     },
     async removeFavorite(favoriteId) {
       try {
@@ -291,4 +269,4 @@ export default {
     padding: 0.75rem 0;
   }
 }
-</style>
+</style> 

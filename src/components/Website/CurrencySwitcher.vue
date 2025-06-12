@@ -39,7 +39,7 @@ export default {
 
     const fetchCurrencies = async () => {
       try {
-        const response = await axios.get('https://backend.webenia.org/api/currencies')
+        const response = await axios.get('http://elegance_backend.test/api/currencies')
         if (response.data.status === 'success') {
           // Remove duplicates based on name_en
           const uniqueCurrencies = response.data.data.reduce((acc, current) => {

@@ -397,13 +397,13 @@ export default {
     },
     getBrandImage(brand) {
       if (brand.images && brand.images.length > 0 && brand.images[0].path) {
-        return `${API_URL}/public/storage/${brand.images[0].path}`;
+        return `${API_URL}/${brand.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },
     getCategoryImage(category) {
       if (category.images && category.images.length > 0 && category.images[0].path) {
-        return `${API_URL}/public/storage/${category.images[0].path}`;
+        return `${API_URL}/${category.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     }

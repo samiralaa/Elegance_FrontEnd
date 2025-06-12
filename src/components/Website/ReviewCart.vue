@@ -121,7 +121,7 @@ export default {
   methods: {
     getImageUrl(item) {
       if (item.product?.images?.length) {
-        return `https://backend.webenia.org/public/storage/${item.product.images[0].path}`;
+        return `http://elegance_backend.test/storage/${item.product.images[0].path}`;
       }
       return '/placeholder-image.jpg';
     },
@@ -136,7 +136,7 @@ export default {
     async increaseQuantity(item) {
       try {
         if (item.quantity < 99) {
-          const response = await fetch(`https://backend.webenia.org/api/cart-items/${item.id}`, {
+          const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ export default {
     async decreaseQuantity(item) {
       try {
         if (item.quantity > 1) {
-          const response = await fetch(`https://backend.webenia.org/api/cart-items/${item.id}`, {
+          const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

@@ -17,6 +17,19 @@
       </div>
     </div>
 
+    <!-- Tabby Payment Option -->
+    <div v-if="selectedPaymentMethod === 2" class="tabby-container">
+      <div class="tabby-info">
+        <p>{{ $t('checkout.tabbyInfo') || 'Pay in 4 interest-free installments with Tabby.' }}</p>
+        <div class="tabby-installments">
+          <div v-for="(installment, index) in tabbyInstallments" :key="index" class="installment">
+            <span class="installment-amount">{{ (total / 4).toFixed(2) }} {{ currency }}</span>
+            <span class="installment-date">{{ installment }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="order-summary">
       <h3>{{ $t('checkout.orderSummary') }}</h3>
       <div class="summary-details">
@@ -76,7 +89,13 @@ export default {
       stripePromise: null,
       stripeClientSecret: null,
       stripeElements: null,
-      cardElement: null
+      cardElement: null,
+      tabbyInstallments: [
+        'Today',
+        'In 2 weeks',
+        'In 4 weeks',
+        'In 6 weeks'
+      ]      
     };
   },
   created() {
@@ -177,7 +196,31 @@ export default {
         } else if (this.selectedPaymentMethod === 2) { // Tabby
           const tabbyResponse = await axios.post(`${API_URL}/api/payment/tabby/create-session`, {
             ...orderData,
-            amount: totalPrice
+            amount: totalPrice,
+            currency: this.currency,
+            buyer: {
+              email: this.shippingDetails.email || '',
+              phone: this.shippingDetails.phone || '',
+              name: `${this.shippingDetails.firstName || ''} ${this.shippingDetails.lastName || ''}`.trim(),
+            },
+            shipping: {
+              address: {
+                city: this.shippingDetails.city || '',
+                address: this.shippingDetails.address || '',
+                zip: this.shippingDetails.zip || '',
+              },
+              country: this.getCountryCode(this.shippingDetails.country) || 'AE'
+            },
+            order: {
+              reference_id: `order-${Date.now()}`,
+              items: this.cartItems.map(item => ({
+                title: item.product.name,
+                description: item.product.description || '',
+                quantity: item.quantity,
+                unit_price: item.price,
+                reference_id: item.product.id.toString()
+              }))
+            }
           }, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('auth_token')}`
@@ -188,7 +231,7 @@ export default {
             this.$toast.success(this.$t('checkout.redirectingToTabby'));
             window.location.href = tabbyResponse.data.redirectUrl;
           } else {
-            throw new Error(this.$t('checkout.errorCreatingPaymentSession'));
+            throw new Error(tabbyResponse.data.error || this.$t('checkout.errorCreatingPaymentSession'));
           }
         } else if (this.selectedPaymentMethod === 3) { // Cash on Delivery
           await this.createOrder();
@@ -390,7 +433,8 @@ export default {
   background: #fff;
 }
 
-.stripe-container {
+.stripe-container,
+.tabby-container {
   margin: 2rem 0;
   padding: 1rem;
   border: 1px solid #dee2e6;
@@ -414,6 +458,42 @@ export default {
   color: #fa755a;
   margin-top: 0.5rem;
   font-size: 0.9rem;
+}
+
+.tabby-info {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.tabby-installments {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.installment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  min-width: 22%;
+  margin-bottom: 0.5rem;
+}
+
+.installment-amount {
+  font-weight: bold;
+  color: #8b6b3d;
+}
+
+.installment-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
 }
 
 .order-summary {

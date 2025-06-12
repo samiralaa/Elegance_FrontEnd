@@ -48,7 +48,7 @@ export default {
   methods: {
     async updateQuantity(item, newQuantity) {
       try {
-        const response = await fetch(`https://backend.webenia.org/api/cart-items/${item.id}`, {
+        const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

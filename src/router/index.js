@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import Customers from '../views/Customers.vue'
+import Brands from '../views/Brands.vue'
 import Categories from '../views/Categories/index.vue'
 import Settings from '../views/Settings.vue'
 import Profile from '../views/Profile.vue'
@@ -66,7 +68,6 @@ const routes = [
     path: '/customers',
     name: 'Customers',
     component: () => import('../views/Customers.vue'),
-
     meta: { requiresAuth: true }
   },
 
