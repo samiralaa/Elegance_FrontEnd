@@ -92,10 +92,15 @@
           </div>
           <div class="card-body">
             <h5 class="card-title">{{ product.name_en }}</h5>
-            <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
-            <span class="card-text card-price">
-              {{ product.price }} {{ product.currency.name_en }}
-            </span>
+            <div class="price-container">
+              <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
+                {{ product.discount[0].discount_value }}% OFF
+              </span>
+              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
+              <span class="card-text card-price">
+                {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+              </span>
+            </div>
           </div>
           <div class="addToCart-btn">
             <button 
@@ -177,7 +182,6 @@
 
   const addToFavorites = async (product) => {
     try {
-
       const response = await axios.post(
         'http://elegance_backend.test/api/favorites',
         { product_id: product.id },
@@ -185,6 +189,8 @@
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
+        }
+      );
 
       // Check if product is already in favorites
       if (isInFavorites(product.id)) {
@@ -193,7 +199,6 @@
         if (favoriteId) {
           await favoritesStore.removeFromFavorites(favoriteId)
           successMessage.value = 'Product removed from favorites'
-
         }
       } else {
         // Add to favorites
@@ -252,6 +257,16 @@
       return matchCategory && matchPrice
     })
   })
+
+  const calculateDiscountedPrice = (product) => {
+    if (product.discount && product.discount.length > 0) {
+      const discountValue = parseFloat(product.discount[0].discount_value)
+      const originalPrice = parseFloat(product.price)
+      const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+      return discountedPrice.toFixed(2)
+    }
+    return product.price
+  };
 </script>
 
 <style scoped>
@@ -606,5 +621,21 @@
       background-color: rgba(0, 0, 0, 0.2);
       border-radius: 10px;
     }
+  }
+
+  .price-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .discount-badge {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
   }
 </style>

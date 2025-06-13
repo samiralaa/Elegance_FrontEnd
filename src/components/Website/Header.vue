@@ -265,23 +265,15 @@ export default {
     getFavoriteProductImage(fav) {
       return `${API_URL}/${fav?.product?.images[0]?.path || ''}`;
     },
-    async updateQuantity(itemId, newQuantity) {
-      try {
-        const response = await axios.put(`${API_URL}/api/cart-items/${itemId}`, {
-          quantity: newQuantity
-        }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-          }
-        });
-
-        if (response.data.status) {
-          await this.fetchCartItems();
-          await this.cartStore.fetchCartCount();
-        }
-      } catch (error) {
-        console.error('Error updating quantity:', error);
-        this.$toast.error('Failed to update quantity');
+    async updateQuantity(updatedItem) {
+      // Find and update the item in cartItems array
+      const index = this.cartItems.findIndex(item => item.id === updatedItem.id);
+      if (index !== -1) {
+        this.cartItems[index] = updatedItem;
+        // Recalculate total
+        this.totalCartValue = this.cartItems.reduce((total, item) => {
+          return total + (parseFloat(item.price) * item.quantity);
+        }, 0).toFixed(2);
       }
     },
     async checkout() {

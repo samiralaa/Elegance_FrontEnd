@@ -7,7 +7,7 @@
       <div class="images">
         <el-carousel v-if="product.images && product.images.length > 0" height="300px" arrow="always">
           <el-carousel-item v-for="image in product.images" :key="image.id">
-            <img :src="`${BASE_URL}/${image.path}`" class="product-image" alt="Product Image" />
+            <img :src="`${BASE_URL}/public/storage/${image.path}`" class="product-image" alt="Product Image" />
           </el-carousel-item>
         </el-carousel>
         <div v-else class="image-error">

@@ -50,74 +50,68 @@
       </div>
     </div>
 
-
     <!-- Products Section -->
-  <div class="products-section py-5">
-    <div class="container">
-      <h2 class="section-title mb-4">{{ $t('Products') }}</h2>
+    <div class="products-section py-5">
+      <div class="container">
+        <h2 class="section-title mb-4">{{ $t('Products') }}</h2>
+        <div v-for="category in brand.categories" :key="category.id">
+          <div v-if="category.products.length > 0" class="category-products mb-5">
+            <h3 class="category-title mb-4">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</h3>
+            <div class="products-grid">
+              <div v-for="product in category.products" :key="product.id" class="product-card">
+                <div class="image-container mb-3 bg-light rounded">
+                  <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en" />
 
-      <div v-for="category in brand.categories" :key="category.id">
-        <div v-if="category.products.length > 0" class="category-products mb-5">
-          <h3 class="category-title mb-4">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</h3>
+                  <div class="product-actions d-flex justify-content-center gap-5 w-100">
+                    <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                      <fa icon="eye" />
+                    </router-link>
+                    <button
+                      @click="addToFavorites(product)"
+                      class="btn rounded-circle shadow-sm btn-light"
+                      :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                      :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
+                    >
+                      <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
+                    </button>
+                  </div>
 
-          <div class="products-grid">
-            <div v-for="product in category.products" :key="product.id" class="product-card">
-
-              <div class="image-container mb-3 bg-light rounded">
-                <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en" />
-
-                <div class="product-actions d-flex justify-content-center gap-5 w-100">
-                  <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
-                    <fa icon="eye" />
-                  </router-link>
-                  <button
-                    @click="addToFavorites(product)"
-                    class="btn rounded-circle shadow-sm btn-light"
-                    :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                    :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
-                  >
-                    <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
-                  </button>
+                  <div v-if="product.discount" class="sale-badge">{{ $t('Sale') }}</div>
                 </div>
 
-                <div v-if="product.discount" class="sale-badge">{{ $t('Sale') }}</div>
+                <div class="card-body">
+                  <h5 class="card-title">{{ product.name_en }}</h5>
+                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ $t('SAR') }}</span>
+                  <span class="card-text card-price">
+                    {{ product.price }} {{ $t('SAR') }}
+                  </span>
+                </div>
+                <div class="addToCart-btn">
+                  <button :disabled="!product.is_available" @click="addToCart(product)">{{ $t('products.addToCart') }}</button>
+                </div>
               </div>
-
-              <div class="card-body">
-                <h5 class="card-title">{{ product.name_en }}</h5>
-                <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ $t('SAR') }}</span>
-                <span class="card-text card-price">
-                  {{ product.price }} {{ $t('SAR') }}
-                </span>
-              </div>
-              <div class="addToCart-btn">
-                <button :disabled="!product.is_available" @click="addToCart(product)">{{ $t('products.addToCart') }}</button>
-              </div>
-
             </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
 
-  <el-dialog
-    v-model="showSuccessDialog"
-    title="🎉 Success"
-    width="30%"
-    :before-close="() => (showSuccessDialog = false)"
-    :center="true"
-    :close-on-click-modal="false"
-    :show-close="false"
-  >
-    <span>{{ successMessage }}</span>
-    <template #footer>
-      <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
-    </template>
-  </el-dialog>
-</div>
-<Footer />
+    <el-dialog
+      v-model="showSuccessDialog"
+      title="🎉 Success"
+      width="30%"
+      :before-close="() => (showSuccessDialog = false)"
+      :center="true"
+      :close-on-click-modal="false"
+      :show-close="false"
+    >
+      <span>{{ successMessage }}</span>
+      <template #footer>
+        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
+      </template>
+    </el-dialog>
+  </div>
+  <Footer />
 </template>
 
 <script setup>
@@ -142,80 +136,6 @@ const currentLang = computed(() => localStorage.getItem('lang') || 'en')
 
 const favoritesStore = useFavoritesStore()
 
-
-    async addToFavorites(product) {
-      try {
-        const response = await axios.post(
-          'http://elegance_backend.test/api/favorites',
-          { product_id: product.id },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-            },
-          }
-        );
-
-        if (response.data.message) {
-          product.isFavorited = !product.isFavorited;
-          this.successMessage = response.data.message || 'Product added to favorites';
-          this.showSuccessDialog = true;
-          console.log(`Product "${product.name_en}" (ID: ${product.id}) added to favorites successfully.`);
-        }
-      } catch (error) {
-        console.error('Error adding to favorites:', error);
-        if (error.response?.status === 401) {
-          this.$notify({
-            title: '⚠️ Unauthorized',
-            message: 'Please login to add to favorites.',
-            type: 'error',
-          });
-        } else {
-          this.$notify({
-            title: '❌ Error',
-            message: error.response?.data?.message || 'Something went wrong.',
-            type: 'error',
-          });
-        }
-      }
-    },
-
-    async addToCart(product) {
-      try {
-        const payload = {
-          product_id: product.id,
-          quantity: 1,
-          price: product.price,
-        };
-
-        if (product.amounts) {
-          console.log('Amounts:', product.amounts);
-          payload.amount_id = product.amount_id;
-        }
-
-        const response = await axios.post(
-          'http://elegance_backend.test/api/cart-items',
-          payload,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-            },
-          }
-        );
-
-        if (response.data.message) {
-          this.successMessage = response.data.message;
-          this.showSuccessDialog = true;
-        }
-      } catch (error) {
-        console.error('Cart error:', error);
-        this.$notify({
-          title: '❌',
-          message: error.response?.data?.message || 'Login required to add to cart',
-          type: 'error',
-        });
-      }
-    },
-
 const fetchBrandDetails = async () => {
   try {
     const brandId = route.params.id
@@ -226,7 +146,6 @@ const fetchBrandDetails = async () => {
     error.value = 'Failed to load brand details'
   } finally {
     loading.value = false
-
   }
 }
 
@@ -322,7 +241,6 @@ const addToCart = async (product) => {
 }
 </script>
 
-
 <style scoped>
 .brand-header {
   background-color: #f8f9fa;
@@ -394,7 +312,6 @@ const addToCart = async (product) => {
   text-align: center;
   text-decoration: none;
   width: 100%;
-
 }
 
 .card::after {
@@ -441,7 +358,6 @@ const addToCart = async (product) => {
   font-weight: bold;
 }
 
-
 @media (max-width: 1200px) {
   .scrollers {
     display: flex;
@@ -464,184 +380,182 @@ const addToCart = async (product) => {
   }
 }
 
+.products-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.product-card {
+  position: relative;
+  background: #fff;
+  text-align: center;
+  transition: box-shadow 0.3s;
+  height: fit-content;
+}
+.image-container {
+  position: relative;
+  background: #f9f9f9;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.image-container img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+.product-card:hover .image-container img {
+  transform: scale(1.1);
+}
+.product-actions {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  z-index: 10;
+}
 
-  .products-grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-  .product-card {
-    position: relative;
-    background: #fff;
-    text-align: center;
-    transition: box-shadow 0.3s;
-    height: fit-content;
-  }
-  .image-container {
-    position: relative;
-    background: #f9f9f9;
-    overflow: hidden;
-    border-radius: 5px;
-  }
-  .image-container img {
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease;
-  }
-  .product-card:hover .image-container img {
-    transform: scale(1.1);
-  }
+.product-card:hover .product-actions {
+  transform: translateX(-50%) translateY(-30%);
+  opacity: 1;
+}
+
+.btn {
+  font-size: 1.5rem;
+}
+
+.action-btn {
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  height: 45px;
+  display: flex;
+  margin: 1rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.icon {
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+.action-btn:hover .icon {
+  transform: scale(1.2);
+}
+.cart-btn {
+  background-color: #fff;
+  color: #8b6b3d;
+}
+.love-btn {
+  background-color: #8b6b3d;
+  color: #fff;
+}
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  left: -15px;
+  background: #ff4c4c;
+  color: white;
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+.card-body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.card-price {
+  background-color: #e8f5e9;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #aaa;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.card-title {
+  color: #8b6b3d;
+  transition: all 0.2s ease-in;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.addToCart-btn {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+}
+.addToCart-btn button {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  color: #8b6b3d;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  width: 100%;
+  overflow: hidden;
+  z-index: 0;
+  border-radius: 0;
+  background-color: #fff;
+}
+.addToCart-btn button::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #8b6b3d;
+  transition: height 0.3s ease;
+  z-index: -1;
+}
+.addToCart-btn button:hover {
+  color: #fff;
+  border-radius: 6px;
+}
+.addToCart-btn button:hover::before {
+  height: 100%;
+}
+
+@media (max-width: 1200px) {
   .product-actions {
     position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100%);
-    opacity: 0;
-    transition: all 0.3s ease-in-out;
+    bottom: 5%;
+    left: 0%;
+    opacity: 1;
+    transform: translateX(0) translateY(0);
     z-index: 10;
   }
 
   .product-card:hover .product-actions {
-    transform: translateX(-50%) translateY(-30%);
-    opacity: 1;
+    transform: translateX(0) translateY(0);
   }
-
-  .btn {
-    font-size: 1.5rem;
-  }
-
-  .action-btn {
-    border: none;
-    border-radius: 10px;
-    width: 100%;
-    height: 45px;
-    display: flex;
-    margin: 1rem;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .icon {
-    font-size: 1.2rem;
-    transition: all 0.2s ease;
-  }
-  .action-btn:hover .icon {
-    transform: scale(1.2);
-  }
-  .cart-btn {
-    background-color: #fff;
-    color: #8b6b3d;
-  }
-  .love-btn {
-    background-color: #8b6b3d;
-    color: #fff;
-  }
-  .sale-badge {
-    position: absolute;
-    top: 10px;
-    left: -15px;
-    background: #ff4c4c;
-    color: white;
-    padding: 4px 12px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  .card-body{
-    display: flex;
+  .card-body {
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
   }
-
-  .card-title {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .card-price {
-    background-color: #e8f5e9;
-    display: inline-block;
-    padding: 0.25rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.95rem;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .price-old {
-    text-decoration: line-through;
-    color: #aaa;
-    display: inline-block;
-    padding: 0.25rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.95rem;
-    text-align: center;
-  }
-
-  .card-title {
-    color: #8b6b3d;
-    transition: all 0.2s ease-in;
-    font-weight: 600;
-    font-size: 1.2rem;
-  }
-
-  .addToCart-btn {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    width: 100%;
-  }
-  .addToCart-btn button {
-    position: relative;
-    padding: 0.75rem 1.5rem;
-    color: #8b6b3d;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    width: 100%;
-    overflow: hidden;
-    z-index: 0;
-    border-radius: 0;
-    background-color: #fff;
-  }
-  .addToCart-btn button::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: #8b6b3d;
-    transition: height 0.3s ease;
-    z-index: -1;
-  }
-  .addToCart-btn button:hover {
-    color: #fff;
-    border-radius: 6px;
-  }
-  .addToCart-btn button:hover::before {
-    height: 100%;
-  }
-
-  @media (max-width: 1200px) {
-    .product-actions {
-      position: absolute;
-      bottom: 5%;
-      left: 0%;
-      opacity: 1;
-      transform: translateX(0) translateY(0);
-      z-index: 10;
-    }
-
-    
-    .product-card:hover .product-actions {
-      transform: translateX(0) translateY(0);
-    }
-    .card-body {
-      flex-direction: column;
-    }
-  }
+}
 </style> 

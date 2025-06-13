@@ -12,14 +12,16 @@
         <ul v-if="cartItems.length" class="list-unstyled">
           <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2 gap-3">
             <img :src="getProductImage(item)" alt="Product Image" class="product-image" />
-
             <div class="flex-grow-1">
-              <h6 class="mb-1">{{ item.product ? (currentLang === 'ar' ? item.product.name_ar : item.product.name_en) : 'Product not available' }}</h6>
+              <h6 class="mb-1">
+                {{ item.product ? (currentLang === 'ar' ? item.product.name_ar : item.product.name_en) : 'Product not available' }}
+              </h6>
 
               <!-- Quantity and Price -->
               <div class="d-flex align-items-center gap-2">
                 <small class="text-muted">
-                  {{ item.price }} {{ item.currency ? (currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en) : '' }} ×
+                  {{ item.price }} 
+                  {{ item.currency ? (currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en) : '' }} ×
                 </small>
                 <div class="quantity-control">
                   <el-button 
@@ -54,7 +56,8 @@
       <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
         <span><strong>{{ $t('cart.total') }}:</strong></span>
         <span>
-          {{ totalValue }} {{ cartItems[0]?.currency ? (currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en) : '' }}
+          {{ totalValue }} 
+          {{ cartItems[0]?.currency ? (currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en) : '' }}
         </span>
       </div>
 
@@ -72,6 +75,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { API_URL } from '@/store/index.js';
 import { ElNotification } from 'element-plus';
 import { useI18n } from 'vue-i18n';
@@ -92,6 +96,7 @@ export default {
       default: 'en'
     }
   },
+  emits: ['close', 'checkout', 'update-quantity'],
   setup() {
     const { t } = useI18n();
     return { t };
@@ -103,10 +108,50 @@ export default {
       }
       return '/placeholder-image.jpg';
     },
-    increaseQuantity(item) {
+
+    async updateCartItemQuantity(item) {
+      try {
+        const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+          quantity: item.quantity
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.data.status) {
+          this.$emit('update-quantity', item);
+          ElNotification({
+            title: this.t('cart.success'),
+            message: this.t('cart.quantity_updated'),
+            type: 'success',
+            duration: 2000
+          });
+        } else {
+          ElNotification({
+            title: this.t('cart.error'),
+            message: response.data.message || this.t('cart.update_failed'),
+            type: 'error',
+            duration: 3000
+          });
+        }
+      } catch (error) {
+        console.error('Error updating cart:', error);
+        ElNotification({
+          title: this.t('cart.error'),
+          message: error.response?.data?.message || this.t('cart.network_error'),
+          type: 'error',
+          duration: 3000
+        });
+      }
+    },
+
+    async increaseQuantity(item) {
       if (item.quantity < 99) {
         item.quantity++;
-        this.$emit('update-quantity', item);
+        await this.updateCartItemQuantity(item);
       } else {
         ElNotification({
           title: this.t('warning'),
@@ -115,10 +160,11 @@ export default {
         });
       }
     },
-    decreaseQuantity(item) {
+
+    async decreaseQuantity(item) {
       if (item.quantity > 1) {
         item.quantity--;
-        this.$emit('update-quantity', item);
+        await this.updateCartItemQuantity(item);
       } else {
         ElNotification({
           title: this.t('warning'),
@@ -127,8 +173,7 @@ export default {
         });
       }
     }
-  },
-  emits: ['close', 'checkout', 'update-quantity']
+  }
 }
 </script>
 
@@ -231,9 +276,9 @@ export default {
     width: 100%;
     justify-content: center;
   }
-  
+
   .qty-number {
     min-width: 25px;
   }
 }
-</style> 
+</style>

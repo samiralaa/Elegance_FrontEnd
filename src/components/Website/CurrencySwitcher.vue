@@ -62,14 +62,29 @@ export default {
       }
     }
 
-    const handleCurrencyChange = (currency) => {
-      selectedCurrency.value = currency
-      // Emit event to parent component
-      window.dispatchEvent(new CustomEvent('currency-changed', { 
-        detail: { currency } 
-      }))
-      // Save to localStorage
-      localStorage.setItem('selectedCurrency', JSON.stringify(currency))
+    const handleCurrencyChange = async (currency) => {
+      try {
+        // Make authenticated API call to change currency
+        const response = await axios.post('http://elegance_backend.test/api/currencies/change', {
+          currency_id: currency.id
+        })
+
+        if (response.data.status === 'success') {
+          selectedCurrency.value = currency
+          // Emit event to parent component
+          window.dispatchEvent(new CustomEvent('currency-changed', { 
+            detail: { currency } 
+          }))
+          // Save to localStorage
+          localStorage.setItem('selectedCurrency', JSON.stringify(currency))
+          // Fetch updated currencies
+          await fetchCurrencies()
+        } else {
+          console.error('Failed to change currency:', response.data.message)
+        }
+      } catch (error) {
+        console.error('Error changing currency:', error)
+      }
     }
 
     onMounted(() => {

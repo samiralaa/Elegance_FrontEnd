@@ -30,10 +30,17 @@
 
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
-              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
-              <span class="card-text card-price">
-                {{ product.price }} {{ product.currency.name_en }}
-              </span>
+              <div class="price-container">
+                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
+                  -{{ product.discount[0].discount_value }}
+                </span>
+                <span v-if="product.discount && product.discount.length > 0" class="price-old">
+                  {{ product.price }} {{ product.currency.name_en }}
+                </span>
+                <span class="card-text card-price">
+                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+                </span>
+              </div>
 
               <div class="product-actions d-flex justify-content-center flex-wrap gap-2">
                 <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
@@ -153,27 +160,41 @@ const addToFavorites = async (product) => {
   }
 }
 
+const calculateDiscountedPrice = (product) => {
+  if (product.discount && product.discount.length > 0) {
+    const discountValue = parseFloat(product.discount[0].discount_value)
+    const originalPrice = parseFloat(product.price)
+    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    return discountedPrice.toFixed(2)
+  }
+  return product.price
+}
+
 const addToCart = async (product) => {
   try {
     const payload = {
       product_id: product.id,
       quantity: 1,
-      price: product.price,
+      price: calculateDiscountedPrice(product),
     }
 
-    if (product.amounts) {
-      payload.amount_id = product.amount_id
+    if (product.amounts && product.amounts.length > 0) {
+      payload.amount_id = product.amounts[0].id
     }
 
     const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
     })
 
-    if (response.data.message) {
+    if (response.data.status) {
       successMessage.value = response.data.message
       showSuccessDialog.value = true
+      
+      // Immediately increment the cart count
       cartStore.incrementCount()
       
       // Then fetch the actual count from the server
@@ -242,7 +263,6 @@ onMounted(() => {
   border-radius: 999px;
   font-size: 0.95rem;
   text-align: center;
-  margin-bottom: 10px;
 }
 
 .price-old {
@@ -255,6 +275,23 @@ onMounted(() => {
   text-align: center;
 }
 
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.discount-badge {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
 
 .btn {
   font-size: 1.1rem;

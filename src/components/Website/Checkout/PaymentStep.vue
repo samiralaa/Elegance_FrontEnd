@@ -212,10 +212,11 @@ export default {
         return;
       }
       const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const paymentMethod = this.selectedPaymentMethod === 3 ? 'cod' : String(this.selectedPaymentMethod);
       const orderData = {
         shipping_details: this.shippingDetails,
         address_id: this.shippingDetails.addressId,
-        payment_method: String(this.selectedPaymentMethod),
+        payment_method: paymentMethod,
         items: this.cartItems.map(item => ({
           product_id: item.product.id,
           quantity: item.quantity,
@@ -225,18 +226,34 @@ export default {
         total_price: totalPrice
       };
 
-      const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-        }
-      });
+      try {
+        const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
 
-      if (orderResponse.data.success) {
-        this.$toast.success(this.$t('checkout.orderPlaced'));
-        this.$emit('order-placed');
-        window.location.href = '/';
-      } else {
-        throw new Error(this.$t('checkout.errorPlacingOrder'));
+        // Defensive: check both orderResponse and orderResponse.data and the presence of 'success'
+        if (orderResponse && orderResponse.data && typeof orderResponse.data.success !== 'undefined') {
+          if (orderResponse.data.success) {
+          
+            window.location.href = '/orders/user';
+          } else {
+            throw new Error(orderResponse.data.error || this.$t('checkout.errorPlacingOrder'));
+          }
+        } else {
+          // If response is not as expected, throw a generic error
+          throw new Error(this.$t('checkout.errorPlacingOrder'));
+        }
+      } catch (error) {
+        console.error(error);
+        let message = this.$t('checkout.errorPlacingOrder');
+        if (error.response && error.response.data && error.response.data.error) {
+          message = error.response.data.error;
+        } else if (error.message) {
+          message = error.message;
+        }
+        this.$toast.error(message);
       }
     },
     getCountryCode(countryName) {

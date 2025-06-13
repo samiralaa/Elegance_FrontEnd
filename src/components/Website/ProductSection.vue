@@ -23,10 +23,20 @@
                 <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
                   <fa icon="eye" />
                 </router-link>
-                <button :disabled="!product.is_available" @click="addToCart(product)" class="btn btn-light shadow-sm disable">
+                <button 
+                  @click="addToCart(product)" 
+                  class="btn btn-light shadow-sm"
+                  :class="{ 'disabled': !product.is_available }"
+                  :disabled="!product.is_available"
+                >
                   {{ $t('home.add-to-cart') }}
                 </button>
-                <button :disabled="!product.is_available" @click="addToCart(product)" class="d-none btn rounded-circle btn-light shadow-sm enable">
+                <button 
+                  @click="addToCart(product)" 
+                  class="d-none btn rounded-circle btn-light shadow-sm"
+                  :class="{ 'disabled': !product.is_available }"
+                  :disabled="!product.is_available"
+                >
                   <fa icon="cart-plus" />
                 </button>
                 <button
@@ -42,10 +52,17 @@
 
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
-              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
-              <span class="card-text card-price">
-                {{ product.price }} {{ product.currency.name_en }}
-              </span>
+              <div class="price-container">
+                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
+                  -{{ product.discount[0].discount_value }}
+                </span>
+                <span v-if="product.discount && product.discount.length > 0" class="price-old">
+                  {{ product.price }} {{ product.currency.name_en }}
+                </span>
+                <span class="card-text card-price">
+                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -160,9 +177,8 @@ const addToCart = async (product) => {
       price: product.price,
     }
 
-    if (product.amounts) {
-      console.log('Amounts:', product.amounts);
-      payload.amount_id = product.amount_id
+    if (product.amounts && product.amounts.length > 0) {
+      payload.amount_id = product.amounts[0].id
     }
 
     const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
@@ -171,14 +187,11 @@ const addToCart = async (product) => {
       },
     })
 
-    if (response.data.message) {
+    if (response.data.status) {
       successMessage.value = response.data.message
       showSuccessDialog.value = true
       
-      // Immediately increment the cart count
-      cartStore.incrementCount()
-      
-      // Then fetch the actual count from the server
+      // Update cart count
       await cartStore.fetchCartCount()
     }
   } catch (error) {
@@ -189,6 +202,16 @@ const addToCart = async (product) => {
       type: 'error'
     })
   }
+}
+
+const calculateDiscountedPrice = (product) => {
+  if (product.discount && product.discount.length > 0) {
+    const discountValue = parseFloat(product.discount[0].discount_value)
+    const originalPrice = parseFloat(product.price)
+    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    return discountedPrice.toFixed(2)
+  }
+  return product.price
 }
 
 onMounted(() => {
@@ -232,11 +255,13 @@ onMounted(() => {
   opacity: 0;
   transition: all 0.3s ease-in-out;
   z-index: 10;
+  pointer-events: auto;
 }
 
 .product-card:hover .product-actions {
   transform: translateX(-50%) translateY(-30%);
   opacity: 1;
+  pointer-events: auto;
 }
 
 .card-body{
@@ -336,5 +361,27 @@ onMounted(() => {
   .card-text {
     font-size: 0.8rem;
   }
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.discount-badge {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

@@ -27,10 +27,15 @@
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
-              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
-              <span class="card-text card-price">
-                {{ product.price }} {{ product.currency.name_en }}
-              </span>
+              <div class="price-container">
+                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
+                  {{ product.discount[0].discount_value }}% OFF
+                </span>
+                <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
+                <span class="card-text card-price">
+                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+                </span>
+              </div>
             </div>
             <div class="product-actions d-flex justify-content-center flex-wrap gap-2">
               <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
@@ -196,6 +201,16 @@ const addToCart = async (product) => {
   }
 };
 
+const calculateDiscountedPrice = (product) => {
+  if (product.discount && product.discount.length > 0) {
+    const discountValue = parseFloat(product.discount[0].discount_value)
+    const originalPrice = parseFloat(product.price)
+    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    return discountedPrice.toFixed(2)
+  }
+  return product.price
+};
+
 onMounted(() => {
   fetchProducts();
 });
@@ -308,5 +323,21 @@ onMounted(() => {
   .card-btns {
     justify-content: center;
   }
+}
+
+.price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.discount-badge {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 </style>
