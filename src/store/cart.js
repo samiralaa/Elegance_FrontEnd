@@ -22,7 +22,7 @@ export const useCartStore = defineStore('cart', {
       try {
         this.isLoading = true
         this.error = null
-        const response = await axios.get('http://elegance_backend.test/api/cart-items', {
+        const response = await axios.get('https://backend.webenia.org/api/cart-items', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const useCartStore = defineStore('cart', {
     async updateQuantity(itemId, newQuantity) {
       try {
         this.error = null
-        const response = await axios.post(`http://elegance_backend.test/api/cart-items/${itemId}`, {
+        const response = await axios.post(`https://backend.webenia.org/api/cart-items/${itemId}`, {
           quantity: newQuantity
         }, {
           headers: {

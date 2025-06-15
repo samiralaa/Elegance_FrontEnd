@@ -219,7 +219,7 @@ export default {
   },
   methods: {
     fetchSettings() {
-  axios.get('http://elegance_backend.test/api/settings')
+  axios.get('https://backend.webenia.org/api/settings')
     .then(response => {
       const settingsArray = response.data.data;
       const transformedSettings = {};
