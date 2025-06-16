@@ -110,6 +110,31 @@ export const useCartStore = defineStore('cart', {
 
     clearError() {
       this.error = null
-    }
+    },
+
+    async removeFromCart(itemId) {
+      try {
+        this.isLoading = true;
+        this.error = null;
+
+        await axios.delete(`https://backend.webenia.org/api/cart-items/${itemId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        // أعد تحميل البيانات بالكامل من السيرفر
+        await this.fetchCartCount();
+      } catch (error) {
+        console.error('Error removing item from cart:', error);
+        this.error = error.response?.data?.message || 'Failed to remove item';
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
   }
 }) 

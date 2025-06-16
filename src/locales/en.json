@@ -364,10 +364,22 @@
     "registrationSuccess": "Registration successful! Please check your email to verify your account.",
     "alreadyHaveAccount": "Already have an account?",
     "loginHere": "Login here",
-    "validation" :{
+
+    "validation": {
+      "fullNameRequired": "Full name is required",
+      "fullNameMinLength": "Full name must be at least 3 characters",
+      "fullNameInvalid": "Full name is invalid",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Email is invalid",
       "passwordRequired": "Password is required",
-      "emailRequired": "Email is required"
+      "confirmPasswordRequired": "Confirm password is required",
+      "confirmPasswordMatch": "Password and confirm password do not match",
+      "countryRequired": "Country is required",
+      "phoneRequired": "Phone number is required",
+      "phoneLength": "Phone number must be at least 7 digits",
+      "passwordMinLength": "Password must be at least 8 characters"
     }
+
   },
 
   "about": {
@@ -407,7 +419,8 @@
     "price": "Price",
     "categories": "Categories",
     "addToCart": "Add to Cart",
-    "filter": "Filter"
+    "filter": "Filter",
+    "outOfStock": "Out of Stock"
   },
 
   "cart": {

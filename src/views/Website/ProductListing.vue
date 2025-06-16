@@ -75,7 +75,7 @@
               :src="getImageUrl(product.images[0].path)"
               :alt="product.name" 
             />
-            <div v-if="product.sale" class="sale-badge">{{ $t('products.sale') }}</div>
+            <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             <div class="product-actions d-flex justify-content-center gap-5 w-100">
               <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
                 <fa icon="eye" />
@@ -376,7 +376,9 @@
     background: #fff;
     text-align: center;
     transition: box-shadow 0.3s;
-    height: fit-content;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
   .image-container {
     position: relative;
@@ -440,7 +442,7 @@
   .sale-badge {
     position: absolute;
     top: 10px;
-    left: -15px;
+    left: 10px;
     background: #ff4c4c;
     color: white;
     padding: 4px 12px;
@@ -536,23 +538,23 @@
   }
 
   @media (max-width: 1200px) {
-  .product-actions {
-    position: absolute;
-    bottom: 5%;
-    left: 0%;
-    opacity: 1;
-    transform: translateX(0) translateY(0);
-    z-index: 10;
-  }
+    .product-actions {
+      position: absolute;
+      bottom: 5%;
+      left: 0%;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      z-index: 10;
+    }
 
-  
-  .product-card:hover .product-actions {
-    transform: translateX(0) translateY(0);
+    
+    .product-card:hover .product-actions {
+      transform: translateX(0) translateY(0);
+    }
+    .card-body {
+      flex-direction: column;
+    }
   }
-  .card-body {
-    flex-direction: column;
-  }
-}
 
   @media (max-width: 768px) {
 

@@ -61,7 +61,7 @@
               <div v-for="product in category.products" :key="product.id" class="product-card">
                 <div class="image-container mb-3 bg-light rounded">
                   <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en" />
-
+                  <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
                   <div class="product-actions d-flex justify-content-center gap-5 w-100">
                     <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
                       <fa icon="eye" />
@@ -87,7 +87,13 @@
                   </span>
                 </div>
                 <div class="addToCart-btn">
-                  <button :disabled="!product.is_available" @click="addToCart(product)">{{ $t('products.addToCart') }}</button>
+                  <button 
+                    :disabled="!product.is_available" 
+                    @click="addToCart(product)" 
+                    class="btn"
+                  >
+                    {{ $t('products.addToCart') }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -455,7 +461,7 @@ const addToCart = async (product) => {
 .sale-badge {
   position: absolute;
   top: 10px;
-  left: -15px;
+  left: 10px;
   background: #ff4c4c;
   color: white;
   padding: 4px 12px;

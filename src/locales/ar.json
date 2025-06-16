@@ -366,7 +366,22 @@
     "submit": "إرسال",
     "registrationSuccess": "تم التسجيل بنجاح",
     "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
-    "loginHere": "تسجيل الدخول هنا"
+    "loginHere": "تسجيل الدخول هنا",
+
+    "validation": {
+      "fullNameRequired": "الاسم الكامل مطلوب",
+      "fullNameMinLength": "يجب أن يكون الاسم الكامل على الأقل 3 أحرف",
+      "fullNameInvalid": "الاسم الكامل غير صالح",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "البريد الإلكتروني غير صالح",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+      "confirmPasswordMatch": "كلمة المرور وتأكيد كلمة المرور لا يتطابقان",
+      "countryRequired": "الدولة مطلوبة",
+      "phoneRequired": "رقم الهاتف مطلوب",
+      "phoneLength": "يجب أن يكون رقم الهاتف على الأقل 7 أرقام",
+      "passwordMinLength": "يجب أن تكون كلمة المرور على الأقل 8 أحرف"
+    }
   },
 
   "about": {
@@ -405,7 +420,8 @@
     "price": "السعر",
     "categories": "الفئات",
     "addToCart": "أضف إلى السلة",
-    "filter": "تصفية"
+    "filter": "تصفية",
+    "outOfStock": "غير متوفر"
   },
 
   "cart": {

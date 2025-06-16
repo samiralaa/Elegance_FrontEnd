@@ -42,6 +42,13 @@
                     <fa icon="plus" />
                   </el-button>
                 </div>
+                <button 
+                  class="btn btn-sm btn-outline-danger ms-auto" 
+                  @click="removeItem(item.id)"
+                  :disabled="isLoading"
+                >
+                  <fa icon="trash" />
+                </button>
               </div>
             </div>
           </li>
@@ -79,27 +86,28 @@ import axios from 'axios';
 import { API_URL } from '@/store/index.js';
 import { ElNotification } from 'element-plus';
 import { useI18n } from 'vue-i18n';
+import { useCartStore } from '@/store/cart';
 
 export default {
   name: 'CartModal',
   props: {
-    cartItems: {
-      type: Array,
-      required: true
-    },
-    totalValue: {
-      type: [Number, String],
-      required: true
-    },
+    cartItems: Array,
+    totalValue: [Number, String],
     currentLang: {
       type: String,
       default: 'en'
     }
   },
-  emits: ['close', 'checkout', 'update-quantity'],
+  emits: ['close', 'checkout', 'update-quantity', 'item-removed'],
+  data() {
+    return {
+      isLoading: false
+    };
+  },
   setup() {
     const { t } = useI18n();
-    return { t };
+    const cartStore = useCartStore();
+    return { t, cartStore };
   },
   methods: {
     getProductImage(item) {
@@ -172,11 +180,28 @@ export default {
           type: 'warning',
         });
       }
+    },
+
+    async removeItem(itemId) {
+      try {
+        await this.cartStore.removeFromCart(itemId);
+        ElNotification({
+          title: this.t('success'),
+          message: this.t('cart_item_removed'),
+          type: 'success'
+        });
+      } catch (error) {
+        ElNotification({
+          title: this.t('error'),
+          message: error.response?.data?.message || this.t('cart.remove_failed'),
+          type: 'error'
+        });
+      }
     }
+
   }
 }
 </script>
-
 <style scoped>
 .modal-overlay {
   position: fixed;

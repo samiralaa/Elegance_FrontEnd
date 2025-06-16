@@ -14,8 +14,8 @@
           :md="12"
           :lg="12"
         >
-          <div class="card my-3">
-            <div class="img-container p-3 rounded">
+          <div class="card my-3 p-4">
+            <div class="img-container rounded position-relative">
               <router-link :to="`/read/products/${product.id}`">
                 <img
                   v-if="product.images.length"
@@ -24,6 +24,7 @@
                   class="product-img card-img bg-light"
                 />
               </router-link>
+              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
@@ -41,7 +42,7 @@
               <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
                 <fa icon="eye" />
               </router-link>
-              <button @click="addToCart(product)" class="btn btn-light shadow-sm rounded-circle">
+              <button :disabled="!product.is_available" @click="addToCart(product)" class="btn btn-light shadow-sm rounded-circle">
                 <fa icon="cart-plus" />
               </button>
               <button
@@ -76,144 +77,144 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { ElNotification } from 'element-plus';
-import { useFavoritesStore } from '@/store/favorites'
-import { useCartStore } from '@/store/cart'
-const products = ref([]);
-const showSuccessDialog = ref(false);
-const successMessage = ref('');
-const favoritesStore = useFavoritesStore()
-const cartStore = useCartStore()
+  import { ref, onMounted } from 'vue';
+  import axios from 'axios';
+  import { ElNotification } from 'element-plus';
+  import { useFavoritesStore } from '@/store/favorites'
+  import { useCartStore } from '@/store/cart'
+  const products = ref([]);
+  const showSuccessDialog = ref(false);
+  const successMessage = ref('');
+  const favoritesStore = useFavoritesStore()
+  const cartStore = useCartStore()
 
-const fetchProducts = async () => {
-  try {
-    const response = await axios.get('https://backend.webenia.org/api/website/products/section');
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('https://backend.webenia.org/api/website/products/section');
 
-    if (response.data.status && response.data.data) {
-      products.value = response.data.data;
-      // Fetch favorites after getting products
-      await fetchFavorites();
-    }
-  } catch (error) {
-    console.error('Error fetching products:', error);
-  }
-};
-
-const fetchFavorites = async () => {
-  try {
-    const response = await axios.get('https://backend.webenia.org/api/favorites', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+      if (response.data.status && response.data.data) {
+        products.value = response.data.data;
+        // Fetch favorites after getting products
+        await fetchFavorites();
       }
-    })
-    
-    if (response.data.status && response.data.data) {
-      // Update favorites store with the fetched favorites
-      favoritesStore.setFavorites(response.data.data)
+    } catch (error) {
+      console.error('Error fetching products:', error);
     }
-  } catch (error) {
-    console.error('Error fetching favorites:', error)
-  }
-}
+  };
 
-const getImageUrl = (path) => {
-  return `https://backend.webenia.org/public/storage/${path}`;
-};
-
-const isInFavorites = (productId) => {
-  return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
-}
-
-const getFavoriteId = (productId) => {
-  const favorite = favoritesStore.favorites.find(favorite => favorite.product_id === productId)
-  return favorite ? favorite.id : null
-}
-
-const addToFavorites = async (product) => {
-  try {
-    // Check if product is already in favorites
-    if (isInFavorites(product.id)) {
-      // Get the favorite ID and remove from favorites
-      const favoriteId = getFavoriteId(product.id)
-      if (favoriteId) {
-        await favoritesStore.removeFromFavorites(favoriteId)
-        successMessage.value = 'Product removed from favorites'
-      }
-    } else {
-      // Add to favorites
-      const response = await favoritesStore.addToFavorites(product.id)
-      successMessage.value = response.message
-    }
-    showSuccessDialog.value = true
-  } catch (error) {
-    console.error('Favorite error:', error)
-    ElNotification({
-      title: '⚠️',
-      message: error.response?.data?.message || 'Login required to favorite product',
-      type: 'error'
-    })
-  }
-};
-
-const addToCart = async (product) => {
-  try {
-    const userId = localStorage.getItem('user_id');
-    const response = await axios.post(
-      'https://backend.webenia.org/api/cart-items',
-      {
-        product_id: product.id,
-        quantity: 1,
-        price: product.price,
-        user_id: userId
-      },
-      {
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get('https://backend.webenia.org/api/favorites', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-        },
-      }
-    );
-
-    if (response.data.message) {
-      successMessage.value = response.data.message || 'Product added to cart';
-      showSuccessDialog.value = true;
-      cartStore.incrementCount()
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      })
       
-      // Then fetch the actual count from the server
-      await cartStore.fetchCartCount()
-      console.log(`Product "${product.name_en}" (ID: ${product.id}) added to cart successfully.`);
-    }
-  } catch (error) {
-    console.error('Error adding to cart:', error);
-    if (error.response?.status === 401) {
-      ElNotification({
-        title: '⚠️ Unauthorized',
-        message: 'Please login to add to cart.',
-        type: 'error',
-      });
-    } else {
-      ElNotification({
-        title: '❌ Error',
-        message: error.response?.data?.message || 'Something went wrong.',
-      });
+      if (response.data.status && response.data.data) {
+        // Update favorites store with the fetched favorites
+        favoritesStore.setFavorites(response.data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching favorites:', error)
     }
   }
-};
 
-const calculateDiscountedPrice = (product) => {
-  if (product.discount && product.discount.length > 0) {
-    const discountValue = parseFloat(product.discount[0].discount_value)
-    const originalPrice = parseFloat(product.price)
-    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
-    return discountedPrice.toFixed(2)
+  const getImageUrl = (path) => {
+    return `https://backend.webenia.org/public/storage/${path}`;
+  };
+
+  const isInFavorites = (productId) => {
+    return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
   }
-  return product.price
-};
 
-onMounted(() => {
-  fetchProducts();
-});
+  const getFavoriteId = (productId) => {
+    const favorite = favoritesStore.favorites.find(favorite => favorite.product_id === productId)
+    return favorite ? favorite.id : null
+  }
+
+  const addToFavorites = async (product) => {
+    try {
+      // Check if product is already in favorites
+      if (isInFavorites(product.id)) {
+        // Get the favorite ID and remove from favorites
+        const favoriteId = getFavoriteId(product.id)
+        if (favoriteId) {
+          await favoritesStore.removeFromFavorites(favoriteId)
+          successMessage.value = 'Product removed from favorites'
+        }
+      } else {
+        // Add to favorites
+        const response = await favoritesStore.addToFavorites(product.id)
+        successMessage.value = response.message
+      }
+      showSuccessDialog.value = true
+    } catch (error) {
+      console.error('Favorite error:', error)
+      ElNotification({
+        title: '⚠️',
+        message: error.response?.data?.message || 'Login required to favorite product',
+        type: 'error'
+      })
+    }
+  };
+
+  const addToCart = async (product) => {
+    try {
+      const userId = localStorage.getItem('user_id');
+      const response = await axios.post(
+        'https://backend.webenia.org/api/cart-items',
+        {
+          product_id: product.id,
+          quantity: 1,
+          price: product.price,
+          user_id: userId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          },
+        }
+      );
+
+      if (response.data.message) {
+        successMessage.value = response.data.message || 'Product added to cart';
+        showSuccessDialog.value = true;
+        cartStore.incrementCount()
+        
+        // Then fetch the actual count from the server
+        await cartStore.fetchCartCount()
+        console.log(`Product "${product.name_en}" (ID: ${product.id}) added to cart successfully.`);
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      if (error.response?.status === 401) {
+        ElNotification({
+          title: '⚠️ Unauthorized',
+          message: 'Please login to add to cart.',
+          type: 'error',
+        });
+      } else {
+        ElNotification({
+          title: '❌ Error',
+          message: error.response?.data?.message || 'Something went wrong.',
+        });
+      }
+    }
+  };
+
+  const calculateDiscountedPrice = (product) => {
+    if (product.discount && product.discount.length > 0) {
+      const discountValue = parseFloat(product.discount[0].discount_value)
+      const originalPrice = parseFloat(product.price)
+      const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+      return discountedPrice.toFixed(2)
+    }
+    return product.price
+  };
+
+  onMounted(() => {
+    fetchProducts();
+  });
 </script>
 <style scoped>
 .products-section {
@@ -247,22 +248,27 @@ onMounted(() => {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
+
 .img-container {
-  width: 150px;
-  height: 150px;
+  width: 400px;
+  /* height: 400px; */
   position: relative;
   aspect-ratio: 1 / 1;
+  overflow: hidden;
 }
 
 .img-container img {
   width: 100%;
-  height: 100%;
   object-fit: cover;
-  transition: scale 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
-.card:hover img {
-  scale: 1.1;
+.card:hover .img-container img {
+  transform: scale(1.05);
+}
+
+.btn[disabled] {
+  cursor: no-drop;
 }
 
 .card-title {
@@ -307,6 +313,17 @@ onMounted(() => {
 .love-btn.active {
   background-color: #ff4d4d;
   color: white;
+}
+
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff4c4c;
+  color: white;
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 5px;
 }
 
 @media (max-width: 768px) {
