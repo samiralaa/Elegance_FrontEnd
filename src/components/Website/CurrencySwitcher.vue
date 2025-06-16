@@ -6,7 +6,7 @@
     </span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item v-for="currency in currencies" :key="currency.id" :command="currency">
+        <el-dropdown-item v-for="currency in activeCurrencies" :key="currency.id" :command="currency">
           <div class="currency-item">
             <span class="currency-name-ar">{{ currency.name_ar }}</span>
             <span class="currency-name-en">{{ currency.name_en }}</span>
@@ -18,9 +18,10 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 export default {
   name: 'CurrencySwitcher',
@@ -31,6 +32,10 @@ export default {
     const currencies = ref([])
     const selectedCurrency = ref(null)
 
+    const activeCurrencies = computed(() => {
+      return currencies.value.filter(currency => !currency.is_deleted)
+    })
+
     const getCurrencyName = (currency) => {
       if (!currency) return 'Select Currency'
       const lang = localStorage.getItem('lang') || 'en'
@@ -40,25 +45,21 @@ export default {
     const fetchCurrencies = async () => {
       try {
         const response = await axios.get('https://backend.webenia.org/api/currencies')
-        if (response.data.status === 'success') {
-          // Remove duplicates based on name_en
-          const uniqueCurrencies = response.data.data.reduce((acc, current) => {
-            const x = acc.find(item => item.name_en === current.name_en)
-            if (!x) {
-              return acc.concat([current])
-            } else {
-              return acc
-            }
-          }, [])
-          currencies.value = uniqueCurrencies
+        if (response.data && Array.isArray(response.data)) {
+          currencies.value = response.data
           
           // Set default currency (US Dollar) if not already set
           if (!selectedCurrency.value) {
-            selectedCurrency.value = currencies.value.find(c => c.name_en === 'US Dollar')
+            const defaultCurrency = currencies.value.find(c => c.name_en === 'US Dollar' && !c.is_deleted)
+            if (defaultCurrency) {
+              selectedCurrency.value = defaultCurrency
+              localStorage.setItem('selectedCurrency', JSON.stringify(defaultCurrency))
+            }
           }
         }
       } catch (error) {
-        console.error('Error fetching currencies:', error)
+        console.error('Fetch currencies error:', error)
+        ElMessage.error('Failed to fetch currencies')
       }
     }
 
@@ -67,9 +68,13 @@ export default {
         // Make authenticated API call to change currency
         const response = await axios.post('https://backend.webenia.org/api/currencies/change', {
           currency_id: currency.id
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
         })
 
-        if (response.data.status === 'success') {
+        if (response.data && response.data.status === 'success') {
           selectedCurrency.value = currency
           // Emit event to parent component
           window.dispatchEvent(new CustomEvent('currency-changed', { 
@@ -77,13 +82,13 @@ export default {
           }))
           // Save to localStorage
           localStorage.setItem('selectedCurrency', JSON.stringify(currency))
-          // Fetch updated currencies
-          await fetchCurrencies()
+          ElMessage.success('Currency changed successfully')
         } else {
-          console.error('Failed to change currency:', response.data.message)
+          throw new Error(response.data?.message || 'Failed to change currency')
         }
       } catch (error) {
         console.error('Error changing currency:', error)
+        ElMessage.error(error.message || 'Failed to change currency')
       }
     }
 
@@ -98,6 +103,7 @@ export default {
 
     return {
       currencies,
+      activeCurrencies,
       selectedCurrency,
       handleCurrencyChange,
       getCurrencyName

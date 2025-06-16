@@ -56,11 +56,16 @@
         <el-form-item :label="$t('Products.Currency')" prop="currency_id">
           <el-select v-model="form.currency_id" :placeholder="$t('Products.SelectCurrency')" filterable clearable>
             <el-option
-              v-for="curr in currencies"
+              v-for="curr in activeCurrencies"
               :key="curr.id"
-              :label="curr.name_en || curr.name_ar"
+              :label="getCurrencyLabel(curr)"
               :value="curr.id"
-            />
+            >
+              <div class="currency-option">
+                <span class="currency-name">{{ curr.name_en }}</span>
+                <span class="currency-rate">({{ parseFloat(curr.exchange_rate).toFixed(2) }})</span>
+              </div>
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -117,7 +122,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
@@ -168,6 +173,17 @@ const CATEGORIES_API = `${BASE_URL}/api/categories`
 const CURRENCIES_API = `${BASE_URL}/api/currencies`
 const COUNTRIES_API = `${BASE_URL}/api/countries`
 
+// Add computed property for active currencies
+const activeCurrencies = computed(() => {
+  return currencies.value.filter(currency => !currency.is_deleted)
+})
+
+// Add function to format currency label
+const getCurrencyLabel = (currency) => {
+  const lang = localStorage.getItem('lang') || 'en'
+  return lang === 'ar' ? currency.name_ar : currency.name_en
+}
+
 // Fetch select options from API endpoints
 const fetchSelectOptions = async () => {
   try {
@@ -185,8 +201,8 @@ const fetchSelectOptions = async () => {
 
     // Fetch Currencies
     const currencyRes = await axios.get(CURRENCIES_API)
-    if (currencyRes.data.status && currencyRes.data.data) {
-      currencies.value = currencyRes.data.data
+    if (currencyRes.data && Array.isArray(currencyRes.data)) {
+      currencies.value = currencyRes.data
     }
 
     // Fetch Countries
@@ -204,8 +220,6 @@ const fetchSelectOptions = async () => {
   } catch (error) {
     console.error('Error fetching select options:', error)
     ElMessage.error(error.response?.data?.message || 'Failed to load form options')
-  } finally {
-    // Any cleanup or final state updates can go here
   }
 }
 
@@ -300,5 +314,22 @@ onMounted(() => {
 
 .upload-demo {
   width: 100%;
+}
+
+.currency-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.currency-name {
+  font-weight: 500;
+}
+
+.currency-rate {
+  color: #909399;
+  font-size: 0.9em;
+  margin-left: 8px;
 }
 </style>
