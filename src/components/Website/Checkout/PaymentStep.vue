@@ -247,42 +247,55 @@ export default {
           }
         }
       } catch (error) {
-        console.error("Error placing order:", error);
-        let errorMessage = this.$t("checkout.errorPlacingOrder");
-        
-        try {
-          // Debug logging
-          console.log("Error object:", error);
-          console.log("Error type:", typeof error);
-          
-          // Handle different error types
-          if (error && typeof error === "object") {
-            // Handle axios error response
-            if (error.response && typeof error.response === "object") {
-              const responseData = error.response.data || {};
-              errorMessage = responseData.message || responseData.error || errorMessage;
-            }
-            // Handle error with message property
-            else if (error.message) {
-              errorMessage = error.message;
-            }
-          }
-          // Handle string errors
-          else if (typeof error === "string") {
-            errorMessage = error;
-          }
-        } catch (e) {
-          console.error("Error processing error message:", e);
-        }
-        
-        // Ensure we always have a string message
-        if (typeof errorMessage !== "string") {
-          errorMessage = this.$t("checkout.errorPlacingOrder");
-        }
-        
-        this.$toast.error(errorMessage);
+        console.error('Error placing order:', error);
+        this.$toast.error(error.message || this.$t('checkout.errorPlacingOrder'));
       } finally {
         this.loading = false;
+      }
+    },
+    async createOrder() {
+      // Validate addressId
+      if (!this.shippingDetails.addressId) {
+        this.$toast.error('The address id field is required.');
+        return;
+      }
+      const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const paymentMethod = this.selectedPaymentMethod === 3 ? 'cod' : String(this.selectedPaymentMethod);
+      const orderData = {
+        shipping_details: this.shippingDetails,
+        address_id: this.shippingDetails.addressId,
+        payment_method: paymentMethod,
+        items: this.cartItems.map(item => ({
+          product_id: item.product.id,
+          quantity: item.quantity,
+          price: item.price,
+          subtotal: item.price * item.quantity
+        })),
+        total_price: totalPrice
+      };
+
+      try {
+        const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+
+        if (orderResponse.data.success) {
+          this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
+          window.location.href = '/orders/user';
+        } else {
+          throw new Error(orderResponse.data.error || this.$t('checkout.errorPlacingOrder'));
+        }
+      } catch (error) {
+        console.error(error);
+        let message = this.$t('checkout.errorPlacingOrder');
+        if (error.response && error.response.data && error.response.data.error) {
+          message = error.response.data.error;
+        } else if (error.message) {
+          message = error.message;
+        }
+        this.$toast.error(message);
       }
     },
     getCountryCode(countryName) {
