@@ -255,13 +255,21 @@ export default {
           console.log("Error object:", error);
           console.log("Error type:", typeof error);
           
-          // Check if error is an object and has response
+          // Handle different error types
           if (error && typeof error === "object") {
-            if (error.response && error.response.data) {
-              errorMessage = error.response.data.message || error.response.data.error || errorMessage;
-            } else if ("message" in error) {
+            // Handle axios error response
+            if (error.response && typeof error.response === "object") {
+              const responseData = error.response.data || {};
+              errorMessage = responseData.message || responseData.error || errorMessage;
+            }
+            // Handle error with message property
+            else if (error.message) {
               errorMessage = error.message;
             }
+          }
+          // Handle string errors
+          else if (typeof error === "string") {
+            errorMessage = error;
           }
         } catch (e) {
           console.error("Error processing error message:", e);
