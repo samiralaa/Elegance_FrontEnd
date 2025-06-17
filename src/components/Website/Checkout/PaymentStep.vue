@@ -248,7 +248,20 @@ export default {
         }
       } catch (error) {
         console.error('Error placing order:', error);
-        this.$toast.error(error.message || this.$t('checkout.errorPlacingOrder'));
+        let errorMessage = this.$t('checkout.errorPlacingOrder');
+        
+        // Safely extract error message
+        if (error) {
+          if (error.response?.data?.error) {
+            errorMessage = error.response.data.error;
+          } else if (error.response?.data?.message) {
+            errorMessage = error.response.data.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+        }
+        
+        this.$toast.error(errorMessage);
       } finally {
         this.loading = false;
       }
