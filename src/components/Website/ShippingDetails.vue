@@ -104,7 +104,7 @@ export default {
     async fetchSavedAddresses() {
       this.loading = true;
       try {
-        const response = await axios.get('https://backend.webenia.org/api/address');
+        const response = await axios.get('http://elegance_backend.test/api/address');
         this.savedAddresses = response.data;
       } catch (error) {
         console.error('Error fetching addresses:', error);

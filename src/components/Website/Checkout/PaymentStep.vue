@@ -128,144 +128,178 @@ export default {
       this.cardElement = cardElement;
     },
     async placeOrder() {
-      try {
-        this.loading = true;
-        // Validate addressId
-        if (!this.shippingDetails.addressId) {
-          this.$toast.error('The address id field is required.');
-          this.loading = false;
-          return;
-        }
+  try {
+    this.loading = true;
 
-        // Safely get user ID from localStorage
-        let userId;
-        try {
-          const authUser = localStorage.getItem('auth_user');
-          if (authUser) {
-            const parsedUser = JSON.parse(authUser);
-            userId = parsedUser?.id;
-          }
-        } catch (e) {
-          console.error('Error parsing auth_user:', e);
-          this.$toast.error('Error getting user information');
-          this.loading = false;
-          return;
-        }
+    // ✅ التحقق من العنوان
+    if (!this.shippingDetails.addressId) {
+      this.$toast.error('The address id field is required.');
+      return;
+    }
 
-        if (!userId) {
-          this.$toast.error('User authentication required');
-          this.loading = false;
-          return;
-        }
-
-        // Calculate total price from items
-        const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        // Validate cart items
-        if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
-          this.$toast.error('No items in cart');
-          this.loading = false;
-          return;
-        }
-
-        const orderData = {
-          user_id: userId,
-          order: {
-            status: 'pending',
-            payment_method: String(this.selectedPaymentMethod === 1 ? 'stripe' : this.selectedPaymentMethod === 2 ? 'tabby' : 'cash'),
-            shipping_address: this.shippingDetails.address || '',
-            address_id: this.shippingDetails.addressId,
-            items: this.cartItems.map(item => ({
-              product_id: item.product?.id,
-              product_name: item.product?.name || '',
-              quantity: parseInt(item.quantity) || 0,
-              price: parseFloat(item.price) || 0,
-              subtotal: (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })).filter(item => item.product_id && item.quantity > 0),
-            total_price: totalPrice,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        };
-
-        // Validate order data
-        if (!orderData.order.items.length) {
-          this.$toast.error('Invalid order items');
-          this.loading = false;
-          return;
-        }
-
-        if (this.selectedPaymentMethod === 1) { // Stripe Checkout
-          const response = await axios.post(`${API_URL}/api/payment/process`, {
-            ...orderData,
-            amount: totalPrice,
-            currency: this.currency,
-            payment_method: 'stripe'
-          }, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-            }
-          });
-
-          if (response.data.success && response.data.url) {
-            console.log('Stripe redirect URL:', response.data.url);
-            window.location.href = response.data.url;
-            return;
-          } else {
-            throw new Error(response.data.error || this.$t('checkout.errorCreatingPaymentSession'));
-          }
-        } else if (this.selectedPaymentMethod === 2) { // Tabby
-          const tabbyResponse = await axios.post(`${API_URL}/api/payment/tabby/create-session`, {
-            ...orderData,
-            amount: totalPrice
-          }, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-            }
-          });
-
-          if (tabbyResponse.data.success) {
-            this.$toast.success(this.$t('checkout.redirectingToTabby'));
-            window.location.href = tabbyResponse.data.redirectUrl;
-          } else {
-            throw new Error(this.$t('checkout.errorCreatingPaymentSession'));
-          }
-        } else if (this.selectedPaymentMethod === 3) { // Cash on Delivery
-          const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-            }
-          });
-
-          if (orderResponse.data.success) {
-            this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
-            window.location.href = '/orders/user';
-          } else {
-            throw new Error(orderResponse.data.error || this.$t('checkout.errorPlacingOrder'));
-          }
-        }
-      } catch (error) {
-        console.error('Error placing order:', error);
-        let errorMessage = this.$t('checkout.errorPlacingOrder');
-        
-        // Safely extract error message
-        if (error) {
-          if (error.response?.data?.error) {
-            errorMessage = error.response.data.error;
-          } else if (error.response?.data?.message) {
-            errorMessage = error.response.data.message;
-          } else if (error.message) {
-            errorMessage = error.message;
-          }
-        }
-        
-        this.$toast.error(errorMessage);
-      } finally {
-        this.loading = false;
+    // ✅ استخراج user ID من localStorage
+    let userId;
+    try {
+      const authUser = localStorage.getItem('auth_user');
+      if (authUser) {
+        const parsedUser = JSON.parse(authUser);
+        userId = parsedUser?.id;
       }
-    },
+    } catch (e) {
+      console.error('Error parsing auth_user:', e);
+      this.$toast.error('Error getting user information');
+      return;
+    }
+
+    if (!userId) {
+      this.$toast.error('User authentication required');
+      return;
+    }
+
+    // ✅ التحقق من وجود عناصر في السلة
+    if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
+      this.$toast.error('No items in cart');
+      return;
+    }
+
+    // ✅ حساب السعر الإجمالي
+    const totalPrice = this.cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    // ✅ إعداد بيانات الطلب
+    const orderData = {
+      user_id: userId,
+      order: {
+        status: 'pending',
+        payment_method: String(
+          this.selectedPaymentMethod === 1
+            ? 'stripe'
+            : this.selectedPaymentMethod === 2
+            ? 'tabby'
+            : 'cash'
+        ),
+        shipping_address: this.shippingDetails.address || '',
+        address_id: this.shippingDetails.addressId,
+        items: this.cartItems
+          .map((item) => ({
+            product_id: item.product?.id,
+            product_name: item.product?.name || '',
+            quantity: parseInt(item.quantity) || 0,
+            price: parseFloat(item.price) || 0,
+            subtotal:
+              (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }))
+          .filter((item) => item.product_id && item.quantity > 0),
+        total_price: totalPrice,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+    };
+
+    if (!orderData.order.items.length) {
+      this.$toast.error('Invalid order items');
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+    };
+
+    // ✅ Stripe Payment
+    if (this.selectedPaymentMethod === 1) {
+      const response = await axios.post(
+        `${API_URL}/api/payment/process`,
+        {
+          ...orderData,
+          amount: totalPrice,
+          currency: this.currency,
+          payment_method: 'stripe',
+        },
+        { headers }
+      );
+
+      console.log('Stripe response:', response);
+
+      if (response?.data?.success && response?.data?.url) {
+        window.location.href = response.data.url;
+        return;
+      } else {
+        throw new Error(
+          response?.data?.error ||
+          response?.data?.message ||
+          this.$t('checkout.errorCreatingPaymentSession')
+        );
+      }
+    }
+
+    // ✅ Tabby Payment
+    if (this.selectedPaymentMethod === 2) {
+      const tabbyResponse = await axios.post(
+        `${API_URL}/api/payment/tabby/create-session`,
+        {
+          ...orderData,
+          amount: totalPrice,
+        },
+        { headers }
+      );
+
+      console.log('Tabby response:', tabbyResponse);
+
+      if (tabbyResponse?.data?.success) {
+        this.$toast.success(this.$t('checkout.redirectingToTabby'));
+        window.location.href = tabbyResponse.data.redirectUrl;
+        return;
+      } else {
+        throw new Error(
+          tabbyResponse?.data?.error ||
+          tabbyResponse?.data?.message ||
+          this.$t('checkout.errorCreatingPaymentSession')
+        );
+      }
+    }
+
+    // ✅ Cash on Delivery
+    if (this.selectedPaymentMethod === 3) {
+      const orderResponse = await axios.post(
+        `${API_URL}/api/orders`,
+        orderData,
+        { headers }
+      );
+
+     
+
+      if (orderResponse?.data) {
+        console.log('Order response:', orderResponse);
+       
+        window.location.href = '/orders/user';
+        return;
+      } else {
+        const message =
+          orderResponse?.data?.message ||
+          orderResponse?.data?.error ||
+          'Error placing order';
+        throw new Error(message);
+      }
+    }
+  } catch (error) {
+    console.error('Error placing order:', error);
+
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
+      'Unexpected error while placing your order.';
+
+    this.$toast.error(errorMessage);
+  } finally {
+    this.loading = false;
+  }
+},
+
     async createOrder() {
       // Validate addressId
       if (!this.shippingDetails.addressId) {
@@ -295,7 +329,8 @@ export default {
         });
 
         if (orderResponse.data.success) {
-          this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
+          console.log(orderResponse)
+          // this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
           window.location.href = '/orders/user';
         } else {
           throw new Error(orderResponse.data.error || this.$t('checkout.errorPlacingOrder'));

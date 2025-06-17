@@ -132,7 +132,7 @@ export default {
           return;
         }
 
-        const res = await axios.get('https://backend.webenia.org/api/orders/user', {
+        const res = await axios.get('http://elegance_backend.test/api/orders/user', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -160,7 +160,7 @@ export default {
       this.currentFilter = this.currentFilter === status ? null : status;
     },
     imageUrl(path) {
-      return `https://backend.webenia.org/public/storage/${path}`;
+      return `http://elegance_backend.test/public/storage/${path}`;
     },
     formatDate(datetime) {
       const date = new Date(datetime);
