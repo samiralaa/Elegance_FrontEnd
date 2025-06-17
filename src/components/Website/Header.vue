@@ -107,8 +107,9 @@
       :current-lang="currentLang"
       @close="showCartModalFlag = false"
       @checkout="checkout"
-      @update-quantity="updateQuantity"
+      @update-quantity="fetchCartItems"
     />
+
 
     <favorites-modal 
       v-if="showFavoritesModal"
@@ -168,7 +169,8 @@ export default {
       categories: [],
       showBrandsDropdown: false,
       showCategoriesDropdown: false,
-      isLoadingFavorites: false
+      isLoadingFavorites: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -241,6 +243,7 @@ export default {
       }
     },
     async showCartModal() {
+
       if (this.isAuthenticated) {
         await this.fetchCartItems();
         this.showCartModalFlag = true;

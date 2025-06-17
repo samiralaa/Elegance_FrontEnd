@@ -7,8 +7,15 @@
       <!-- Title -->
       <h4 class="mb-3">🛒 {{ $t('cart.title') }}</h4>
 
+      <!-- Loading Spinner -->
+      <div v-if="isLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{ $t('favorites.loading') }}</span>
+        </div>
+      </div>
+
       <!-- Cart List -->
-      <div class="cart-content overflow-auto" style="max-height: 60vh;">
+      <div v-else class="cart-content overflow-auto" style="max-height: 60vh;">
         <ul v-if="cartItems.length" class="list-unstyled">
           <li v-for="item in cartItems" :key="item.id" class="d-flex align-items-center border-bottom py-2 gap-3">
             <img :src="getProductImage(item)" alt="Product Image" class="product-image" />
@@ -32,7 +39,14 @@
                   >
                     <fa icon="minus" />
                   </el-button>
-                  <span class="qty-number">{{ item.quantity }}</span>
+                  <input
+                    class="qty-number"
+                    type="number"
+                    min="1"
+                    max="99"
+                    v-model.number="item.quantity"
+                  >
+
                   <el-button 
                     size="small" 
                     @click="increaseQuantity(item)"
@@ -86,28 +100,32 @@ import axios from 'axios';
 import { API_URL } from '@/store/index.js';
 import { ElNotification } from 'element-plus';
 import { useI18n } from 'vue-i18n';
-import { useCartStore } from '@/store/cart';
 
 export default {
   name: 'CartModal',
   props: {
-    cartItems: Array,
-    totalValue: [Number, String],
+    cartItems: {
+      type: Array,
+      required: true
+    },
+    totalValue: {
+      type: [Number, String],
+      required: true
+    },
     currentLang: {
       type: String,
       default: 'en'
     }
   },
-  emits: ['close', 'checkout', 'update-quantity', 'item-removed'],
+  emits: ['close', 'checkout', 'update-quantity'],
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       isLoading: false
     };
-  },
-  setup() {
-    const { t } = useI18n();
-    const cartStore = useCartStore();
-    return { t, cartStore };
   },
   methods: {
     getProductImage(item) {
@@ -139,9 +157,9 @@ export default {
           });
         } else {
           ElNotification({
-            title: this.t('cart.error'),
+            title: this.t('cart.success'),
             message: response.data.message || this.t('cart.update_failed'),
-            type: 'error',
+            type: 'success',
             duration: 3000
           });
         }
@@ -183,25 +201,40 @@ export default {
     },
 
     async removeItem(itemId) {
+      this.isLoading = true;
       try {
-        await this.cartStore.removeFromCart(itemId);
+        await axios.delete(`${API_URL}/api/cart-items/${itemId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
         ElNotification({
-          title: this.t('success'),
-          message: this.t('cart_item_removed'),
+          title: this.t('cart.success'),
+          message: this.t('cart.item_removed'),
           type: 'success'
         });
+
+        this.$emit('update-quantity');
       } catch (error) {
+        console.error('Error removing item:', error);
         ElNotification({
-          title: this.t('error'),
+          title: this.t('cart.error'),
           message: error.response?.data?.message || this.t('cart.remove_failed'),
           type: 'error'
         });
+      } 
+      finally {
+        this.isLoading = false;
       }
     }
 
   }
 }
 </script>
+
 <style scoped>
 .modal-overlay {
   position: fixed;
@@ -291,9 +324,16 @@ export default {
   font-size: 16px;
   font-weight: 600;
   color: #333;
-  min-width: 30px;
-  text-align: center;
+  min-width: 20px;
+  width: fit-content;
   padding: 0 8px;
+  text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 @media (max-width: 768px) {

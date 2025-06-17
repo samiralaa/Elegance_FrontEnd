@@ -103,7 +103,7 @@ export default {
     await this.favoritesStore.fetchFavorites();
   },
   methods: {
-  getProductImage(product) {
+    getProductImage(product) {
       if (!product.images || !product.images[0]?.path) {
         return '/placeholder-image.jpg';
       }

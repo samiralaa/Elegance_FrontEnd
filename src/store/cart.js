@@ -17,10 +17,9 @@ export const useCartStore = defineStore('cart', {
 
   actions: {
     async fetchCartCount() {
-      if (this.isLoading) return
       
+      this.isLoading = true
       try {
-        this.isLoading = true
         this.error = null
         const response = await axios.get('https://backend.webenia.org/api/cart-items', {
           headers: {
@@ -48,6 +47,7 @@ export const useCartStore = defineStore('cart', {
     },
 
     async fetchCartItems() {
+      this.isLoading = true
       return this.fetchCartCount()
     },
 
@@ -110,30 +110,6 @@ export const useCartStore = defineStore('cart', {
 
     clearError() {
       this.error = null
-    },
-
-    async removeFromCart(itemId) {
-      try {
-        this.isLoading = true;
-        this.error = null;
-
-        await axios.delete(`https://backend.webenia.org/api/cart-items/${itemId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        });
-
-        // أعد تحميل البيانات بالكامل من السيرفر
-        await this.fetchCartCount();
-      } catch (error) {
-        console.error('Error removing item from cart:', error);
-        this.error = error.response?.data?.message || 'Failed to remove item';
-        throw error;
-      } finally {
-        this.isLoading = false;
-      }
     },
 
   }
