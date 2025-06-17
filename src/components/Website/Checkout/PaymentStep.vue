@@ -136,29 +136,66 @@ export default {
           this.loading = false;
           return;
         }
+
+        // Safely get user ID from localStorage
+        let userId;
+        try {
+          const authUser = localStorage.getItem('auth_user');
+          if (authUser) {
+            const parsedUser = JSON.parse(authUser);
+            userId = parsedUser?.id;
+          }
+        } catch (e) {
+          console.error('Error parsing auth_user:', e);
+          this.$toast.error('Error getting user information');
+          this.loading = false;
+          return;
+        }
+
+        if (!userId) {
+          this.$toast.error('User authentication required');
+          this.loading = false;
+          return;
+        }
+
         // Calculate total price from items
         const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        
+        // Validate cart items
+        if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
+          this.$toast.error('No items in cart');
+          this.loading = false;
+          return;
+        }
+
         const orderData = {
-          user_id: 1,
+          user_id: userId,
           order: {
             status: 'pending',
             payment_method: String(this.selectedPaymentMethod === 1 ? 'stripe' : this.selectedPaymentMethod === 2 ? 'tabby' : 'cash'),
-            shipping_address: this.shippingDetails.address,
+            shipping_address: this.shippingDetails.address || '',
             address_id: this.shippingDetails.addressId,
             items: this.cartItems.map(item => ({
-              product_id: item.product.id,
-              product_name: item.product.name,
-              quantity: item.quantity,
-              price: item.price,
-              subtotal: item.price * item.quantity,
+              product_id: item.product?.id,
+              product_name: item.product?.name || '',
+              quantity: parseInt(item.quantity) || 0,
+              price: parseFloat(item.price) || 0,
+              subtotal: (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
-            })),
+            })).filter(item => item.product_id && item.quantity > 0),
             total_price: totalPrice,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }
         };
+
+        // Validate order data
+        if (!orderData.order.items.length) {
+          this.$toast.error('Invalid order items');
+          this.loading = false;
+          return;
+        }
 
         if (this.selectedPaymentMethod === 1) { // Stripe Checkout
           const response = await axios.post(`${API_URL}/api/payment/process`, {
@@ -196,64 +233,36 @@ export default {
             throw new Error(this.$t('checkout.errorCreatingPaymentSession'));
           }
         } else if (this.selectedPaymentMethod === 3) { // Cash on Delivery
-          await this.createOrder();
-        }
-      } catch (error) {
-        console.error('Error placing order:', error);
-        this.$toast.error(error.message || this.$t('checkout.errorPlacingOrder'));
-      } finally {
-        this.loading = false;
-      }
-    },
-    async createOrder() {
-      // Validate addressId
-      if (!this.shippingDetails.addressId) {
-        this.$toast.error('The address id field is required.');
-        return;
-      }
-      const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const paymentMethod = this.selectedPaymentMethod === 3 ? 'cod' : String(this.selectedPaymentMethod);
-      const orderData = {
-        shipping_details: this.shippingDetails,
-        address_id: this.shippingDetails.addressId,
-        payment_method: paymentMethod,
-        items: this.cartItems.map(item => ({
-          product_id: item.product.id,
-          quantity: item.quantity,
-          price: item.price,
-          subtotal: item.price * item.quantity
-        })),
-        total_price: totalPrice
-      };
+          const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+            }
+          });
 
-      try {
-        const orderResponse = await axios.post(`${API_URL}/api/orders`, orderData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-          }
-        });
-
-        // Defensive: check both orderResponse and orderResponse.data and the presence of 'success'
-        if (orderResponse && orderResponse.data && typeof orderResponse.data.success !== 'undefined') {
           if (orderResponse.data.success) {
-          
+            this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
             window.location.href = '/orders/user';
           } else {
             throw new Error(orderResponse.data.error || this.$t('checkout.errorPlacingOrder'));
           }
-        } else {
-          // If response is not as expected, throw a generic error
-          throw new Error(this.$t('checkout.errorPlacingOrder'));
         }
       } catch (error) {
-        console.error(error);
-        let message = this.$t('checkout.errorPlacingOrder');
-        if (error.response && error.response.data && error.response.data.error) {
-          message = error.response.data.error;
-        } else if (error.message) {
-          message = error.message;
+        console.error("Error placing order:", error);
+        let errorMessage = this.$t("checkout.errorPlacingOrder");
+        
+        try {
+          if (error?.response?.data) {
+            errorMessage = error.response.data.message || error.response.data.error || errorMessage;
+          } else if (typeof error === 'object' && error !== null && 'message' in error) {
+            errorMessage = error.message;
+          }
+        } catch (e) {
+          console.error("Error processing error message:", e);
         }
-        this.$toast.error(message);
+        
+        this.$toast.error(errorMessage);
+      } finally {
+        this.loading = false;
       }
     },
     getCountryCode(countryName) {
