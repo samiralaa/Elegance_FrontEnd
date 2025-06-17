@@ -251,13 +251,25 @@ export default {
         let errorMessage = this.$t("checkout.errorPlacingOrder");
         
         try {
-          if (error?.response?.data) {
-            errorMessage = error.response.data.message || error.response.data.error || errorMessage;
-          } else if (typeof error === "object" && error !== null && "message" in error) {
-            errorMessage = error.message;
+          // Debug logging
+          console.log("Error object:", error);
+          console.log("Error type:", typeof error);
+          
+          // Check if error is an object and has response
+          if (error && typeof error === "object") {
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data.message || error.response.data.error || errorMessage;
+            } else if ("message" in error) {
+              errorMessage = error.message;
+            }
           }
         } catch (e) {
           console.error("Error processing error message:", e);
+        }
+        
+        // Ensure we always have a string message
+        if (typeof errorMessage !== "string") {
+          errorMessage = this.$t("checkout.errorPlacingOrder");
         }
         
         this.$toast.error(errorMessage);
