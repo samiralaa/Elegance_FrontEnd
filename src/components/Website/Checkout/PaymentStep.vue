@@ -253,7 +253,7 @@ export default {
         try {
           if (error?.response?.data) {
             errorMessage = error.response.data.message || error.response.data.error || errorMessage;
-          } else if (typeof error === 'object' && error !== null && 'message' in error) {
+          } else if (typeof error === "object" && error !== null && "message" in error) {
             errorMessage = error.message;
           }
         } catch (e) {
