@@ -17,9 +17,15 @@
             </div>
 
             <div class="product-actions">
-              <button @click="addToFavorites" class="action-btn love-btn" :class="{ 'active': isFavorite }">
-                <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></fa>
-              </button>
+                <button
+                  @click="addToFavorites(product)"
+                  class="btn rounded-circle shadow-sm btn-light"
+                  :class="isFavorite ? 'text-danger' : ''"
+                  :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+                >
+                  <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'" size="xl"/>
+                </button>
+                <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
 
             <div class="weight" v-if="product.amounts && product.amounts.length > 0">
@@ -40,15 +46,22 @@
             </div>
 
             <div class="buttons-section">
-              <el-button class="add-to-cart" type="primary" size="large" round @click="addToCart">{{ $t('add_to_cart')
+              <el-button class="add-to-cart btn" :disabled="!product.is_available" type="primary" size="large" round @click="addToCart">{{ $t('products.addToCart')
                 }}</el-button>
 
-              <div class="quantity-section">
+              <div class="quantity-section" v-if="product.is_available">
                 <div class="quantity-control">
                   <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <span class="qty-number">{{ quantity }}</span>
+                  <input
+                    class="qty-number"
+                    type="number"
+                    min="1"
+                    max="99"
+                    v-model.number="quantity"
+                    @input="quantity = Math.min(quantity)"
+                  >
                   <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />
                   </el-button>
@@ -64,7 +77,6 @@
               <img :src="getImageUrl(selectedImage)" class="main-image" @error="handleImageError" />
             </div>
 
-            <div class="sale-badge" v-if="product.old_price">Sale</div>
           </div>
           <div class="slider-wrapper">
             <button class="btn nav-button left" @click="scrollLeft" v-if="numberOfSlides > 1">
@@ -119,12 +131,73 @@
                   </div>
                   <div class="addToCart-btn">
                     <button @click.stop="addChildToCart(child)" :disabled="!child.is_available" class="btn">
-                      {{ t('add_to_cart') }}
+                      {{ t('products.addToCart') }}
                     </button>
                   </div>
                 </div>
               </div>
             </section>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-6 col-md-4 col-lg-3"  v-for="child in product.children" :key="child.id">
+          <div class="product-card card border-0 h-100">
+            <div class="position-relative overflow-hidden bg-light">
+              <router-link :to="`/read/products/${product.id}`">
+                <img
+                  :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
+                  :alt="locale === 'ar' ? child.name_ar : child.name_en"
+                  class="card-img-top product-img"
+                />
+              </router-link>
+              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
+              <!-- Action Buttons -->
+              <div class="product-actions d-flex justify-content-center gap-2 w-100">
+                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                  <fa icon="eye" />
+                </router-link>
+                <button 
+                  @click="addToCart(product)" 
+                  class="btn btn-light shadow-sm"
+                  :class="{ 'disabled': !product.is_available }"
+                  :disabled="!product.is_available"
+                >
+                  {{ $t('home.add-to-cart') }}
+                </button>
+                <button 
+                  @click="addToCart(product)" 
+                  class="d-none btn rounded-circle btn-light shadow-sm"
+                  :class="{ 'disabled': !product.is_available }"
+                  :disabled="!product.is_available"
+                >
+                  <fa icon="cart-plus" />
+                </button>
+                <button
+                  @click="addToFavorites(product)"
+                  class="btn rounded-circle shadow-sm btn-light"
+                  :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
+                >
+                  <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name_en }}</h5>
+              <div class="price-container">
+                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
+                  -{{ product.discount[0].discount_value }}
+                </span>
+                <span v-if="product.discount && product.discount.length > 0" class="price-old">
+                  {{ product.price }} {{ product.currency.name_en }}
+                </span>
+                <span class="card-text card-price">
+                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -254,7 +327,7 @@ const addToCart = async () => {
 };
 
 const navigateToProduct = (productId) => {
-  router.push(`/products/${productId}`);
+  router.push(`${productId}`);
 };
 
 const addChildToCart = async (childProduct) => {
@@ -701,6 +774,12 @@ const checkFavoriteStatus = () => {
   padding: 0 10px;
 }
 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .buttons-section {
   display: flex;
   align-items: center;
@@ -770,9 +849,6 @@ const checkFavoriteStatus = () => {
 }
 
 .sale-badge {
-  position: absolute;
-  top: 20px;
-  inset-inline-start: 20px;
   background-color: #e74c3c;
   color: white;
   padding: 8px 15px;
@@ -845,12 +921,26 @@ const checkFavoriteStatus = () => {
   padding: 10px;
 }
 
+.image-wrapper .slide {
+  padding: 0;
+}
+
 .slide img {
   width: 100%;
   height: auto;
   object-fit: contain;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.image-wrapper .slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:deep(.image-wrapper .slick-list){
+  border-radius: 15px;
 }
 
 .slider .slide img {
@@ -1058,8 +1148,9 @@ const checkFavoriteStatus = () => {
 
 .product-actions {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
   margin: 20px 0;
+  width: 100%;
 }
 
 .action-btn {

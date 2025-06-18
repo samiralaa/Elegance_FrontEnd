@@ -156,4 +156,7 @@ export default {
 .home {
   min-height: 100vh;
 }
+:deep(.el-notification.right){
+  top: 150px !important;
+}
 </style>

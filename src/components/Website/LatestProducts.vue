@@ -26,6 +26,7 @@
                   class="product-img card-img-top"
                 />
               </router-link>
+              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
 
             <div class="card-body">
@@ -46,7 +47,7 @@
                 <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
                   <fa icon="eye" />
                 </router-link>
-                <button @click="addToCart(product)" class="btn btn-light shadow-sm">
+                <button @click="addToCart(product)" :disabled="!product.is_available" class="btn btn-light shadow-sm">
                   {{ $t('home.add-to-cart') }}
                 </button>
                 <button
@@ -63,22 +64,6 @@
         </el-col>
       </div>
     </div>
-
-    <!-- Success Dialog -->
-    <el-dialog
-      v-model="showSuccessDialog"
-      title="🎉 Success"
-      width="30%"
-      :before-close="() => (showSuccessDialog = false)"
-      :center="true"
-      :close-on-click-modal="false"
-      :show-close="false"
-    >
-      <span>{{ successMessage }}</span>
-      <template #footer>
-        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -89,12 +74,14 @@ import { ElNotification } from 'element-plus'
 import { useFavoritesStore } from '@/store/favorites'
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '@/store/cart'
+import { useI18n } from 'vue-i18n'
 
 const products = ref([])
 const showSuccessDialog = ref(false)
 const successMessage = ref('')
 const favoritesStore = useFavoritesStore()
 const cartStore = useCartStore()
+const { t } = useI18n()
 
 const fetchProducts = async () => {
   try {
@@ -191,20 +178,23 @@ const addToCart = async (product) => {
     })
 
     if (response.data.status) {
-      successMessage.value = response.data.message
-      showSuccessDialog.value = true
-      
-      // Immediately increment the cart count
-      cartStore.incrementCount()
-      
-      // Then fetch the actual count from the server
-      await cartStore.fetchCartCount()
+      ElNotification({
+        title: t('success'),
+        message: response.data.message ,
+        type: 'success'
+      })
+    } else {
+      ElNotification({
+        title: t('error'),
+        message: response.data.message,
+        type: 'error'
+      })
     }
   } catch (error) {
-    console.error('Cart error:', error)
+    console.error('Error adding to cart:', error)
     ElNotification({
-      title: '❌',
-      message: error.response?.data?.message || 'Login required to add to cart',
+      title: t('error'),
+      message: error.response?.data?.message,
       type: 'error'
     })
   }
@@ -291,6 +281,17 @@ onMounted(() => {
   border-radius: 999px;
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.sale-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: #ff4c4c;
+  color: white;
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 5px;
 }
 
 .btn {

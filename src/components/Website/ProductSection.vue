@@ -17,7 +17,7 @@
                   class="card-img-top product-img"
                 />
               </router-link>
-
+              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
               <!-- Action Buttons -->
               <div class="product-actions d-flex justify-content-center gap-2 w-100">
                 <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
@@ -70,17 +70,7 @@
     </div>
 
     <!-- Success Dialog -->
-    <el-dialog
-      v-model="showSuccessDialog"
-      title="Success"
-      width="30%"
-      :before-close="() => (showSuccessDialog = false)"
-    >
-      <span>{{ successMessage }}</span>
-      <template #footer>
-        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
-      </template>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -91,12 +81,14 @@ import { ElNotification } from 'element-plus'
 import { useFavoritesStore } from '@/store/favorites'
 import { useCartStore } from '@/store/cart'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 const products = ref([])
 const showSuccessDialog = ref(false)
 const successMessage = ref('')
 const favoritesStore = useFavoritesStore()
 const cartStore = useCartStore()
+const { t } = useI18n()
 
 const fetchProducts = async () => {
   try {
@@ -145,16 +137,13 @@ const getFavoriteId = (productId) => {
 
 const addToFavorites = async (product) => {
   try {
-    // Check if product is already in favorites
     if (isInFavorites(product.id)) {
-      // Remove from favorites
       const favoriteId = getFavoriteId(product.id);
       if (favoriteId) {
         await favoritesStore.removeFromFavorites(favoriteId);
       }
       successMessage.value = 'Product removed from favorites'
     } else {
-      // Add to favorites
       const response = await favoritesStore.addToFavorites(product.id)
       successMessage.value = response.message
     }
@@ -171,34 +160,38 @@ const addToFavorites = async (product) => {
 
 const addToCart = async (product) => {
   try {
-    const payload = {
-      product_id: product.id,
-      quantity: 1,
-      price: product.price,
-    }
-
-    if (product.amounts && product.amounts.length > 0) {
-      payload.amount_id = product.amounts[0].id
-    }
-
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+    const response = await axios.post(
+      'http://elegance_backend.test/api/cart-items',
+      {
+        product_id: product.id,
+        quantity: 1,
+        price: parseFloat(product.price)
       },
-    })
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      }
+    )
 
     if (response.data.status) {
-      successMessage.value = response.data.message
-      showSuccessDialog.value = true
-      
-      // Update cart count
-      await cartStore.fetchCartCount()
+      ElNotification({
+        title: t('success'),
+        message: response.data.message ,
+        type: 'success'
+      })
+    } else {
+      ElNotification({
+        title: t('error'),
+        message: response.data.message,
+        type: 'error'
+      })
     }
   } catch (error) {
-    console.error('Cart error:', error)
+    console.error('Error adding to cart:', error)
     ElNotification({
-      title: '❌',
-      message: error.response?.data?.message || 'Login required to add to cart',
+      title: t('error'),
+      message: error.response?.data?.message,
       type: 'error'
     })
   }
@@ -293,6 +286,17 @@ onMounted(() => {
   border-radius: 999px;
   font-size: 0.95rem;
   text-align: center;
+}
+
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff4c4c;
+  color: white;
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 5px;
 }
 
 .btn {

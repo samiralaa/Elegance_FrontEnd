@@ -101,21 +101,6 @@
         </div>
       </div>
     </div>
-
-    <el-dialog
-      v-model="showSuccessDialog"
-      title="🎉 Success"
-      width="30%"
-      :before-close="() => (showSuccessDialog = false)"
-      :center="true"
-      :close-on-click-modal="false"
-      :show-close="false"
-    >
-      <span>{{ successMessage }}</span>
-      <template #footer>
-        <el-button type="primary" @click="showSuccessDialog = false">OK</el-button>
-      </template>
-    </el-dialog>
   </div>
   <Footer />
 </template>
@@ -130,6 +115,8 @@ import Header from '@/components/Website/Header.vue'
 import Footer from '@/components/Website/Footer.vue'
 import { API_URL } from '@/store/index.js'
 import { useFavoritesStore } from '@/store/favorites'
+import { useI18n } from 'vue-i18n'
+
 
 const route = useRoute()
 const brand = ref({ categories: [] })
@@ -137,6 +124,7 @@ const loading = ref(true)
 const error = ref(null)
 const showSuccessDialog = ref(false)
 const successMessage = ref('')
+const { t } = useI18n()
 
 const currentLang = computed(() => localStorage.getItem('lang') || 'en')
 
@@ -222,7 +210,7 @@ const addToCart = async (product) => {
       payload.amount_id = product.amount_id
     }
 
-    const res = await axios.post(
+    const response = await axios.post(
       `${API_URL}/api/cart-items`,
       payload,
       {
@@ -232,16 +220,25 @@ const addToCart = async (product) => {
       }
     )
 
-    if (res.data.message) {
-      successMessage.value = res.data.message
-      showSuccessDialog.value = true
+    if (response.data.status) {
+      ElNotification({
+        title: t('success'),
+        message: response.data.message ,
+        type: 'success'
+      })
+    } else {
+      ElNotification({
+        title: t('error'),
+        message: response.data.message,
+        type: 'error'
+      })
     }
-  } catch (err) {
-    console.error('Cart error:', err)
+  } catch (error) {
+    console.error('Error adding to cart:', error)
     ElNotification({
-      title: '❌',
-      message: err.response?.data?.message || 'Login required to add to cart',
-      type: 'error',
+      title: t('error'),
+      message: error.response?.data?.message,
+      type: 'error'
     })
   }
 }

@@ -82,11 +82,13 @@
   import { ElNotification } from 'element-plus';
   import { useFavoritesStore } from '@/store/favorites'
   import { useCartStore } from '@/store/cart'
+  import { useI18n } from 'vue-i18n';
   const products = ref([]);
   const showSuccessDialog = ref(false);
   const successMessage = ref('');
   const favoritesStore = useFavoritesStore()
   const cartStore = useCartStore()
+  const { t } = useI18n();
 
   const fetchProducts = async () => {
     try {
@@ -176,29 +178,26 @@
         }
       );
 
-      if (response.data.message) {
-        successMessage.value = response.data.message || 'Product added to cart';
-        showSuccessDialog.value = true;
-        cartStore.incrementCount()
-        
-        // Then fetch the actual count from the server
-        await cartStore.fetchCartCount()
-        console.log(`Product "${product.name_en}" (ID: ${product.id}) added to cart successfully.`);
-      }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      if (error.response?.status === 401) {
+      if (response.data.status) {
         ElNotification({
-          title: '⚠️ Unauthorized',
-          message: 'Please login to add to cart.',
-          type: 'error',
-        });
+          title: t('success'),
+          message: response.data.message ,
+          type: 'success'
+        })
       } else {
         ElNotification({
-          title: '❌ Error',
-          message: error.response?.data?.message || 'Something went wrong.',
-        });
+          title: t('error'),
+          message: response.data.message,
+          type: 'error'
+        })
       }
+    } catch (error) {
+      console.error('Error adding to cart:', error)
+      ElNotification({
+        title: t('error'),
+        message: error.response?.data?.message,
+        type: 'error'
+      })
     }
   };
 

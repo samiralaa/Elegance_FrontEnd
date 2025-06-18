@@ -45,6 +45,8 @@
                     min="1"
                     max="99"
                     v-model.number="item.quantity"
+                    @change="updateCartItemQuantity(item)"
+                    @input="item.quantity = Math.min(item.quantity)"
                   >
 
                   <el-button 

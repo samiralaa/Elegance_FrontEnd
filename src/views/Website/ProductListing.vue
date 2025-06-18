@@ -115,19 +115,6 @@
       </section>
     </div>
   </div>
-
-  <!-- Success Dialog -->
-  <el-dialog
-    v-model="showSuccessDialog"
-    :title="t('success')"
-    width="30%"
-    :before-close="() => (showSuccessDialog = false)"
-  >
-    <span>{{ successMessage }}</span>
-    <template #footer>
-      <el-button type="primary" @click="showSuccessDialog = false">{{ t('ok') }}</el-button>
-    </template>
-  </el-dialog>
 </template>
 
 <script setup>
@@ -192,16 +179,13 @@
         }
       );
 
-      // Check if product is already in favorites
       if (isInFavorites(product.id)) {
-        // Get the favorite ID and remove from favorites
         const favoriteId = getFavoriteId(product.id)
         if (favoriteId) {
           await favoritesStore.removeFromFavorites(favoriteId)
           successMessage.value = 'Product removed from favorites'
         }
       } else {
-        // Add to favorites
         const response = await favoritesStore.addToFavorites(product.id)
         successMessage.value = response.message
       }
@@ -234,12 +218,50 @@
     }
   }
 
+  const addToCart = async (product) => {
+    try {
+      const response = await axios.post(
+        'https://backend.webenia.org/api/cart-items',
+        {
+          product_id: product.id,
+          quantity: 1,
+          price: parseFloat(product.price)
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        }
+      )
+
+      if (response.data.status) {
+        ElNotification({
+          title: t('success'),
+          message: response.data.message ,
+          type: 'success'
+        })
+      } else {
+        ElNotification({
+          title: t('error'),
+          message: response.data.message,
+          type: 'error'
+        })
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error)
+      ElNotification({
+        title: t('error'),
+        message: error.response?.data?.message,
+        type: 'error'
+      })
+    }
+  }
+
   onMounted(() => {
     fetchCategories()
     fetchProducts()
   })
 
-  // Filtering logic
   const filteredProducts = computed(() => {
     return products.value.filter((p) => {
       const matchCategory =
@@ -451,6 +473,7 @@
   }
   .card-body{
     display: flex;
+    flex: 0;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
