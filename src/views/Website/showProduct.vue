@@ -102,100 +102,67 @@
 
       <!-- Children Products Section -->
       <div v-if="product.children && product.children.length > 0" class="children-products-section">
-        <div class="section-header">
-          <h2 class="section-title">{{ t('related_products') }}</h2>
+        <div class="title section-header d-flex align-items-center mb-4">
+          <fa class="fa-icon me-2" :icon="['fas', 'shopping-basket']" />
+          <h2 class="mb-0">{{ t('products.relatedProducts') }}</h2>
         </div>
-        <div class="shop-container" :dir="direction">
-          <div class="container">
-            <section class="products-grid">
-              <div v-for="child in product.children" :key="child.id" class="product-card">
-                <div class="image-container">
-                  <img :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
-                    :alt="locale === 'ar' ? child.name_ar : child.name_en" />
-                  <div v-if="child.old_price" class="sale-badge">Sale</div>
-                  <div class="product-actions">
-                    <button @click="navigateToProduct(child.id)" class="action-btn cart-btn">
-                      <fa icon="eye" />
-                    </button>
-                    <button @click="toggleChildFavorite(child)" class="action-btn love-btn">
-                      <fa :icon="isChildFavorite(child) ? 'fas fa-heart' : 'far fa-heart'" />
-                    </button>
-                  </div>
-                </div>
-                <div class="product-info">
-                  <h4>{{ locale === 'ar' ? child.name_ar : child.name_en }}</h4>
-                  <div class="prices">
-                    <span class="price-new">{{ child.price }} {{ child.currency?.name_en || 'AED' }}</span>
-                    <span v-if="child.old_price" class="price-old">{{ child.old_price }} {{ child.currency?.name_en ||
-                      'AED' }}</span>
-                  </div>
-                  <div class="addToCart-btn">
-                    <button @click.stop="addChildToCart(child)" :disabled="!child.is_available" class="btn">
-                      {{ t('products.addToCart') }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-      <div class="row g-3">
-        <div class="col-6 col-md-4 col-lg-3"  v-for="child in product.children" :key="child.id">
-          <div class="product-card card border-0 h-100">
-            <div class="position-relative overflow-hidden bg-light">
-              <router-link :to="`/read/products/${product.id}`">
-                <img
-                  :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
-                  :alt="locale === 'ar' ? child.name_ar : child.name_en"
-                  class="card-img-top product-img"
-                />
-              </router-link>
-              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
-              <!-- Action Buttons -->
-              <div class="product-actions d-flex justify-content-center gap-2 w-100">
-                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
-                  <fa icon="eye" />
+        <div class="row g-3">
+          <div class="col-6 col-md-4 col-lg-3"  v-for="child in product.children" :key="child.id">
+            <div class="product-card card border-0 h-100">
+              <div class="position-relative overflow-hidden bg-light">
+                <router-link :to="`/read/products/${product.id}`">
+                  <img
+                    :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
+                    :alt="locale === 'ar' ? child.name_ar : child.name_en"
+                    class="card-img-top product-img"
+                  />
                 </router-link>
-                <button 
-                  @click="addToCart(product)" 
-                  class="btn btn-light shadow-sm"
-                  :class="{ 'disabled': !product.is_available }"
-                  :disabled="!product.is_available"
-                >
-                  {{ $t('home.add-to-cart') }}
-                </button>
-                <button 
-                  @click="addToCart(product)" 
-                  class="d-none btn rounded-circle btn-light shadow-sm"
-                  :class="{ 'disabled': !product.is_available }"
-                  :disabled="!product.is_available"
-                >
-                  <fa icon="cart-plus" />
-                </button>
-                <button
-                  @click="addToFavorites(product)"
-                  class="btn rounded-circle shadow-sm btn-light"
-                  :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
-                >
-                  <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
-                </button>
+                <div v-if="!child.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
+                <!-- Action Buttons -->
+                <div class="product-actions d-flex justify-content-center gap-2 w-100">
+                  <router-link :to="`/read/products/${child.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                    <fa icon="eye" />
+                  </router-link>
+                  <button 
+                    @click="addChildToCart(child)" 
+                    class="btn btn-light shadow-sm"
+                    :class="{ 'disabled': !child.is_available }"
+                    :disabled="!child.is_available"
+                  >
+                    {{ $t('home.add-to-cart') }}
+                  </button>
+                  <button 
+                    @click="addChildToCart(child)" 
+                    class="d-none btn rounded-circle btn-light shadow-sm"
+                    :class="{ 'disabled': !child.is_available }"
+                    :disabled="!child.is_available"
+                  >
+                    <fa icon="cart-plus" />
+                  </button>
+                  <button
+                    @click="toggleChildFavorite(child)"
+                    class="btn rounded-circle shadow-sm btn-light"
+                    :class="isChildFavorite(child) ? 'text-danger' : ''"
+                    :title="isChildFavorite(child) ? 'Remove from favorites' : 'Add to favorites'"
+                  >
+                    <fa :icon="isChildFavorite(child) ? 'fas fa-heart' : 'far fa-heart'" />
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div class="card-body">
-              <h5 class="card-title">{{ product.name_en }}</h5>
-              <div class="price-container">
-                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
-                  -{{ product.discount[0].discount_value }}
-                </span>
-                <span v-if="product.discount && product.discount.length > 0" class="price-old">
-                  {{ product.price }} {{ product.currency.name_en }}
-                </span>
-                <span class="card-text card-price">
-                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
-                </span>
+  
+              <div class="card-body">
+                <h5 class="card-title">{{ locale === 'ar' ? child.name_ar : child.name_en }}</h5>
+                <div class="price-container">
+                  <span v-if="child.discount && child.discount.length > 0" class="discount-badge">
+                    -{{ child.discount[0].discount_value }}
+                  </span>
+                  <span v-if="child.discount && child.discount.length > 0" class="price-old">
+                    {{ child.old_price }} {{ child.currency?.name_en || 'AED' }}
+                  </span>
+                  <span class="card-text card-price">
+                    {{ calculateDiscountedPrice(child) }} {{ child.currency?.name_en || 'AED' }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -596,6 +563,15 @@ const checkFavoriteStatus = () => {
   isFavorite.value = favoritesStore.isInFavorites(product.value.id);
 };
 
+  const calculateDiscountedPrice = (product) => {
+    if (product.discount && product.discount.length > 0) {
+      const discountValue = parseFloat(product.discount[0].discount_value)
+      const originalPrice = parseFloat(product.price)
+      const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+      return discountedPrice.toFixed(2)
+    }
+    return product.price
+  };
 </script>
 
 <style scoped>
@@ -1075,177 +1051,178 @@ input[type=number]::-webkit-outer-spin-button {
     max-height: 40px;
   }
 }
-
-.children-products-section {
-  margin-top: 40px;
-  padding: 20px;
-}
-
 .section-header {
-  text-align: center;
-  margin-bottom: 30px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #8b6b3d;
 }
 
-.section-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #a3852c;
-  margin-bottom: 15px;
-  position: relative;
-  display: inline-block;
-}
-
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background-color: #a3852c;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 30px;
-  padding: 20px 0;
-}
-
-.product-card {
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+ .product-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #fff;
+  padding: 0 !important;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
-.image-container {
-  position: relative;
-  padding-top: 100%;
-  overflow: hidden;
-}
-
-.image-container img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.product-img {
   transition: transform 0.3s ease;
 }
 
-.product-card:hover .image-container img {
-  transform: scale(1.1);
+.product-card:hover .product-img {
+  transform: scale(1.05);
 }
 
 .product-actions {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.product-card:hover .product-actions {
+  transform: translateX(-50%) translateY(-30%);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.card-body{
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  margin: 20px 0;
-  width: 100%;
 }
 
-.action-btn {
-  background: white;
-  border: 1px solid #a3852c;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.card-title {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
-.action-btn:hover {
-  transform: scale(1.1);
+.card-price {
+  background-color: #e8f5e9;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
-.love-btn {
-  color: #a3852c;
+.price-old {
+  text-decoration: line-through;
+  color: #aaa;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
-.love-btn.active {
-  background: #a3852c;
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff4c4c;
   color: white;
-}
-
-.love-btn i {
-  font-size: 18px;
-}
-
-.love-btn.active .fa,
-.love-btn.active i {
-  color: #ff0000;
-  /* Red color for active heart */
-}
-
-.cart-btn {
-  background: #fff;
-  color: #a3852c;
-  border: 1px solid #a3852c;
-}
-
-.product-info {
-  padding: 15px;
-}
-
-.product-info h4 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 10px;
-  height: 40px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.prices {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.addToCart-btn button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: #a3852c;
-  color: #fff;
+  padding: 4px 12px;
+  font-size: 12px;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
 }
 
-.addToCart-btn button:hover {
-  background: #8b7024;
+.btn {
+  font-size: 1.1rem;
 }
 
-.addToCart-btn button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+
+.card-title {
+  color: #8b6b3d;
+  transition: all 0.2s ease-in;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 1200px) {
+  .disable {
+    display: none;
+  }
+
+  .enable {
+    display: block !important;
+  }
+
+  .product-actions {
+    position: absolute;
+    bottom: 7%;
+    left: 0%;
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+    z-index: 10;
+  }
+  
+  .product-card:hover .product-actions {
+    transform: translateX(0) translateY(0);
+  }
+  .card-body {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+  .card-title {
+    font-size: 1.1rem;
   }
 
-  .section-title {
-    font-size: 24px;
+  .card-text {
+    font-size: 0.95rem;
   }
+
+
+  .btn {
+    font-size: 0.9rem;
+  }
+
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1rem 0.5rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-text {
+    font-size: 0.8rem;
+  }
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.discount-badge {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

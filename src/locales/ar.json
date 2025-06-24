@@ -421,7 +421,8 @@
     "categories": "الفئات",
     "addToCart": "أضف إلى السلة",
     "filter": "تصفية",
-    "outOfStock": "غير متوفر"
+    "outOfStock": "غير متوفر",
+    "relatedProducts": "المنتجات ذات الصلة"
   },
 
   "cart": {

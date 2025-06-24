@@ -420,7 +420,8 @@
     "categories": "Categories",
     "addToCart": "Add to Cart",
     "filter": "Filter",
-    "outOfStock": "Out of Stock"
+    "outOfStock": "Out of Stock",
+    "relatedProducts": "Related Products"
   },
 
   "cart": {
