@@ -74,7 +74,7 @@ export default {
   methods: {
     getProductImage(item) {
       if (item.images && Array.isArray(item.images)) {
-        return `${API_URL}/${item.images[0]}`;
+        return `${API_URL}/public/storage/${item.images[0]}`;
       }
       return `${API_URL}/images/default.jpg`;
     },
