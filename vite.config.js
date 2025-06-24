@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       '/api': {
 
-        target: 'http://elegance_backend.test',
+        target: 'https://backend.webenia.org',
 
 
         changeOrigin: true,
@@ -24,7 +24,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, '/api'),
         configure: (proxy, options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('origin', 'http://elegance_backend.test');
+            proxyReq.setHeader('origin', 'https://backend.webenia.org');
           });
         }
       }

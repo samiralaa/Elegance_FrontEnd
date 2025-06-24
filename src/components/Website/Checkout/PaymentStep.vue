@@ -131,13 +131,11 @@ export default {
   try {
     this.loading = true;
 
-    // ✅ التحقق من العنوان
     if (!this.shippingDetails.addressId) {
       this.$toast.error('The address id field is required.');
       return;
     }
 
-    // ✅ استخراج user ID من localStorage
     let userId;
     try {
       const authUser = localStorage.getItem('auth_user');
@@ -156,19 +154,16 @@ export default {
       return;
     }
 
-    // ✅ التحقق من وجود عناصر في السلة
     if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
       this.$toast.error('No items in cart');
       return;
     }
 
-    // ✅ حساب السعر الإجمالي
     const totalPrice = this.cartItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    // ✅ إعداد بيانات الطلب
     const orderData = {
       user_id: userId,
       order: {
@@ -177,8 +172,8 @@ export default {
           this.selectedPaymentMethod === 1
             ? 'stripe'
             : this.selectedPaymentMethod === 2
-            ? 'tabby'
-            : 'cash'
+              ? 'tabby'
+              : 'cod' // ✅ هنا التعديل
         ),
         shipping_address: this.shippingDetails.address || '',
         address_id: this.shippingDetails.addressId,
@@ -209,7 +204,7 @@ export default {
       Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
     };
 
-    // ✅ Stripe Payment
+    // Stripe
     if (this.selectedPaymentMethod === 1) {
       const response = await axios.post(
         `${API_URL}/api/payment/process`,
@@ -221,8 +216,6 @@ export default {
         },
         { headers }
       );
-
-      console.log('Stripe response:', response);
 
       if (response?.data?.success && response?.data?.url) {
         window.location.href = response.data.url;
@@ -236,33 +229,54 @@ export default {
       }
     }
 
-    // ✅ Tabby Payment
+    // Tabby
     if (this.selectedPaymentMethod === 2) {
-      const tabbyResponse = await axios.post(
-        `${API_URL}/api/payment/tabby/create-session`,
-        {
-          ...orderData,
-          amount: totalPrice,
-        },
-        { headers }
-      );
-
-      console.log('Tabby response:', tabbyResponse);
-
-      if (tabbyResponse?.data?.success) {
-        this.$toast.success(this.$t('checkout.redirectingToTabby'));
-        window.location.href = tabbyResponse.data.redirectUrl;
-        return;
-      } else {
-        throw new Error(
-          tabbyResponse?.data?.error ||
-          tabbyResponse?.data?.message ||
-          this.$t('checkout.errorCreatingPaymentSession')
-        );
+  const tabbyResponse = await axios.post(
+    `${API_URL}/api/payment/process`,
+    {
+      user_id: userId,
+      payment_method: 'tabby',
+      order: {
+        status: 'pending',
+        payment_method: 'tabby',
+        shipping_address: this.shippingDetails.address || '',
+        address_id: this.shippingDetails.addressId,
+        items: this.cartItems
+          .map((item) => ({
+            product_id: item.product?.id,
+            product_name: item.product?.name || '',
+            quantity: parseInt(item.quantity) || 0,
+            price: parseFloat(item.price) || 0,
+            subtotal:
+              (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+          }))
+          .filter((item) => item.product_id && item.quantity > 0),
+        total_price: totalPrice,
+      },
+      user: {
+        name: this.user.name,
+        email: this.user.email,
+        phone: this.user.phone,
       }
-    }
+    },
+    { headers }
+  );
 
-    // ✅ Cash on Delivery
+  if (tabbyResponse?.data?.status === 'success' && tabbyResponse.data.data?.payment_url) {
+    this.$toast.success('Redirecting to Tabby...');
+    window.location.href = tabbyResponse.data.data.payment_url;
+    return;
+  } else {
+    throw new Error(
+      tabbyResponse?.data?.message ||
+      tabbyResponse?.data?.error ||
+      'Error creating Tabby session.'
+    );
+  }
+}
+
+
+    // COD (Cash On Delivery)
     if (this.selectedPaymentMethod === 3) {
       const orderResponse = await axios.post(
         `${API_URL}/api/orders`,
@@ -270,12 +284,9 @@ export default {
         { headers }
       );
 
-     
-
-      if (orderResponse?.data) {
-        console.log('Order response:', orderResponse);
-       
-        window.location.href = '/orders/user';
+      if (orderResponse?.data?.status === 'success') {
+        this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
+        window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
         return;
       } else {
         const message =
@@ -285,20 +296,37 @@ export default {
         throw new Error(message);
       }
     }
+
   } catch (error) {
     console.error('Error placing order:', error);
 
-    const errorMessage =
-      error?.response?.data?.message ||
-      error?.response?.data?.error ||
-      error?.message ||
-      'Unexpected error while placing your order.';
+    let errorMessage = 'Unexpected error while placing your order.';
 
-    this.$toast.error(errorMessage);
+    try {
+      if (error?.response?.data) {
+        errorMessage =
+          error.response.data.message ||
+          error.response.data.error ||
+          error.message ||
+          errorMessage;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+    } catch (e) {
+      console.warn('Error extracting message:', e);
+    }
+
+    if (this?.$toast?.error) {
+      this.$toast.error(errorMessage);
+    } else {
+      window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
+    }
+
   } finally {
     this.loading = false;
   }
 },
+
 
     async createOrder() {
       // Validate addressId
@@ -330,6 +358,7 @@ export default {
 
         if (orderResponse.data.success) {
           console.log(orderResponse)
+
           // this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
           window.location.href = '/orders/user';
         } else {
@@ -338,12 +367,8 @@ export default {
       } catch (error) {
         console.error(error);
         let message = this.$t('checkout.errorPlacingOrder');
-        if (error.response && error.response.data && error.response.data.error) {
-          message = error.response.data.error;
-        } else if (error.message) {
-          message = error.message;
-        }
-        this.$toast.error(message);
+
+
       }
     },
     getCountryCode(countryName) {
