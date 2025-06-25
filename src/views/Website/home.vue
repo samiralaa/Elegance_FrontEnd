@@ -2,7 +2,7 @@
   <div class="home">
     <Loader v-if="loading" />
     <Header />
-    <VerifyOtp v-if="isVerified"/>
+    <VerifyOtp />
 
 
     <!-- Hero Section with Ramadan Theme -->
