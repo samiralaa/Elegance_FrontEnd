@@ -2,6 +2,8 @@
   <div class="home">
     <Loader v-if="loading" />
     <Header />
+    <VerifyOtp v-if="isVerified"/>
+
 
     <!-- Hero Section with Ramadan Theme -->
 
@@ -51,6 +53,7 @@ import LatestProducts from '@/components/Website/LatestProducts.vue'
 import i18n from '@/i18n.js'
 import Footer from '@/components/Website/Footer.vue'
 import Loader from '@/components/Loader.vue'
+import VerifyOtp from '@/components/verifyOtpPopup.vue'
 
 export default {
   name: 'Home',
@@ -64,6 +67,7 @@ export default {
     WhyChooseUs,
     Footer,
     Loader,
+    VerifyOtp,
   },
   computed: {
     direction() {

@@ -5,19 +5,19 @@
     <h2 class="mb-4 fw-bold">My Orders</h2>
 
     <div class="orders-header">
-      <a class="order-stage" href="#" @click.prevent="filterOrders('pending')">
+      <a class="order-stage" href="#" @click.prevent="filterOrders(null)" :class="{ active: !currentFilter }">
+        <h3>In Progress</h3>
+        <h3 class="num">{{ allOrdersCount }}</h3>
+      </a>
+      <a class="order-stage" href="#" @click.prevent="filterOrders('pending')" :class="{ active: currentFilter === 'pending' }">
         <h3>In Progress</h3>
         <h3 class="num">{{ pendingOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#" @click.prevent="filterOrders('shipped')">
-        <h3>On Shipping</h3>
-        <h3 class="num">{{ shippedOrdersCount }}</h3>
-      </a>
-      <a class="order-stage" href="#" @click.prevent="filterOrders('completed')">
-        <h3>Delivered</h3>
+      <a class="order-stage" href="#" @click.prevent="filterOrders('completed')" :class="{ active: currentFilter === 'completed' }">
+        <h3>Completed</h3>
         <h3 class="num">{{ completedOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#" @click.prevent="filterOrders('cancelled')">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('cancelled')" :class="{ active: currentFilter === 'cancelled' }">
         <h3>Cancelled</h3>
         <h3 class="num">{{ cancelledOrdersCount }}</h3>
       </a>
@@ -41,7 +41,6 @@
             </div>
             <div class="text-end">
               <small class="text-muted">{{ formatDate(order.ordered_at) }}</small><br>
-              <small class="text-muted">Estimated arrival:</small><br />
               <span :class="['badge', getStatusBadgeClass(order.status)]">
                 {{ formatStatus(order.status) }}
               </span>
@@ -67,7 +66,7 @@
 
           <div class="d-flex justify-content-between align-items-center">
             <strong>Total: {{ order.total_price }} EGP ({{ order.items.length }} Items)</strong>
-            <button class="btn btn-outline-dark btn-sm">Details</button>
+            <button class="btn btn-outline-dark btn-sm" @click="showOrderDetails(order.id)">Details</button>
           </div>
         </div>
       </div>
@@ -76,11 +75,51 @@
     <div v-else class="alert alert-info text-center">
       No orders found.
     </div>
-  </div>
+  </div> 
+      <!-- <el-dialog v-model="isDialogVisible" title="Order Details" width="500px" center>
+
+      <template #footer>
+        <button class="btn btn-outline-dark btn-sm" @click="isDialogVisible = false">Close</button>
+      </template>
+    </el-dialog> -->
+      <div class="modal-overlay d-flex justify-content-center align-items-center" v-if="isDialogVisible">
+        <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
+          <!-- Close Button -->
+          <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="isDialogVisible = false" aria-label="Close"></button>
+
+          <!-- Title -->
+          <h4 class="mb-3">{{ $t('order.orderDetails') }}</h4>
+
+          <!-- Loading Spinner -->
+          <div v-if="loading" class="text-center">
+            <div class="spinner-border" role="status"></div>
+          </div>
+
+          <!-- Order content -->
+          <div v-else class="cart-content overflow-auto" style="max-height: 60vh;">
+          <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
+            <div
+              v-for="item in selectedOrder.items"
+              :key="item.id"
+              class="d-flex flex-column align-items-start col-4"
+            >
+              <img
+                :src="imageUrl(item.product.images[0].path)"
+                class="rounded mb-2"
+                style="width: 100%; aspect-ratio: 1; object-fit: cover"
+              />
+              <strong class="small">{{ item.product.name_en }}</strong>
+              <small class="text-muted">{{ item.price }} EGP x{{ item.quantity }}</small>
+              <small class="text-muted">Size: {{ item.size || '-' }}</small>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios, { all } from 'axios';
 import Header from "@/components/Website/Header.vue";
 
 export default {
@@ -90,21 +129,23 @@ export default {
   name: 'UserOrder',
   data() {
     return {
-      loading: true,
       orders: [],
-      currentFilter: null
+      currentFilter: null,
+      selectedOrder: null,
+      isDialogVisible: false,
+      loading: true
     };
   },
   computed: {
+    allOrdersCount() {
+      return this.orders.length;
+    },
     pendingOrdersCount() {
       return this.orders.filter(order => order.status === 'pending').length;
     },
-    shippedOrdersCount() {
-      return this.orders.filter(order => order.status === 'shipped').length;
-    },
     completedOrdersCount() {
       return this.orders.filter(order => 
-        order.status === 'completed' || order.status === 'delivered'
+        order.status === 'completed' || order.status === 'completed'
       ).length;
     },
     cancelledOrdersCount() {
@@ -116,11 +157,11 @@ export default {
       }
       return this.orders.filter(order => {
         if (this.currentFilter === 'completed') {
-          return order.status === 'completed' || order.status === 'delivered';
+          return order.status === 'completed';
         }
         return order.status === this.currentFilter;
       });
-    }
+    },
   },
   methods: {
     async fetchOrders() {
@@ -176,20 +217,31 @@ export default {
     formatStatus(status) {
       const statusMap = {
         'pending': 'In Progress',
-        'processing': 'Processing',
-        'shipped': 'On Delivery',
-        'delivered': 'Delivered',
         'completed': 'Completed',
         'cancelled': 'Cancelled'
       };
       return statusMap[status.toLowerCase()] || status;
     },
+    async showOrderDetails(orderId) {
+      try {
+        this.loading = true
+        const token = localStorage.getItem('auth_token');
+        const res = await axios.get(`https://backend.webenia.org/api/orders/${orderId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        this.selectedOrder = res.data.data.order;
+        this.isDialogVisible = true;
+      } catch (err) {
+        this.$toast.error('حدث خطأ أثناء تحميل تفاصيل الطلب');
+      } finally {
+        this.loading = false;
+      }
+    },
     getStatusBadgeClass(status) {
       const statusClasses = {
         'pending': 'bg-warning',
-        'processing': 'bg-info',
-        'shipped': 'bg-primary',
-        'delivered': 'bg-success',
         'completed': 'bg-success',
         'cancelled': 'bg-danger'
       };
@@ -308,4 +360,46 @@ export default {
   text-transform: capitalize;
 }
 
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1050;
+  backdrop-filter: blur(2px);
+  padding: 1rem;
+}
+
+.cart-modal {
+  width: 100%;
+  max-width: 70%;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: fadeInUp 0.3s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cart-content {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.cart-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cart-content::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
 </style>

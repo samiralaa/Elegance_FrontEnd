@@ -62,10 +62,6 @@ export default {
   background-color: #8b6b3d;
 }
 
-.step.completed .step-number {
-  background-color: #4CAF50;
-}
-
 .step-line {
   width: 100px;
   height: 2px;

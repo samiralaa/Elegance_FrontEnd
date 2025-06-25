@@ -375,7 +375,7 @@ const initializeSlick = () => {
 
   // Init slick for thumbnail slider
   $slider.slick({
-    dots: numSlides > 1,
+    dots: false,
     centerMode: true,
     centerPadding: '0px',
     slidesToShow: slidesToShow.value,
@@ -880,7 +880,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .slider-container {
-  background-color: #f1f1f1;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -888,8 +887,12 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .slider {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
   width: 100%;
-  padding: 20px;
+  padding: 0 20px;
 }
 
 .slide {
