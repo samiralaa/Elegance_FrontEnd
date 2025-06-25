@@ -111,7 +111,7 @@ const category = ref(null)
 const loading = ref(false)
 
 
-const BASE_URL = 'https://backend.webenia.org'
+const BASE_URL = 'http://elegance_backend.test'
 
 const API_URL = `${BASE_URL}/api/categories`
 

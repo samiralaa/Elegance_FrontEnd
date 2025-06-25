@@ -2,7 +2,7 @@
   <div class="home">
     <Loader v-if="loading" />
     <Header />
-    <VerifyOtp />
+    <VerifyOtp v-if="showVerifyOtp" :user="user" :token="token" />
 
 
     <!-- Hero Section with Ramadan Theme -->
@@ -70,6 +70,10 @@ export default {
     VerifyOtp,
   },
   computed: {
+    showVerifyOtp() {
+      // Show VerifyOtp only if user exists and is_verified is not true (0 or false)
+      return this.user && !this.user.is_verified;
+    },
     direction() {
       return i18n.global.locale === 'ar' ? 'rtl' : 'ltr';
     }
@@ -80,7 +84,9 @@ export default {
       showOurProducts: false,
       showLatestProducts: false,
       showBestSelling: false,
-      loading: true
+      loading: true,
+      user: null,
+      token: null,
     };
   },
   mounted() {
@@ -91,7 +97,8 @@ export default {
 
     async fetchSettings() {
       try {
-        const response = await fetch('https://backend.webenia.org/api/settings');
+     
+        const response = await fetch('http://elegance_backend.test/api/settings');
         const result = await response.json();
         const settings = result.data;
         const findSetting = key => {
@@ -149,9 +156,20 @@ export default {
         this.$refs.slider.scrollBy({ left: cardWidth * 7 + gap, behavior: 'smooth' });
       }
     }
+  },
+
+  created() {
+    const savedUser = localStorage.getItem('user')
+    const savedToken = localStorage.getItem('token')
+
+    if (savedUser) {
+      this.user = JSON.parse(savedUser)
+    }
+
+    if (savedToken) {
+      this.token = savedToken
+    }
   }
-
-
 };
 
 </script>

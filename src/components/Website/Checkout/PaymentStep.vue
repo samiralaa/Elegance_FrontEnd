@@ -31,7 +31,11 @@
       <button class="btn-secondary" @click="$emit('previous-step')">
         {{ $t('checkout.back') }}
       </button>
-      <button class="btn-primary" @click="placeOrder" :disabled="!selectedPaymentMethod || loading">
+      <button class="btn-primary" :disabled="!selectedPaymentMethod || loading" @click="
+        selectedPaymentMethod === 2
+          ? initiateTabbyPayment()
+          : placeOrder()
+        ">
         <span v-if="loading">{{ $t('checkout.processing') }}...</span>
         <span v-else>{{ $t('checkout.placeOrder') }}</span>
       </button>
@@ -127,121 +131,45 @@ export default {
       });
       this.cardElement = cardElement;
     },
-    async placeOrder() {
-  try {
-    this.loading = true;
+    async initiateTabbyPayment() {
+      this.loading = true;
 
-    if (!this.shippingDetails.addressId) {
-      this.$toast.error('The address id field is required.');
-      return;
-    }
+      try {
+        // 1. تحقق من وجود عنوان شحن
+        if (!this.shippingDetails.addressId) {
+          this.$toast.error('The address id field is required.');
+          return;
+        }
 
-    let userId;
-    try {
-      const authUser = localStorage.getItem('auth_user');
-      if (authUser) {
+        // 2. تحقق من تسجيل دخول المستخدم
+        const authUser = localStorage.getItem('auth_user');
+        if (!authUser) {
+          this.$toast.error('User authentication required');
+          return;
+        }
+
         const parsedUser = JSON.parse(authUser);
-        userId = parsedUser?.id;
-      }
-    } catch (e) {
-      console.error('Error parsing auth_user:', e);
-      this.$toast.error('Error getting user information');
-      return;
-    }
+        const userId = parsedUser?.id;
 
-    if (!userId) {
-      this.$toast.error('User authentication required');
-      return;
-    }
+        if (!userId) {
+          this.$toast.error('User authentication required');
+          return;
+        }
 
-    if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
-      this.$toast.error('No items in cart');
-      return;
-    }
+        // 3. تحقق من وجود منتجات في السلة
+        if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
+          this.$toast.error('No items in cart');
+          return;
+        }
 
-    const totalPrice = this.cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
-    const orderData = {
-      user_id: userId,
-      order: {
-        status: 'pending',
-        payment_method: String(
-          this.selectedPaymentMethod === 1
-            ? 'stripe'
-            : this.selectedPaymentMethod === 2
-              ? 'tabby'
-              : 'cod' // ✅ هنا التعديل
-        ),
-        shipping_address: this.shippingDetails.address || '',
-        address_id: this.shippingDetails.addressId,
-        items: this.cartItems
-          .map((item) => ({
-            product_id: item.product?.id,
-            product_name: item.product?.name || '',
-            quantity: parseInt(item.quantity) || 0,
-            price: parseFloat(item.price) || 0,
-            subtotal:
-              (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }))
-          .filter((item) => item.product_id && item.quantity > 0),
-        total_price: totalPrice,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    };
-
-    if (!orderData.order.items.length) {
-      this.$toast.error('Invalid order items');
-      return;
-    }
-
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-    };
-
-    // Stripe
-    if (this.selectedPaymentMethod === 1) {
-      const response = await axios.post(
-        `${API_URL}/api/payment/process`,
-        {
-          ...orderData,
-          amount: totalPrice,
-          currency: this.currency,
-          payment_method: 'stripe',
-        },
-        { headers }
-      );
-
-      if (response?.data?.success && response?.data?.url) {
-        window.location.href = response.data.url;
-        return;
-      } else {
-        throw new Error(
-          response?.data?.error ||
-          response?.data?.message ||
-          this.$t('checkout.errorCreatingPaymentSession')
+        // 4. حساب السعر الإجمالي
+        const totalPrice = this.cartItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
         );
-      }
-    }
 
-    // Tabby
-    if (this.selectedPaymentMethod === 2) {
-  const tabbyResponse = await axios.post(
-    `${API_URL}/api/payment/process`,
-    {
-      user_id: userId,
-      payment_method: 'tabby',
-      order: {
-        status: 'pending',
-        payment_method: 'tabby',
-        shipping_address: this.shippingDetails.address || '',
-        address_id: this.shippingDetails.addressId,
-        items: this.cartItems
+        // 5. تجهيز العناصر المطلوبة للطلب
+        const orderItems = this.cartItems
           .map((item) => ({
             product_id: item.product?.id,
             product_name: item.product?.name || '',
@@ -250,82 +178,254 @@ export default {
             subtotal:
               (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
           }))
-          .filter((item) => item.product_id && item.quantity > 0),
-        total_price: totalPrice,
-      },
-      user: {
-        name: this.user.name,
-        email: this.user.email,
-        phone: this.user.phone,
+          .filter((item) => item.product_id && item.quantity > 0);
+
+        // 6. تجهيز بيانات المستخدم
+        const userName = this.user?.name || parsedUser?.name || 'Guest';
+        const userEmail = this.user?.email || parsedUser?.email || '';
+        const userPhone = this.user?.phone || parsedUser?.phone || '';
+
+        // 7. تجهيز البيانات المرسلة لـ API
+        const orderData = {
+          user_id: userId,
+          total_price: totalPrice,
+          shipping_address: this.shippingDetails.address || '',
+          address_id: this.shippingDetails.addressId,
+          items: orderItems,
+          user: {
+            name: userName,
+            email: userEmail,
+            phone: userPhone,
+          },
+        };
+
+        // 8. تجهيز headers للطلب (JWT أو Bearer token)
+        const headers = {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        };
+
+        // 9. إرسال الطلب إلى الـ API
+        const response = await axios.post(
+          `${API_URL}/api/payment/tabby/send`,
+          orderData,
+          { headers }
+        );
+
+        // 10. التوجيه لصفحة الدفع في Tabby
+      if( response.data.status === 'success' )
+      {
+        console.log('Redirecting to:', response.data.data.payment_url);
+        window.location.href = response.data.data.payment_url;
+
+      }
+
+      } catch (error) {
+        console.error('Tabby Payment Error:', error);
+        this.$toast.error(error?.message || 'Unexpected Tabby payment error');
+      } finally {
+        this.loading = false;
       }
     },
-    { headers }
-  );
 
-  if (tabbyResponse?.data?.status === 'success' && tabbyResponse.data.data?.payment_url) {
-    this.$toast.success('Redirecting to Tabby...');
-    window.location.href = tabbyResponse.data.data.payment_url;
-    return;
-  } else {
-    throw new Error(
-      tabbyResponse?.data?.message ||
-      tabbyResponse?.data?.error ||
-      'Error creating Tabby session.'
-    );
-  }
-}
+    async placeOrder() {
+      try {
+        this.loading = true;
+
+        if (!this.shippingDetails.addressId) {
+          this.$toast.error('The address id field is required.');
+          return;
+        }
+
+        let userId;
+        try {
+          const authUser = localStorage.getItem('auth_user');
+          if (authUser) {
+            const parsedUser = JSON.parse(authUser);
+            userId = parsedUser?.id;
+          }
+        } catch (e) {
+          console.error('Error parsing auth_user:', e);
+          this.$toast.error('Error getting user information');
+          return;
+        }
+
+        if (!userId) {
+          this.$toast.error('User authentication required');
+          return;
+        }
+
+        if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
+          this.$toast.error('No items in cart');
+          return;
+        }
+
+        const totalPrice = this.cartItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+
+        const orderData = {
+          user_id: userId,
+          order: {
+            status: 'pending',
+            payment_method: String(
+              this.selectedPaymentMethod === 1
+                ? 'stripe'
+                : this.selectedPaymentMethod === 2
+                  ? 'tabby'
+                  : 'cod' // ✅ هنا التعديل
+            ),
+            shipping_address: this.shippingDetails.address || '',
+            address_id: this.shippingDetails.addressId,
+            items: this.cartItems
+              .map((item) => ({
+                product_id: item.product?.id,
+                product_name: item.product?.name || '',
+                quantity: parseInt(item.quantity) || 0,
+                price: parseFloat(item.price) || 0,
+                subtotal:
+                  (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              }))
+              .filter((item) => item.product_id && item.quantity > 0),
+            total_price: totalPrice,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+        };
+
+        if (!orderData.order.items.length) {
+          this.$toast.error('Invalid order items');
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        };
+
+        // Stripe
+        if (this.selectedPaymentMethod === 1) {
+          const response = await axios.post(
+            `${API_URL}/api/payment/process`,
+            {
+              ...orderData,
+              amount: totalPrice,
+              currency: this.currency,
+              payment_method: 'stripe',
+            },
+            { headers }
+          );
+
+          if (response?.data?.success && response?.data?.url) {
+            window.location.href = response.data.url;
+            return;
+          } else {
+            throw new Error(
+              response?.data?.error ||
+              response?.data?.message ||
+              this.$t('checkout.errorCreatingPaymentSession')
+            );
+          }
+        }
+
+        // Tabby
+        if (this.selectedPaymentMethod === 2) {
+          const tabbyResponse = await axios.post(
+            `${API_URL}/api/payment/process`,
+            {
+              user_id: userId,
+              payment_method: 'tabby',
+              order: {
+                status: 'pending',
+                payment_method: 'tabby',
+                shipping_address: this.shippingDetails.address || '',
+                address_id: this.shippingDetails.addressId,
+                items: this.cartItems
+                  .map((item) => ({
+                    product_id: item.product?.id,
+                    product_name: item.product?.name || '',
+                    quantity: parseInt(item.quantity) || 0,
+                    price: parseFloat(item.price) || 0,
+                    subtotal:
+                      (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+                  }))
+                  .filter((item) => item.product_id && item.quantity > 0),
+                total_price: totalPrice,
+              },
+              user: {
+                name: this.user.name,
+                email: this.user.email,
+                phone: this.user.phone,
+              }
+            },
+            { headers }
+          );
+
+          if (tabbyResponse?.data?.status === 'success' && tabbyResponse.data.data?.payment_url) {
+            this.$toast.success('Redirecting to Tabby...');
+            window.location.href = tabbyResponse.data.data.payment_url;
+            return;
+          } else {
+            throw new Error(
+              tabbyResponse?.data?.message ||
+              tabbyResponse?.data?.error ||
+              'Error creating Tabby session.'
+            );
+          }
+        }
 
 
-    // COD (Cash On Delivery)
-    if (this.selectedPaymentMethod === 3) {
-      const orderResponse = await axios.post(
-        `${API_URL}/api/orders`,
-        orderData,
-        { headers }
-      );
+        // COD (Cash On Delivery)
+        if (this.selectedPaymentMethod === 3) {
+          const orderResponse = await axios.post(
+            `${API_URL}/api/orders`,
+            orderData,
+            { headers }
+          );
 
-      if (orderResponse?.data?.status === 'success') {
-        this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
-        window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
-        return;
-      } else {
-        const message =
-          orderResponse?.data?.message ||
-          orderResponse?.data?.error ||
-          'Error placing order';
-        throw new Error(message);
+          if (orderResponse?.data?.status === 'success') {
+            this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
+            window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
+            return;
+          } else {
+            const message =
+              orderResponse?.data?.message ||
+              orderResponse?.data?.error ||
+              'Error placing order';
+            throw new Error(message);
+          }
+        }
+
+      } catch (error) {
+        console.error('Error placing order:', error);
+
+        let errorMessage = 'Unexpected error while placing your order.';
+
+        try {
+          if (error?.response?.data) {
+            errorMessage =
+              error.response.data.message ||
+              error.response.data.error ||
+              error.message ||
+              errorMessage;
+          } else if (error?.message) {
+            errorMessage = error.message;
+          }
+        } catch (e) {
+          console.warn('Error extracting message:', e);
+        }
+
+        if (this?.$toast?.error) {
+          this.$toast.error(errorMessage);
+        } else {
+          window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
+        }
+
+      } finally {
+        this.loading = false;
       }
-    }
-
-  } catch (error) {
-    console.error('Error placing order:', error);
-
-    let errorMessage = 'Unexpected error while placing your order.';
-
-    try {
-      if (error?.response?.data) {
-        errorMessage =
-          error.response.data.message ||
-          error.response.data.error ||
-          error.message ||
-          errorMessage;
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
-    } catch (e) {
-      console.warn('Error extracting message:', e);
-    }
-
-    if (this?.$toast?.error) {
-      this.$toast.error(errorMessage);
-    } else {
-      window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
-    }
-
-  } finally {
-    this.loading = false;
-  }
-},
+    },
 
 
     async createOrder() {

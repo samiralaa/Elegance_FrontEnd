@@ -4,7 +4,7 @@
       <div v-for="item in cartItems" :key="item.id" class="cart-item">
         <img :src="item.images[0]" alt="" class="item-image" />
         <div class="item-details">
-          <h3>{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h3>
+          <h3>{{ currentLang === 'ar' ? item.product?.name_ar : item.product?.name_en }}</h3>
           <p class="item-price">{{ item.price }} {{ currency }}</p>
           <div class="quantity-controls">
             <button @click="updateQuantity(item, -1)" :disabled="item.quantity <= 1">-</button>
@@ -48,7 +48,7 @@ export default {
   methods: {
     async updateQuantity(item, newQuantity) {
       try {
-        const response = await fetch(`https://backend.webenia.org/api/cart-items/${item.id}`, {
+        const response = await fetch(`http://elegance_backend.test/api/cart-items/${item.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

@@ -9,6 +9,9 @@
         <p class="elegant-description">{{ $t('joinUs.description') }}</p>
       </div>
       <form @submit.prevent="handleSubmit" class="join-form">
+        <div v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
         <div class="form-group">
           <label for="email">{{ $t('joinUs.email') }}</label>
           <input type="email" id="email" v-model="formData.email" required />
@@ -47,18 +50,20 @@ export default {
         email: '',
         password: '',
       },
-      showPassword: false
+      showPassword: false,
+      errorMessage: ''
     }
   },
   methods: {
     async handleSubmit() {
       try {
+        const response = await axios.post('http://elegance_backend.test/api/login', this.formData);
 
-        const response = await axios.post('https://backend.webenia.org/api/client/login', this.formData);
-
-
-        if (response.data.status) {
-          const userData = response.data.data;
+        if (response.data.token && response.data.user) {
+          const userData = {
+            token: response.data.token,
+            user: response.data.user
+          };
 
           // Optionally store token in localStorage
           localStorage.setItem('auth_token', userData.token);
@@ -72,13 +77,18 @@ export default {
 
           // Redirect to home page
           this.$router.push('/');
+          this.errorMessage = '';
         } else {
-          // Handle error if status is false
-          console.error('Login failed: ', response.data.message);
+          // Handle error if token or user is missing
+          this.errorMessage = response.data.message || 'Login failed.';
         }
       } catch (error) {
-        console.error('Login failed:', error.response?.data?.message || error.message);
-        // Show a user-friendly error message here
+        this.errorMessage =
+          error.response?.data?.message ||
+          error.response?.data?.errors?.email?.[0] ||
+          error.message ||
+          'Login failed.';
+        // Optionally log error
       }
     },
     togglePassword() {
@@ -272,5 +282,16 @@ input:focus {
   .join-us-content {
     padding: 2rem;
   }
+}
+
+.error-message {
+  color: #d32f2f;
+  background: #fff3f3;
+  border: 1px solid #f8d7da;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1rem;
 }
 </style>

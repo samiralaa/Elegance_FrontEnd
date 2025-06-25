@@ -92,7 +92,7 @@ const { t } = useI18n()
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get('https://backend.webenia.org/api/website/products/section', {
+    const response = await axios.get('http://elegance_backend.test/api/website/products/section', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
@@ -110,7 +110,7 @@ const fetchProducts = async () => {
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('https://backend.webenia.org/api/favorites', {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
@@ -125,7 +125,7 @@ const fetchFavorites = async () => {
   }
 }
 
-const getImageUrl = (path) => `https://backend.webenia.org/public/storage/${path}`
+const getImageUrl = (path) => `http://elegance_backend.test/public/storage/${path}`
 
 const isInFavorites = (productId) => {
   return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
@@ -161,7 +161,7 @@ const addToFavorites = async (product) => {
 const addToCart = async (product) => {
   try {
     const response = await axios.post(
-      'https://backend.webenia.org/api/cart-items',
+      'http://elegance_backend.test/api/cart-items',
       {
         product_id: product.id,
         quantity: 1,

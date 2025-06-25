@@ -4,17 +4,8 @@
     <p class="otp-message">{{ $t('otp.message') }}</p>
     <form @submit.prevent="handleOtpVerification">
       <div class="otp-input-group">
-        <input 
-          v-for="i in 6" 
-          :key="i"
-          type="text"
-          maxlength="1"
-          v-model="otp[i-1]"
-          @input="focusNext(i)"
-          @keydown="handleKeyDown($event, i)"
-          class="otp-input"
-          placeholder="0"
-        >
+        <input v-for="i in 6" :key="i" type="text" maxlength="1" v-model="otp[i - 1]" @input="focusNext(i)"
+          @keydown="handleKeyDown($event, i)" class="otp-input" placeholder="0">
       </div>
       <button type="submit" class="verify-btn">{{ $t('otp.verify') }}</button>
     </form>
@@ -24,7 +15,7 @@
 <script>
 import axios from 'axios'
 
-const API_URL = 'https://backend.webenia.org/api'
+const API_URL = 'http://elegance_backend.test/api'
 
 export default {
   data() {
@@ -38,7 +29,7 @@ export default {
     // Get data from localStorage
     const userData = localStorage.getItem('user')
     const token = localStorage.getItem('auth_token')
-    
+
     if (!userData || !token) {
       // If no data, redirect back to registration
       this.$router.push('/register')
@@ -50,14 +41,14 @@ export default {
   },
   methods: {
     focusNext(index) {
-      if (index < 6 && this.otp[index-1]) {
+      if (index < 6 && this.otp[index - 1]) {
         this.$el.querySelectorAll('.otp-input')[index].focus()
       }
     },
     handleKeyDown(event, index) {
       // Handle backspace
-      if (event.key === 'Backspace' && !this.otp[index-1] && index > 1) {
-        this.$el.querySelectorAll('.otp-input')[index-2].focus()
+      if (event.key === 'Backspace' && !this.otp[index - 1] && index > 1) {
+        this.$el.querySelectorAll('.otp-input')[index - 2].focus()
       }
     },
     async handleOtpVerification() {
@@ -68,7 +59,7 @@ export default {
       }
 
       try {
-        const response = await axios.post(`${API_URL}/verify-otp`, {
+        const response = await axios.post(`${API_URL}/client/verify-otp`, {
           otp: code,
           email: this.user.email
         }, {
@@ -77,15 +68,16 @@ export default {
           }
         })
 
-        if (response.data.success) {
-          // Save user ID to localStorage
+        if (response.data.status === true) {
+          // Save user to localStorage
           const userData = {
             ...this.user,
-            id: response.data.user.id
-          };
-          localStorage.setItem('user', JSON.stringify(userData));
-          
-          this.$toast?.success?.(this.$t?.('otp.success') || 'OTP verified successfully')
+            ...response.data.data.user // Merge updated user data (e.g., id, is_verified, etc.)
+          }
+          localStorage.setItem('user', JSON.stringify(userData))
+          localStorage.setItem('token', response.data.data.token)
+
+          // Redirect to home
           this.$router.push('/')
         }
       } catch (error) {
@@ -94,6 +86,7 @@ export default {
         this.$toast?.error?.(errorMessage)
       }
     }
+
   }
 }
 </script>

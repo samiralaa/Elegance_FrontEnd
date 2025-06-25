@@ -156,7 +156,7 @@
   }
 
   // Helpers
-  const getImageUrl = (path) => `https://backend.webenia.org/public/storage/${path}`
+  const getImageUrl = (path) => `http://elegance_backend.test/public/storage/${path}`
 
   const isInFavorites = (productId) => {
     return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
@@ -170,7 +170,7 @@
   const addToFavorites = async (product) => {
     try {
       const response = await axios.post(
-        'https://backend.webenia.org/api/favorites',
+        'http://elegance_backend.test/api/favorites',
         { product_id: product.id },
         {
           headers: {
@@ -202,7 +202,7 @@
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('https://backend.webenia.org/api/website')
+      const res = await axios.get('http://elegance_backend.test/api/website')
       categories.value = res.data.data || []
     } catch (err) {
       console.error('Error loading categories', err)
@@ -211,7 +211,7 @@
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('https://backend.webenia.org/api/all/products')
+      const res = await axios.get('http://elegance_backend.test/api/all/products')
       products.value = res.data.data || []
     } catch (err) {
       console.error('Error loading products', err)
@@ -221,7 +221,7 @@
   const addToCart = async (product) => {
     try {
       const response = await axios.post(
-        'https://backend.webenia.org/api/cart-items',
+        'http://elegance_backend.test/api/cart-items',
         {
           product_id: product.id,
           quantity: 1,

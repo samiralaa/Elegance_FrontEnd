@@ -3,10 +3,10 @@
     <h2>{{ $t('checkout.reviewCart') }}</h2>
     <div class="cart-items">
       <div v-for="item in cartItems" :key="item.id" class="cart-item">
-        <img :src="getProductImage(item)" :alt="item.product.name_en" class="item-image">
+        <img :src="getProductImage(item)" :alt="item.product?.name_en || ''" class="item-image">
         <div class="item-details">
-          <h3>{{ currentLang === 'ar' ? item.product.name_ar : item.product.name_en }}</h3>
-          <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en }}</p>
+          <h3>{{ currentLang === 'ar' ? item.product?.name_ar : item.product?.name_en }}</h3>
+          <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency?.name_ar : item.currency?.name_en }}</p>
           <div class="quantity-controls">
             <button @click="updateQuantity(item, -1)" :disabled="item.quantity <= 1">-</button>
             <span>{{ item.quantity }}</span>
@@ -59,8 +59,10 @@ export default {
       return localStorage.getItem('lang') || 'en';
     },
     currency() {
-      return this.cartItems.length > 0 ?
-        (this.currentLang === 'ar' ? this.cartItems[0].currency.name_ar : this.cartItems[0].currency.name_en) : '';
+      if (this.cartItems.length === 0) return '';
+      const currency = this.cartItems[0].currency;
+      if (!currency) return '';
+      return this.currentLang === 'ar' ? currency.name_ar : currency.name_en;
     },
     subtotal() {
       return this.cartItems.reduce((total, item) => {
