@@ -4,41 +4,65 @@
       <div class="title section-header d-flex align-items-center mb-4">
         <fa class="fa-icon me-2" :icon="['fas', 'shopping-basket']" />
         <h2 class="mb-0">{{ $t('home.products') }}</h2>
+
+        <!-- Currency Dropdown -->
+        <select
+          @change="onCurrencyChange($event)"
+          v-model="selectedCurrency.code"
+          class="ms-auto form-select w-auto"
+        >
+          <option
+            v-for="curr in currencies"
+            :key="curr.code"
+            :value="curr.code"
+          >
+            {{ curr.name_en }} ({{ curr.code }})
+          </option>
+        </select>
       </div>
-      <div class="row g-3">
-        <div class="col-6 col-md-4 col-lg-3" v-for="product in products" :key="product.id">
+
+      <div v-if="loading" class="text-center my-4">Loading products...</div>
+
+      <div v-else class="row g-3">
+        <div
+          v-for="product in products"
+          :key="product.id"
+          class="col-6 col-md-4 col-lg-3"
+        >
           <div class="product-card card border-0 h-100">
             <div class="position-relative overflow-hidden bg-light">
               <router-link :to="`/read/products/${product.id}`">
                 <img
-                  v-if="product.images.length"
+                  v-if="product.images && product.images.length"
                   :src="getImageUrl(product.images[0].path)"
                   :alt="product.name_en"
                   class="card-img-top product-img"
                 />
               </router-link>
-              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
+
+              <div v-if="!product.is_available" class="sale-badge">
+                {{ $t('products.outOfStock') }}
+              </div>
+
               <!-- Action Buttons -->
               <div class="product-actions d-flex justify-content-center gap-2 w-100">
-                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                <router-link
+                  :to="`/read/products/${product.id}`"
+                  class="btn btn-light rounded-circle shadow-sm"
+                  title="View"
+                >
                   <fa icon="eye" />
                 </router-link>
-                <button 
-                  @click="addToCart(product)" 
+
+                <button
+                  @click="addToCart(product)"
                   class="btn btn-light shadow-sm"
-                  :class="{ 'disabled': !product.is_available }"
+                  :class="{ disabled: !product.is_available }"
                   :disabled="!product.is_available"
                 >
                   {{ $t('home.add-to-cart') }}
                 </button>
-                <button 
-                  @click="addToCart(product)" 
-                  class="d-none btn rounded-circle btn-light shadow-sm"
-                  :class="{ 'disabled': !product.is_available }"
-                  :disabled="!product.is_available"
-                >
-                  <fa icon="cart-plus" />
-                </button>
+
                 <button
                   @click="addToFavorites(product)"
                   class="btn rounded-circle shadow-sm btn-light"
@@ -53,14 +77,22 @@
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="price-container">
-                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
-                  -{{ product.discount[0].discount_value }}
+                <span
+                  v-if="product.discount && product.discount.length > 0"
+                  class="discount-badge"
+                >
+                  -{{ product.discount[0].discount_value }}%
                 </span>
-                <span v-if="product.discount && product.discount.length > 0" class="price-old">
-                  {{ product.price }} {{ product.currency.name_en }}
+
+                <span
+                  v-if="product.discount && product.discount.length > 0"
+                  class="price-old"
+                >
+                  {{ product.converted_price }} {{ product.currency_code }}
                 </span>
+
                 <span class="card-text card-price">
-                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+                  {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                 </span>
               </div>
             </div>
@@ -68,9 +100,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Success Dialog -->
-
   </div>
 </template>
 
@@ -80,34 +109,72 @@ import axios from 'axios'
 import { ElNotification } from 'element-plus'
 import { useFavoritesStore } from '@/store/favorites'
 import { useCartStore } from '@/store/cart'
-import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 const products = ref([])
-const showSuccessDialog = ref(false)
-const successMessage = ref('')
+const currencies = ref([])
+const selectedCurrency = ref({ code: 'USD' })
+const loading = ref(false)
+
 const favoritesStore = useFavoritesStore()
 const cartStore = useCartStore()
 const { t } = useI18n()
 
-const fetchProducts = async () => {
-  try {
-    const response = await axios.get('http://elegance_backend.test/api/website/products/section', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-      }
-    })
+const getImageUrl = (path) =>
+  `http://elegance_backend.test/public/storage/${path}`
 
-    if (response.data.status && response.data.data) {
+// جلب العملات
+const fetchCurrencies = async () => {
+  try {
+    const response = await axios.get('http://elegance_backend.test/api/currencies')
+    if (response.data.currencies) {
+      currencies.value = response.data.currencies
+      console.log('currencies:', currencies.value)
+      // استرجاع العملة المحفوظة أو تعيين USD
+      const storedCurrency = JSON.parse(localStorage.getItem('selectedCurrency'))
+      selectedCurrency.value =
+        storedCurrency ||
+        currencies.value.find((c) => c.code === 'USD') ||
+        { code: 'USD' }
+      console.log('selectedCurrency after fetch:', selectedCurrency.value)
+    }
+  } catch (error) {
+    console.error('Error fetching currencies:', error)
+  }
+}
+
+// جلب المنتجات بناءً على العملة المختارة
+const fetchProducts = async () => {
+  loading.value = true
+  try {
+    console.log('Fetching products with currency:', selectedCurrency.value.code)
+    const currentCurrency = selectedCurrency.value || { code: 'USD' }
+    const response = await axios.get(
+      'http://elegance_backend.test/api/website/products/section',
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Currency: currentCurrency.code,
+        },
+      }
+    )
+    if (response.data.status) {
       products.value = response.data.data
-      // Fetch favorites after getting products
       await fetchFavorites()
     }
   } catch (error) {
     console.error('Error fetching products:', error)
+    ElNotification({
+      title: 'Error',
+      message: 'Failed to load products.',
+      type: 'error',
+    })
+  } finally {
+    loading.value = false
   }
 }
 
+// جلب المفضلة
 const fetchFavorites = async () => {
   try {
     const response = await axios.get('http://elegance_backend.test/api/favorites', {
@@ -115,9 +182,7 @@ const fetchFavorites = async () => {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
     })
-    
     if (response.data.status && response.data.data) {
-      // Update favorites store with the fetched favorites
       favoritesStore.setFavorites(response.data.data)
     }
   } catch (error) {
@@ -125,39 +190,37 @@ const fetchFavorites = async () => {
   }
 }
 
-const getImageUrl = (path) => `http://elegance_backend.test/public/storage/${path}`
-
+// تحقق إذا المنتج موجود بالمفضلة
 const isInFavorites = (productId) => {
-  return favoritesStore.favorites.some(favorite => favorite.product_id === productId)
+  return favoritesStore.favorites.some((fav) => fav.product_id === productId)
 }
 
 const getFavoriteId = (productId) => {
-  return favoritesStore.favorites.find(favorite => favorite.product_id === productId)?.id
+  return favoritesStore.favorites.find((fav) => fav.product_id === productId)?.id
 }
 
+// إضافة / إزالة من المفضلة
 const addToFavorites = async (product) => {
   try {
     if (isInFavorites(product.id)) {
-      const favoriteId = getFavoriteId(product.id);
+      const favoriteId = getFavoriteId(product.id)
       if (favoriteId) {
-        await favoritesStore.removeFromFavorites(favoriteId);
+        await favoritesStore.removeFromFavorites(favoriteId)
       }
-      successMessage.value = 'Product removed from favorites'
+      ElNotification.success('Product removed from favorites')
     } else {
       const response = await favoritesStore.addToFavorites(product.id)
-      successMessage.value = response.message
+      ElNotification.success(response.message)
     }
-    showSuccessDialog.value = true
   } catch (error) {
     console.error('Favorite error:', error)
-    ElNotification({
-      title: '⚠️',
-      message: error.response?.data?.message || 'Login required to favorite product',
-      type: 'error'
-    })
+    ElNotification.error(
+      error.response?.data?.message || 'Login required to favorite product'
+    )
   }
 }
 
+// إضافة للعربة
 const addToCart = async (product) => {
   try {
     const response = await axios.post(
@@ -165,50 +228,70 @@ const addToCart = async (product) => {
       {
         product_id: product.id,
         quantity: 1,
-        price: parseFloat(product.price)
+        price: parseFloat(product.converted_price) || parseFloat(product.price),
       },
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
       }
     )
 
     if (response.data.status) {
-      ElNotification({
-        title: t('success'),
-        message: response.data.message ,
-        type: 'success'
-      })
+      ElNotification.success(response.data.message)
     } else {
-      ElNotification({
-        title: t('error'),
-        message: response.data.message,
-        type: 'error'
-      })
+      ElNotification.error(response.data.message)
     }
   } catch (error) {
     console.error('Error adding to cart:', error)
-    ElNotification({
-      title: t('error'),
-      message: error.response?.data?.message,
-      type: 'error'
-    })
+    ElNotification.error(
+      error.response?.data?.message || 'Error adding product to cart'
+    )
   }
 }
 
+// حساب السعر بعد الخصم
 const calculateDiscountedPrice = (product) => {
   if (product.discount && product.discount.length > 0) {
     const discountValue = parseFloat(product.discount[0].discount_value)
-    const originalPrice = parseFloat(product.price)
-    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    const originalPrice = parseFloat(product.converted_price || product.price)
+    const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
     return discountedPrice.toFixed(2)
   }
-  return product.price
+  return product.converted_price || product.price
 }
 
-onMounted(() => {
-  fetchProducts()
+// عند تغيير العملة
+const onCurrencyChange = async (event) => {
+  console.log('Currency changed:', event.target.value)
+  const newCode = event.target.value
+  const newCurrency = currencies.value.find((c) => c.code === newCode)
+  if (!newCurrency) return
+
+  selectedCurrency.value = newCurrency
+  localStorage.setItem('selectedCurrency', JSON.stringify(newCurrency))
+  console.log('selectedCurrency after change:', selectedCurrency.value)
+
+  try {
+    await axios.post('http://elegance_backend.test/api/change-currency', {
+      currency: newCurrency.code,
+    })
+
+    ElNotification.success('Currency changed successfully')
+
+    await fetchProducts()
+  } catch (error) {
+    ElNotification.error('Failed to change currency')
+    console.error(error)
+  }
+}
+
+onMounted(async () => {
+  await fetchCurrencies()
+  await fetchProducts()
+  window.addEventListener('currency-changed', () => {
+    fetchProducts()
+  })
 })
 </script>
 
@@ -218,7 +301,6 @@ onMounted(() => {
   font-weight: 600;
   color: #8b6b3d;
 }
-
 
 .product-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -257,7 +339,7 @@ onMounted(() => {
   pointer-events: auto;
 }
 
-.card-body{
+.card-body {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -303,7 +385,6 @@ onMounted(() => {
   font-size: 1.1rem;
 }
 
-
 .card-title {
   color: #8b6b3d;
   transition: all 0.2s ease-in;
@@ -328,7 +409,7 @@ onMounted(() => {
     transform: translateX(0) translateY(0);
     z-index: 10;
   }
-  
+
   .product-card:hover .product-actions {
     transform: translateX(0) translateY(0);
   }
@@ -346,11 +427,9 @@ onMounted(() => {
     font-size: 0.95rem;
   }
 
-
   .btn {
     font-size: 0.9rem;
   }
-
 }
 
 @media (max-width: 576px) {

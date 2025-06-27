@@ -11,41 +11,24 @@
       <form @submit.prevent="handleRegister" class="join-form">
         <div class="form-group">
           <label for="fullName">{{ $t('header.fullName') }}</label>
-          <input 
-            type="text" 
-            id="fullName" 
-            v-model="formData.fullName" 
-            :placeholder="$t('header.fullNamePlaceholder')"
-            :class="{ 'error': errors.fullName, 'valid': formData.fullName && !errors.fullName }"
-            required
-          >
+          <input type="text" id="fullName" v-model="formData.fullName" :placeholder="$t('header.fullNamePlaceholder')"
+            :class="{ 'error': errors.fullName, 'valid': formData.fullName && !errors.fullName }" required>
           <span class="error-message" v-if="errors.fullName">{{ errors.fullName }}</span>
         </div>
 
         <div class="form-group">
           <label for="email">{{ $t('header.email') }}</label>
-          <input 
-            type="email" 
-            id="email" 
-            v-model="formData.email" 
-            :placeholder="$t('header.emailPlaceholder')"
-            :class="{ 'error': errors.email, 'valid': formData.email && !errors.email }"
-            required
-          >
+          <input type="email" id="email" v-model="formData.email" :placeholder="$t('header.emailPlaceholder')"
+            :class="{ 'error': errors.email, 'valid': formData.email && !errors.email }" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
 
         <div class="form-group">
           <label for="password">{{ $t('header.password') }}</label>
           <div class="password-input-container">
-            <input 
-              :type="showPassword ? 'text' : 'password'" 
-              id="password" 
-              v-model="formData.password" 
+            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="formData.password"
               :placeholder="$t('header.passwordPlaceholder')"
-              :class="{ 'error': errors.password, 'valid': formData.password && !errors.password }"
-              required
-            >
+              :class="{ 'error': errors.password, 'valid': formData.password && !errors.password }" required>
             <button type="button" class="show-password-btn" @click="togglePassword">
               {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
@@ -56,14 +39,10 @@
         <div class="form-group">
           <label for="confirmPassword">{{ $t('header.confirmPassword') }}</label>
           <div class="password-input-container">
-            <input 
-              :type="showConfirmPassword ? 'text' : 'password'" 
-              id="confirmPassword" 
-              v-model="formData.confirmPassword" 
-              :placeholder="$t('register.confirmPasswordPlaceholder')"
+            <input :type="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
+              v-model="formData.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
               :class="{ 'error': errors.confirmPassword, 'valid': formData.confirmPassword && !errors.confirmPassword }"
-              required
-            >
+              required>
             <button type="button" class="show-password-btn" @click="toggleConfirmPassword">
               {{ showConfirmPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
@@ -73,23 +52,11 @@
 
         <div class="form-group">
           <label for="country">{{ $t('register.country') }}</label>
-          <el-select
-            v-model="formData.country_id"
-            class="country-select"
-            :placeholder="$t('register.countryPlaceholder')"
-            :loading="loading"
-            filterable
-            :filter-method="filterCountries"
-            :remote-method="filterCountries"
-            :remote="false"
-            required
-          >
-            <el-option
-              v-for="country in filteredCountries"
-              :key="country.id"
-              :label="getCountryName(country)"
-              :value="country.id"
-            >
+          <el-select v-model="formData.country_id" class="country-select"
+            :placeholder="$t('register.countryPlaceholder')" :loading="loading" filterable
+            :filter-method="filterCountries" :remote-method="filterCountries" :remote="false" required>
+            <el-option v-for="country in filteredCountries" :key="country.id" :label="getCountryName(country)"
+              :value="country.id">
               <div class="country-option">
                 <span class="country-name">{{ getCountryName(country) }}</span>
                 <span class="country-code">+{{ getCountryCode(country.id) }}</span>
@@ -104,31 +71,19 @@
           <div class="phone-input-container">
             <div class="country-code-input">
               <span class="plus">+</span>
-              <input
-                type="text"
-                v-model="countryCode"
-                class="country-code-field"
-                readonly
-                :placeholder="selectedCountryDialCode || 'Code'"
-              />
+              <input type="text" v-model="countryCode" class="country-code-field" readonly
+                :placeholder="selectedCountryDialCode || 'Code'" />
             </div>
-            <input
-              type="tel"
-              id="phoneNumber"
-              v-model="phoneNumber"
+            <input type="tel" id="phoneNumber" v-model="phoneNumber"
               :placeholder="$t('register.phoneNumberPlaceholder')"
-              :class="{ 'error': errors.phoneNumber, 'valid': phoneNumber && !errors.phoneNumber }"
-              required
-              minlength="10"
-              maxlength="18"
-              @input="formatPhoneNumber"
-            >
+              :class="{ 'error': errors.phoneNumber, 'valid': phoneNumber && !errors.phoneNumber }" required
+              minlength="10" maxlength="18" @input="formatPhoneNumber">
           </div>
           <span class="error-message" v-if="errors.phoneNumber">{{ errors.phoneNumber }}</span>
         </div>
 
         <button type="submit" class="submit-btn">{{ $t('register.submit') }}</button>
-        
+
         <div class="register-section">
           <p>{{ $t('register.alreadyHaveAccount') }}
             <router-link to="/login" class="link">{{ $t('register.loginHere') }}</router-link>
@@ -309,9 +264,9 @@ export default {
           const nameEn = country.name_en?.toLowerCase() || '';
           const nameAr = country.name_ar?.toLowerCase() || '';
           const phoneCode = this.getCountryCode(country.id) || '';
-          return nameEn.includes(searchQuery) || 
-                 nameAr.includes(searchQuery) || 
-                 phoneCode.includes(searchQuery);
+          return nameEn.includes(searchQuery) ||
+            nameAr.includes(searchQuery) ||
+            phoneCode.includes(searchQuery);
         });
       } else {
         this.filteredCountries = this.countries;
@@ -410,7 +365,7 @@ export default {
       this.validateConfirmPassword(this.formData.confirmPassword)
       this.validatePhoneNumber(this.formData.phoneNumber)
       this.validateCountry(this.formData.country_id)
-      
+
       // Check if there are any errors
       if (Object.values(this.errors).some(error => error)) {
         return
@@ -432,9 +387,9 @@ export default {
           // Store user data
           localStorage.setItem('user', JSON.stringify(response.data.data.user))
           localStorage.setItem('auth_token', response.data.data.token)
-          
+
           this.$toast?.success?.(response.data.message || 'Registration successful')
-          
+
           // Redirect to OTP page
           this.$router.push('/otp')
         } else {
@@ -466,10 +421,10 @@ export default {
     },
     formatPhoneNumber(event) {
       let value = event.target.value;
-      
+
       // Remove any non-numeric characters
       value = value.replace(/\D/g, '');
-      
+
       // Update the phone number
       this.phoneNumber = value;
     },
@@ -558,7 +513,8 @@ label {
   font-weight: 500;
 }
 
-input, .el-select {
+input,
+.el-select {
   padding: 1.2rem;
   border: 2px solid #E0E0E0;
   border-radius: 12px;
@@ -569,7 +525,8 @@ input, .el-select {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-input:focus, .el-select:focus {
+input:focus,
+.el-select:focus {
   outline: none;
   border-color: #9b7c1f;
   box-shadow: 0 0 0 4px rgba(155, 124, 31, 0.15);
@@ -698,6 +655,7 @@ input.valid {
 [dir="rtl"] .join-form {
   text-align: right;
 }
+
 [dir="rtl"] .show-password-btn {
   right: auto;
   left: 1rem;
@@ -708,9 +666,11 @@ input.valid {
   .join-us-container {
     grid-template-columns: 1fr;
   }
+
   .banner-section {
     display: none;
   }
+
   .join-us-content {
     padding: 2rem;
   }

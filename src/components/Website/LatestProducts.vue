@@ -36,10 +36,10 @@
                   -{{ product.discount[0].discount_value }}
                 </span>
                 <span v-if="product.discount && product.discount.length > 0" class="price-old">
-                  {{ product.price }} {{ product.currency.name_en }}
+                  {{ product.converted_price }} {{ product.currency_code }}
                 </span>
                 <span class="card-text card-price">
-                  {{ calculateDiscountedPrice(product) }} {{ product.currency.name_en }}
+                  {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                 </span>
               </div>
 
@@ -85,9 +85,13 @@ const { t } = useI18n()
 
 const fetchProducts = async () => {
   try {
+    const selectedCurrency =
+      JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
+
     const response = await axios.get('http://elegance_backend.test/api/website/products/section', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Currency: selectedCurrency.code,
       },
     })
     if (response.data.status && response.data.data) {
@@ -150,11 +154,11 @@ const addToFavorites = async (product) => {
 const calculateDiscountedPrice = (product) => {
   if (product.discount && product.discount.length > 0) {
     const discountValue = parseFloat(product.discount[0].discount_value)
-    const originalPrice = parseFloat(product.price)
+    const originalPrice = parseFloat(product.converted_price)
     const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
     return discountedPrice.toFixed(2)
   }
-  return product.price
+  return product.converted_price
 }
 
 const addToCart = async (product) => {
@@ -202,6 +206,11 @@ const addToCart = async (product) => {
 
 onMounted(() => {
   fetchProducts()
+  
+  // Listen for currency changes
+  window.addEventListener('currency-changed', () => {
+    fetchProducts()
+  })
 })
 </script>
 

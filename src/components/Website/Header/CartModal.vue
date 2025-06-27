@@ -27,8 +27,7 @@
               <!-- Quantity and Price -->
               <div class="d-flex align-items-center gap-2">
                 <small class="text-muted">
-                  {{ item.price }} 
-                  {{ item.currency ? (currentLang === 'ar' ? item.currency.name_ar : item.currency.name_en) : '' }} ×
+                  {{ item.price }} {{ item.currency_code || 'AUD' }} ×
                 </small>
                 <div class="quantity-control">
                   <el-button 
@@ -46,7 +45,7 @@
                     max="99"
                     v-model.number="item.quantity"
                     @change="updateCartItemQuantity(item)"
-                    @input="item.quantity = Math.min(item.quantity)"
+                    @input="item.quantity = Math.min(item.quantity, 99)"
                   >
 
                   <el-button 
@@ -79,8 +78,7 @@
       <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
         <span><strong>{{ $t('cart.total') }}:</strong></span>
         <span>
-          {{ totalValue }} 
-          {{ cartItems[0]?.currency ? (currentLang === 'ar' ? cartItems[0].currency.name_ar : cartItems[0].currency.name_en) : '' }}
+          {{ totalValue }} {{ cartItems[0]?.currency_code || 'AUD' }}
         </span>
       </div>
 
@@ -232,7 +230,6 @@ export default {
         this.isLoading = false;
       }
     }
-
   }
 }
 </script>

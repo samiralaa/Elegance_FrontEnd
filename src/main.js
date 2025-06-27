@@ -1,3 +1,4 @@
+import axios from "axios"
 import { createApp } from 'vue'
 import "bootstrap/dist/css/bootstrap.css"
 import App from './App.vue'
@@ -48,3 +49,11 @@ app.component('fa', FontAwesomeIcon)
 
 app.mount('#app')
 import "bootstrap/dist/js/bootstrap.js"
+
+axios.defaults.baseURL = 'http://elegance_backend.test' // 🟢 your Laravel domain
+axios.defaults.withCredentials = true
+
+const csrf = document.querySelector('meta[name="csrf-token"]')
+if (csrf) {
+  axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.getAttribute('content')
+}
