@@ -239,6 +239,8 @@ const addToCart = async (product) => {
 
     if (response.data.status) {
       ElNotification.success(response.data.message)
+      cartStore.incrementCount();
+      await cartStore.fetchCartCount();
     } else {
       ElNotification.error(response.data.message)
     }

@@ -184,6 +184,8 @@
           message: response.data.message ,
           type: 'success'
         })
+        cartStore.incrementCount();
+        await cartStore.fetchCartCount();
       } else {
         ElNotification({
           title: t('error'),

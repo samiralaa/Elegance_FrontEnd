@@ -186,7 +186,10 @@ const addToCart = async (product) => {
         title: t('success'),
         message: response.data.message ,
         type: 'success'
+        
       })
+      cartStore.incrementCount();
+      await cartStore.fetchCartCount();
     } else {
       ElNotification({
         title: t('error'),
