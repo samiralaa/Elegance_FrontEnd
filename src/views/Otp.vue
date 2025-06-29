@@ -1,22 +1,35 @@
 <template>
   <div class="otp-wrapper">
-
     <div class="otp-container">
       <img src="@/assets/images/EleganceLogo.png" alt="Logo" height="100" />
       <p class="otp-message">{{ $t('otp.message') }}</p>
       <span>{{ user.email }}</span>
+
       <form @submit.prevent="handleOtpVerification">
         <div class="otp-input-group">
-          <input v-for="i in 4" :key="i" type="number" min="0" max="9" v-model="otp[i - 1]" @input="focusNext(i)"
-            @keydown="handleKeyDown($event, i)" class="otp-input" placeholder="_">
+          <input
+            v-for="i in 4"
+            :key="i"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            pattern="[0-9]*"
+            v-model="otp[i - 1]"
+            @input="handleInput($event, i)"
+            @keydown="handleKeyDown($event, i)"
+            class="otp-input"
+            placeholder="_"
+          />
         </div>
         <button type="submit" class="verify-btn">{{ $t('otp.verify') }}</button>
+        <div v-if="otpMessage" class="info-message" :style="{marginTop: '1rem', color: otpMessageColor}">{{ otpMessage }}</div>
       </form>
+
       <div class="resend d-flex w-100 justify-content-between align-items-center mt-3">
         <div class="time-left">
-          <span>03:00</span>
+          <span>{{ timer }}</span>
         </div>
-        <a href="">
+        <a href="#" @click.prevent="resendOtp">
           <fa icon="rotate-right"></fa>
           {{ $t('otp.resend') }}
         </a>
@@ -35,22 +48,36 @@ export default {
     return {
       otp: Array(4).fill(''),
       user: null,
-      token: null
+      token: null,
+      timer: '03:00',
+      countdown: null,
+      otpMessage: ''
+    }
+  },
+  computed: {
+    otpMessageColor() {
+      if (this.otpMessage === 'Invalid OTP' || this.otpMessage === 'Resend Invalid') {
+        return 'red';
+      }
+      if (this.otpMessage === 'OTP resent successfully') {
+        return 'green';
+      }
+      return '#333';
     }
   },
   created() {
-    // Get data from localStorage
     const userData = localStorage.getItem('user')
     const token = localStorage.getItem('auth_token')
 
     if (!userData || !token) {
-      // If no data, redirect back to registration
       this.$router.push('/register')
       return
     }
 
     this.user = JSON.parse(userData)
     this.token = token
+
+    this.startTimer()
   },
   methods: {
     focusNext(index) {
@@ -58,16 +85,33 @@ export default {
         this.$el.querySelectorAll('.otp-input')[index].focus()
       }
     },
+    handleInput(event, index) {
+      const value = event.target.value
+
+      // لو المستخدم كتب رقم
+      if (/^\d$/.test(value)) {
+        this.otp[index - 1] = value
+        if (index < 4) {
+          this.focusNext(index)
+        }
+      } else {
+        // امسح أي قيمة غير رقم
+        this.otp[index - 1] = ''
+      }
+    },
     handleKeyDown(event, index) {
-      // Handle backspace
       if (event.key === 'Backspace' && !this.otp[index - 1] && index > 1) {
         this.$el.querySelectorAll('.otp-input')[index - 2].focus()
       }
     },
     async handleOtpVerification() {
       const code = this.otp.join('')
-      if (code.length !== 2) {
-        this.$toast?.error?.(this.$t?.('otp.invalidLength') || 'Please enter all 4 digits')
+      const isValid = this.otp.every(digit => /^\d$/.test(digit))
+
+      if (code.length !== 4 || !isValid) {
+        this.$toast?.error?.(
+          this.$t?.('otp.invalidLength') || 'Please enter a valid 4-digit code'
+        )
         return
       }
 
@@ -82,34 +126,69 @@ export default {
         })
 
         if (response.data.status === true) {
-          // Save user to localStorage
           const userData = {
             ...this.user,
-            ...response.data.data.user // Merge updated user data (e.g., id, is_verified, etc.)
+            ...response.data.data.user
           }
-          localStorage.setItem('user', JSON.stringify(userData))
-          localStorage.setItem('token', response.data.data.token)
 
-          // Redirect to home
+          localStorage.setItem('user', JSON.stringify(userData))
+          localStorage.setItem('auth_token', response.data.data.token)
+
+          this.otpMessage = '';
           this.$router.push('/')
         }
       } catch (error) {
         console.error('OTP verification error:', error)
         const errorMessage = error.response?.data?.message || this.$t?.('otp.error') || 'OTP verification failed'
+        this.otpMessage = errorMessage;
         this.$toast?.error?.(errorMessage)
       }
+    },
+    startTimer() {
+      let minutes = 3
+      let seconds = 0
+
+      this.countdown = setInterval(() => {
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(this.countdown)
+            return
+          }
+          minutes--
+          seconds = 59
+        } else {
+          seconds--
+        }
+
+        this.timer = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+      }, 1000)
+    },
+    async resendOtp() {
+      try {
+        const response = await axios.post(`${API_URL}/resend-otp`, {
+          email: this.user.email
+        });
+        if (response.data.status === true) {
+          const msg = response.data.message || 'OTP resent successfully.';
+          this.otpMessage = msg;
+          this.$toast?.info?.(msg);
+        } else {
+          const msg = response.data.message || 'Resend Invalid';
+          this.otpMessage = msg;
+          this.$toast?.error?.(msg);
+        }
+        this.startTimer();
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || 'Resend Invalid';
+        this.otpMessage = errorMessage;
+        this.$toast?.error?.(errorMessage);
+      }
     }
-    
   }
 }
 </script>
 
 <style scoped>
-a {
-  text-decoration: none;
-  color: #7f7f7f;
-  font-size: 0.9rem;
-}
 .otp-wrapper {
   display: flex;
   justify-content: center;
@@ -128,26 +207,22 @@ a {
   align-items: center;
   justify-content: center;
 }
-
 .otp-message {
   font-weight: bold;
   color: #333;
   margin-bottom: 0;
 }
-.otp-container span{
+.otp-container span {
   font-weight: bold;
   color: #7f7f7f;
   margin-bottom: 0px;
 }
-
-
 .otp-input-group {
   display: flex;
   gap: 2rem;
   justify-content: center;
   margin: 2rem 0;
 }
-
 .otp-input {
   width: 40px;
   height: 40px;
@@ -157,25 +232,21 @@ a {
   border: 0px;
   border-radius: 4px;
 }
-
 .otp-input::-webkit-outer-spin-button,
 .otp-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 .otp-input::placeholder {
   color: #333;
   font-weight: bold;
 }
-
 .otp-input:focus {
   border-color: #725932;
   background-color: #8b6a3d5b;
   outline: none;
   box-shadow: 0 0 0 2px rgba(139, 107, 61, 0.2);
 }
-
 .verify-btn {
   background-color: #8B6B3D;
   color: white;
@@ -187,21 +258,17 @@ a {
   width: 100%;
   transition: background-color 0.3s;
 }
-
 .verify-btn:hover {
   background-color: #725932;
 }
-
 .verify-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
-
 .resend {
   padding: 0 100px;
   font-weight: bold;
 }
-
 .time-left {
   font-size: 0.9rem;
   color: #7f7f7f;

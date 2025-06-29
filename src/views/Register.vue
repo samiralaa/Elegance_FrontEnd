@@ -201,6 +201,7 @@ export default {
   },
   computed: {
     selectedCountryDialCode() {
+      if (!Array.isArray(this.countries)) return '';
       const country = this.countries.find(c => c.id === this.formData.country_id);
       return country ? this.getCountryCode(country.id) : '';
     },
@@ -276,8 +277,10 @@ export default {
       try {
         this.loading = true;
         const response = await axios.get(`${API_URL}/countries`);
+        console.log('Countries API response:', response.data.data);
         if (response.data.status === 'success') {
-          this.countries = response.data.data || [];
+          const countriesArray = response.data?.data?.original?.data || [];
+          this.countries = Array.isArray(countriesArray) ? countriesArray : [];
           this.filteredCountries = this.countries;
           // If we already have a country_id selected, update the country code
           if (this.formData.country_id) {
