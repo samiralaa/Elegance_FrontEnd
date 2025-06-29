@@ -3,13 +3,7 @@
     <el-card class="product-card">
       <h2>{{ $t('Products.EditProduct') }}</h2>
 
-      <el-form
-        :model="form"
-        ref="formRef"
-        :rules="rules"
-        label-width="120px"
-        enctype="multipart/form-data"
-      >
+      <el-form :model="form" ref="formRef" :rules="rules" label-width="120px" enctype="multipart/form-data">
         <!-- Name (EN) -->
         <el-form-item :label="$t('Products.NameEn')" prop="name_en">
           <el-input v-model="form.name_en" />
@@ -43,24 +37,14 @@
         <!-- Category Select -->
         <el-form-item :label="$t('Products.Category')" prop="category_id">
           <el-select v-model="form.category_id" :placeholder="$t('Products.SelectCategory')" filterable clearable>
-            <el-option
-              v-for="cat in categories"
-              :key="cat.id"
-              :label="cat.name_en || cat.name_ar"
-              :value="cat.id"
-            />
+            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
           </el-select>
         </el-form-item>
 
         <!-- Currency Select -->
         <el-form-item :label="$t('Products.Currency')" prop="currency_id">
           <el-select v-model="form.currency_id" :placeholder="$t('Products.SelectCurrency')" filterable clearable>
-            <el-option
-              v-for="curr in activeCurrencies"
-              :key="curr.id"
-              :label="getCurrencyLabel(curr)"
-              :value="curr.id"
-            >
+            <el-option v-for="curr in activeCurrencies" :key="curr.id" :label="getCurrencyLabel(curr)" :value="curr.id">
               <div class="currency-option">
                 <span class="currency-name">{{ curr.name_en }}</span>
                 <span class="currency-rate">({{ parseFloat(curr.exchange_rate).toFixed(2) }})</span>
@@ -72,12 +56,8 @@
         <!-- Country Select -->
         <el-form-item :label="$t('Products.Country')" prop="country_id">
           <el-select v-model="form.country_id" :placeholder="$t('Products.SelectCountry')" filterable clearable>
-            <el-option
-              v-for="country in countries"
-              :key="country.id"
-              :label="country.name_en || country.name_ar"
-              :value="country.id"
-            />
+            <el-option v-for="country in countries" :key="country.id" :label="country.name_en || country.name_ar"
+              :value="country.id" />
           </el-select>
         </el-form-item>
 
@@ -85,28 +65,14 @@
         <el-form-item :label="$t('Products.ParentProduct')" prop="parent_id">
           <el-select v-model="form.parent_id" :placeholder="$t('Products.SelectParentProduct')" clearable>
             <el-option :label="$t('Products.None')" :value="null" />
-            <el-option
-              v-for="parent in parentProducts"
-              :key="parent.id"
-              :label="parent.name_en"
-              :value="parent.id"
-            />
+            <el-option v-for="parent in parentProducts" :key="parent.id" :label="parent.name_en" :value="parent.id" />
           </el-select>
         </el-form-item>
 
         <!-- Images Upload (optional for edit) -->
         <el-form-item :label="$t('Products.Images')" prop="images">
-          <el-upload
-            class="upload-demo"
-            drag
-            action=""
-            :auto-upload="false"
-            :limit="5"
-            :file-list="fileList"
-            list-type="picture"
-            :on-change="handleFileChange"
-            :on-remove="handleRemove"
-          >
+          <el-upload class="upload-demo" drag action="" :auto-upload="false" :limit="5" :file-list="fileList"
+            list-type="picture" :on-change="handleFileChange" :on-remove="handleRemove">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">{{ $t('Products.DropFiles') }}</div>
           </el-upload>
@@ -154,7 +120,7 @@ const categories = ref([])
 const currencies = ref([])
 const countries = ref([])
 const parentProducts = ref([])
-const BASE_URL = 'http://elegance_backend.test'
+const BASE_URL = 'https://backend.webenia.org'
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`
 const CURRENCIES_API = `${BASE_URL}/api/currencies`
@@ -260,7 +226,8 @@ onMounted(() => {
   margin: 30px auto;
   padding: 20px;
 }
+
 .product-card {
   padding: 20px;
 }
-</style> 
+</style>
