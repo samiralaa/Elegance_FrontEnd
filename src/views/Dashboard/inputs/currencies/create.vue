@@ -56,7 +56,7 @@
   }
   
 
-  const BASE_URL = 'http://elegance_backend.test'
+  const BASE_URL = 'https://backend.webenia.org'
 
   const currencies_API = `${BASE_URL}/api/currencies`
   

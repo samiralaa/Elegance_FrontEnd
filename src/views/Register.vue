@@ -99,7 +99,7 @@ import { ref } from 'vue'
 import { ElSelect, ElOption } from 'element-plus'
 import axios from 'axios'
 
-const API_URL = 'http://elegance_backend.test/api'
+const API_URL = 'https://backend.webenia.org/api'
 
 export default {
   name: 'Register',

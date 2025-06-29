@@ -98,7 +98,7 @@ export default {
     async fetchSettings() {
       try {
      
-        const response = await fetch('http://elegance_backend.test/api/settings');
+        const response = await fetch('https://backend.webenia.org/api/settings');
         const result = await response.json();
         const settings = result.data;
         const findSetting = key => {

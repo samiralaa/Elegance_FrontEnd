@@ -4,21 +4,6 @@
       <div class="title section-header d-flex align-items-center mb-4">
         <fa class="fa-icon me-2" :icon="['fas', 'shopping-basket']" />
         <h2 class="mb-0">{{ $t('home.products') }}</h2>
-
-        <!-- Currency Dropdown -->
-        <select
-          @change="onCurrencyChange($event)"
-          v-model="selectedCurrency.code"
-          class="ms-auto form-select w-auto"
-        >
-          <option
-            v-for="curr in currencies"
-            :key="curr.code"
-            :value="curr.code"
-          >
-            {{ curr.name_en }} ({{ curr.code }})
-          </option>
-        </select>
       </div>
 
       <div v-if="loading" class="text-center my-4">Loading products...</div>
@@ -121,22 +106,14 @@ const cartStore = useCartStore()
 const { t } = useI18n()
 
 const getImageUrl = (path) =>
-  `http://elegance_backend.test/public/storage/${path}`
+  `https://backend.webenia.org/public/storage/${path}`
 
 // جلب العملات
 const fetchCurrencies = async () => {
   try {
-    const response = await axios.get('http://elegance_backend.test/api/currencies')
+    const response = await axios.get('https://backend.webenia.org/api/currencies')
     if (response.data.currencies) {
       currencies.value = response.data.currencies
-      console.log('currencies:', currencies.value)
-      // استرجاع العملة المحفوظة أو تعيين USD
-      const storedCurrency = JSON.parse(localStorage.getItem('selectedCurrency'))
-      selectedCurrency.value =
-        storedCurrency ||
-        currencies.value.find((c) => c.code === 'USD') ||
-        { code: 'USD' }
-      console.log('selectedCurrency after fetch:', selectedCurrency.value)
     }
   } catch (error) {
     console.error('Error fetching currencies:', error)
@@ -145,16 +122,16 @@ const fetchCurrencies = async () => {
 
 // جلب المنتجات بناءً على العملة المختارة
 const fetchProducts = async () => {
-  loading.value = true
+  // loading.value = true
   try {
-    console.log('Fetching products with currency:', selectedCurrency.value.code)
-    const currentCurrency = selectedCurrency.value || { code: 'USD' }
+    const selectedCurrency =
+      JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
     const response = await axios.get(
-      'http://elegance_backend.test/api/website/products/section',
+      'https://backend.webenia.org/api/website/products/section',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-          Currency: currentCurrency.code,
+          Currency: selectedCurrency.code,
         },
       }
     )
@@ -177,9 +154,9 @@ const fetchProducts = async () => {
 // جلب المفضلة
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('http://elegance_backend.test/api/favorites', {
+    const response = await axios.get('https://backend.webenia.org/api/favorites', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       }
     })
     if (response.data.status && response.data.data) {
@@ -224,7 +201,7 @@ const addToFavorites = async (product) => {
 const addToCart = async (product) => {
   try {
     const response = await axios.post(
-      'http://elegance_backend.test/api/cart-items',
+      'https://backend.webenia.org/api/cart-items',
       {
         product_id: product.id,
         quantity: 1,
@@ -261,31 +238,6 @@ const calculateDiscountedPrice = (product) => {
     return discountedPrice.toFixed(2)
   }
   return product.converted_price || product.price
-}
-
-// عند تغيير العملة
-const onCurrencyChange = async (event) => {
-  console.log('Currency changed:', event.target.value)
-  const newCode = event.target.value
-  const newCurrency = currencies.value.find((c) => c.code === newCode)
-  if (!newCurrency) return
-
-  selectedCurrency.value = newCurrency
-  localStorage.setItem('selectedCurrency', JSON.stringify(newCurrency))
-  console.log('selectedCurrency after change:', selectedCurrency.value)
-
-  try {
-    await axios.post('http://elegance_backend.test/api/change-currency', {
-      currency: newCurrency.code,
-    })
-
-    ElNotification.success('Currency changed successfully')
-
-    await fetchProducts()
-  } catch (error) {
-    ElNotification.error('Failed to change currency')
-    console.error(error)
-  }
 }
 
 onMounted(async () => {
