@@ -81,9 +81,9 @@
 
                 <div class="card-body">
                   <h5 class="card-title">{{ product.name_en }}</h5>
-                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ $t('SAR') }}</span>
+                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency_code }}</span>
                   <span class="card-text card-price">
-                    {{ product.price }} {{ $t('SAR') }}
+                    {{ product.price }} {{ product.currency_code }}
                   </span>
                 </div>
                 <div class="addToCart-btn">
@@ -133,7 +133,9 @@ const favoritesStore = useFavoritesStore()
 const fetchBrandDetails = async () => {
   try {
     const brandId = route.params.id
-    const response = await axios.get(`${API_URL}/api/website/brands/${brandId}`)
+    const response = await axios.get(
+      `${API_URL}/api/website/brands/${brandId}`
+    )
     brand.value = response.data.data
   } catch (err) {
     console.error('Error fetching brand details:', err)
@@ -145,6 +147,9 @@ const fetchBrandDetails = async () => {
 
 onMounted(() => {
   fetchBrandDetails()
+  window.addEventListener('currency-changed', () => {
+    fetchBrandDetails()
+  })
 })
 
 // Helpers
@@ -200,6 +205,9 @@ const addToFavorites = async (product) => {
 
 const addToCart = async (product) => {
   try {
+    const selectedCurrency =
+      JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
+
     const payload = {
       product_id: product.id,
       quantity: 1,
@@ -216,6 +224,7 @@ const addToCart = async (product) => {
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Currency: selectedCurrency.code,
         },
       }
     )

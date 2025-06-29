@@ -56,9 +56,9 @@
                   <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
                     {{ product.discount[0].discount_value }}% OFF
                   </span>
-                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency.name_en }}</span>
+                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency_code }}</span>
                   <span class="card-text card-price">
-                    {{ calculateDiscountedPrice(product) }} {{ $t('SAR') }}
+                    {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                   </span>
                 </div>
               </div>
@@ -124,8 +124,17 @@ export default {
 methods: {
   async fetchCategoryDetails() {
     try {
+      const selectedCurrency =
+        JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
       const categoryId = this.$route.params.id;
-      const response = await axios.get(`${API_URL}/api/website/category/${categoryId}`);
+      const response = await axios.get(
+        `${API_URL}/api/website/category/${categoryId}`,
+        {
+          headers: {
+            Currency: selectedCurrency.code,
+          }
+        }
+      );
       this.category = response.data.data;
     } catch (error) {
       console.error('Error fetching category details:', error);
@@ -196,7 +205,17 @@ methods: {
     }
     return product.price
   }
-}
+},
+mounted() {
+  this.fetchCategoryDetails();
+  if (this.isAuthenticated) {
+    this.$store.dispatch('favorites/fetchFavorites');
+  }
+
+  window.addEventListener('currency-changed', () => {
+    this.fetchCategoryDetails();
+  });
+},
 
 };
 </script>
