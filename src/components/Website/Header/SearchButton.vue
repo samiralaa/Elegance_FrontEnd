@@ -1,5 +1,5 @@
 <template>
-  <button class="search-btn mx-2" @click="$emit('toggle')">
+  <button class="search-btn" @click="$emit('toggle')">
     <fa icon="search" />
   </button>
 </template>

@@ -2,11 +2,8 @@
   <header class="header">
     <!-- Top Bar -->
     <div class="top-bar">
-      <div class="container-fluid">
-        <div class="d-flex justify-content-between mx-5">
-          <div class="top-bar-left">
-            <router-link v-if="!isAuthenticated" to="/register" class="btn join-link">{{ $t('header.joinUs') }}</router-link>
-          </div>
+      <div class="container-xl">
+        <div class="d-flex justify-content-between">
           <div class="top-bar-right d-flex align-items-center justify-content-between w-100">
             <currency-switcher />
             <language-switcher />
@@ -17,9 +14,9 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid mx-5">
+      <div class="container-xl">
         <router-link to="/" class="navbar-brand">
-          <img src="@/assets/images/EleganceLogo.png" alt="Logo" height="50" />
+          <img src="@/assets/images/EleganceLogo.png" alt="Logo" height="40" />
         </router-link>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
           <span class="navbar-toggler-icon"></span>
@@ -72,9 +69,11 @@
           </ul>
 
           <!-- Action Buttons -->
-          <search-button @toggle="toggleSearchDialog" />
-          <cart-button @show="showCartModal" :count="cartCount" />
-          <favorite-button @show="fetchFavorites" :count="favoritesCount" />
+          <div class="mx-e d-flex align-items-center align-items-evenly">
+            <search-button @toggle="toggleSearchDialog" />
+            <cart-button @show="showCartModal" :count="cartCount" />
+            <favorite-button @show="fetchFavorites" :count="favoritesCount" />
+          </div>
 
           <!-- Auth Controls -->
           <template v-if="!isAuthenticated">
@@ -475,6 +474,7 @@ export default {
 .login-btn {
   background-color: #8b6b3d;
   color: #fff;
+  margin-left: 5px;
 }
 
 .login-btn:hover {

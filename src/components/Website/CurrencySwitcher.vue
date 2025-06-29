@@ -89,7 +89,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #000;
+  color: #fff;
   font-size: 14px;
 }
 .currency-item {

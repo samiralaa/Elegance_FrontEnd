@@ -70,11 +70,13 @@
       <section class="products-grid">
         <div v-for="product in filteredProducts" :key="product.id" class="product-card">
           <div class="image-container mb-3 bg-light rounded">
-            <img 
-              v-if="product.images && product.images.length"
-              :src="getImageUrl(product.images[0].path)"
-              :alt="product.name" 
-            />
+            <router-link :to="`/read/products/${product.id}`">
+              <img 
+                v-if="product.images && product.images.length"
+                :src="getImageUrl(product.images[0].path)"
+                :alt="product.name" 
+              />
+            </router-link>          
             <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             <div class="product-actions d-flex justify-content-center gap-5 w-100">
               <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">

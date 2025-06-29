@@ -1,14 +1,27 @@
 <template>
-  <div class="otp-container">
-    <h2>{{ $t('otp.title') }}</h2>
-    <p class="otp-message">{{ $t('otp.message') }}</p>
-    <form @submit.prevent="handleOtpVerification">
-      <div class="otp-input-group">
-        <input v-for="i in 6" :key="i" type="text" maxlength="1" v-model="otp[i - 1]" @input="focusNext(i)"
-          @keydown="handleKeyDown($event, i)" class="otp-input" placeholder="0">
+  <div class="otp-wrapper">
+
+    <div class="otp-container">
+      <img src="@/assets/images/EleganceLogo.png" alt="Logo" height="100" />
+      <p class="otp-message">{{ $t('otp.message') }}</p>
+      <span>{{ user.email }}</span>
+      <form @submit.prevent="handleOtpVerification">
+        <div class="otp-input-group">
+          <input v-for="i in 4" :key="i" type="number" min="0" max="9" v-model="otp[i - 1]" @input="focusNext(i)"
+            @keydown="handleKeyDown($event, i)" class="otp-input" placeholder="_">
+        </div>
+        <button type="submit" class="verify-btn">{{ $t('otp.verify') }}</button>
+      </form>
+      <div class="resend d-flex w-100 justify-content-between align-items-center mt-3">
+        <div class="time-left">
+          <span>03:00</span>
+        </div>
+        <a href="">
+          <fa icon="rotate-right"></fa>
+          {{ $t('otp.resend') }}
+        </a>
       </div>
-      <button type="submit" class="verify-btn">{{ $t('otp.verify') }}</button>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -20,7 +33,7 @@ const API_URL = 'https://backend.webenia.org/api'
 export default {
   data() {
     return {
-      otp: Array(6).fill(''),
+      otp: Array(4).fill(''),
       user: null,
       token: null
     }
@@ -41,7 +54,7 @@ export default {
   },
   methods: {
     focusNext(index) {
-      if (index < 6 && this.otp[index - 1]) {
+      if (index < 4 && this.otp[index - 1]) {
         this.$el.querySelectorAll('.otp-input')[index].focus()
       }
     },
@@ -53,8 +66,8 @@ export default {
     },
     async handleOtpVerification() {
       const code = this.otp.join('')
-      if (code.length !== 6) {
-        this.$toast?.error?.(this.$t?.('otp.invalidLength') || 'Please enter all 6 digits')
+      if (code.length !== 2) {
+        this.$toast?.error?.(this.$t?.('otp.invalidLength') || 'Please enter all 4 digits')
         return
       }
 
@@ -86,30 +99,51 @@ export default {
         this.$toast?.error?.(errorMessage)
       }
     }
-
+    
   }
 }
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+  color: #7f7f7f;
+  font-size: 0.9rem;
+}
+.otp-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 .otp-container {
-  max-width: 400px;
+  width: fit-content;
   margin: 2rem auto;
   padding: 2rem;
   text-align: center;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .otp-message {
-  color: #666;
-  margin-bottom: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0;
 }
+.otp-container span{
+  font-weight: bold;
+  color: #7f7f7f;
+  margin-bottom: 0px;
+}
+
 
 .otp-input-group {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   justify-content: center;
   margin: 2rem 0;
 }
@@ -119,13 +153,25 @@ export default {
   height: 40px;
   text-align: center;
   font-size: 1.2rem;
-  border: 2px solid #8B6B3D;
+  background-color: #7c7c7c54;
+  border: 0px;
   border-radius: 4px;
-  background: #fff;
+}
+
+.otp-input::-webkit-outer-spin-button,
+.otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.otp-input::placeholder {
+  color: #333;
+  font-weight: bold;
 }
 
 .otp-input:focus {
   border-color: #725932;
+  background-color: #8b6a3d5b;
   outline: none;
   box-shadow: 0 0 0 2px rgba(139, 107, 61, 0.2);
 }
@@ -149,5 +195,15 @@ export default {
 .verify-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.resend {
+  padding: 0 100px;
+  font-weight: bold;
+}
+
+.time-left {
+  font-size: 0.9rem;
+  color: #7f7f7f;
 }
 </style>

@@ -467,6 +467,16 @@
     "loading": "Loading..."
   },
 
+  "otp": {
+    "title": "Verify Your Email",
+    "message": "we sent you a verification code to your email",
+    "codePlaceholder": "Enter verification code",
+    "resend": "Resend",
+    "verify": "Verify",
+    "verificationSuccess": "Verification successful! You can now log in.",
+    "verificationError": "Invalid code. Please try again."
+  },
+
 
   "Nobrandsfound" : "No brands found"
 }

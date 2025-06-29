@@ -1,7 +1,7 @@
 <template>
-  <button class="favorite-btn mx-2" @click="handleClick">
+  <button class="favorite-btn" @click="handleClick">
     <fa icon="heart" />
-    <span v-if="favoritesStore.count > 0" class="favorite-count">{{ favoritesStore.count }}</span>
+    <span v-if="favoritesStore.count > 0" class="favorite-count">({{ favoritesStore.count }})</span>
   </button>
 </template>
 
@@ -57,27 +57,23 @@ export default {
   left: 50%;
   height: 45px;
   width: 45px;
-  background-color: #8b6b3d;
+  background-color: #a07840;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
   z-index: -1;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .favorite-btn:hover {
-  color: #fff;
-}
-
-.favorite-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
+  color: #6b4d2d;
 }
 
 .favorite-count {
   position: absolute;
   top: 5px;
   right: 5px;
-  background: #ff4757;
-  color: white;
+  background: trasparent;
+  color: #333;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -86,12 +82,8 @@ export default {
   justify-content: center;
   font-size: 12px;
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
   transform: scale(1);
   transition: transform 0.2s ease;
-}
-
-.favorite-btn:hover .favorite-count {
-  transform: scale(1.1);
 }
 </style> 

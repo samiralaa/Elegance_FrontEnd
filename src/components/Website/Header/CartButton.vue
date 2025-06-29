@@ -30,9 +30,8 @@ export default {
 .cart-button {
   position: relative;
   cursor: pointer;
-  padding: 8px;
-  margin: 0 10px;
-  color: #8b6b3d;
+  padding: 16px;
+  color: #a07840;
   transition: all 0.3s ease;
 }
 
@@ -42,8 +41,8 @@ export default {
 
 .cart-count {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: 5px;
+  right: 5px;
   background-color: #ff0000;
   color: white;
   border-radius: 50%;
@@ -54,7 +53,4 @@ export default {
   transition: all 0.3s ease;
 }
 
-.cart-button:hover .cart-count {
-  transform: scale(1.1);
-}
 </style> 

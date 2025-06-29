@@ -251,7 +251,7 @@ onMounted(() => {
   margin-bottom: 0.25rem;
 }
 
-.card-body{
+.card-body {
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -174,6 +174,10 @@ export default {
   text-align: right;
 }
 
+.all-categories .container {
+  position: relative;
+}
+
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -227,7 +231,6 @@ export default {
 }
 
 .slider-wrapper {
-  position: relative;
   overflow: hidden;
   padding: 16px 0;
 }
@@ -236,6 +239,9 @@ export default {
   display: none;
   justify-content: flex-end;
   margin-bottom: 8px;
+  position: absolute;
+  right: 5px;
+  top: 0;
 }
 
 .slick-track {
