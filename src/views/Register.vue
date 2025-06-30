@@ -278,17 +278,12 @@ export default {
         this.loading = true;
         const response = await axios.get(`${API_URL}/countries`);
         console.log('Countries API response:', response.data.data);
-        if (response.data.status === 'success') {
-          const countriesArray = response.data?.data?.original?.data || [];
-          this.countries = Array.isArray(countriesArray) ? countriesArray : [];
-          this.filteredCountries = this.countries;
-          // If we already have a country_id selected, update the country code
-          if (this.formData.country_id) {
-            this.countryCode = this.getCountryCode(this.formData.country_id);
-            this.updateFullPhoneNumber();
-          }
-        } else {
-          throw new Error(response.data.message || 'Failed to fetch countries');
+        const countriesArray = response.data?.data || [];
+        this.countries = Array.isArray(countriesArray) ? countriesArray : [];
+        this.filteredCountries = this.countries;
+        if (this.formData.country_id) {
+          this.countryCode = this.getCountryCode(this.formData.country_id);
+          this.updateFullPhoneNumber();
         }
       } catch (error) {
         console.error('Error fetching countries:', error);

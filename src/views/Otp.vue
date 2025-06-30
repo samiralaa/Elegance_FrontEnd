@@ -7,22 +7,13 @@
 
       <form @submit.prevent="handleOtpVerification">
         <div class="otp-input-group">
-          <input
-            v-for="i in 4"
-            :key="i"
-            type="text"
-            inputmode="numeric"
-            maxlength="1"
-            pattern="[0-9]*"
-            v-model="otp[i - 1]"
-            @input="handleInput($event, i)"
-            @keydown="handleKeyDown($event, i)"
-            class="otp-input"
-            placeholder="_"
-          />
+          <input v-for="i in 4" :key="i" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]*"
+            v-model="otp[i - 1]" @input="handleInput($event, i)" @keydown="handleKeyDown($event, i)" class="otp-input"
+            placeholder="_" />
         </div>
         <button type="submit" class="verify-btn">{{ $t('otp.verify') }}</button>
-        <div v-if="otpMessage" class="info-message" :style="{marginTop: '1rem', color: otpMessageColor}">{{ otpMessage }}</div>
+        <div v-if="otpMessage" class="info-message" :style="{ marginTop: '1rem', color: otpMessageColor }">{{ otpMessage
+          }}</div>
       </form>
 
       <div class="resend d-flex w-100 justify-content-between align-items-center mt-3">
@@ -195,6 +186,7 @@ export default {
   align-items: center;
   height: 100vh;
 }
+
 .otp-container {
   width: fit-content;
   margin: 2rem auto;
@@ -207,22 +199,26 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .otp-message {
   font-weight: bold;
   color: #333;
   margin-bottom: 0;
 }
+
 .otp-container span {
   font-weight: bold;
   color: #7f7f7f;
   margin-bottom: 0px;
 }
+
 .otp-input-group {
   display: flex;
   gap: 2rem;
   justify-content: center;
   margin: 2rem 0;
 }
+
 .otp-input {
   width: 40px;
   height: 40px;
@@ -232,21 +228,25 @@ export default {
   border: 0px;
   border-radius: 4px;
 }
+
 .otp-input::-webkit-outer-spin-button,
 .otp-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 .otp-input::placeholder {
   color: #333;
   font-weight: bold;
 }
+
 .otp-input:focus {
   border-color: #725932;
   background-color: #8b6a3d5b;
   outline: none;
   box-shadow: 0 0 0 2px rgba(139, 107, 61, 0.2);
 }
+
 .verify-btn {
   background-color: #8B6B3D;
   color: white;
@@ -258,17 +258,21 @@ export default {
   width: 100%;
   transition: background-color 0.3s;
 }
+
 .verify-btn:hover {
   background-color: #725932;
 }
+
 .verify-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
 .resend {
   padding: 0 100px;
   font-weight: bold;
 }
+
 .time-left {
   font-size: 0.9rem;
   color: #7f7f7f;
