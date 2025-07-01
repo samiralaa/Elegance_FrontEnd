@@ -59,36 +59,43 @@ export default {
       try {
         const response = await axios.post('https://backend.webenia.org/api/login', this.formData);
 
+        if (response.data.is_verified === false) {
+          // Store email temporarily to use it in OTP page
+          localStorage.setItem('otp_email', this.formData.email);
+
+          // Redirect to OTP page
+          this.$router.push({ path: '/otp' });
+          return;
+        }
+
         if (response.data.token && response.data.user) {
           const userData = {
             token: response.data.token,
             user: response.data.user
           };
 
-          // Optionally store token in localStorage
           localStorage.setItem('auth_token', userData.token);
           localStorage.setItem('auth_user', JSON.stringify(userData.user));
 
-          // Commit to Vuex (optional, if using Vuex)
           this.$store.commit('auth/SET_AUTH', userData);
-
-          // Load cart (optional)
           await this.$store.dispatch('cart/loadCart');
 
-          // Redirect to home page
+
+
+          
+
           this.$router.push('/');
           this.errorMessage = '';
         } else {
-          // Handle error if token or user is missing
           this.errorMessage = response.data.message || 'Login failed.';
         }
+
       } catch (error) {
         this.errorMessage =
           error.response?.data?.message ||
           error.response?.data?.errors?.email?.[0] ||
           error.message ||
           'Login failed.';
-        // Optionally log error
       }
     },
     togglePassword() {
@@ -263,10 +270,12 @@ input:focus {
 [dir="rtl"] .join-form {
   text-align: right;
 }
+
 [dir="rtl"] .show-password-btn {
   right: auto;
   left: 1rem;
 }
+
 [dir="rtl"] .form-links {
   text-align: left;
 }
@@ -276,9 +285,11 @@ input:focus {
   .join-us-container {
     grid-template-columns: 1fr;
   }
+
   .banner-section {
     display: none;
   }
+
   .join-us-content {
     padding: 2rem;
   }

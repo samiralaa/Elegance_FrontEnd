@@ -63,14 +63,14 @@
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="price-container">
                 <span
-                  v-if="product.discount && product.discount.length > 0"
+                  v-if="product.discount && product.discount.is_active"
                   class="discount-badge"
                 >
-                  -{{ product.discount[0].discount_value }}%
+                  -{{ product.discount.discount_value }}%
                 </span>
 
                 <span
-                  v-if="product.discount && product.discount.length > 0"
+                  v-if="product.discount && product.discount.is_active"
                   class="price-old"
                 >
                   {{ product.converted_price }} {{ product.currency_code }}
@@ -231,8 +231,8 @@ const addToCart = async (product) => {
 
 // حساب السعر بعد الخصم
 const calculateDiscountedPrice = (product) => {
-  if (product.discount && product.discount.length > 0) {
-    const discountValue = parseFloat(product.discount[0].discount_value)
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
     const originalPrice = parseFloat(product.converted_price || product.price)
     const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
     return discountedPrice.toFixed(2)

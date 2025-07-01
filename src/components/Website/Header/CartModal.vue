@@ -2,7 +2,8 @@
   <div class="modal-overlay d-flex justify-content-center align-items-center">
     <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
       <!-- Close Button -->
-      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="$emit('close')" aria-label="Close"></button>
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="$emit('close')"
+        aria-label="Close"></button>
 
       <!-- Title -->
       <h4 class="mb-3">🛒 {{ $t('cart.title') }}</h4>
@@ -27,41 +28,30 @@
               <!-- Quantity and Price -->
               <div class="d-flex align-items-center gap-2">
                 <small class="text-muted">
-                  {{ item.price }} {{ item.currency_code || 'AUD' }} ×
+                  <template v-if="item.product && item.product.discount && item.product.discount.type && item.product.price_after_discount && item.product.price_after_discount !== item.product.price">
+                    <span style="text-decoration: line-through; color: #b0b0b0;">{{ item.product.price }} {{ item.currency_code || 'AUD' }}</span>
+                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ item.product.price_after_discount }} {{ item.currency_code || 'AUD' }}</span>
+                  </template>
+                  <template v-else>
+                    {{ item.price }} {{ item.currency_code || 'AUD' }}
+                  </template>
+                  ×
                 </small>
                 <div class="quantity-control">
-                  <el-button 
-                    size="small" 
-                    @click="decreaseQuantity(item)"
-                    :disabled="item.quantity <= 1"
-                    class="qty-btn"
-                  >
+                  <el-button size="small" @click="decreaseQuantity(item)" :disabled="item.quantity <= 1"
+                    class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input
-                    class="qty-number"
-                    type="number"
-                    min="1"
-                    max="99"
-                    v-model.number="item.quantity"
-                    @change="updateCartItemQuantity(item)"
-                    @input="item.quantity = Math.min(item.quantity, 99)"
-                  >
+                  <input class="qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
+                    @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(item.quantity, 99)">
 
-                  <el-button 
-                    size="small" 
-                    @click="increaseQuantity(item)"
-                    :disabled="item.quantity >= 99"
-                    class="qty-btn"
-                  >
+                  <el-button size="small" @click="increaseQuantity(item)" :disabled="item.quantity >= 99"
+                    class="qty-btn">
                     <fa icon="plus" />
                   </el-button>
                 </div>
-                <button 
-                  class="btn btn-sm btn-outline-danger ms-auto" 
-                  @click="removeItem(item.id)"
-                  :disabled="isLoading"
-                >
+                <button class="btn btn-sm btn-outline-danger ms-auto" @click="removeItem(item.id)"
+                  :disabled="isLoading">
                   <fa icon="trash" />
                 </button>
               </div>
@@ -225,7 +215,7 @@ export default {
           message: error.response?.data?.message || this.t('cart.remove_failed'),
           type: 'error'
         });
-      } 
+      }
       finally {
         this.isLoading = false;
       }
@@ -257,6 +247,7 @@ export default {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
