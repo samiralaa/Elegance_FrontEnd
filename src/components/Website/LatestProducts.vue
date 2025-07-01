@@ -32,10 +32,10 @@
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="price-container">
-                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
-                  -{{ product.discount[0].discount_value }}
+                <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                  -{{ product.discount.discount_value }}%
                 </span>
-                <span v-if="product.discount && product.discount.length > 0" class="price-old">
+                <span v-if="product.discount && product.discount.is_active" class="price-old">
                   {{ product.converted_price }} {{ product.currency_code }}
                 </span>
                 <span class="card-text card-price">
@@ -152,8 +152,8 @@ const addToFavorites = async (product) => {
 }
 
 const calculateDiscountedPrice = (product) => {
-  if (product.discount && product.discount.length > 0) {
-    const discountValue = parseFloat(product.discount[0].discount_value)
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
     const originalPrice = parseFloat(product.converted_price)
     const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
     return discountedPrice.toFixed(2)
@@ -163,10 +163,19 @@ const calculateDiscountedPrice = (product) => {
 
 const addToCart = async (product) => {
   try {
+    let priceToSend = 0;
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value);
+      const originalPrice = parseFloat(product.converted_price);
+      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+    } else {
+      priceToSend = parseFloat(product.converted_price);
+    }
+
     const payload = {
       product_id: product.id,
       quantity: 1,
-      price: calculateDiscountedPrice(product),
+      price: priceToSend,
     }
 
     if (product.amounts && product.amounts.length > 0) {

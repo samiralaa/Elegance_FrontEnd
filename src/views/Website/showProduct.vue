@@ -11,9 +11,9 @@
             <div v-html="locale === 'ar' ? product.description_ar : product.description_en" class="description"></div>
 
             <div class="price-block">
-              <span class="price-old" v-if="product.old_price">{{ product.old_price }} {{ product.currency?.name_en
-                }}</span>
-              <span class="price-new">{{ product.price }} {{ product.currency?.name_en }}</span>
+              <span class="price-old" v-if="product.discount && product.discount.is_active">{{ product.converted_price || product.price }} {{ product.currency?.name_en }}</span>
+              <span class="discount-badge" v-if="product.discount && product.discount.is_active">-{{ product.discount.discount_value }}%</span>
+              <span class="price-new">{{ calculateDiscountedPrice(product) }} {{ product.currency?.name_en }}</span>
             </div>
 
             <div class="product-actions">
@@ -153,11 +153,11 @@
               <div class="card-body">
                 <h5 class="card-title">{{ locale === 'ar' ? child.name_ar : child.name_en }}</h5>
                 <div class="price-container">
-                  <span v-if="child.discount && child.discount.length > 0" class="discount-badge">
-                    -{{ child.discount[0].discount_value }}
+                  <span v-if="child.discount && child.discount.is_active" class="discount-badge">
+                    -{{ child.discount.discount_value }}%
                   </span>
-                  <span v-if="child.discount && child.discount.length > 0" class="price-old">
-                    {{ child.old_price }} {{ child.currency?.name_en || 'AED' }}
+                  <span v-if="child.discount && child.discount.is_active" class="price-old">
+                    {{ child.converted_price || child.price }} {{ child.currency?.name_en || 'AED' }}
                   </span>
                   <span class="card-text card-price">
                     {{ calculateDiscountedPrice(child) }} {{ child.currency?.name_en || 'AED' }}
@@ -241,6 +241,7 @@ const fetchProduct = async () => {
     );
     if (res.data.status) {
       product.value = res.data.data;
+      product.value._original_price = product.value.price;
       if (product.value.images?.length) {
         // Set initial image
         selectedImage.value = product.value.images[0].path;
@@ -259,10 +260,18 @@ const fetchProduct = async () => {
 // Add to Cart
 const addToCart = async () => {
   try {
+    let priceToSend = 0;
+    if (product.value.discount && product.value.discount.is_active) {
+      const discountValue = parseFloat(product.value.discount.discount_value);
+      const originalPrice = parseFloat(product.value.converted_price || product.value.price);
+      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+    } else {
+      priceToSend = parseFloat(product.value.converted_price) || parseFloat(product.value.price);
+    }
     const payload = {
       product_id: product.value.id,
       quantity: quantity.value,
-      price: product.value.price,
+      price: priceToSend,
     };
     if (product.value.amounts) {
       payload.amount_id = product.value.amount_id;
@@ -299,10 +308,18 @@ const navigateToProduct = (productId) => {
 
 const addChildToCart = async (childProduct) => {
   try {
+    let priceToSend = 0;
+    if (childProduct.discount && childProduct.discount.is_active) {
+      const discountValue = parseFloat(childProduct.discount.discount_value);
+      const originalPrice = parseFloat(childProduct.converted_price || childProduct.price);
+      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+    } else {
+      priceToSend = parseFloat(childProduct.converted_price) || parseFloat(childProduct.price);
+    }
     const payload = {
       product_id: childProduct.id,
       quantity: 1,
-      price: childProduct.price,
+      price: priceToSend,
     };
     const userId = JSON.parse(localStorage.getItem('auth_user'))?.id;
 
@@ -345,12 +362,19 @@ const setActive = (index, amount) => {
   activeIndex.value = index;
   product.value.amount_id = amount.id;
   product.value.price = amount.price;
+  if (amount.converted_price !== undefined) {
+    product.value.converted_price = amount.converted_price;
+  } else {
+    product.value.converted_price = amount.price;
+  }
 };
 
 const resetActive = () => {
   activeIndex.value = null;
   product.value.amount_id = null;
-  product.value.original_price;
+  if (product.value._original_price !== undefined) {
+    product.value.price = product.value._original_price;
+  }
 };
 
 // Slick Carousel Logic
@@ -563,15 +587,15 @@ const checkFavoriteStatus = () => {
   isFavorite.value = favoritesStore.isInFavorites(product.value.id);
 };
 
-  const calculateDiscountedPrice = (product) => {
-    if (product.discount && product.discount.length > 0) {
-      const discountValue = parseFloat(product.discount[0].discount_value)
-      const originalPrice = parseFloat(product.price)
-      const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
-      return discountedPrice.toFixed(2)
-    }
-    return product.price
-  };
+const calculateDiscountedPrice = (product) => {
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
+    const originalPrice = parseFloat(product.converted_price || product.price)
+    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    return discountedPrice.toFixed(2)
+  }
+  return product.converted_price || product.price
+};
 </script>
 
 <style scoped>

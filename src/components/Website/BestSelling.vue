@@ -29,10 +29,10 @@
             <div class="card-body">
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="price-container">
-                <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
-                  {{ product.discount[0].discount_value }}% OFF
+                <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                  {{ product.discount.discount_value }}% OFF
                 </span>
-                <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency_code }}</span>
+                <span v-if="product.discount && product.discount.is_active" class="price-old">{{ product.converted_price }} {{ product.currency_code }}</span>
                 <span class="card-text card-price">
                   {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                 </span>
@@ -179,13 +179,22 @@
 
   const addToCart = async (product) => {
     try {
+      let priceToSend = 0;
+      if (product.discount && product.discount.is_active) {
+        const discountValue = parseFloat(product.discount.discount_value);
+        const originalPrice = parseFloat(product.converted_price || product.price);
+        priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+      } else {
+        priceToSend = parseFloat(product.converted_price) || parseFloat(product.price);
+      }
+
       const userId = localStorage.getItem('user_id');
       const response = await axios.post(
         'https://backend.webenia.org/api/cart-items',
         {
           product_id: product.id,
           quantity: 1,
-          price: product.price,
+          price: priceToSend,
           user_id: userId
         },
         {
@@ -221,13 +230,13 @@
   };
 
   const calculateDiscountedPrice = (product) => {
-    if (product.discount && product.discount.length > 0) {
-      const discountValue = parseFloat(product.discount[0].discount_value)
-      const originalPrice = parseFloat(product.price)
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      const originalPrice = parseFloat(product.converted_price || product.price)
       const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
       return discountedPrice.toFixed(2)
     }
-    return product.price
+    return product.converted_price || product.price
   };
 
   onMounted(() => {

@@ -200,12 +200,22 @@ const addToFavorites = async (product) => {
 // إضافة للعربة
 const addToCart = async (product) => {
   try {
+    // Calculate the price to send: discounted if discount is active, else regular
+    let priceToSend = 0;
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value);
+      const originalPrice = parseFloat(product.converted_price || product.price);
+      priceToSend = originalPrice - originalPrice * (discountValue / 100);
+    } else {
+      priceToSend = parseFloat(product.converted_price) || parseFloat(product.price);
+    }
+
     const response = await axios.post(
       'https://backend.webenia.org/api/cart-items',
       {
         product_id: product.id,
         quantity: 1,
-        price: parseFloat(product.converted_price) || parseFloat(product.price),
+        price: priceToSend,
       },
       {
         headers: {
