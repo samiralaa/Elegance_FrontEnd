@@ -1,7 +1,7 @@
 <template>
   <button class="favorite-btn" @click="handleClick">
     <fa icon="heart" />
-    <span v-if="favoritesStore.count > 0" class="favorite-count">({{ favoritesStore.count }})</span>
+    <span v-if="favoritesStore.count > 0" class="favorite-count">{{ favoritesStore.count }}</span>
   </button>
 </template>
 
@@ -40,27 +40,13 @@ export default {
 <style scoped>
 .favorite-btn {
   position: relative;
-  padding: 1em;
-  background: transparent;
   border: none;
   cursor: pointer;
   isolation: isolate;
+  background-color: transparent;
   overflow: hidden;
-  color: #8b6b3d;
-  border-radius: 50%;
-}
-
-.favorite-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #a07840;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
+  padding: 16px;
+  color: #a07840;
   transition: all 0.3s ease;
 }
 
@@ -72,18 +58,13 @@ export default {
   position: absolute;
   top: 5px;
   right: 5px;
-  background: trasparent;
-  color: #333;
+  background-color: #ff0000;
+  color: white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 2px 6px;
   font-size: 12px;
-  font-weight: bold;
-  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
-  transform: scale(1);
-  transition: transform 0.2s ease;
+  min-width: 18px;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 </style> 

@@ -29,7 +29,7 @@
               <!-- Price -->
               <div class="d-flex align-items-center justify-content-between">
                 <span class="price">
-                  {{ favorite.product.price }} {{ favorite.product.currency_id }}
+                  {{ calculateDiscountedPrice(favorite) }} {{ favorite.product.currency_code || 'AUD' }}
                 </span>
                 <div class="d-flex gap-2">
                   <button 
@@ -187,6 +187,16 @@ export default {
           type: 'error',
         });
       }
+    },
+        calculateDiscountedPrice(favorite) {
+      if (favorite.product.discount && favorite.product.discount.length > 0) {
+        const discountValue = parseFloat(favorite.product.discount[0].discount_value)
+        const originalPrice = parseFloat(favorite.product.converted_price)
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+        return discountedPrice.toFixed(2)
+      }
+      // console.log('Original Price:', originalPrice, 'Discount Value:', discountValue);
+      return favorite.product.converted_price.toFixed(2);
     }
   },
   emits: ['close', 'favorite-removed']

@@ -33,7 +33,7 @@
               <h5 class="card-title">{{ product.name_en }}</h5>
               <div class="price-container">
                 <span v-if="product.discount && product.discount.is_active" class="discount-badge">
-                  -{{ product.discount.discount_value }}%
+                  {{ getDiscountPercentage(product) }}% OFF
                 </span>
                 <span v-if="product.discount && product.discount.is_active" class="price-old">
                   {{ product.converted_price }} {{ product.currency_code }}
@@ -214,6 +214,14 @@ const addToCart = async (product) => {
       type: 'error'
     })
   }
+}
+
+const getDiscountPercentage = (product) => {
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
+    return Math.round(discountValue)
+  }
+  return 0
 }
 
 onMounted(() => {

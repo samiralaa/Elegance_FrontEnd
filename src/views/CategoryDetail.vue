@@ -199,11 +199,11 @@ methods: {
   calculateDiscountedPrice(product) {
     if (product.discount && product.discount.length > 0) {
       const discountValue = parseFloat(product.discount[0].discount_value)
-      const originalPrice = parseFloat(product.price)
+      const originalPrice = parseFloat(product.converted_price)
       const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
       return discountedPrice.toFixed(2)
     }
-    return product.price
+    return product.converted_price
   }
 },
 mounted() {

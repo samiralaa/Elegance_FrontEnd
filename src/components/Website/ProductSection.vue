@@ -12,7 +12,7 @@
         <div
           v-for="product in products"
           :key="product.id"
-          class="col-6 col-md-4 col-lg-3"
+          class="col-sm-6 col-md-4 col-lg-3"
         >
           <div class="product-card card border-0 h-100">
             <div class="position-relative overflow-hidden bg-light">
@@ -41,11 +41,14 @@
 
                 <button
                   @click="addToCart(product)"
-                  class="btn btn-light shadow-sm"
+                  class="btn btn-light shadow-sm disable"
                   :class="{ disabled: !product.is_available }"
                   :disabled="!product.is_available"
                 >
                   {{ $t('home.add-to-cart') }}
+                </button>
+                <button @click="addToCart(product)" class="d-none btn rounded-circle shadow-sm btn-light enable">
+                  <fa icon="shopping-cart" />
                 </button>
 
                 <button
@@ -66,7 +69,7 @@
                   v-if="product.discount && product.discount.is_active"
                   class="discount-badge"
                 >
-                  -{{ product.discount.discount_value }}%
+                  {{ getDiscountPercentage(product) }}% OFF
                 </span>
 
                 <span
@@ -98,7 +101,6 @@ import { useI18n } from 'vue-i18n'
 
 const products = ref([])
 const currencies = ref([])
-const selectedCurrency = ref({ code: 'USD' })
 const loading = ref(false)
 
 const favoritesStore = useFavoritesStore()
@@ -108,7 +110,6 @@ const { t } = useI18n()
 const getImageUrl = (path) =>
   `https://backend.webenia.org/public/storage/${path}`
 
-// جلب العملات
 const fetchCurrencies = async () => {
   try {
     const response = await axios.get('https://backend.webenia.org/api/currencies')
@@ -120,9 +121,7 @@ const fetchCurrencies = async () => {
   }
 }
 
-// جلب المنتجات بناءً على العملة المختارة
 const fetchProducts = async () => {
-  // loading.value = true
   try {
     const selectedCurrency =
       JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
@@ -151,7 +150,6 @@ const fetchProducts = async () => {
   }
 }
 
-// جلب المفضلة
 const fetchFavorites = async () => {
   try {
     const response = await axios.get('https://backend.webenia.org/api/favorites', {
@@ -167,7 +165,6 @@ const fetchFavorites = async () => {
   }
 }
 
-// تحقق إذا المنتج موجود بالمفضلة
 const isInFavorites = (productId) => {
   return favoritesStore.favorites.some((fav) => fav.product_id === productId)
 }
@@ -176,7 +173,6 @@ const getFavoriteId = (productId) => {
   return favoritesStore.favorites.find((fav) => fav.product_id === productId)?.id
 }
 
-// إضافة / إزالة من المفضلة
 const addToFavorites = async (product) => {
   try {
     if (isInFavorites(product.id)) {
@@ -197,7 +193,6 @@ const addToFavorites = async (product) => {
   }
 }
 
-// إضافة للعربة
 const addToCart = async (product) => {
   try {
     // Calculate the price to send: discounted if discount is active, else regular
@@ -239,7 +234,6 @@ const addToCart = async (product) => {
   }
 }
 
-// حساب السعر بعد الخصم
 const calculateDiscountedPrice = (product) => {
   if (product.discount && product.discount.is_active) {
     const discountValue = parseFloat(product.discount.discount_value)
@@ -249,6 +243,15 @@ const calculateDiscountedPrice = (product) => {
   }
   return product.converted_price || product.price
 }
+
+  const getDiscountPercentage = (product) => {
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      return Math.round(discountValue)
+    }
+    return 0
+  }
+
 
 onMounted(async () => {
   await fetchCurrencies()

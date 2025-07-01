@@ -11,7 +11,7 @@
             v-model="otp[i - 1]" @input="handleInput($event, i)" @keydown="handleKeyDown($event, i)" class="otp-input"
             placeholder="_" />
         </div>
-        <button type="submit" class="verify-btn">{{ $t('otp.verify') }}</button>
+        <button type="submit" :disabled="!isOtpComplete" class="verify-btn">{{ $t('otp.verify') }}</button>
         <div v-if="otpMessage" class="info-message" :style="{ marginTop: '1rem', color: otpMessageColor }">{{ otpMessage
           }}</div>
       </form>
@@ -20,10 +20,14 @@
         <div class="time-left">
           <span>{{ timer }}</span>
         </div>
-        <a href="#" @click.prevent="resendOtp">
-          <fa icon="rotate-right"></fa>
+        <button
+          class="btn btn-link"
+          :disabled="timer !== '00:00'"
+          @click.prevent="resendOtp"
+        >
+          <fa icon="rotate-right" />
           {{ $t('otp.resend') }}
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -40,7 +44,7 @@ export default {
       otp: Array(4).fill(''),
       user: null,
       token: null,
-      timer: '03:00',
+      timer: '02:00',
       countdown: null,
       otpMessage: ''
     }
@@ -54,6 +58,9 @@ export default {
         return 'green';
       }
       return '#333';
+    },
+    isOtpComplete() {
+      return this.otp.every(digit => /^\d$/.test(digit))
     }
   },
   created() {
@@ -136,7 +143,7 @@ export default {
       }
     },
     startTimer() {
-      let minutes = 3
+      let minutes = 2
       let seconds = 0
 
       this.countdown = setInterval(() => {
@@ -271,6 +278,17 @@ export default {
 .resend {
   padding: 0 100px;
   font-weight: bold;
+}
+
+.resend button {
+  color: #7f7f7f;
+  text-decoration: none;
+  font-weight: bold;
+}
+.resend button:disabled {
+  color: #ccc;
+  pointer-events: visible;
+  cursor: not-allowed;
 }
 
 .time-left {

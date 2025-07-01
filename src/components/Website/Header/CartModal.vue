@@ -219,6 +219,17 @@ export default {
       finally {
         this.isLoading = false;
       }
+    },
+
+
+    calculateDiscountedPrice(item) {
+      if (product.discount && product.discount.is_active) {
+        const discountValue = parseFloat(product.discount.discount_value)
+        const originalPrice = parseFloat(product.converted_price)
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+        return discountedPrice.toFixed(2)
+      }
+      return product.converted_price
     }
   }
 }

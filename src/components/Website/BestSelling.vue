@@ -14,7 +14,7 @@
           :md="12"
           :lg="12"
         >
-          <div class="card my-3 p-4">
+          <div class="card my-3 p-sm-4">
             <div class="img-container rounded position-relative">
               <router-link :to="`/read/products/${product.id}`">
                 <img
@@ -26,33 +26,35 @@
               </router-link>
               <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
-            <div class="card-body">
-              <h5 class="card-title">{{ product.name_en }}</h5>
-              <div class="price-container">
-                <span v-if="product.discount && product.discount.is_active" class="discount-badge">
-                  {{ product.discount.discount_value }}% OFF
-                </span>
-                <span v-if="product.discount && product.discount.is_active" class="price-old">{{ product.converted_price }} {{ product.currency_code }}</span>
-                <span class="card-text card-price">
-                  {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
-                </span>
+            <div class="body-container">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name_en }}</h5>
+                <div class="price-container">
+                  <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                    {{ getDiscountPercentage(product) }}% OFF
+                  </span>
+                  <span v-if="product.discount && product.discount.is_active" class="price-old">{{ product.converted_price.toFixed(2) }} {{ product.currency_code }}</span>
+                  <span class="card-text card-price">
+                    {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div class="product-actions d-flex justify-content-center flex-wrap gap-2">
-              <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
-                <fa icon="eye" />
-              </router-link>
-              <button :disabled="!product.is_available" @click="addToCart(product)" class="btn btn-light shadow-sm rounded-circle">
-                <fa icon="cart-plus" />
-              </button>
-              <button
-                @click="addToFavorites(product)"
-                class="btn rounded-circle shadow-sm btn-light"
-                :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
-              >
-                <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
-              </button>
+              <div class="product-actions d-flex justify-content-center flex-wrap gap-2">
+                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                  <fa icon="eye" />
+                </router-link>
+                <button :disabled="!product.is_available" @click="addToCart(product)" class="btn btn-light shadow-sm rounded-circle">
+                  <fa icon="cart-plus" />
+                </button>
+                <button
+                  @click="addToFavorites(product)"
+                  class="btn rounded-circle shadow-sm btn-light"
+                  :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
+                >
+                  <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -230,14 +232,22 @@
   };
 
   const calculateDiscountedPrice = (product) => {
-    if (product.discount && product.discount.is_active) {
-      const discountValue = parseFloat(product.discount.discount_value)
-      const originalPrice = parseFloat(product.converted_price || product.price)
+    if (product.discount && product.discount.length > 0) {
+      const discountValue = parseFloat(product.discount[0].discount_value)
+      const originalPrice = parseFloat(product.converted_price)
       const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
       return discountedPrice.toFixed(2)
     }
-    return product.converted_price || product.price
+    return product.converted_price
   };
+
+  const getDiscountPercentage = (product) => {
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      return Math.round(discountValue)
+    }
+    return 0
+  }
 
   onMounted(() => {
     fetchProducts();
@@ -274,6 +284,13 @@
   transition: all 0.3s ease;
 }
 
+.body-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .card:hover {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
@@ -301,6 +318,8 @@
   cursor: no-drop;
 }
 
+
+
 .card-title {
   font-size: 1.2rem;
   color: #a67c52;
@@ -319,6 +338,13 @@
   justify-content: space-between;
   padding: 1rem;
   width: 100%;
+}
+
+.product-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
 }
 
 .card-price {
@@ -369,6 +395,39 @@
   }
   .card-btns {
     justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .body-container {
+    flex-direction: column;
+  }
+
+  .product-actions {
+    flex-direction: row;
+  }
+  .img-container {
+    width: 100%;
+    height: auto;
+  }
+  .img-container img {
+    height: auto;
+  }
+  .card-body {
+    align-items: center;
+    padding: 0 0.5rem 0.5rem;
+  }
+  .btn{
+    padding: 0.25rem 0.5rem;
+  }
+  .card-title {
+    font-size: 1rem;
+  }
+  .card-text {
+    font-size: 0.9rem;
+  }
+  .card-price {
+    font-size: 0.8rem;
   }
 }
 
