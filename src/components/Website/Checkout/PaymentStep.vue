@@ -22,6 +22,13 @@
       <div class="summary-details">
         <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
         <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
+        <!-- add price delivery -->
+
+        <!-- add tax -->
+        <p>{{ $t('checkout.tax') }}: {{ shippingDetails.tax }} {{ currency }}</p>
+        <!-- add total -->
+        <p>{{ $t('checkout.total') }}: {{ shippingDetails.total }} {{ currency }}</p>
+
         <div class="total-amount">
           {{ $t('checkout.totalAmount') }}: {{ total }} {{ currency }}
         </div>
@@ -212,12 +219,11 @@ export default {
         );
 
         // 10. التوجيه لصفحة الدفع في Tabby
-      if( response.data.status === 'success' )
-      {
-        console.log('Redirecting to:', response.data.data.payment_url);
-        window.location.href = response.data.data.payment_url;
+        if (response.data.status === 'success') {
+          console.log('Redirecting to:', response.data.data.payment_url);
+          window.location.href = response.data.data.payment_url;
 
-      }
+        }
 
       } catch (error) {
         console.error('Tabby Payment Error:', error);

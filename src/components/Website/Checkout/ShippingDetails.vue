@@ -1,7 +1,7 @@
 <template>
   <div class="checkout-step">
     <h2>{{ $t('checkout.shippingDetails') }}</h2>
-
+  
     <!-- Address Type Selection -->
     <div class="address-type-selector">
       <button 
@@ -17,6 +17,7 @@
         @click="isNewAddress = true"
       >
         {{ $t('checkout.createNewAddress') }}
+        <fa icon="plus" />
       </button>
     </div>
 
@@ -49,12 +50,10 @@
       <div class="form-group">
         <label for="country">{{ $t('checkout.country') }}</label>
         <select id="country" v-model="shippingDetails.countryId" required>
-          <option value="1">United Arab Emirates</option>
-          <option value="2">Saudi Arabia</option>
-          <option value="3">Kuwait</option>
-          <option value="4">Qatar</option>
-          <option value="5">Bahrain</option>
-          <option value="6">Oman</option>
+          <option v-if="countryLoading" disabled>Loading...</option>
+          <option v-for="country in countries" :key="country.id" :value="country.id">
+            {{ country.name_en || country.name_ar }}
+          </option>
         </select>
       </div>
       <div class="form-group">
@@ -126,7 +125,9 @@ export default {
       loading: false,
       error: null,
       selectedAddress: null,
-      isNewAddress: false
+      isNewAddress: false,
+      countries: [],
+      countryLoading: false
     };
   },
   computed: {
@@ -263,10 +264,22 @@ export default {
       this.selectedValue = option.value;
       this.$emit('update:modelValue', option.value);
       this.isOpen = false;
+    },
+    async fetchCountries() {
+      this.countryLoading = true;
+      try {
+        const response = await axios.get('https://backend.webenia.org/api/countries');
+        this.countries = response.data?.data || [];
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      } finally {
+        this.countryLoading = false;
+      }
     }
   },
   mounted() {
     this.fetchSavedAddresses();
+    this.fetchCountries();
   }
 };
 </script>

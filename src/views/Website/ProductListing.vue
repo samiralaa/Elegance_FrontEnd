@@ -120,7 +120,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted, computed } from 'vue'
+  import { ref, onMounted, computed, watch } from 'vue'
   import axios from 'axios'
   import { ElNotification, ElDialog, ElButton } from 'element-plus'
   import Header from '@/components/Website/Header.vue'
@@ -136,8 +136,8 @@
   const showSuccessDialog = ref(false)
   const successMessage = ref('')
   const selectedCategories = ref([])
-  const priceRange = ref({ min: 0, max: 5000 })
-  const priceRangeLimit = { min: 0, max: 5000 }
+  const priceRange = ref({ min: 0, max: 2000 })
+  const priceRangeLimit = { min: 0, max: 2000 }
   const isSidebarActive = ref(false)
   const favoritesStore = useFavoritesStore()
 
@@ -298,6 +298,19 @@
     }
     return product.price
   };
+
+  // Watchers to ensure min does not exceed max and vice versa
+  watch(() => priceRange.value.min, (newMin) => {
+    if (newMin > priceRange.value.max) {
+      priceRange.value.min = priceRange.value.max
+    }
+  })
+
+  watch(() => priceRange.value.max, (newMax) => {
+    if (newMax < priceRange.value.min) {
+      priceRange.value.max = priceRange.value.min
+    }
+  })
 </script>
 
 <style scoped>

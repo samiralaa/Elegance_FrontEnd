@@ -1,7 +1,6 @@
 <template>
   <div class="checkout-step">
-    <h2>{{ $t('checkout.shippingDetails') }}</h2>
-    
+
     <!-- Saved Addresses Section -->
     <p>test</p>
     <div class="saved-addresses" v-if="savedAddresses.length">
@@ -70,7 +69,9 @@
       </div>
       <div class="form-group">
         <label for="country">{{ $t('checkout.country') }}</label>
-        <input type="text" id="country" v-model="shippingDetails.country" required>
+        <el-select v-model="shippingDetails.country" :placeholder="$t('checkout.country')" :loading="countryLoading" filterable required>
+          <el-option v-for="country in countries" :key="country.id" :label="country.name_en || country.name_ar" :value="country.name_en || country.name_ar" />
+        </el-select>
       </div>
       <div class="button-group">
         <button type="button" class="btn-secondary" @click="previousStep">
@@ -86,9 +87,14 @@
 
 <script>
 import axios from 'axios';
+import { ElSelect, ElOption } from 'element-plus';
 
 export default {
   name: 'ShippingDetails',
+  components: {
+    ElSelect,
+    ElOption
+  },
   props: {
     shippingDetails: Object
   },
@@ -97,7 +103,9 @@ export default {
       savedAddresses: [],
       selectedAddressId: null,
       loading: false,
-      error: null
+      error: null,
+      countries: [],
+      countryLoading: false
     };
   },
   methods: {
@@ -111,6 +119,17 @@ export default {
         this.error = error.message;
       } finally {
         this.loading = false;
+      }
+    },
+    async fetchCountries() {
+      this.countryLoading = true;
+      try {
+        const response = await axios.get('https://backend.webenia.org/api/countries');
+        this.countries = response.data?.data || [];
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      } finally {
+        this.countryLoading = false;
       }
     },
     selectAddress(address) {
@@ -139,6 +158,7 @@ export default {
   },
   mounted() {
     this.fetchSavedAddresses();
+    this.fetchCountries();
   }
 };
 </script>

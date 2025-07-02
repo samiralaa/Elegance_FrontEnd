@@ -19,6 +19,7 @@
       <div class="summary-details">
         <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
         <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
+        
         <div class="total-amount">
           {{ $t('checkout.totalAmount') }}: {{ total }} {{ currency }}
         </div>
