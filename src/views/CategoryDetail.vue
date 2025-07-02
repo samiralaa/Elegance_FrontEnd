@@ -32,7 +32,7 @@
             <div class="products-count">{{ category.products.length }} {{ $t('Products') }}</div>
           </div>
           <section class="products-grid">
-            <div v-for="product in category.products" :key="product.id" class="product-card">
+            <div v-for="product in category.products" :key="product.id" class="product-card" :class="{ 'unavailable': !product.is_available }">
               <div class="image-container mb-3 bg-light rounded">
                 <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en"/>
                 <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
@@ -56,7 +56,10 @@
                   <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
                     {{ product.discount[0].discount_value }}% OFF
                   </span>
-                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency_code }}</span>
+
+                  <span v-if="product.discount && product.discount.length > 0 && product.old_price" class="price-old">
+                    {{ product.old_price }} {{ product.currency_code }}
+                  </span>
                   <span class="card-text card-price">
                     {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                   </span>
@@ -86,6 +89,8 @@ import { API_URL } from '@/store/index.js';
 import Header from '@/components/Website/Header.vue';
 import Footer from '@/components/Website/Footer.vue';
 import { useStore } from 'vuex';
+import { ElNotification } from 'element-plus'
+import { useFavoritesStore } from '@/store/favorites'
 
 export default {
   name: 'CategoryDetail',
@@ -101,11 +106,14 @@ export default {
       },
       loading: true,
       error: null,
-      lang: localStorage.getItem('lang') || 'en'
+      lang: localStorage.getItem('lang') || 'en',
+      favoritesStore: null,
     };
   },
   created() {
     this.fetchCategoryDetails();
+    this.favoritesStore = useFavoritesStore();
+    this.favoritesStore.fetchFavorites();
     if (this.isAuthenticated) {
       this.$store.dispatch('favorites/fetchFavorites');
     }
@@ -169,41 +177,105 @@ methods: {
     return '/placeholder-image.jpg';
   },
 
-  addToCart(product) {
-    this.$store.dispatch('addToCart', {
-      id: product.id,
-      name: this.lang === 'ar' ? product.name_ar : product.name_en,
-      price: product.price,
-      image: this.getProductImage(product),
-      quantity: 1
-    });
-  },
-
-  async addToFavorites(product) {
-    if (!this.isAuthenticated) {
-      this.$router.push('/Account/Login');
-      return;
-    }
+  async addToCart(product) {
     try {
-      await this.$store.dispatch('favorites/toggleFavorite', product);
+      const selectedCurrency =
+        JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
+
+      const response = await axios.post(
+        'https://backend.webenia.org/api/cart-items',
+        {
+          product_id: product.id,
+          quantity: 1,
+          price: parseFloat(product.price)
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            Currency: selectedCurrency.code,
+          }
+        }
+      )
+
+      if (response.data.status) {
+        ElNotification({
+          title: this.$t('success'),
+          message: response.data.message,
+          type: 'success'
+        })
+      } else {
+        ElNotification({
+          title: this.$t('error'),
+          message: response.data.message,
+          type: 'error'
+        })
+      }
     } catch (error) {
-      console.error('Error toggling favorite:', error);
-      this.$toast.error('Failed to update favorites');
+      console.error('Error adding to cart:', error)
+      ElNotification({
+        title: this.$t('error'),
+        message: error.response?.data?.message,
+        type: 'error'
+      })
     }
   },
 
   isInFavorites(productId) {
-    return this.$store.getters['favorites/isInFavorites'](productId);
+    return this.favoritesStore && this.favoritesStore.favorites.some(fav => fav.product_id === productId)
+  },
+
+  getFavoriteId(productId) {
+    if (!this.favoritesStore) return null;
+    const favorite = this.favoritesStore.favorites.find(fav => fav.product_id === productId)
+    return favorite ? favorite.id : null
+  },
+
+  async addToFavorites(product) {
+    try {
+      if (!localStorage.getItem('auth_token')) {
+        ElNotification({
+          title: '⚠️',
+          message: 'Login required to favorite product',
+          type: 'error'
+        })
+        return
+      }
+      if (this.isInFavorites(product.id)) {
+        const favoriteId = this.getFavoriteId(product.id)
+        if (favoriteId) {
+          await this.favoritesStore.removeFromFavorites(favoriteId)
+          ElNotification({
+            title: 'Success',
+            message: 'Product removed from favorites',
+            type: 'success'
+          })
+        }
+      } else {
+        const response = await this.favoritesStore.addToFavorites(product.id)
+        ElNotification({
+          title: 'Success',
+          message: response.message,
+          type: 'success'
+        })
+      }
+    } catch (error) {
+      console.error('Favorite error:', error)
+      ElNotification({
+        title: '⚠️',
+        message: error.response?.data?.message || 'Login required to favorite product',
+        type: 'error'
+      })
+    }
   },
 
   calculateDiscountedPrice(product) {
     if (product.discount && product.discount.length > 0) {
       const discountValue = parseFloat(product.discount[0].discount_value)
-      const originalPrice = parseFloat(product.converted_price)
+      const originalPrice = parseFloat(product.converted_price || product.price)
       const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
       return discountedPrice.toFixed(2)
     }
-    return product.converted_price
+    return product.converted_price || product.price
   }
 },
 mounted() {
@@ -487,9 +559,17 @@ mounted() {
   .discount-badge {
     background-color: #ff4d4d;
     color: white;
-    padding: 0.25rem 0.6rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(255,76,76,0.15);
+  }
+
+  .product-card.unavailable {
+    opacity: 0.5;
+    pointer-events: none;
+    filter: grayscale(60%);
   }
 </style>
