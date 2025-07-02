@@ -114,9 +114,12 @@ export default {
   methods: {
     async fetchCartItems() {
       try {
+        const selectedCurrency =
+          JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
         const response = await axios.get(`${API_URL}/api/cart-items`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            Currency: selectedCurrency.code,
           }
         });
         this.cartItems = response.data.data.original.data;
@@ -163,7 +166,13 @@ export default {
         this.$toast.error(this.$t('checkout.errorPlacingOrder'));
       }
     }
-  }
+  },
+
+  mounted() {
+    window.addEventListener('currency-changed', () => {
+      this.fetchCartItems();
+    });
+  },
 };
 </script>
 

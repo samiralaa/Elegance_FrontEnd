@@ -44,7 +44,7 @@ export default {
       otp: Array(4).fill(''),
       user: null,
       token: null,
-      timer: '02:00',
+      timer: '03:00',
       countdown: null,
       otpMessage: ''
     }
@@ -143,7 +143,7 @@ export default {
       }
     },
     startTimer() {
-      let minutes = 2
+      let minutes = 3
       let seconds = 0
 
       this.countdown = setInterval(() => {
@@ -158,7 +158,7 @@ export default {
           seconds--
         }
 
-        this.timer = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+        this.timer = `${String(minutes).padStart(3, '0')}:${String(seconds).padStart(3, '0')}`
       }, 1000)
     },
     async resendOtp() {

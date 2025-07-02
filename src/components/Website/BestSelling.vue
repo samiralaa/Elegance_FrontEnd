@@ -28,7 +28,7 @@
             </div>
             <div class="body-container">
               <div class="card-body">
-                <h5 class="card-title">{{ product.name_en }}</h5>
+                <h5 class="card-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h5>
                 <div class="price-container">
                   <span v-if="product.discount && product.discount.is_active" class="discount-badge">
                     {{ getDiscountPercentage(product) }}% OFF
@@ -90,7 +90,7 @@
   const successMessage = ref('');
   const favoritesStore = useFavoritesStore()
   const cartStore = useCartStore()
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const currencies = ref([])
   const selectedCurrency = ref({ code: 'USD' })
 

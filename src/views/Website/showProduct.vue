@@ -20,12 +20,12 @@
               <span class="price-new">{{ calculateDiscountedPrice(product) }} {{ product.currency_code }}</span>
             </div>
 
+            <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
+              :class="isFavorite ? 'text-danger' : ''"
+              :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'">
+              <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
+            </button>
             <div class="product-actions">
-              <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
-                :class="isFavorite ? 'text-danger' : ''"
-                :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'">
-                <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
-              </button>
               <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
 
@@ -117,11 +117,11 @@
                     title="View">
                     <fa icon="eye" />
                   </router-link>
-                  <button @click="addChildToCart(child)" class="btn btn-light shadow-sm"
+                  <button @click="addChildToCart(child)" class="btn btn-light shadow-sm disable"
                     :class="{ 'disabled': !child.is_available }" :disabled="!child.is_available">
                     {{ $t('home.add-to-cart') }}
                   </button>
-                  <button @click="addChildToCart(child)" class="d-none btn rounded-circle btn-light shadow-sm"
+                  <button @click="addChildToCart(child)" class="d-none btn rounded-circle btn-light shadow-sm enable"
                     :class="{ 'disabled': !child.is_available }" :disabled="!child.is_available">
                     <fa icon="cart-plus" />
                   </button>
