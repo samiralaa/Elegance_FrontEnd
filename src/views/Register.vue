@@ -1,7 +1,7 @@
 <template>
   <div class="join-us-container">
     <div class="banner-section">
-      <img src="@/assets/images/perfume-banner.svg" alt="Elegance Perfume" class="banner-image">
+      <!-- <img src="@/assets/images/perfume-banner.svg" alt="Elegance Perfume" class="banner-image"> -->
     </div>
     <div class="join-us-content">
       <div class="form-header">
@@ -88,7 +88,7 @@
 
         <div class="register-section">
           <p>{{ $t('register.alreadyHaveAccount') }}
-            <router-link to="/login" class="link">{{ $t('register.loginHere') }}</router-link>
+            <router-link to="/account/login" class="link">{{ $t('register.loginHere') }}</router-link>
           </p>
         </div>
       </form>

@@ -220,8 +220,7 @@ export default {
         this.isLoading = false;
       }
     },
-
-
+    
     calculateDiscountedPrice(item) {
       if (product.discount && product.discount.is_active) {
         const discountValue = parseFloat(product.discount.discount_value)

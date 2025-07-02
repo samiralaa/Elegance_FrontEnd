@@ -41,6 +41,7 @@ import CheckoutStepper from "@/components/Website/Checkout/CheckoutStepper.vue";
 import CartReview from "@/components/Website/Checkout/CartReview.vue";
 import ShippingDetails from "@/components/Website/Checkout/ShippingDetails.vue";
 import PaymentStep from "@/components/Website/Checkout/PaymentStep.vue";
+import { onMounted } from 'vue';
 
 export default {
   name: 'Checkout',

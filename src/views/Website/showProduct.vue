@@ -157,7 +157,7 @@
 
 <script setup>
 import Header from "@/components/Website/Header.vue";
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import axios from "axios";
@@ -460,14 +460,28 @@ const updateSelectedImage = () => {
 };
 
 // Lifecycle Hooks
-onMounted(() => {
-  fetchProduct().then(initializeSlick);
-  window.addEventListener('currency-changed', () => {
-    fetchProduct()
-  })
+onMounted(async() => {
+  await fetchProduct();
   if (product.value?.amounts?.length) {
     setActive(0, product.value.amounts[0]);
   }
+  nextTick(() => {
+    initializeSlick();
+    checkFavoriteStatus();
+  });
+
+  window.addEventListener('currency-changed', fetchProduct);
+});
+
+watch(() => route.params.id, async (newId) => {
+  await fetchProduct();
+  if (product.value?.amounts?.length) {
+    setActive(0, product.value.amounts[0]);
+  }
+  nextTick(() => {
+    initializeSlick();
+    checkFavoriteStatus();
+  });
 });
 
 // Cleanup on unmount
