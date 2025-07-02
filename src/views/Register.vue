@@ -28,7 +28,8 @@
           <div class="password-input-container">
             <input :type="showPassword ? 'text' : 'password'" id="password" v-model="formData.password"
               :placeholder="$t('header.passwordPlaceholder')"
-              :class="{ 'error': errors.password, 'valid': formData.password && !errors.password }" required>
+              :class="{ 'error': errors.password, 'valid': formData.password && !errors.password }" required
+              @copy.prevent>
             <button type="button" class="show-password-btn" @click="togglePassword">
               {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
@@ -42,7 +43,8 @@
             <input :type="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
               v-model="formData.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
               :class="{ 'error': errors.confirmPassword, 'valid': formData.confirmPassword && !errors.confirmPassword }"
-              required>
+              required
+              @copy.prevent>
             <button type="button" class="show-password-btn" @click="toggleConfirmPassword">
               {{ showConfirmPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>

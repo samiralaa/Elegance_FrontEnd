@@ -12,22 +12,21 @@
 
             <div class="price-block">
               <div class="d-flex">
-                <span class="price-old" v-if="product.discount && product.discount.is_active">{{ product.converted_price || product.price }} {{ product.currency_code }}</span>
-                <span class="discount-badge" v-if="product.discount && product.discount.is_active">-{{ product.discount.discount_value }}%</span>
+                <span class="price-old" v-if="product.discount && product.discount.is_active">{{ product.converted_price
+                  || product.price }} {{ product.currency_code }}</span>
+                <span class="discount-badge" v-if="product.discount && product.discount.is_active">-{{
+                  product.discount.discount_value }}%</span>
               </div>
               <span class="price-new">{{ calculateDiscountedPrice(product) }} {{ product.currency_code }}</span>
             </div>
 
             <div class="product-actions">
-                <button
-                  @click="addToFavorites(product)"
-                  class="btn rounded-circle shadow-sm btn-light"
-                  :class="isFavorite ? 'text-danger' : ''"
-                  :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-                >
-                  <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'" size="xl"/>
-                </button>
-                <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
+              <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
+                :class="isFavorite ? 'text-danger' : ''"
+                :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'">
+                <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
+              </button>
+              <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
 
             <div class="weight" v-if="product.amounts && product.amounts.length > 0">
@@ -41,14 +40,15 @@
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
                     :class="{ active: activeIndex === index }" @click="setActive(index, amount)">
                     <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency_code
-                      }}</p>
+                    }}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="buttons-section">
-              <el-button class="add-to-cart btn" :disabled="!product.is_available" type="primary" size="large" round @click="addToCart">{{ $t('products.addToCart')
+              <el-button class="add-to-cart btn" :disabled="!product.is_available" type="primary" size="large" round
+                @click="addToCart">{{ $t('products.addToCart')
                 }}</el-button>
 
               <div class="quantity-section" v-if="product.is_available">
@@ -56,14 +56,8 @@
                   <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input
-                    class="qty-number"
-                    type="number"
-                    min="1"
-                    max="99"
-                    v-model.number="quantity"
-                    @input="quantity = Math.min(quantity)"
-                  >
+                  <input class="qty-number" type="number" min="1" max="99" v-model.number="quantity"
+                    @input="quantity = Math.min(quantity)">
                   <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />
                   </el-button>
@@ -109,49 +103,36 @@
           <h2 class="mb-0">{{ t('products.relatedProducts') }}</h2>
         </div>
         <div class="row g-3">
-          <div class="col-6 col-md-4 col-lg-3"  v-for="child in product.children" :key="child.id">
+          <div class="col-6 col-md-4 col-lg-3" v-for="child in product.children" :key="child.id">
             <div class="product-card card border-0 h-100">
               <div class="position-relative overflow-hidden bg-light">
                 <router-link :to="`/read/products/${product.id}`">
-                  <img
-                    :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
-                    :alt="locale === 'ar' ? child.name_ar : child.name_en"
-                    class="card-img-top product-img"
-                  />
+                  <img :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
+                    :alt="locale === 'ar' ? child.name_ar : child.name_en" class="card-img-top product-img" />
                 </router-link>
                 <div v-if="!child.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
                 <!-- Action Buttons -->
                 <div class="product-actions d-flex justify-content-center gap-2 w-100">
-                  <router-link :to="`/read/products/${child.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                  <router-link :to="`/read/products/${child.id}`" class="btn btn-light rounded-circle shadow-sm"
+                    title="View">
                     <fa icon="eye" />
                   </router-link>
-                  <button 
-                    @click="addChildToCart(child)" 
-                    class="btn btn-light shadow-sm"
-                    :class="{ 'disabled': !child.is_available }"
-                    :disabled="!child.is_available"
-                  >
+                  <button @click="addChildToCart(child)" class="btn btn-light shadow-sm"
+                    :class="{ 'disabled': !child.is_available }" :disabled="!child.is_available">
                     {{ $t('home.add-to-cart') }}
                   </button>
-                  <button 
-                    @click="addChildToCart(child)" 
-                    class="d-none btn rounded-circle btn-light shadow-sm"
-                    :class="{ 'disabled': !child.is_available }"
-                    :disabled="!child.is_available"
-                  >
+                  <button @click="addChildToCart(child)" class="d-none btn rounded-circle btn-light shadow-sm"
+                    :class="{ 'disabled': !child.is_available }" :disabled="!child.is_available">
                     <fa icon="cart-plus" />
                   </button>
-                  <button
-                    @click="toggleChildFavorite(child)"
-                    class="btn rounded-circle shadow-sm btn-light"
+                  <button @click="toggleChildFavorite(child)" class="btn rounded-circle shadow-sm btn-light"
                     :class="isChildFavorite(child) ? 'text-danger' : ''"
-                    :title="isChildFavorite(child) ? 'Remove from favorites' : 'Add to favorites'"
-                  >
+                    :title="isChildFavorite(child) ? 'Remove from favorites' : 'Add to favorites'">
                     <fa :icon="isChildFavorite(child) ? 'fas fa-heart' : 'far fa-heart'" />
                   </button>
                 </div>
               </div>
-  
+
               <div class="card-body">
                 <h5 class="card-title">{{ locale === 'ar' ? child.name_ar : child.name_en }}</h5>
                 <div class="price-container">
@@ -298,10 +279,10 @@ const addToCart = async () => {
         title: t('success'),
         message: response.data.message,
         type: 'success',
-        
+
       });
       cartStore.incrementCount()
-      await cartStore.fetchCartCount()  
+      await cartStore.fetchCartCount()
     }
   } catch (error) {
     ElNotification({
@@ -380,7 +361,7 @@ const setActive = (index, amount) => {
 };
 
 const resetActive = () => {
-    if (product.value?.amounts?.length) {
+  if (product.value?.amounts?.length) {
     setActive(0, product.value.amounts[0]);
   } else {
     activeIndex.value = null;
@@ -482,7 +463,7 @@ const updateSelectedImage = () => {
 onMounted(() => {
   fetchProduct().then(initializeSlick);
   window.addEventListener('currency-changed', () => {
-      fetchProduct()
+    fetchProduct()
   })
   if (product.value?.amounts?.length) {
     setActive(0, product.value.amounts[0]);
@@ -963,7 +944,7 @@ input[type=number]::-webkit-outer-spin-button {
   object-fit: cover;
 }
 
-:deep(.image-wrapper .slick-list){
+:deep(.image-wrapper .slick-list) {
   border-radius: 15px;
 }
 
@@ -1099,13 +1080,14 @@ input[type=number]::-webkit-outer-spin-button {
     max-height: 40px;
   }
 }
+
 .section-header {
   font-size: 1.6rem;
   font-weight: 600;
   color: #8b6b3d;
 }
 
- .product-card {
+.product-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 1rem;
   overflow: hidden;
@@ -1142,7 +1124,7 @@ input[type=number]::-webkit-outer-spin-button {
   pointer-events: auto;
 }
 
-.card-body{
+.card-body {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1213,10 +1195,11 @@ input[type=number]::-webkit-outer-spin-button {
     transform: translateX(0) translateY(0);
     z-index: 10;
   }
-  
+
   .product-card:hover .product-actions {
     transform: translateX(0) translateY(0);
   }
+
   .card-body {
     flex-direction: column;
   }
