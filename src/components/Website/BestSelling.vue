@@ -33,7 +33,9 @@
                   <span v-if="product.discount && product.discount.is_active" class="discount-badge">
                     {{ getDiscountPercentage(product) }}% OFF
                   </span>
-                  <span v-if="product.discount && product.discount.is_active" class="price-old">{{ product.converted_price.toFixed(2) }} {{ product.currency_code }}</span>
+                  <span v-if="product.discount && product.discount.is_active" class="price-old">
+                    {{ (product.converted_price || product.price).toFixed(2) }} {{ product.currency_code }}
+                  </span>
                   <span class="card-text card-price">
                     {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                   </span>
@@ -232,19 +234,18 @@
   };
 
   const calculateDiscountedPrice = (product) => {
-    if (product.discount && product.discount.length > 0) {
-      const discountValue = parseFloat(product.discount[0].discount_value)
-      const originalPrice = parseFloat(product.converted_price)
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      const originalPrice = parseFloat(product.converted_price || product.price)
       const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
       return discountedPrice.toFixed(2)
     }
-    return product.converted_price
+    return (product.converted_price || product.price).toFixed(2)
   };
 
   const getDiscountPercentage = (product) => {
     if (product.discount && product.discount.is_active) {
-      const discountValue = parseFloat(product.discount.discount_value)
-      return Math.round(discountValue)
+      return Math.round(parseFloat(product.discount.discount_value))
     }
     return 0
   }
