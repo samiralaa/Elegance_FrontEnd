@@ -11,9 +11,11 @@
             <div v-html="locale === 'ar' ? product.description_ar : product.description_en" class="description"></div>
 
             <div class="price-block">
-              <span class="price-old" v-if="product.discount && product.discount.is_active">{{ product.converted_price || product.price }} {{ product.currency?.name_en }}</span>
-              <span class="discount-badge" v-if="product.discount && product.discount.is_active">-{{ product.discount.discount_value }}%</span>
-              <span class="price-new">{{ calculateDiscountedPrice(product) }} {{ product.currency?.name_en }}</span>
+              <div class="d-flex">
+                <span class="price-old" v-if="product.discount && product.discount.is_active">{{ product.converted_price || product.price }} {{ product.currency_code }}</span>
+                <span class="discount-badge" v-if="product.discount && product.discount.is_active">-{{ product.discount.discount_value }}%</span>
+              </div>
+              <span class="price-new">{{ calculateDiscountedPrice(product) }} {{ product.currency_code }}</span>
             </div>
 
             <div class="product-actions">
@@ -38,7 +40,7 @@
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
                     :class="{ active: activeIndex === index }" @click="setActive(index, amount)">
-                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency?.name_en
+                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency_code
                       }}</p>
                   </div>
                 </div>
@@ -157,10 +159,10 @@
                     -{{ child.discount.discount_value }}%
                   </span>
                   <span v-if="child.discount && child.discount.is_active" class="price-old">
-                    {{ child.converted_price || child.price }} {{ child.currency?.name_en || 'AED' }}
+                    {{ child.converted_price || child.price }} {{ child.currency_code || 'UAE' }}
                   </span>
                   <span class="card-text card-price">
-                    {{ calculateDiscountedPrice(child) }} {{ child.currency?.name_en || 'AED' }}
+                    {{ calculateDiscountedPrice(child) }} {{ child.currency_code || 'UAE' }}
                   </span>
                 </div>
               </div>
@@ -236,8 +238,16 @@ const setSelectedImage = (path) => {
 // Fetch product
 const fetchProduct = async () => {
   try {
+    const selectedCurrency =
+      JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
     const res = await axios.get(
-      `https://backend.webenia.org/api/website/show/products/${route.params.id}`
+      `https://backend.webenia.org/api/website/show/products/${route.params.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Currency: selectedCurrency.code,
+        },
+      }
     );
     if (res.data.status) {
       product.value = res.data.data;
@@ -355,7 +365,7 @@ const addChildToCart = async (childProduct) => {
 };
 
 // Track selected index
-const activeIndex = ref(); // default selected
+const activeIndex = ref(0); // default selected   
 
 // Set active item
 const setActive = (index, amount) => {
@@ -370,10 +380,14 @@ const setActive = (index, amount) => {
 };
 
 const resetActive = () => {
-  activeIndex.value = null;
-  product.value.amount_id = null;
-  if (product.value._original_price !== undefined) {
-    product.value.price = product.value._original_price;
+    if (product.value?.amounts?.length) {
+    setActive(0, product.value.amounts[0]);
+  } else {
+    activeIndex.value = null;
+    product.value.amount_id = null;
+    if (product.value._original_price !== undefined) {
+      product.value.price = product.value._original_price;
+    }
   }
 };
 
@@ -467,6 +481,12 @@ const updateSelectedImage = () => {
 // Lifecycle Hooks
 onMounted(() => {
   fetchProduct().then(initializeSlick);
+  window.addEventListener('currency-changed', () => {
+      fetchProduct()
+  })
+  if (product.value?.amounts?.length) {
+    setActive(0, product.value.amounts[0]);
+  }
 });
 
 // Cleanup on unmount
@@ -629,6 +649,7 @@ const calculateDiscountedPrice = (product) => {
 
 .price-block {
   display: flex;
+  flex-direction: column;
   align-items: baseline;
   gap: 15px;
   margin: 20px 0;
@@ -1233,6 +1254,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .price-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
