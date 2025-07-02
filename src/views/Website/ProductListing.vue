@@ -95,10 +95,10 @@
           <div class="card-body">
             <h5 class="card-title">{{ product.name_en }}</h5>
             <div class="price-container">
-              <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
-                {{ product.discount[0].discount_value }}% OFF
+              <span v-if="product.discount && product.discount.is_active" class="price-old">{{ product.converted_price }} {{ product.currency_code }}</span>
+              <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                {{ getDiscountPercentage(product) }}% OFF
               </span>
-              <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency_code }}</span>
               <span class="card-text card-price">
                 {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
               </span>
@@ -290,14 +290,21 @@
   })
 
   const calculateDiscountedPrice = (product) => {
-    if (product.discount && product.discount.length > 0) {
-      const discountValue = parseFloat(product.discount[0].discount_value)
-      const originalPrice = parseFloat(product.price)
-      const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      const originalPrice = parseFloat(product.converted_price || product.price)
+      const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
       return discountedPrice.toFixed(2)
     }
-    return product.price
-  };
+    return product.converted_price || product.price
+  }
+
+  const getDiscountPercentage = (product) => {
+    if (product.discount && product.discount.is_active) {
+      return Math.round(parseFloat(product.discount.discount_value))
+    }
+    return 0
+  }
 
   // Watchers to ensure min does not exceed max and vice versa
   watch(() => priceRange.value.min, (newMin) => {

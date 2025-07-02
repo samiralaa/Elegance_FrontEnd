@@ -169,10 +169,6 @@ export default {
 </script>
 
 <style scoped>
-.rtl {
-  direction: rtl;
-  text-align: right;
-}
 
 .all-categories .container {
   position: relative;
@@ -283,10 +279,14 @@ export default {
   padding: 12px;
   margin: 15px;
   transition: all 0.3s ease;
-  text-align: center;
+  text-align: center !important;
   text-decoration: none;
   width: 100%;
 
+}
+
+.card .category-content {
+  text-align: center !important;
 }
 
 .card::after {
