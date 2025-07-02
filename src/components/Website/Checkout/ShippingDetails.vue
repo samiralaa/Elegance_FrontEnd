@@ -17,7 +17,7 @@
         @click="isNewAddress = true"
       >
         {{ $t('checkout.createNewAddress') }}
-        <fa icon="plus" />
+    
       </button>
     </div>
 

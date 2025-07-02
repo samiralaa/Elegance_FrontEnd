@@ -33,6 +33,9 @@
             <button type="button" class="show-password-btn" @click="togglePassword">
               {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
+            <button type="button" class="copy-password-btn" @click="copyPassword(formData.password)">
+              {{ $t('joinUs.copyPassword') }}
+            </button>
           </div>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
@@ -433,6 +436,16 @@ export default {
     },
     toggleConfirmPassword() {
       this.showConfirmPassword = !this.showConfirmPassword;
+    },
+    copyPassword(password) {
+      if (!password) return;
+      navigator.clipboard.writeText(password)
+        .then(() => {
+          this.$toast?.success?.(this.$t('joinUs.passwordCopied') || 'Password copied!');
+        })
+        .catch(() => {
+          this.$toast?.error?.(this.$t('joinUs.copyFailed') || 'Failed to copy password.');
+        });
     }
   }
 }
@@ -566,6 +579,23 @@ input.valid {
 }
 
 .show-password-btn:hover {
+  color: #826618;
+}
+
+.copy-password-btn {
+  position: absolute;
+  right: 6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9b7c1f;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+
+.copy-password-btn:hover {
   color: #826618;
 }
 
