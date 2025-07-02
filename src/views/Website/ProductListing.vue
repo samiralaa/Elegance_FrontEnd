@@ -57,7 +57,7 @@
               :max="priceRangeLimit.max"
             />
             <div class="price-values">
-              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ t('AED') }}</span>
+              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ currencyCode }}</span>
             </div>
           </div>
         </div>
@@ -140,6 +140,12 @@
   const priceRangeLimit = { min: 0, max: 2000 }
   const isSidebarActive = ref(false)
   const favoritesStore = useFavoritesStore()
+
+  // Currency code from localStorage
+  const currencyCode = computed(() => {
+    const stored = localStorage.getItem('selectedCurrency');
+    return stored ? JSON.parse(stored).code : 'AED';
+  });
 
   // Toggle Sidebar
   const toggleSidebar = () => {

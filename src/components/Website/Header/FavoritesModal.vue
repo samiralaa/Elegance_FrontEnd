@@ -15,33 +15,40 @@
           </div>
         </div>
         <ul v-else-if="favorites && favorites.length" class="list-unstyled">
-          <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item d-flex align-items-center border-bottom py-3 gap-3">
+          <li v-for="favorite in favorites" :key="favorite.favorite_id" class="favorite-item d-flex align-items-center border-bottom py-3 gap-3">
             <img 
-              :src="getProductImage(favorite.product)" 
-              :alt="currentLang === 'ar' ? favorite.product.name_ar : favorite.product.name_en" 
+              :src="getProductImage(favorite)" 
+              :alt="currentLang === 'ar' ? favorite.name_ar : favorite.name_en" 
               class="product-image" 
             />
 
             <div class="flex-grow-1">
-              <h6 class="mb-1">{{ currentLang === 'ar' ? favorite.product.name_ar : favorite.product.name_en }}</h6>
-              <p class="text-muted mb-2 small">{{ currentLang === 'ar' ? favorite.product.description_ar : favorite.product.description_en }}</p>
+              <h6 class="mb-1">{{ currentLang === 'ar' ? favorite.name_ar : favorite.name_en }}</h6>
+              <p class="text-muted mb-2 small">{{ currentLang === 'ar' ? favorite.description_ar : favorite.description_en }}</p>
+
               
               <!-- Price -->
               <div class="d-flex align-items-center justify-content-between">
-                <span class="price">
-                  {{ calculateDiscountedPrice(favorite) }} {{ favorite.product.currency_code || 'AUD' }}
-                </span>
+                <div>
+                  
+                  <span v-if="isDiscountActive(favorite) && getOldPrice(favorite)" class="price-old">
+                    {{ getOldPrice(favorite) }} {{ favorite.currency_code || 'AUD' }}
+                  </span>
+                  <span class="price">
+                    {{ calculateDiscountedPrice(favorite) }} {{ favorite.currency_code || 'AUD' }}
+                  </span>
+                </div>
                 <div class="d-flex gap-2">
                   <button 
                     class="btn btn-sm btn-outline-primary" 
-                    @click="addToCart(favorite.product)"
+                    @click="addToCart(favorite)"
                     :disabled="isLoading"
                   >
                     <fa icon="shopping-cart" />
                   </button>
                   <button 
                     class="btn btn-sm btn-outline-danger" 
-                    @click="removeFavorite(favorite.id)"
+                    @click="removeFavorite(favorite.favorite_id)"
                     :disabled="isLoading"
                   >
                     <fa icon="trash" />
@@ -103,32 +110,22 @@ export default {
     await this.favoritesStore.fetchFavorites();
   },
   methods: {
-    getProductImage(product) {
-      if (!product.images || !product.images[0]?.path) {
+    getProductImage(favorite) {
+      if (!favorite.images || !favorite.images[0]) {
         return '/placeholder-image.jpg';
       }
-
-      const imageUrl = product.images[0].path;
+      const imageUrl = favorite.images[0];
       const publicStorageBase = `${API_URL}/public/storage/`;
-
-      // If the image URL is already a full URL and contains the public storage path, return as is.
       if (imageUrl.startsWith(publicStorageBase)) {
         return imageUrl;
       }
-
-      // If the image URL is an absolute URL but from the same domain as API_URL
-      // and is missing the /public/storage/ segment, then construct the correct URL.
       if (imageUrl.startsWith(API_URL)) {
         const relativePath = imageUrl.substring(API_URL.length);
         return `${publicStorageBase}${relativePath.startsWith('/') ? relativePath.substring(1) : relativePath}`;
       }
-
-      // If it's an external URL that doesn't match API_URL, return as is.
       if (imageUrl.startsWith('http')) {
         return imageUrl;
       }
-
-      // If it's a relative path (e.g., "images/product/...")
       return `${publicStorageBase}${imageUrl}`;
     },
     async removeFavorite(favoriteId) {
@@ -149,8 +146,8 @@ export default {
         });
       }
     },
-    async addToCart(product) {
-      if (!product || !product.price) {
+    async addToCart(favorite) {
+      if (!favorite || !favorite.price) {
         ElNotification({
           title: this.t('error'),
           message: this.t('invalid_product'),
@@ -158,18 +155,16 @@ export default {
         });
         return;
       }
-
       try {
         const response = await axios.post(`${API_URL}/api/cart-items`, {
-          product_id: product.id,
+          product_id: favorite.product_id,
           quantity: 1,
-          price: parseFloat(product.price)
+          price: parseFloat(favorite.price)
         }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
-
         if (response.data.status) {
           ElNotification({
             title: this.t('success'),
@@ -188,15 +183,31 @@ export default {
         });
       }
     },
-        calculateDiscountedPrice(favorite) {
-      if (favorite.product.discount && favorite.product.discount.length > 0) {
-        const discountValue = parseFloat(favorite.product.discount[0].discount_value)
-        const originalPrice = parseFloat(favorite.product.converted_price)
-        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
-        return discountedPrice.toFixed(2)
+    isDiscountActive(favorite) {
+      if (!favorite.discount) return false;
+      if (Array.isArray(favorite.discount)) {
+        return favorite.discount.length > 0 && !!favorite.discount[0].discount_value && (favorite.discount[0].is_active === undefined || favorite.discount[0].is_active);
       }
-      // console.log('Original Price:', originalPrice, 'Discount Value:', discountValue);
-      return favorite.product.converted_price.toFixed(2);
+      return !!favorite.discount.value && (favorite.discount.is_active === undefined || favorite.discount.is_active);
+    },
+    getDiscountPercentage(favorite) {
+      if (!favorite.discount) return 0;
+      if (Array.isArray(favorite.discount)) {
+        return favorite.discount.length > 0 ? Math.round(parseFloat(favorite.discount[0].discount_value)) : 0;
+      }
+      return Math.round(parseFloat(favorite.discount.value));
+    },
+    getOldPrice(favorite) {
+      return favorite.converted_price || favorite.price;
+    },
+    calculateDiscountedPrice(favorite) {
+      if (this.isDiscountActive(favorite)) {
+        const discountValue = this.getDiscountPercentage(favorite);
+        const originalPrice = parseFloat(this.getOldPrice(favorite));
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100));
+        return discountedPrice.toFixed(2);
+      }
+      return (favorite.converted_price || favorite.price).toFixed(2);
     }
   },
   emits: ['close', 'favorite-removed']
@@ -300,5 +311,27 @@ export default {
   .favorite-item {
     padding: 0.75rem 0;
   }
+}
+
+.discount-badge {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(255,76,76,0.15);
+  margin-right: 0.5rem;
+}
+.price-old {
+  text-decoration: line-through;
+  color: #aaa;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-right: 0.5rem;
 }
 </style>
