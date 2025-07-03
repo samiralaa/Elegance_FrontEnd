@@ -30,7 +30,7 @@
                 <small class="text-muted">
                   <template v-if="item.product && item.product.discount && item.product.discount.type && item.product.price_after_discount && item.product.price_after_discount !== item.product.price">
                     <span style="text-decoration: line-through; color: #b0b0b0;">{{ item.product.price }} {{ item.currency_code || 'AUD' }}</span>
-                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ item.product.price_after_discount }} {{ item.currency_code || 'AUD' }}</span>
+                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ calculateDiscountedPrice(item) }} {{ item.currency_code || 'AUD' }}</span>
                   </template>
                   <template v-else>
                     {{ item.price }} {{ item.currency_code || 'AUD' }}
@@ -220,15 +220,30 @@ export default {
         this.isLoading = false;
       }
     },
-    
-    calculateDiscountedPrice(item) {
-      if (product.discount && product.discount.is_active) {
-        const discountValue = parseFloat(product.discount.discount_value)
-        const originalPrice = parseFloat(product.converted_price)
-        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
-        return discountedPrice.toFixed(2)
+    isDiscountActive(item) {
+      return item.product && item.product.discount && item.product.discount.is_active && item.product.price_after_discount && item.product.price_after_discount !== item.product.price;
+    },
+    getDiscountPercentage(item) {
+      if (item.product && item.product.discount && item.product.discount.value) {
+        return item.product.discount.value;
       }
-      return product.converted_price
+      return 0;
+    },
+    
+    getOldPrice(item) {
+      if (item.product && item.product.discount && item.product.discount.type && item.product.price_after_discount && item.product.price_after_discount !== item.product.price) {
+        return item.product.converted_price;
+      }
+      return item.converted_price || item.price ;
+    },
+    calculateDiscountedPrice(item) {
+      if (this.isDiscountActive(item)) {
+        const discountValue = this.getDiscountPercentage(item);
+        const originalPrice = parseFloat(this.getOldPrice(item));
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100));
+        return discountedPrice.toFixed(2);
+      }
+      return (item.converted_price || item.price).toFixed(2);
     }
   }
 }
