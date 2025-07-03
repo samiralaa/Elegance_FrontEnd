@@ -1,138 +1,147 @@
 <template>
   <div class="custom-search-modal">
     <div class="modal-content">
-      <input 
-        type="text" 
-        class="form-control search-input" 
-        :placeholder="$t('header.searchPlaceholder')" 
-        :value="searchQuery"
-        @input="$emit('search', $event.target.value)" 
-      />
-      <ul v-if="products.length">
-        <li v-for="product in products" :key="product.id" class="product-item">
-          <img :src="getProductImage(product)" alt="Product Image" class="product-image" />
-          <div class="product-info">
-            <h5>{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
-            <p>{{ product.price }} {{ product.currency?.name_en }}</p>
+      <div class="d-flex gap-2 mb-3">
+        <input
+          v-model="query"
+          @input="debouncedSearch"
+          type="text"
+          class="form-control"
+          placeholder="ابحث عن منتج أو قسم"
+        />
+        <button class="btn btn-primary" @click="searchNow">بحث</button>
+      </div>
+
+      <div v-if="loading" class="text-center py-3">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+
+      <ul v-if="results.length && !loading" class="list-unstyled">
+        <li
+          v-for="item in results"
+          :key="item.id + '-' + item.type"
+          class="product-item d-flex align-items-center gap-3 border-bottom pb-2 mb-2"
+        >
+          <div
+            @click="handleResultClick(item)"
+            style="cursor: pointer; width: 100%; display: flex; align-items: center; gap: 12px;"
+          >
+            <template v-if="item.type === 'product'">
+              <img :src="getImage(item)" class="product-image" />
+              <div>
+                <h6 class="mb-1">
+                  {{ isArabic(query) ? item.name_ar : item.name_en }}
+                </h6>
+                <small class="text-muted">
+                  {{ isArabic(query) ? item.name_en : item.name_ar }}
+                </small>
+                <div class="mt-1">{{ item.price }} {{ item.currency?.name_en }}</div>
+              </div>
+            </template>
+
+            <template v-else-if="item.type === 'category'">
+              <div>
+                <h6 class="mb-1">
+                  {{ isArabic(query) ? item.name_ar : item.name_en }}
+                </h6>
+                <small class="text-muted">
+                  {{ isArabic(query) ? item.name_en : item.name_ar }}
+                </small>
+                <span class="badge bg-info">قسم</span>
+              </div>
+            </template>
           </div>
         </li>
       </ul>
-      <p v-else-if="searchQuery">No results found.</p>
-      <button class="btn btn-secondary mt-3" @click="$emit('close')">{{ $t('header.close') }}</button>
+
+      <p v-else-if="query && !loading" class="text-center text-muted mt-3">لا توجد نتائج</p>
+
+      <button class="btn btn-outline-secondary w-100 mt-4" @click="$emit('close')">إغلاق</button>
     </div>
   </div>
 </template>
 
 <script>
-import { API_URL } from '@/store/index.js';
+import axios from 'axios';
 
 export default {
   name: 'SearchModal',
-  props: {
-    products: {
-      type: Array,
-      default: () => []
-    },
-    searchQuery: {
-      type: String,
-      default: ''
-    },
-    currentLang: {
-      type: String,
-      default: 'en'
-    }
+  data() {
+    return {
+      query: '',
+      results: [],
+      loading: false,
+      debounceTimer: null
+    };
   },
   methods: {
-    getProductImage(product) {
-      if (!product.images || !product.images[0]?.path) {
-        return '/placeholder-image.jpg';
+    isArabic(text) {
+      return /[\u0600-\u06FF]/.test(text);
+    },
+    debouncedSearch() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.searchNow();
+      }, 400);
+    },
+    async searchNow() {
+      if (!this.query || this.query.length < 2) {
+        this.results = [];
+        return;
       }
 
-      const imageUrl = product.images[0].path;
-      const publicStorageBase = `${API_URL}/public/storage/`;
-
-      // If the image URL is already a full URL and contains the public storage path, return as is.
-      if (imageUrl.startsWith(publicStorageBase)) {
-        return imageUrl;
+      this.loading = true;
+      try {
+        const res = await axios.post('/api/search-products', {
+          query: this.query
+        });
+        this.results = res.data.data || [];
+      } catch (error) {
+        console.error('Search error:', error);
+        this.results = [];
+      } finally {
+        this.loading = false;
       }
-
-      // If the image URL is an absolute URL but from the same domain as API_URL
-      // and is missing the /public/storage/ segment, then construct the correct URL.
-      if (imageUrl.startsWith(API_URL)) {
-        const relativePath = imageUrl.substring(API_URL.length);
-        return `${publicStorageBase}${relativePath.startsWith('/') ? relativePath.substring(1) : relativePath}`;
+    },
+    getImage(product) {
+      const base = 'https://backend.webenia.org/public/storage/';
+      if (product.images && product.images.length && product.images[0].path) {
+        const path = product.images[0].path;
+        return path.startsWith('http') ? path : base + path;
       }
-
-      // If it's an external URL that doesn't match API_URL, return as is.
-      if (imageUrl.startsWith('http')) {
-        return imageUrl;
+      return '/placeholder-image.jpg';
+    },
+    handleResultClick(item) {
+      if (item.type === 'product') {
+        this.$router.push(`/read/products/${item.id}`);
+      } else if (item.type === 'category') {
+        this.$router.push(`/category/${item.id}`);
       }
-
-      // If it's a relative path (e.g., "images/product/...")
-      return `${publicStorageBase}${imageUrl}`;
     }
-  },
-  emits: ['close', 'search']
-}
+  }
+};
 </script>
 
 <style scoped>
 .custom-search-modal {
   position: fixed;
-  top: 20%;
+  top: 15%;
   left: 50%;
   transform: translateX(-50%);
-  background: #fff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  z-index: 9999;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  width: 80%;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
   max-width: 600px;
-  overflow-y: auto;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  z-index: 1050;
   max-height: 80vh;
+  overflow-y: auto;
 }
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.search-input {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-.product-item {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
-}
-
 .product-image {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
+  width: 70px;
+  height: 70px;
   border-radius: 8px;
-}
-
-.product-info {
-  flex-grow: 1;
-}
-
-.product-info h5 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.product-info p {
-  margin: 5px 0 0;
-  color: #8b6b3d;
+  object-fit: cover;
 }
 </style>

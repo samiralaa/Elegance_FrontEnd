@@ -113,9 +113,8 @@ export default {
   created() {
     this.fetchCategoryDetails();
     this.favoritesStore = useFavoritesStore();
-    this.favoritesStore.fetchFavorites();
-    if (this.isAuthenticated) {
-      this.$store.dispatch('favorites/fetchFavorites');
+    if (localStorage.getItem('auth_token')) {
+      this.favoritesStore.fetchFavorites();
     }
   },
   watch: {
@@ -123,8 +122,8 @@ export default {
       handler() {
         this.loading = true;
         this.fetchCategoryDetails();
-        if (this.isAuthenticated) {
-          this.$store.dispatch('favorites/fetchFavorites');
+        if (localStorage.getItem('auth_token')) {
+          this.favoritesStore.fetchFavorites();
         }
       }
     }
@@ -221,13 +220,7 @@ methods: {
   },
 
   isInFavorites(productId) {
-    return this.favoritesStore && this.favoritesStore.favorites.some(fav => fav.product_id === productId)
-  },
-
-  getFavoriteId(productId) {
-    if (!this.favoritesStore) return null;
-    const favorite = this.favoritesStore.favorites.find(fav => fav.product_id === productId)
-    return favorite ? favorite.id : null
+    return this.favoritesStore && this.favoritesStore.isInFavorites(productId)
   },
 
   async addToFavorites(product) {
@@ -241,15 +234,12 @@ methods: {
         return
       }
       if (this.isInFavorites(product.id)) {
-        const favoriteId = this.getFavoriteId(product.id)
-        if (favoriteId) {
-          await this.favoritesStore.removeFromFavorites(favoriteId)
-          ElNotification({
-            title: 'Success',
-            message: 'Product removed from favorites',
-            type: 'success'
-          })
-        }
+        await this.favoritesStore.removeFromFavorites(product.id)
+        ElNotification({
+          title: 'Success',
+          message: 'Product removed from favorites',
+          type: 'success'
+        })
       } else {
         const response = await this.favoritesStore.addToFavorites(product.id)
         ElNotification({
@@ -280,8 +270,8 @@ methods: {
 },
 mounted() {
   this.fetchCategoryDetails();
-  if (this.isAuthenticated) {
-    this.$store.dispatch('favorites/fetchFavorites');
+  if (localStorage.getItem('auth_token')) {
+    this.favoritesStore.fetchFavorites();
   }
 
   window.addEventListener('currency-changed', () => {
