@@ -59,13 +59,13 @@
                 style="width: 100%; aspect-ratio: 1; object-fit: cover"
               />
               <strong class="small">{{ item.product.name_en }}</strong>
-              <small class="text-muted">{{ item.price }} EGP x{{ item.quantity }}</small>
+              <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
               <small class="text-muted">Size: {{ item.size || '-' }}</small>
             </div>
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
-            <strong>Total: {{ order.total_price }} EGP ({{ order.items.length }} Items)</strong>
+            <strong>Total: {{ order.total_price }} {{ selectedCurrency }} ({{ order.items.length }} Items)</strong>
             <button class="btn btn-outline-dark btn-sm" @click="showOrderDetails(order.id)">Details</button>
           </div>
         </div>
@@ -97,22 +97,44 @@
 
           <!-- Order content -->
           <div v-else class="cart-content overflow-auto" style="max-height: 60vh;">
-          <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
-            <div
-              v-for="item in selectedOrder.items"
-              :key="item.id"
-              class="d-flex flex-column align-items-start col-4"
-            >
-              <img
-                :src="imageUrl(item.product.images[0].path)"
-                class="rounded mb-2"
-                style="width: 100%; aspect-ratio: 1; object-fit: cover"
-              />
-              <strong class="small">{{ item.product.name_en }}</strong>
-              <small class="text-muted">{{ item.price }} EGP x{{ item.quantity }}</small>
-              <small class="text-muted">Size: {{ item.size || '-' }}</small>
+            <!-- Order Info -->
+            <div class="mb-3">
+              <strong>Status:</strong>
+              <span :class="['badge', getStatusBadgeClass(selectedOrder.status)]">
+                {{ formatStatus(selectedOrder.status) }}
+              </span>
             </div>
-          </div>
+            <div class="mb-3" v-if="selectedOrder.address">
+              <strong>Address:</strong>
+              <div v-if="typeof selectedOrder.address === 'object'">
+                <div v-if="selectedOrder.address.street">{{ selectedOrder.address.street }}</div>
+                <div v-if="selectedOrder.address.city">{{ selectedOrder.address.city }}</div>
+                <div v-if="selectedOrder.address.state">{{ selectedOrder.address.state }}</div>
+                <div v-if="selectedOrder.address.country">{{ selectedOrder.address.country }}</div>
+                <div v-if="selectedOrder.address.zip">{{ selectedOrder.address.zip }}</div>
+                <!-- Add more fields as needed -->
+              </div>
+              <div v-else>
+                {{ selectedOrder.address }}
+              </div>
+            </div>
+            <!-- Items List -->
+            <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
+              <div
+                v-for="item in selectedOrder.items"
+                :key="item.id"
+                class="d-flex flex-column align-items-start col-4"
+              >
+                <img
+                  :src="imageUrl(item.product.images[0].path)"
+                  class="rounded mb-2"
+                  style="width: 100%; aspect-ratio: 1; object-fit: cover"
+                />
+                <strong class="small">{{ item.product.name_en }}</strong>
+                <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
+                <small class="text-muted">Size: {{ item.size || '-' }}</small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -133,7 +155,10 @@ export default {
       currentFilter: null,
       selectedOrder: null,
       isDialogVisible: false,
-      loading: true
+      loading: true,
+      selectedCurrency: localStorage.getItem('selectedCurrency')
+        ? JSON.parse(localStorage.getItem('selectedCurrency')).code
+        : 'EGP',
     };
   },
   computed: {
@@ -246,10 +271,18 @@ export default {
         'cancelled': 'bg-danger'
       };
       return statusClasses[status.toLowerCase()] || 'bg-secondary';
+    },
+    updateCurrency() {
+      const stored = localStorage.getItem('selectedCurrency');
+      this.selectedCurrency = stored ? JSON.parse(stored).code : 'EGP';
     }
   },
   mounted() {
     this.fetchOrders();
+    window.addEventListener('currency-changed', this.updateCurrency);
+  },
+  beforeUnmount() {
+    window.removeEventListener('currency-changed', this.updateCurrency);
   },
 };
 </script>

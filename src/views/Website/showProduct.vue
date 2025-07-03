@@ -40,7 +40,7 @@
               <div class="weight-container">
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
-                    :class="{ active: activeIndex === index }" @click="setActive(index, amount)">
+                    :class="{ active: selectedAmountIndex === index }" @click="setActive(index, amount)">
                     <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency_code }}</p>
                   </div>
                 </div>
@@ -400,12 +400,11 @@ const addChildToCart = async (childProduct) => {
 };
 
 // Track selected index
-const activeIndex = ref(0); // default selected   
+const selectedAmountIndex = ref(null); // null means no amount selected
 
 // Set active item
 const setActive = (index, amount) => {
-  console.log('setActive called with:', index, amount);
-  activeIndex.value = index;
+  selectedAmountIndex.value = index;
   product.value.amount_id = amount.id;
   product.value.price = amount.price;
   if (amount.converted_price !== undefined) {
@@ -416,15 +415,12 @@ const setActive = (index, amount) => {
 };
 
 const resetActive = () => {
-  if (product.value?.amounts?.length) {
-    setActive(0, product.value.amounts[0]);
-  } else {
-    activeIndex.value = null;
-    product.value.amount_id = null;
-    if (product.value._original_price !== undefined) {
-      product.value.price = product.value._original_price;
-    }
-  }
+  selectedAmountIndex.value = null;
+  product.value.amount_id = null;
+  product.value.price = product.value._original_price !== undefined
+    ? product.value._original_price
+    : product.value.price;
+  product.value.converted_price = undefined;
 };
 
 // Slick Carousel Logic
@@ -515,7 +511,7 @@ const updateSelectedImage = () => {
 };
 
 // Lifecycle Hooks
-onMounted(async() => {
+onMounted(async () => {
   await fetchProduct();
   if (product.value?.amounts?.length) {
     setActive(0, product.value.amounts[0]);
@@ -630,7 +626,14 @@ const calculateDiscountedPrice = (product) => {
 };
 
 const currentPrice = computed(() => {
-  return product.value.converted_price || product.value.price;
+  if (selectedAmount.value) {
+    return selectedAmount.value.converted_price !== undefined
+      ? selectedAmount.value.converted_price
+      : selectedAmount.value.price;
+  }
+  return product.value._original_price !== undefined
+    ? product.value._original_price
+    : product.value.price;
 });
 
 const discountedPrice = computed(() => {
@@ -644,8 +647,12 @@ const discountedPrice = computed(() => {
 });
 
 const selectedAmount = computed(() => {
-  if (product.value.amounts && product.value.amounts.length > 0 && activeIndex.value !== null) {
-    return product.value.amounts[activeIndex.value];
+  if (
+    product.value.amounts &&
+    product.value.amounts.length > 0 &&
+    selectedAmountIndex.value !== null
+  ) {
+    return product.value.amounts[selectedAmountIndex.value];
   }
   return null;
 });

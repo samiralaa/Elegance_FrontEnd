@@ -33,7 +33,7 @@
                     <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ item.product.price_after_discount }} {{ item.currency_code || 'AUD' }}</span>
                   </template>
                   <template v-else>
-                    {{ item.price }} {{ item.currency_code || 'AUD' }}
+                    {{ item.converted_price }} {{ item.currency_code}}
                   </template>
                   ×
                 </small>
@@ -66,7 +66,7 @@
 
       <!-- Total Price -->
       <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
-        <span><strong>{{ $t('cart.total') }}:</strong></span>
+        <span><strong>{{ $t('cart.converted_total') }}:</strong></span>
         <span>
           {{ totalValue }} {{ cartItems[0]?.currency_code || 'AUD' }}
         </span>
