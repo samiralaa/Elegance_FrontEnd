@@ -12,18 +12,20 @@
 
             <div class="price-block">
               <div class="d-flex">
-                <span class="price-old" v-if="product.discount && product.discount.is_active">{{ product.converted_price
-                  || product.price }} {{ product.currency_code }}</span>
-                <span class="discount-badge" v-if="product.discount && product.discount.is_active">-{{
-                  product.discount.discount_value }}%</span>
+                <span class="price-old" v-if="product.discount && product.discount.is_active">
+                  {{ currentPrice }} {{ product.currency_code }}
+                </span>
+                <span class="discount-badge" v-if="product.discount && product.discount.is_active">
+                  -{{ product.discount.discount_value }}%
+                </span>
               </div>
-              <span class="price-new">{{ calculateDiscountedPrice(product) }} {{ product.currency_code }}</span>
+              <span class="price-new">{{ discountedPrice }} {{ product.currency_code }}</span>
             </div>
 
-            <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
-              :class="isFavorite ? 'text-danger' : ''"
-              :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'">
-              <fa :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
+            <button @click="toggleFavorite(product)" class="btn rounded-circle shadow-sm btn-light"
+              :class="isInFavorites(product.id) ? 'text-danger' : ''"
+              :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
+              <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
             </button>
             <div class="product-actions">
               <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
@@ -39,10 +41,20 @@
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
                     :class="{ active: activeIndex === index }" @click="setActive(index, amount)">
-                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency_code
-                    }}</p>
+                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.price }} {{ product.currency_code }}</p>
                   </div>
                 </div>
+              </div>
+              <div v-if="selectedAmount" class="amount-details" style="margin-top: 1rem;">
+                <p>
+                  <strong>Selected:</strong>
+                  {{ selectedAmount.weight }} {{ selectedAmount.unit.name_en }} -
+                  {{ selectedAmount.price }} {{ product.currency_code }}
+                </p>
+                <!-- Add more details here if needed -->
+              </div>
+              <div v-else>
+                <p>No amount selected.</p>
               </div>
             </div>
 
@@ -184,7 +196,6 @@ const minQuantity = 1;
 const maxQuantity = 99;
 const placeholder = "/default-image.jpg";
 const selectedImage = ref(null);
-const isFavorite = ref(false);
 const currentSlideIndex = ref(0);
 
 // Slider Ref
@@ -193,7 +204,95 @@ const main = ref(null);
 const slidesToShow = ref(3);
 const numberOfSlides = ref(3);
 
-// Add these new functions for child products
+// --- FAVORITES LOGIC (main product) ---
+const isInFavorites = (productId) => {
+  return favoritesStore.favorites.some((fav) => fav.product_id === productId);
+};
+
+const getFavoriteId = (productId) => {
+  return favoritesStore.favorites.find((fav) => fav.product_id === productId)?.id;
+};
+const addToFavorites = async (product) => {
+  try {
+    if (isInFavorites(product.id)) {
+      const favoriteId = getFavoriteId(product.id)
+      if (favoriteId) {
+        await favoritesStore.removeFromFavorites(favoriteId)
+      }
+      ElNotification.success('Product removed from favorites')
+    } else {
+      const response = await favoritesStore.addToFavorites(product.id)
+      ElNotification.success(response.message)
+    }
+  } catch (error) {
+    console.error('Favorite error:', error)
+    ElNotification.error(
+      error.response?.data?.message || 'Login required to favorite product'
+    )
+  }
+}
+const toggleFavorite = async (productObj) => {
+  try {
+    if (isInFavorites(productObj.id)) {
+      const favoriteId = getFavoriteId(productObj.id);
+      if (favoriteId) {
+        await favoritesStore.removeFromFavorites(favoriteId);
+        ElNotification.success(t('Product Removed From Favorites'));
+      }
+    } else {
+      const response = await favoritesStore.addToFavorites(productObj.id);
+      ElNotification.success(response.message || t('Product Added To Favorites'));
+    }
+  } catch (error) {
+    console.error('Favorite error:', error);
+    ElNotification.error(
+      error.response?.data?.message || t('Login required to favorite product')
+    );
+  }
+};
+
+// --- ADD TO CART LOGIC (main product) ---
+const addToCart = async () => {
+  try {
+    // Calculate the price to send: discounted if discount is active, else regular
+    let priceToSend = 0;
+    if (product.value.discount && product.value.discount.is_active) {
+      const discountValue = parseFloat(product.value.discount.discount_value);
+      const originalPrice = parseFloat(product.value.converted_price || product.value.price);
+      priceToSend = originalPrice - originalPrice * (discountValue / 100);
+    } else {
+      priceToSend = parseFloat(product.value.converted_price) || parseFloat(product.value.price);
+    }
+    const payload = {
+      product_id: product.value.id,
+      quantity: quantity.value,
+      price: priceToSend,
+    };
+    if (product.value.amounts) {
+      payload.amount_id = product.value.amount_id;
+    }
+    const response = await axios.post(
+      'https://backend.webenia.org/api/cart-items',
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      }
+    );
+    if (response.data.status) {
+      ElNotification.success(response.data.message);
+      cartStore.incrementCount();
+      await cartStore.fetchCartCount();
+    } else {
+      ElNotification.error(response.data.message);
+    }
+  } catch (error) {
+    ElNotification.error(
+      error.response?.data?.message || t('Error adding product to cart')
+    );
+  }
+};
 
 // Helper methods
 const getImageUrl = (path) => {
@@ -245,51 +344,6 @@ const fetchProduct = async () => {
     }
   } catch (err) {
     console.error("Error fetching product:", err);
-  }
-};
-
-// Add to Cart
-const addToCart = async () => {
-  try {
-    let priceToSend = 0;
-    if (product.value.discount && product.value.discount.is_active) {
-      const discountValue = parseFloat(product.value.discount.discount_value);
-      const originalPrice = parseFloat(product.value.converted_price || product.value.price);
-      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
-    } else {
-      priceToSend = parseFloat(product.value.converted_price) || parseFloat(product.value.price);
-    }
-    const payload = {
-      product_id: product.value.id,
-      quantity: quantity.value,
-      price: priceToSend,
-    };
-    if (product.value.amounts) {
-      payload.amount_id = product.value.amount_id;
-    }
-
-    const response = await axios.post('https://backend.webenia.org/api/cart-items', payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-    });
-
-    if (response.data.message) {
-      ElNotification({
-        title: t('success'),
-        message: response.data.message,
-        type: 'success',
-
-      });
-      cartStore.incrementCount()
-      await cartStore.fetchCartCount()
-    }
-  } catch (error) {
-    ElNotification({
-      title: '❌',
-      message: error.response?.data?.message || t('add_to_cart_error') || 'Login required to add to cart',
-      type: 'error',
-    });
   }
 };
 
@@ -350,6 +404,7 @@ const activeIndex = ref(0); // default selected
 
 // Set active item
 const setActive = (index, amount) => {
+  console.log('setActive called with:', index, amount);
   activeIndex.value = index;
   product.value.amount_id = amount.id;
   product.value.price = amount.price;
@@ -559,47 +614,9 @@ const decreaseQty = () => {
   }
 };
 
-// Add to Favorites
-const addToFavorites = async () => {
-  try {
-    if (isFavorite.value) {
-      // If already favorite, remove it
-      const favoriteItem = favoritesStore.favorites.find(fav => fav.product_id === product.value.id);
-      if (favoriteItem) {
-        await favoritesStore.removeFromFavorites(favoriteItem.id);
-        isFavorite.value = false; // Update local state
-        ElNotification({
-          title: t('Removed From Favorites'),
-          message: t('Product Removed From Favorites'),
-          type: 'success',
-        });
-      }
-    } else {
-      // If not favorite, add it
-      const response = await favoritesStore.addToFavorites(product.value.id);
-      // Assuming store action returns a truthy value on success
-      if (response) {
-        isFavorite.value = true; // Update local state
-        ElNotification({
-          title: t('Added To Favorites'),
-          message: t('Product Added To Favorites'),
-          type: 'success',
-        });
-      }
-    }
-  } catch (error) {
-    console.error('Error toggling favorites:', error);
-    ElNotification({
-      title: t('error'),
-      message: error.message || t('failed_to_toggle_favorite'),
-      type: 'error',
-    });
-  }
-};
-
 // Check if product is in favorites
 const checkFavoriteStatus = () => {
-  isFavorite.value = favoritesStore.isInFavorites(product.value.id);
+  isInFavorites(product.value.id);
 };
 
 const calculateDiscountedPrice = (product) => {
@@ -611,6 +628,27 @@ const calculateDiscountedPrice = (product) => {
   }
   return product.converted_price || product.price
 };
+
+const currentPrice = computed(() => {
+  return product.value.converted_price || product.value.price;
+});
+
+const discountedPrice = computed(() => {
+  if (product.value.discount && product.value.discount.is_active) {
+    const discountValue = parseFloat(product.value.discount.discount_value);
+    const originalPrice = parseFloat(currentPrice.value);
+    const discounted = originalPrice - (originalPrice * (discountValue / 100));
+    return discounted.toFixed(2);
+  }
+  return currentPrice.value;
+});
+
+const selectedAmount = computed(() => {
+  if (product.value.amounts && product.value.amounts.length > 0 && activeIndex.value !== null) {
+    return product.value.amounts[activeIndex.value];
+  }
+  return null;
+});
 </script>
 
 <style scoped>

@@ -101,5 +101,13 @@
   "update_quantity_error": "Failed to update quantity. Please try again.",
   "max_quantity_reached": "Maximum quantity reached",
   "min_quantity_reached": "Minimum quantity reached",
-  "warning": "Warning"
+  "warning": "Warning",
+ "checkout": {
+  "quantityUpdated": "Quantity updated successfully",
+  "errorUpdatingQuantity": "Failed to update quantity",
+  "itemRemoved": "Item removed successfully",
+  "minimumQuantity": "Minimum quantity is 1",
+  "maxQuantity": "Maximum quantity is 99"
+}
+
 }

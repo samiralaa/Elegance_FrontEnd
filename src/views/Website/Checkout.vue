@@ -7,7 +7,9 @@
     <CartReview
       v-if="step === 1"
       :cart-items="cartItems"
+     
       :shipping-cost="shippingCost"
+      :currency="currency"
       @next-step="nextStep"
       @update-cart="updateCart"
     />
@@ -69,7 +71,7 @@ export default {
         street: '',
         country: ''
       },
-      shippingCost: 10
+     
     };
   },
   computed: {
@@ -128,8 +130,8 @@ export default {
         this.$toast.error(this.$t('checkout.errorFetchingCart'));
       }
     },
-    updateCart(items) {
-      this.cartItems = items;
+    updateCart() {
+      this.fetchCartItems();
     },
     nextStep() {
       if (this.step < 3) this.step++;

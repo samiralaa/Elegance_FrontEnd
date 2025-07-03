@@ -42,31 +42,31 @@
             </div>
           </div>  
         </div>
-        <form @submit.prevent="submitForm" class="contact-form">
+        <form @submit.prevent="handleSubmit" class="contact-form">
           <div class="container">
             <div class="form-group">
               <label for="name">
                 {{ $t('contact.name') }}
               </label>
-              <input v-model="form.name" type="text" id="name" required />
+              <input v-model="contactForm.name" type="text" id="name" placeholder="Name"  />
             </div>
             <div class="form-group">
               <label for="email">
                 {{ $t('contact.email') }}
               </label>
-              <input v-model="form.email" type="email" id="email" required />
+              <input v-model="contactForm.email" type="email" id="email" placeholder="Email"  />
             </div>
             <div class="form-group">
               <label for="subject">
                 {{ $t('contact.subject') }}
               </label>
-              <input v-model="form.subject" type="text" id="subject" required />
+              <input v-model="contactForm.subject" type="text" id="subject" placeholder="Subject"  />
             </div>
             <div class="form-group">
               <label for="message">
                 {{ $t('contact.message') }}
               </label>
-              <textarea v-model="form.message" id="message" rows="5" required></textarea>
+              <textarea v-model="contactForm.message" id="message" rows="5" placeholder="Message" ></textarea>
             </div>
             <div class="submit-btn">
               <button class="btn" type="submit" :disabled="loading">
@@ -98,6 +98,10 @@
   import Header from '@/components/Website/Header.vue'
   import i18n from '@/i18n.js'
   import Footer from '@/components/Website/Footer.vue' 
+  import { ref } from 'vue'
+  import axios from 'axios'
+  import { ElNotification } from 'element-plus'
+
 export default {
   name: 'ContactUs',
   components: {
@@ -111,7 +115,7 @@ export default {
   },
   data() {
     return {
-      form: {
+      contactForm: {
         name: '',
         email: '',
         subject: '',
@@ -123,18 +127,21 @@ export default {
     }
   },
   methods: {
-    async submitForm() {
+    async handleSubmit() {
       this.loading = true;
       this.success = false;
       this.error = null;
       try {
-        // Replace with your backend endpoint or email service
-        // Example: await axios.post('/api/contact', this.form)
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API
-        this.success = true;
-        this.form = { name: '', email: '', subject: '', message: '' };
+        const response = await axios.post('/api/contact', this.contactForm, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        ElNotification.success('Message sent successfully!')
+        this.contactForm = { name: '', email: '', subject: '', message: '' }
       } catch (e) {
-        this.error = '{{ $t("contact.errorMessage") }}';
+        this.error = 'Failed to send message.'
+        console.error('Contact form error:', e)
       } finally {
         this.loading = false;
       }

@@ -6,11 +6,12 @@
         <img :src="getProductImage(item)" :alt="item.product?.name_en || ''" class="item-image">
         <div class="item-details">
           <h3>{{ currentLang === 'ar' ? item.product?.name_ar : item.product?.name_en }}</h3>
-          <p class="item-price">{{ item.price }} {{ currentLang === 'ar' ? item.currency?.name_ar : item.currency?.name_en }}</p>
+          <p class="item-price">{{ item.price }} {{ currency }}</p>
           <div class="quantity-controls">
-            <button @click="updateQuantity(item, -1)" :disabled="item.quantity <= 1">-</button>
-            <span>{{ item.quantity }}</span>
-            <button @click="updateQuantity(item, 1)">+</button>
+            <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">-</button>
+            <input class="qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
+              @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(Math.max(item.quantity, 1), 99)">
+            <button @click="increaseQuantity(item)" :disabled="item.quantity >= 99">+</button>
           </div>
         </div>
         <button class="remove-item" @click="removeItem(item.id)">
@@ -52,17 +53,15 @@ export default {
     shippingCost: {
       type: Number,
       required: true
+    },
+    currency: {
+      type: String,
+      required: true
     }
   },
   computed: {
     currentLang() {
       return localStorage.getItem('lang') || 'en';
-    },
-    currency() {
-      if (this.cartItems.length === 0) return '';
-      const currency = this.cartItems[0].currency;
-      if (!currency) return '';
-      return this.currentLang === 'ar' ? currency.name_ar : currency.name_en;
     },
     subtotal() {
       return this.cartItems.reduce((total, item) => {
@@ -80,38 +79,107 @@ export default {
       }
       return `${API_URL}/images/default.jpg`;
     },
-    async updateQuantity(item, change) {
-      const newQuantity = item.quantity + change;
+    async updateCartItemQuantity(item) {
+  if (item.quantity < 1) item.quantity = 1;
+  if (item.quantity > 99) item.quantity = 99;
 
-      if (newQuantity < 1) {
-        this.$toast.warning(this.$t('checkout.minimumQuantity'));
-        return;
+  try {
+    const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+      quantity: item.quantity
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const success = response.data;
+
+    if (success) {
+      alert('etst')
+      const updatedItem = response.data.data;
+
+      item.quantity = updatedItem?.quantity ?? item.quantity;
+      item.price = updatedItem?.price ?? item.price;
+      console.log("test")
+
+      // ✅ أظهر رسالة نجاح
+      const successMsg = this.$t('checkout.quantityUpdated') || 'Quantity updated successfully';
+      this.$toast.success(successMsg); // إظهار التوست
+    } else {
+      const errorMessage = response?.data?.message || this.$t('checkout.errorUpdatingQuantity');
+      this.$toast.error(errorMessage);
+    }
+
+    this.$emit('update-cart');
+  } catch (error) {
+    console.error('Error updating quantity:', error);
+
+    let errorMessage = 'Error updating quantity';
+    if (error?.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (this.$t && this.$t('checkout.errorUpdatingQuantity')) {
+      errorMessage = this.$t('checkout.errorUpdatingQuantity');
+    }
+
+    this.$toast.error(errorMessage);
+  }
+},async updateCartItemQuantity(item) {
+  if (item.quantity < 1) item.quantity = 1;
+  if (item.quantity > 99) item.quantity = 99;
+
+  try {
+    const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
+      quantity: item.quantity
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const updatedItem = response?.data?.data;
+    if (updatedItem) {
+      // تحديث بيانات المنتج في cartItems
+      item.quantity = updatedItem.quantity;
+      item.price = updatedItem.price;
+      item.converted_price = updatedItem.converted_price;
+      item.converted_total = updatedItem.converted_total;
+      item.currency_code = updatedItem.currency_code;
+
+      // لو فيه product محدث في الريسبونس
+      if (updatedItem.product) {
+        item.product = updatedItem.product;
       }
 
-      try {
-        const response = await axios.post(`${API_URL}/api/cart-items/${item.id}`, {
-          quantity: newQuantity
-        }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
+      const successMsg = this.$t('checkout.quantityUpdated') || 'Quantity updated successfully';
+      this.$toast.success(successMsg);
+      this.$emit('update-cart', [...this.cartItems]);
+    } else {
+      const fallbackMsg = this.$t('checkout.errorUpdatingQuantity') || 'Error updating quantity';
+      this.$toast.error(fallbackMsg);
+    }
 
-        if (response.data && response.data.success) {
-          const updatedItem = response.data.data;
-          item.quantity = updatedItem.quantity ?? newQuantity;
-          item.price = updatedItem.price ?? item.price;
-          this.$toast.success(this.$t('checkout.quantityUpdated'));
-          this.$emit('update-cart', [...this.cartItems]);
-        } else {
-          const errorMessage = response.data?.message || this.$t('checkout.errorUpdatingQuantity');
-          this.$toast.error(errorMessage);
-        }
-      } catch (error) {
-        console.error('Error updating quantity:', error);
-        const errorMessage = error.response?.data?.message || this.$t('checkout.errorUpdatingQuantity');
-        this.$toast.error(errorMessage);
+  } catch (error) {
+    console.error('Error updating quantity:', error);
+    const errorMessage = error?.response?.data?.message || this.$t('checkout.errorUpdatingQuantity') || 'Error updating quantity';
+    this.$toast.error(errorMessage);
+  }
+},
+    async increaseQuantity(item) {
+      if (item.quantity < 99) {
+        item.quantity++;
+        await this.updateCartItemQuantity(item);
+      } else {
+        this.$toast.warning(this.$t('checkout.maxQuantity'));
+      }
+    },
+    async decreaseQuantity(item) {
+      if (item.quantity > 1) {
+        item.quantity--;
+        await this.updateCartItemQuantity(item);
+      } else {
+        this.$toast.warning(this.$t('checkout.minimumQuantity'));
       }
     },
     async removeItem(itemId) {
@@ -125,7 +193,7 @@ export default {
         this.$toast.success(this.$t('checkout.itemRemoved'));
       } catch (error) {
         console.error('Error removing item:', error);
-        this.$toast.error(this.$t('checkout.errorRemovingItem'));
+        this.$toast.error("this.$t('checkout.errorRemovingItem')");
       }
     }
   }

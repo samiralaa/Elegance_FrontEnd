@@ -116,6 +116,10 @@ export default {
     modelValue: {
       type: Object,
       required: true
+    },
+    currency: {
+      type: String,
+      required: false
     }
   },
   data() {

@@ -115,5 +115,13 @@
   "update_quantity_error": "فشل تحديث الكمية. يرجى المحاولة مرة أخرى.",
   "max_quantity_reached": "تم الوصول إلى الحد الأقصى للكمية",
   "min_quantity_reached": "تم الوصول إلى الحد الأدنى للكمية",
-  "warning": "تحذير"
+  "warning": "تحذير",
+ "checkout": {
+  "quantityUpdated": "Quantity updated successfully",
+  "errorUpdatingQuantity": "Failed to update quantity",
+  "itemRemoved": "Item removed successfully",
+  "minimumQuantity": "Minimum quantity is 1",
+  "maxQuantity": "Maximum quantity is 99"
+
+}
 }
