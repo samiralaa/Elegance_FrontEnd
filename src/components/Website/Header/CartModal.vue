@@ -30,7 +30,7 @@
                 <small class="text-muted">
                   <template v-if="item.product && item.product.discount && item.product.discount.type && item.product.price_after_discount && item.product.price_after_discount !== item.product.price">
                     <span style="text-decoration: line-through; color: #b0b0b0;">{{ item.product.price }} {{ item.currency_code || 'AUD' }}</span>
-                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ calculateDiscountedPrice(item) }} {{ item.currency_code || 'AUD' }}</span>
+                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ item.product.price_after_discount }} {{ item.currency_code || 'AUD' }}</span>
                   </template>
                   <template v-else>
                     {{ item.converted_price }} {{ item.currency_code}}
@@ -65,12 +65,14 @@
       </div>
 
       <!-- Total Price -->
-      <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
-        <span><strong>{{ $t('cart.converted_total') }}:</strong></span>
-        <span>
-          {{ totalValue }} {{ cartItems[0]?.currency_code || 'AUD' }}
-        </span>
-      </div>
+    <!-- Total Price -->
+<div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
+  <span><strong>{{ $t('cart.total') }}:</strong></span>
+  <span>
+    {{ convertedTotal }} {{ cartItems[0]?.currency_code || 'AUD' }}
+  </span>
+</div>
+
 
       <!-- Footer -->
       <div class="d-flex justify-content-between mt-3">
@@ -220,32 +222,53 @@ export default {
         this.isLoading = false;
       }
     },
-    isDiscountActive(item) {
-      return item.product && item.product.discount && item.product.discount.is_active && item.product.price_after_discount && item.product.price_after_discount !== item.product.price;
-    },
-    getDiscountPercentage(item) {
-      if (item.product && item.product.discount && item.product.discount.value) {
-        return item.product.discount.value;
-      }
-      return 0;
-    },
     
-    getOldPrice(item) {
-      if (item.product && item.product.discount && item.product.discount.type && item.product.price_after_discount && item.product.price_after_discount !== item.product.price) {
-        return item.product.converted_price;
-      }
-      return item.converted_price || item.price ;
-    },
     calculateDiscountedPrice(item) {
-      if (this.isDiscountActive(item)) {
-        const discountValue = this.getDiscountPercentage(item);
-        const originalPrice = parseFloat(this.getOldPrice(item));
-        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100));
-        return discountedPrice.toFixed(2);
+      if (product.discount && product.discount.is_active) {
+        const discountValue = parseFloat(product.discount.discount_value)
+        const originalPrice = parseFloat(product.converted_price)
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+        return discountedPrice.toFixed(2)
       }
-      return (item.converted_price || item.price).toFixed(2);
+      return product.converted_price
     }
+  },
+  computed: {
+  convertedTotal() {
+    return this.cartItems.reduce((total, item) => {
+      let price = parseFloat(item.converted_price);
+
+      if (
+        item.product &&
+        item.product.discount &&
+        item.product.discount.is_active &&
+        item.product.price_after_discount &&
+        item.product.price_after_discount !== item.product.price
+      ) {
+        price = parseFloat(item.product.price_after_discount);
+      }
+
+      return total + (price * item.quantity);
+    }, 0).toFixed(2);
+  },
+  deliveryCharge() {
+    const countryId = this.userCountryId || 57; // default to UAE
+    return countryId === 57 ? 10 : 20;
+  },
+  
+  subtotal() {
+    return this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  },
+  
+  totalAmount() {
+    return this.subtotal + this.deliveryCharge + (this.tax || 0);
+  },
+  
+  currency() {
+    return this.selectedCurrency || 'USD';
   }
+}
+
 }
 </script>
 

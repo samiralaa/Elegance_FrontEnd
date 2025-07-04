@@ -58,6 +58,7 @@ export default {
     return {
       step: 1,
       cartItems: [],
+      shippingCost: 0,
       shippingDetails: {
         fullName: '',
         address: '',
@@ -107,7 +108,7 @@ export default {
       const subtotal = this.cartItems.reduce((total, item) => {
         return total + (parseFloat(item.price) * item.quantity);
       }, 0);
-      return (subtotal + this.shippingCost).toFixed(2);
+      return parseFloat((subtotal + this.shippingCost).toFixed(2));
     }
   },
   created() {

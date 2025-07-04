@@ -186,10 +186,20 @@ export default {
       this.selectedAddressId = address.id;
       this.selectedAddress = address;
       this.isNewAddress = false;
-      // Only update addressId in shipping details, don't populate form fields
+      
+      // Map all address properties to shipping details
       this.shippingDetails = {
         ...this.shippingDetails,
-        addressId: address.id
+        addressId: address.id,
+        country_id: address.country_id,
+        city_id: address.city_id,
+        city: address.city?.name_en || address.city_name,
+        buildingName: address.building_name,
+        floorNumber: address.floor_number,
+        apartmentNumber: address.apartment_number,
+        landmark: address.landmark,
+        postalCode: address.postal_code,
+        address: `${address.building_name}, ${address.landmark}, Floor ${address.floor_number}, Apartment ${address.apartment_number}`
       };
     },
     async saveNewAddress() {

@@ -16,24 +16,26 @@
         <div id="card-errors" class="card-errors" role="alert"></div>
       </div>
     </div>
-
     <div class="order-summary">
-      <h3>{{ $t('checkout.orderSummary') }}</h3>
-      <div class="summary-details">
-        <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
-        <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
-        <!-- add price delivery -->
+  <h3>{{ $t('checkout.orderSummary') }}</h3>
+  <div class="summary-details">
+    <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
+    <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
 
-        <!-- add tax -->
-        <p>{{ $t('checkout.tax') }}: {{ shippingDetails.tax }} {{ currency }}</p>
-        <!-- add total -->
-        <p>{{ $t('checkout.total') }}: {{ shippingDetails.total }} {{ currency }}</p>
+    <!-- Subtotal -->
 
-        <div class="total-amount">
-          {{ $t('checkout.totalAmount') }}: {{ total }} {{ currency }}
-        </div>
-      </div>
+    <!-- Delivery charge -->
+    <p>{{ $t('checkout.deliveryCharge') }}: {{ deliveryCharge }} {{ currency }}</p>
+
+    <!-- Tax -->
+   
+    <!-- Total -->
+    <div class="total-amount">
+      {{ $t('checkout.totalAmount') }}: {{ totalAmount }} {{ currency }}
     </div>
+  </div>
+</div>
+
     <div class="button-group">
       <button class="btn-secondary" @click="$emit('previous-step')">
         {{ $t('checkout.back') }}
@@ -170,10 +172,7 @@ export default {
         }
 
         // 4. حساب السعر الإجمالي
-        const totalPrice = this.cartItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        );
+        const totalPrice = this.totalAmount;
 
         // 5. تجهيز العناصر المطلوبة للطلب
         const orderItems = this.cartItems
@@ -265,10 +264,7 @@ export default {
           return;
         }
 
-        const totalPrice = this.cartItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        );
+        const totalPrice = this.totalAmount;
 
         const orderData = {
           user_id: userId,
@@ -603,7 +599,38 @@ export default {
       // If not found, return null
       return null;
     }
+  },
+  computed: {
+  // المجموع الفرعي (أسعار المنتجات فقط)
+  subTotal() {
+    return this.cartItems.reduce((sum, item) => {
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity) || 0;
+      return sum + price * quantity;
+    }, 0).toFixed(2);
+  },
+
+  // سعر التوصيل بناءً على الدولة
+  deliveryCharge() {
+    const countryId = this.shippingDetails.country_id;
+    // alert(this.shippingDetails.country_id)
+    if (countryId === 59) return 10; // UAE
+    return 20; // دول أخرى
+  },
+
+  // الضريبة - حاليًا 0، يمكن تغييره لاحقًا
+  taxAmount() {
+    return 0;
+  },
+
+  // المجموع النهائي
+  totalAmount() {
+    const subtotal = parseFloat(this.subTotal);
+    const delivery = parseFloat(this.deliveryCharge);
+    const tax = parseFloat(this.taxAmount);
+    return (subtotal + delivery + tax).toFixed(2);
   }
+}
 }
 </script>
 
