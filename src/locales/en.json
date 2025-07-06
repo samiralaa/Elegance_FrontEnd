@@ -154,7 +154,8 @@
       "profile": "Profile",
       "notifications": "Notifications",
       "support": "Support",
-      "logout": "Logout"
+      "logout": "Logout",
+      "log":"Loading"
     },
 
     "user": {

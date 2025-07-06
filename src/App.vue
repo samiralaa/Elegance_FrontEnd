@@ -185,6 +185,8 @@ export default {
     const secondaryMenuItems = [
       { path: '/settings', name: 'common.menu.settings', icon: 'Setting' },
       { path: '/profile', name: 'common.menu.profile', icon: 'User' },
+      // log
+      { path: '/log', name: 'common.menu.log', icon: 'Document' },
       { path: '/help', name: 'common.menu.help', icon: 'QuestionFilled' }
     ]
 
