@@ -6,7 +6,7 @@
         <img :src="getProductImage(item)" :alt="item.product?.name_en || ''" class="item-image">
         <div class="item-details">
           <h3>{{ currentLang === 'ar' ? item.product?.name_ar : item.product?.name_en }}</h3>
-          <p class="item-price">{{ item.price }} {{ currency }}</p>
+          <p class="item-price">{{ calculateDiscountedPrice(item) }} {{ currency }}</p>
           <div class="quantity-controls">
             <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">-</button>
             <input class="qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
@@ -65,7 +65,7 @@ export default {
     },
     subtotal() {
       return this.cartItems.reduce((total, item) => {
-        return total + (parseFloat(item.price) * item.quantity);
+        return total + (parseFloat(item.product.converted_price) * item.quantity);
       }, 0).toFixed(2);
     },
     total() {
@@ -195,6 +195,16 @@ export default {
         console.error('Error removing item:', error);
         this.$toast.error("this.$t('checkout.errorRemovingItem')");
       }
+    },
+
+    calculateDiscountedPrice(item) {
+      if (item.product.discount && item.product.discount.length > 0) {
+        const discountValue = parseFloat(item.product.discount[0].discount_value)
+        const originalPrice = parseFloat(item.product.converted_price)
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+        return discountedPrice.toFixed(2)
+      }
+      return item.product.converted_price
     }
   }
 }

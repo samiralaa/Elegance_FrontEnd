@@ -81,9 +81,9 @@
 
                 <div class="card-body">
                   <h5 class="card-title">{{ product.name_en }}</h5>
-                  <span v-if="product.old_price" class="price-old">{{ product.old_price }} {{ product.currency_code }}</span>
+                  <span v-if="product.discount" class="price-old">{{ product.converted_price }} {{ product.currency_code }}</span>
                   <span class="card-text card-price">
-                    {{ product.price }} {{ product.currency_code }}
+                    {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                   </span>
                 </div>
                 <div class="addToCart-btn">
@@ -258,6 +258,16 @@ const addToCart = async (product) => {
     })
   }
 }
+
+  const calculateDiscountedPrice = (product) => {
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      const originalPrice = parseFloat(product.converted_price || product.price)
+      const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
+      return discountedPrice.toFixed(2)
+    }
+    return product.converted_price || product.price
+  }
 </script>
 
 <style scoped>
