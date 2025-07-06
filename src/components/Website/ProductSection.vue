@@ -9,20 +9,12 @@
       <div v-if="loading" class="text-center my-4">Loading products...</div>
 
       <div v-else class="row g-3">
-        <div
-          v-for="product in products"
-          :key="product.id"
-          class="col-sm-6 col-md-4 col-lg-3"
-        >
+        <div v-for="product in products" :key="product.id" class="col-sm-6 col-md-4 col-lg-3">
           <div class="product-card card border-0 h-100">
             <div class="position-relative overflow-hidden bg-light">
               <router-link :to="`/read/products/${product.id}`">
-                <img
-                  v-if="product.images && product.images.length"
-                  :src="getImageUrl(product.images[0].path)"
-                  :alt="product.name_en"
-                  class="card-img-top product-img"
-                />
+                <img v-if="product.images && product.images.length" :src="getImageUrl(product.images[0].path)"
+                  :alt="product.name_en" class="card-img-top product-img" />
               </router-link>
 
               <div v-if="!product.is_available" class="sale-badge">
@@ -31,32 +23,22 @@
 
               <!-- Action Buttons -->
               <div class="product-actions d-flex justify-content-center gap-2 w-100">
-                <router-link
-                  :to="`/read/products/${product.id}`"
-                  class="btn btn-light rounded-circle shadow-sm"
-                  title="View"
-                >
+                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm"
+                  title="View">
                   <fa icon="eye" />
                 </router-link>
 
-                <button
-                  @click="addToCart(product)"
-                  class="btn btn-light shadow-sm disable"
-                  :class="{ disabled: !product.is_available }"
-                  :disabled="!product.is_available"
-                >
+                <button @click="addToCart(product)" class="btn btn-light shadow-sm disable"
+                  :class="{ disabled: !product.is_available }" :disabled="!product.is_available">
                   {{ $t('home.add-to-cart') }}
                 </button>
                 <button @click="addToCart(product)" class="d-none btn rounded-circle shadow-sm btn-light enable">
                   <fa icon="shopping-cart" />
                 </button>
 
-                <button
-                  @click="addToFavorites(product)"
-                  class="btn rounded-circle shadow-sm btn-light"
+                <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
                   :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
-                >
+                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
                   <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
                 </button>
               </div>
@@ -65,17 +47,11 @@
             <div class="card-body">
               <h5 class="card-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h5>
               <div class="price-container">
-                <span
-                  v-if="product.discount && product.discount.is_active"
-                  class="discount-badge"
-                >
+                <span v-if="product.discount && product.discount.is_active" class="discount-badge">
                   {{ getDiscountPercentage(product) }}% OFF
                 </span>
 
-                <span
-                  v-if="product.discount && product.discount.is_active"
-                  class="price-old"
-                >
+                <span v-if="product.discount && product.discount.is_active" class="price-old">
                   {{ product.converted_price }} {{ product.currency_code }}
                 </span>
 
@@ -254,13 +230,13 @@ const calculateDiscountedPrice = (product) => {
   return product.converted_price || product.price
 }
 
-  const getDiscountPercentage = (product) => {
-    if (product.discount && product.discount.is_active) {
-      const discountValue = parseFloat(product.discount.discount_value)
-      return Math.round(discountValue)
-    }
-    return 0
+const getDiscountPercentage = (product) => {
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
+    return Math.round(discountValue)
   }
+  return 0
+}
 
 
 onMounted(async () => {
@@ -390,6 +366,7 @@ onMounted(async () => {
   .product-card:hover .product-actions {
     transform: translateX(0) translateY(0);
   }
+
   .card-body {
     flex-direction: column;
   }
