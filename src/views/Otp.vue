@@ -13,18 +13,14 @@
         </div>
         <button type="submit" :disabled="!isOtpComplete" class="verify-btn">{{ $t('otp.verify') }}</button>
         <div v-if="otpMessage" class="info-message" :style="{ marginTop: '1rem', color: otpMessageColor }">{{ otpMessage
-          }}</div>
+        }}</div>
       </form>
 
       <div class="resend d-flex w-100 justify-content-between align-items-center mt-3">
         <div class="time-left">
           <span>{{ timer }}</span>
         </div>
-        <button
-          class="btn btn-link"
-          :disabled="timer !== '00:00'"
-          @click.prevent="resendOtp"
-        >
+        <button class="btn btn-link" :disabled="timer !== '00:00'" @click.prevent="resendOtp">
           <fa icon="rotate-right" />
           {{ $t('otp.resend') }}
         </button>
@@ -285,6 +281,7 @@ export default {
   text-decoration: none;
   font-weight: bold;
 }
+
 .resend button:disabled {
   color: #ccc;
   pointer-events: visible;

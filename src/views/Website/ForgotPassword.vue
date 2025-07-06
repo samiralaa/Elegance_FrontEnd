@@ -79,7 +79,9 @@ export default {
 
         if (response.data.status === 'success') {
           this.$toast?.success?.(response.data.message || this.$t('forgotPassword.successMessage'));
-          // Redirect to OTP page or show success message
+          // Store email for OTP page
+          localStorage.setItem('otp_email', this.formData.email);
+          // Redirect to OTP page
           this.$router.push('/verify-otp');
         } else {
           throw new Error(response.data.message || this.$t('forgotPassword.errorMessage'));

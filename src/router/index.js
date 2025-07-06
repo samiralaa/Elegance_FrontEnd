@@ -221,6 +221,11 @@ const routes = [
     path: '/category/:id',
     name: 'CategoryDetail',
     component: CategoryDetail
+  },
+  {
+    path: '/verify-otp',
+    name: 'VerifyOtp',
+    component: () => import('../views/Website/VerifyOtp.vue')
   }
 ]
 
