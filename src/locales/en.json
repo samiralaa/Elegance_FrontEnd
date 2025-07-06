@@ -456,6 +456,11 @@
     "close": "Close",
     "loading": "Loading..."
   },
+  "favorite_removed": "Product removed from favorites",
+  "favorite_added": "Product added to favorites",
+  "login_required_favorite": "Login required to favorite product",
+  "success": "Success",
+  "error": "Error",
 
   "profile": {
     "name": "Name",

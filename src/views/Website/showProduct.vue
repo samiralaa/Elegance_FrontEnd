@@ -210,7 +210,7 @@ const isInFavorites = (productId) => {
 };
 
 const getFavoriteId = (productId) => {
-  return favoritesStore.favorites.find((fav) => fav.product_id === productId)?.id;
+  return favoritesStore.favorites.find((fav) => fav.product_id === productId)?.favorite_id || favoritesStore.favorites.find((fav) => fav.product_id === productId)?.id;
 };
 const addToFavorites = async (product) => {
   try {
@@ -219,16 +219,26 @@ const addToFavorites = async (product) => {
       if (favoriteId) {
         await favoritesStore.removeFromFavorites(favoriteId)
       }
-      ElNotification.success('Product removed from favorites')
+      ElNotification({
+        title: t('success'),
+        message: t('favorite_removed') || 'Product removed from favorites',
+        type: 'success',
+      })
     } else {
       const response = await favoritesStore.addToFavorites(product.id)
-      ElNotification.success(response.message)
+      ElNotification({
+        title: t('success'),
+        message: response.message || t('favorite_added') || 'Product added to favorites',
+        type: 'success',
+      })
     }
   } catch (error) {
     console.error('Favorite error:', error)
-    ElNotification.error(
-      error.response?.data?.message || 'Login required to favorite product'
-    )
+    ElNotification({
+      title: t('error'),
+      message: error.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
+      type: 'error',
+    })
   }
 }
 const toggleFavorite = async (productObj) => {
@@ -237,17 +247,27 @@ const toggleFavorite = async (productObj) => {
       const favoriteId = getFavoriteId(productObj.id);
       if (favoriteId) {
         await favoritesStore.removeFromFavorites(favoriteId);
-        ElNotification.success(t('Product Removed From Favorites'));
+        ElNotification({
+          title: t('success'),
+          message: t('favorite_removed') || 'Product removed from favorites',
+          type: 'success',
+        });
       }
     } else {
       const response = await favoritesStore.addToFavorites(productObj.id);
-      ElNotification.success(response.message || t('Product Added To Favorites'));
+      ElNotification({
+        title: t('success'),
+        message: response.message || t('favorite_added') || 'Product added to favorites',
+        type: 'success',
+      });
     }
   } catch (error) {
     console.error('Favorite error:', error);
-    ElNotification.error(
-      error.response?.data?.message || t('Login required to favorite product')
-    );
+    ElNotification({
+      title: t('error'),
+      message: error.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
+      type: 'error',
+    });
   }
 };
 
@@ -555,11 +575,12 @@ const toggleChildFavorite = async (child) => {
       // If already favorite, remove it
       const favoriteItem = favoritesStore.favorites.find(fav => fav.product_id === child.id);
       if (favoriteItem) {
-        await favoritesStore.removeFromFavorites(favoriteItem.id);
+        const favoriteId = favoriteItem.favorite_id || favoriteItem.id;
+        await favoritesStore.removeFromFavorites(favoriteId);
         // No need to update local state, store handles it
         ElNotification({
-          title: t('Removed From Favorites'),
-          message: t('Product Removed From Favorites'),
+          title: t('success'),
+          message: t('favorite_removed') || 'Product removed from favorites',
           type: 'success',
         });
       }
@@ -570,8 +591,8 @@ const toggleChildFavorite = async (child) => {
       if (response) {
         // No need to update local state, store handles it
         ElNotification({
-          title: t('Added To Favorites'),
-          message: t('Product Added To Favorites'),
+          title: t('success'),
+          message: response.message || t('favorite_added') || 'Product added to favorites',
           type: 'success',
         });
       }
@@ -580,7 +601,7 @@ const toggleChildFavorite = async (child) => {
     console.error('Error toggling child favorites:', error);
     ElNotification({
       title: t('error'),
-      message: error.message || t('failed_to_toggle_favorite'),
+      message: error.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
       type: 'error',
     });
   }

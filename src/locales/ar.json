@@ -455,6 +455,11 @@
     "close": "إغلاق",
     "loading": "جاري التحميل..."
   },
+  "favorite_removed": "تم إزالة المنتج من المفضلة",
+  "favorite_added": "تم إضافة المنتج إلى المفضلة",
+  "login_required_favorite": "تسجيل الدخول مطلوب لإضافة المنتج إلى المفضلة",
+  "success": "نجح",
+  "error": "خطأ",
 
   "profile": {
     "name": "الاسم",

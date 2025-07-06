@@ -177,7 +177,7 @@ const isInFavorites = (productId) => {
 
 const getFavoriteId = (productId) => {
   const fav = favoritesStore.favorites.find(f => f.product_id === productId)
-  return fav?.id || null
+  return fav ? (fav.favorite_id || fav.id) : null
 }
 
 const addToFavorites = async (product) => {
@@ -186,18 +186,25 @@ const addToFavorites = async (product) => {
       const favId = getFavoriteId(product.id)
       if (favId) {
         await favoritesStore.removeFromFavorites(favId)
-        successMessage.value = 'Product removed from favorites'
+        ElNotification({
+          title: t('success'),
+          message: t('favorite_removed') || 'Product removed from favorites',
+          type: 'success',
+        })
       }
     } else {
       const res = await favoritesStore.addToFavorites(product.id)
-      successMessage.value = res.message
+      ElNotification({
+        title: t('success'),
+        message: res.message || t('favorite_added') || 'Product added to favorites',
+        type: 'success',
+      })
     }
-    showSuccessDialog.value = true
   } catch (err) {
     console.error('Favorite error:', err)
     ElNotification({
-      title: '⚠️',
-      message: err.response?.data?.message || 'Login required to favorite product',
+      title: t('error'),
+      message: err.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
       type: 'error',
     })
   }

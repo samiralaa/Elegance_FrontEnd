@@ -29,7 +29,8 @@ export const useFavoritesStore = defineStore('favorites', {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
-        this.favorites = response.data;
+        // Handle both response formats: direct array or {data: array}
+        this.favorites = response.data.data || response.data;
         this.count = this.favorites.length;
       } catch (error) {
         console.error('Error fetching favorites:', error);

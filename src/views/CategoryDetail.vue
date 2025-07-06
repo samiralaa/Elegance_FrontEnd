@@ -227,32 +227,36 @@ methods: {
     try {
       if (!localStorage.getItem('auth_token')) {
         ElNotification({
-          title: '⚠️',
-          message: 'Login required to favorite product',
+          title: this.$t('error'),
+          message: this.$t('login_required_favorite') || 'Login required to favorite product',
           type: 'error'
         })
         return
       }
       if (this.isInFavorites(product.id)) {
-        await this.favoritesStore.removeFromFavorites(product.id)
-        ElNotification({
-          title: 'Success',
-          message: 'Product removed from favorites',
-          type: 'success'
-        })
+        const favorite = this.favoritesStore.favorites.find(fav => fav.product_id === product.id)
+        const favoriteId = favorite ? (favorite.favorite_id || favorite.id) : null
+        if (favoriteId) {
+          await this.favoritesStore.removeFromFavorites(favoriteId)
+          ElNotification({
+            title: this.$t('success'),
+            message: this.$t('favorite_removed') || 'Product removed from favorites',
+            type: 'success'
+          })
+        }
       } else {
         const response = await this.favoritesStore.addToFavorites(product.id)
         ElNotification({
-          title: 'Success',
-          message: response.message,
+          title: this.$t('success'),
+          message: response.message || this.$t('favorite_added') || 'Product added to favorites',
           type: 'success'
         })
       }
     } catch (error) {
       console.error('Favorite error:', error)
       ElNotification({
-        title: '⚠️',
-        message: error.response?.data?.message || 'Login required to favorite product',
+        title: this.$t('error'),
+        message: error.response?.data?.message || this.$t('login_required_favorite') || 'Login required to favorite product',
         type: 'error'
       })
     }
