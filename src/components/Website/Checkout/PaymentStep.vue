@@ -421,7 +421,7 @@ export default {
         if (this?.$toast?.error) {
           this.$toast.error(errorMessage);
         } else {
-          window.location.href = '/orders/user'; // أو أي صفحة عاوز توديه عليها
+          window.location.href = '/orders/user';
         }
 
       } finally {
@@ -604,7 +604,7 @@ export default {
   // المجموع الفرعي (أسعار المنتجات فقط)
   subTotal() {
     return this.cartItems.reduce((sum, item) => {
-      const price = parseFloat(item.price) || 0;
+      const price = parseFloat(item.product.converted_price) || 0;
       const quantity = parseInt(item.quantity) || 0;
       return sum + price * quantity;
     }, 0).toFixed(2);
@@ -612,13 +612,13 @@ export default {
 
   // سعر التوصيل بناءً على الدولة
   deliveryCharge() {
-    const countryId = this.shippingDetails.country_id;
+    const countryId = this.shippingDetails.countryId;
+
     // alert(this.shippingDetails.country_id)
-    if (countryId === 59) return 10; // UAE
+    if (countryId === 57) return 10;
     return 20; // دول أخرى
   },
 
-  // الضريبة - حاليًا 0، يمكن تغييره لاحقًا
   taxAmount() {
     return 0;
   },

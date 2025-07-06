@@ -82,8 +82,8 @@ export default {
     currency() {
       if (this.cartItems.length > 0) {
         // Prefer code if available
-        if (this.cartItems[0].currency.code) {
-          return this.cartItems[0].currency.code.toLowerCase();
+        if (this.cartItems[0].currency_code) {
+          return this.cartItems[0].currency_code;
         }
         // Fallback: map name to code
         const name = (this.currentLang === 'ar' ? this.cartItems[0].currency.name_ar : this.cartItems[0].currency.name_en).toLowerCase();
@@ -106,7 +106,7 @@ export default {
     },
     total() {
       const subtotal = this.cartItems.reduce((total, item) => {
-        return total + (parseFloat(item.price) * item.quantity);
+        return total + (parseFloat(item.converted_price) * item.quantity);
       }, 0);
       return parseFloat((subtotal + this.shippingCost).toFixed(2));
     }
