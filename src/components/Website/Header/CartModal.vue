@@ -33,7 +33,7 @@
                     <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ item.product.price_after_discount }} {{ item.currency_code || 'AUD' }}</span>
                   </template>
                   <template v-else>
-                    {{ item.converted_price }} {{ item.currency_code}}
+                    {{  calculateDiscountedPrice(item) }} {{ item.currency_code}}
                   </template>
                   ×
                 </small>
@@ -224,19 +224,25 @@ export default {
     },
     
     calculateDiscountedPrice(item) {
-      if (product.discount && product.discount.is_active) {
-        const discountValue = parseFloat(product.discount.discount_value)
-        const originalPrice = parseFloat(product.converted_price)
+      if (item.product.discount && item.product.discount.is_active) {
+        const discountValue = parseFloat(item.product.discount.discount_value)
+        const originalPrice = parseFloat(item.product.converted_price)
         const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
         return discountedPrice.toFixed(2)
       }
-      return product.converted_price
+      return item.product.converted_price
     }
   },
   computed: {
   convertedTotal() {
     return this.cartItems.reduce((total, item) => {
-      let price = parseFloat(item.converted_price);
+      if (item.product.discount && item.product.discount.is_active) {
+        const discountValue = parseFloat(item.product.discount.discount_value)
+        const originalPrice = parseFloat(item.product.converted_price)
+        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+        return discountedPrice.toFixed(2)
+      }
+      let price = item.product.converted_price;
 
       if (
         item.product &&
@@ -252,7 +258,7 @@ export default {
     }, 0).toFixed(2);
   },
   deliveryCharge() {
-    const countryId = this.userCountryId || 57; // default to UAE
+    const countryId = this.userCountryId || 57;
     return countryId === 57 ? 10 : 20;
   },
   
