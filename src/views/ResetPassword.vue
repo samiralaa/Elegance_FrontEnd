@@ -1,5 +1,4 @@
 <template>
-    <Header />
     <div class="reset-password-outer">
         <div class="reset-password-card">
             <div class="reset-password-header">
