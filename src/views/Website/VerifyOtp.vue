@@ -62,11 +62,16 @@
     created() {
       const userData = localStorage.getItem('user')
       const token = localStorage.getItem('auth_token')
+      const otpEmail = localStorage.getItem('otp_email')
   
-      
-  
-      this.user = JSON.parse(userData)
+      this.user = userData ? JSON.parse(userData) : {}
       this.token = token
+  
+      // Always set user.email from otp_email if present
+      if (otpEmail) {
+        if (!this.user) this.user = {}
+        this.user.email = otpEmail
+      }
   
       this.startTimer()
     },
