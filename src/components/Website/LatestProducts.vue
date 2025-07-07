@@ -88,7 +88,7 @@ const fetchProducts = async () => {
     const selectedCurrency =
       JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
 
-    const response = await axios.get('https://backend.webenia.org/api/website/products/section', {
+    const response = await axios.get('https://backend.webenia.org/api/website/latest/products', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         Currency: selectedCurrency.code,

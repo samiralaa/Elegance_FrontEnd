@@ -51,10 +51,10 @@
         <label for="buildingName">{{ $t('checkout.buildingName') }}</label>
         <input type="text" id="buildingName" v-model="shippingDetails.buildingName" required>
       </div>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="floorNumber">{{ $t('checkout.floorNumber') }}</label>
         <input type="text" id="floorNumber" v-model="shippingDetails.floorNumber" required>
-      </div>
+      </div> -->
       <div class="form-group">
         <label for="apartmentNumber">{{ $t('checkout.apartmentNumber') }}</label>
         <input type="text" id="apartmentNumber" v-model="shippingDetails.apartmentNumber" required>

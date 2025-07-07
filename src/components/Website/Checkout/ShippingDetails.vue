@@ -58,14 +58,10 @@
       </div>
       <div class="form-group">
         <label for="city">{{ $t('checkout.city') }}</label>
-        <select id="city" class="form-select" aria-label="Default select example" v-model="shippingDetails.cityId" required>
-          <option value="1" class="option">Dubai</option>
-          <option value="2" class="option">Abu Dhabi</option>
-          <option value="3" class="option">Sharjah</option>
-          <option value="4" class="option">Ajman</option>
-          <option value="5" class="option">Ras Al Khaimah</option>
-          <option value="6" class="option">Umm Al Quwain</option>
-          <option value="7" class="option">Fujairah</option>
+        <select id="city" class="form-select" v-model="shippingDetails.cityId" required>
+          <option v-for="city in cities" :key="city.id" :value="city.id">
+            {{ $i18n.locale === 'ar' ? city.name_ar : city.name_en }}
+          </option>
         </select>
       </div>
       <div class="form-group">
@@ -131,7 +127,8 @@ export default {
       selectedAddress: null,
       isNewAddress: false,
       countries: [],
-      countryLoading: false
+      countryLoading: false,
+      cities: []
     };
   },
   computed: {
@@ -289,11 +286,35 @@ export default {
       } finally {
         this.countryLoading = false;
       }
+    },
+    async fetchCities() {
+      if (!this.shippingDetails.countryId) {
+        this.cities = [];
+        return;
+      }
+      try {
+        const response = await axios.get(`https://backend.webenia.org/api/countries/${this.shippingDetails.countryId}`);
+        this.cities = response.data.data.original.data.cities;
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+        this.cities = [];
+      }
+    }
+  },
+  watch: {
+    'shippingDetails.countryId'(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.shippingDetails.cityId = null;
+        this.fetchCities();
+      }
     }
   },
   mounted() {
     this.fetchSavedAddresses();
     this.fetchCountries();
+    if (this.shippingDetails.countryId) {
+      this.fetchCities();
+    }
   }
 };
 </script>

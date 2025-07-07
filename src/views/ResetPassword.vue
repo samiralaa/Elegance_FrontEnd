@@ -137,21 +137,26 @@ export default {
             }
             this.loading = true;
             try {
-                await axios.post('api/reset-password', {
+                const response = await axios.post('api/reset-password', {
                     email: this.email,
-
                     password: this.password,
                     password_confirmation: this.password_confirmation
                 });
-                this.success = this.$t('profile.passwordResetSuccess');
-                this.password = '';
-                this.password_confirmation = '';
 
-                setTimeout(() => {
-                    this.goBackToProfile();
-                }, 2000);
+                if (response.data && response.data.status && response.data.token && response.data.user) {
+                    localStorage.setItem('auth_token', response.data.token);
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    this.success = response.data.message || this.$t('profile.passwordResetSuccess');
+                    this.password = '';
+                    this.password_confirmation = '';
+                    setTimeout(() => {
+                        this.$router.push('/profile');
+                    }, 2000);
+                } else {
+                    throw new Error(response.data?.message || 'Failed to reset password');
+                }
             } catch (err) {
-                this.token = ''; this.error = err.response?.data?.message || this.$t('profile.passwordResetFailed');
+                this.error = err.response?.data?.message || this.$t('profile.passwordResetFailed');
             } finally {
                 this.loading = false;
             }

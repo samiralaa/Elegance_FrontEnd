@@ -29,12 +29,12 @@
             <input :type="showPassword ? 'text' : 'password'" id="password" v-model="formData.password"
               :placeholder="$t('header.passwordPlaceholder')"
               :class="{ 'error': errors.password, 'valid': formData.password && !errors.password }" required
-              @copy.prevent>
+              @copy.prevent @cut.prevent @paste.prevent>
             <button type="button" class="show-password-btn" @click="togglePassword">
               {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
             <button type="button" class="copy-password-btn" @click="copyPassword(formData.password)">
-              {{ $t('joinUs.copyPassword') }}
+             
             </button>
           </div>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
@@ -47,7 +47,7 @@
               v-model="formData.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
               :class="{ 'error': errors.confirmPassword, 'valid': formData.confirmPassword && !errors.confirmPassword }"
               required
-              @copy.prevent>
+              @copy.prevent @cut.prevent @paste.prevent>
             <button type="button" class="show-password-btn" @click="toggleConfirmPassword">
               {{ showConfirmPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
