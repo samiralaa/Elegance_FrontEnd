@@ -7,9 +7,9 @@
           @input="debouncedSearch"
           type="text"
           class="form-control"
-          placeholder="ابحث عن منتج أو قسم"
+          :placeholder="$t('search.placeholder')"
         />
-        <button class="btn btn-primary" @click="searchNow">بحث</button>
+        <button class="btn btn-primary" @click="searchNow">{{ $t('search.search') }}</button>
       </div>
 
       <div v-if="loading" class="text-center py-3">
@@ -54,15 +54,16 @@
         </li>
       </ul>
 
-      <p v-else-if="query && !loading" class="text-center text-muted mt-3">لا توجد نتائج</p>
+      <p v-else-if="query && !loading" class="text-center text-muted mt-3">{{ $t('search.noResults') }}</p>
 
-      <button class="btn btn-outline-secondary w-100 mt-4" @click="$emit('close')">إغلاق</button>
+      <button class="btn btn-outline-secondary w-100 mt-4" @click="$emit('close')">{{ $t('search.close') }}</button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { useI18n } from 'vue-i18n'
 
 export default {
   name: 'SearchModal',
@@ -73,6 +74,11 @@ export default {
       loading: false,
       debounceTimer: null
     };
+  },
+  computed: {
+    direction() {
+      return i18n.global.locale === 'ar' ? 'rtl' : 'ltr';
+    }
   },
   methods: {
     isArabic(text) {
@@ -143,5 +149,13 @@ export default {
   height: 70px;
   border-radius: 8px;
   object-fit: cover;
+}
+.btn-primary{
+  background-color: #a07840;
+  border-color: #a07840;
+}
+.btn-primary:hover {
+  background-color: #6b4d2d;
+  border-color: #6b4d2d;
 }
 </style>

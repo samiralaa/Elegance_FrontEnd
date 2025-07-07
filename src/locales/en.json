@@ -504,6 +504,14 @@
     "verificationError": "Invalid code. Please try again."
   },
 
+  "search": {
+    "placeholder": "Search products...",
+    "noResults": "No products found",
+    "category": "Category",
+    "search": "Search",
+    "close": "Close"
+  },
+
 
   "Nobrandsfound" : "No brands found"
 }

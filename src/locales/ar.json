@@ -502,6 +502,15 @@
     "verificationSuccess": "تم التحقق بنجاح!",
     "verificationError": "حدث خطأ أثناء التحقق. يرجى المحاولة مرة أخرى."
   },
+  
+  "search": {
+    "placeholder": "ابحث عن المنتجات...",
+    "noResults": "لم يتم العثور على منتجات",
+    "category": "الفئة",
+    "search": "بحث",
+    "close": "إغلاق"
+  },
+
 
   "Nobrandsfound": "لا توجد علامات تجارية"
 }
