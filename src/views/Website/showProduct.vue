@@ -639,11 +639,11 @@ const checkFavoriteStatus = () => {
 const calculateDiscountedPrice = (product) => {
   if (product.discount && product.discount.is_active) {
     const discountValue = parseFloat(product.discount.discount_value)
-    const originalPrice = parseFloat(product.converted_price || product.price)
+    const originalPrice = parseFloat(product.converted_price)
     const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
     return discountedPrice.toFixed(2)
   }
-  return product.converted_price || product.price
+  return product.converted_price
 };
 
 const currentPrice = computed(() => {
@@ -652,8 +652,8 @@ const currentPrice = computed(() => {
       ? selectedAmount.value.converted_price
       : selectedAmount.value.price;
   }
-  return product.value._original_price !== undefined
-    ? product.value._original_price
+  return product.value.converted_price !== undefined
+    ? product.value.converted_price
     : product.value.price;
 });
 
