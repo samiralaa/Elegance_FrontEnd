@@ -93,7 +93,7 @@
             </div>
           </div>
           <div class="card-body">
-            <h5 class="card-title">{{ product.name_en }}</h5>
+            <h5 class="card-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h5>
             <div class="price-container">
               <span v-if="product.discount && product.discount.is_active" class="price-old">{{ product.converted_price }} {{ product.currency_code }}</span>
               <span v-if="product.discount && product.discount.is_active" class="discount-badge">
@@ -127,8 +127,8 @@
   import { useI18n } from 'vue-i18n'
   import { useFavoritesStore } from '@/store/favorites'
 
-  const { t } = useI18n()
-  const direction = ref(document.documentElement.dir || 'ltr')
+  const { locale, t } = useI18n();
+  const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 
   // Data
   const categories = ref([])

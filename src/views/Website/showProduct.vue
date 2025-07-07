@@ -118,7 +118,7 @@
           <div class="col-6 col-md-4 col-lg-3" v-for="child in product.children" :key="child.id">
             <div class="product-card card border-0 h-100">
               <div class="position-relative overflow-hidden bg-light">
-                <router-link :to="`/read/products/${product.id}`">
+                <router-link :to="`/read/products/${child.id}`">
                   <img :src="child.images?.length ? getImageUrl(child.images[0].path) : placeholder"
                     :alt="locale === 'ar' ? child.name_ar : child.name_en" class="card-img-top product-img" />
                 </router-link>
