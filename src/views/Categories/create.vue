@@ -3,7 +3,13 @@
     <div class="form-card">
       <h2 class="form-title">{{ $t('Categories.AddCategory') }}</h2>
 
-      <form @submit.prevent="submitCategory">
+      <div v-if="loading" class="loading-overlay">
+        <span class="spinner"></span>
+      </div>
+      <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <form @submit.prevent="submitCategory" :style="loading ? 'pointer-events:none;opacity:0.5;' : ''">
         <div class="form-group">
           <label>{{ $t('Categories.NameEn') }}</label>
           <input v-model="form.name" required class="form-input" />
@@ -71,6 +77,9 @@ export default {
       },
       imagePreview: null,
       brands: [],
+      successMessage: '',
+      errorMessage: '',
+      loading: false,
     }
   },
   created() {
@@ -111,6 +120,9 @@ export default {
     },
 
     async submitCategory() {
+      this.successMessage = '';
+      this.errorMessage = '';
+      this.loading = true;
       try {
         const formData = new FormData()
         formData.append('name_en', this.form.name)
@@ -127,16 +139,15 @@ export default {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
 
-
         const response = await axios.post('https://backend.webenia.org/api/categories', formData, {
-
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
 
         if (response.data?.status && response.data?.data) {
-          alert('Category created successfully!')
+          this.loading = false;
+          this.successMessage = 'Category created successfully!';
           this.form = {
             name: '',
             name_ar: '',
@@ -145,13 +156,16 @@ export default {
             brand_id: '',
             image: null,
           }
-          this.imagePreview = null
+          this.imagePreview = null;
+          setTimeout(() => {
+            this.$router.push('/categories');
+          }, 1500);
         } else {
           throw new Error(response.data?.message || 'Failed to create category')
         }
       } catch (error) {
-        console.error('Error creating category:', error)
-        alert(error.message || 'An error occurred while creating the category.')
+        this.loading = false;
+        this.errorMessage = error.response?.data?.message || error.message || 'An error occurred while creating the category.'
       }
     },
   },
@@ -270,5 +284,58 @@ label {
 
 .submit-button:active {
   transform: translateY(1px);
+}
+
+.success-message {
+  color: #388e3c;
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.error-message {
+  color: #d32f2f;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e0e0e0;
+  border-top: 5px solid #8b6b3d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
