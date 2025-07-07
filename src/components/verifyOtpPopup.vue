@@ -11,7 +11,7 @@
           <p class="text-center mb-4">sorry to say</p>
           <fa icon="circle-exclamation" size="xl" class="icon mb-2"></fa>
           <h5>Enter the <span>OTP</span> sent in the email to <span>active</span> your <span>account</span></h5>
-          <router-link to="/otp" class="login-btn btn my-4">active now</router-link>
+          <router-link to="/otp" @click.prevent="resendOtp()" class="login-btn btn my-4">active now</router-link>
         </div>
       </div>
     </div>
@@ -21,6 +21,27 @@
 <script>
 export default {
   name: 'VerifyOtp',
+  methods: {
+    async resendOtp() {
+      try {
+        const response = await axios.post('api/resend-otp', {
+          email: this.email,
+        });
+
+        if (response.data?.status && response.data.token && response.data.user) {
+          localStorage.setItem('auth_token', response.data.token);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          this.success = response.data.message || 'OTP resent successfully.';
+          setTimeout(() => {
+            this.$router.push('/otp');
+          }, 2000);
+        }
+      } catch (error) {
+        console.error(error);
+        this.error = 'Something went wrong. Please try again.';
+      }
+    }
+  },
 }
 </script>
 
