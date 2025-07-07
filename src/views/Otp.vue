@@ -154,7 +154,7 @@ export default {
           seconds--
         }
 
-        this.timer = `${String(minutes).padStart(3, '0')}:${String(seconds).padStart(3, '0')}`
+        this.timer = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
       }, 1000)
     },
     async resendOtp() {
