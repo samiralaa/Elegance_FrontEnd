@@ -150,7 +150,7 @@ export default {
                     this.password = '';
                     this.password_confirmation = '';
                     setTimeout(() => {
-                        this.$router.push('/profile');
+                        this.$router.push('/');
                     }, 2000);
                 } else {
                     throw new Error(response.data?.message || 'Failed to reset password');
