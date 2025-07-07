@@ -50,9 +50,10 @@
         if (this.otpMessage === 'Invalid OTP' || this.otpMessage === 'Resend Invalid') {
           return 'red';
         }
-        if (this.otpMessage === 'OTP resent successfully') {
-          return 'green';
-        }
+        // if (this.otpMessage === 'OTP resent successfully') {
+        //   this.$router.push('/otp');
+        //   return 'green';
+        // }
         return '#333';
       },
       isOtpComplete() {

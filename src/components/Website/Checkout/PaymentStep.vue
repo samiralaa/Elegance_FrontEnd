@@ -56,6 +56,7 @@
 import { API_URL } from '@/store/index.js';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
+import { convertToAED } from '@/utils/currency';
 
 export default {
   name: 'PaymentStep',
@@ -172,7 +173,7 @@ export default {
         }
 
         // 4. حساب السعر الإجمالي
-        const totalPrice = this.totalAmount;
+        const totalPrice = parseFloat(this.totalAmount);
 
         // 5. تجهيز العناصر المطلوبة للطلب
         const orderItems = this.cartItems
@@ -264,7 +265,7 @@ export default {
           return;
         }
 
-        const totalPrice = this.totalAmount;
+        const totalPrice = parseFloat(this.totalAmount);
 
         const orderData = {
           user_id: userId,
@@ -598,25 +599,25 @@ export default {
 
       // If not found, return null
       return null;
-    }
+    },
   },
   computed: {
   // المجموع الفرعي (أسعار المنتجات فقط)
   subTotal() {
+    // استخدم السعر الأصلي وحول حسب العملة المختارة
     return this.cartItems.reduce((sum, item) => {
-      const price = parseFloat(item.product.converted_price) || 0;
+      const price = parseFloat(item.product.price) || 0;
       const quantity = parseInt(item.quantity) || 0;
-      return sum + price * quantity;
+      return sum + convertToAED(price, this.currency) * quantity;
     }, 0).toFixed(2);
   },
 
   // سعر التوصيل بناءً على الدولة
   deliveryCharge() {
     const countryId = this.shippingDetails.countryId;
-
-    // alert(this.shippingDetails.country_id)
-    if (countryId === 57) return 10;
-    return 20; // دول أخرى
+    let charge = 20;
+    if (countryId === 57) charge = 10;
+    return convertToAED(charge, this.currency).toFixed(2);
   },
 
   taxAmount() {

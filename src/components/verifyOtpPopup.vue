@@ -6,35 +6,49 @@
         <img src="@/assets/images/EleganceLogo.png" alt="Logo" />
       </div>
 
+      <button class="close-btn" @click="$emit('close')">×</button>
+
       <div class="cart-content overflow-auto d-flex align-items-center flex-column" style="max-height: 70vh;">
         <div class="w-50 d-flex align-items-center flex-column text-center">
           <p class="text-center mb-4">sorry to say</p>
           <fa icon="circle-exclamation" size="xl" class="icon mb-2"></fa>
           <h5>Enter the <span>OTP</span> sent in the email to <span>active</span> your <span>account</span></h5>
-          <router-link to="/otp" @click.prevent="resendOtp()" class="login-btn btn my-4">active now</router-link>
+          <button type="button" @click="resendOtp" class="login-btn btn my-4">active now</button>
         </div>
+        <div v-if="success" class="success-message">{{ success }}</div>
+        <div v-if="error" class="error-message">{{ error }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'VerifyOtp',
+  data() {
+    return {
+      success: '',
+      error: ''
+    }
+  },
   methods: {
     async resendOtp() {
       try {
-        const response = await axios.post('api/resend-otp', {
-          email: this.email,
+        const email = localStorage.getItem('otp_email');
+        if (!email) {
+          this.error = 'No email found. Please login again.';
+          return;
+        }
+        const response = await axios.post('https://backend.webenia.org/api/resend-otp', {
+          email: email,
         });
 
-        if (response.data?.status && response.data.token && response.data.user) {
-          localStorage.setItem('auth_token', response.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-          this.success = response.data.message || 'OTP resent successfully.';
-          setTimeout(() => {
-            this.$router.push('/otp');
-          }, 2000);
+        if (response.data?.success) {
+          this.success = response.data?.message || 'OTP resent successfully.';
+          this.$router.push('/otp');
+        } else {
+          this.error = response.data?.message || 'Failed to resend OTP.';
         }
       } catch (error) {
         console.error(error);
@@ -136,6 +150,18 @@ h5 span {
   font-size: 2rem;
 }
 
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #8B6B3D;
+  cursor: pointer;
+  z-index: 10;
+}
+
 @media screen and (max-width: 768px) {
   .cart-modal {
     max-width: 90%;
@@ -148,5 +174,24 @@ h5 span {
   h5 {
     font-size: 1rem;
   }
+}
+
+.success-message {
+  color: #22543d;
+  background: #c6f6d5;
+  border: 1px solid #68d391;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  text-align: center;
+}
+.error-message {
+  color: #c53030;
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  text-align: center;
 }
 </style>

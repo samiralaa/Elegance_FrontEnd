@@ -60,11 +60,12 @@ export default {
         const response = await axios.post('https://backend.webenia.org/api/login', this.formData);
 
         if (response.data.is_verified === false) {
-          // Store email temporarily to use it in OTP page
+          // Store email and flag to show OTP popup
           localStorage.setItem('otp_email', this.formData.email);
+          localStorage.setItem('showVerifyOtpPopup', 'true');
 
-          // Redirect to OTP page
-          this.$router.push({ path: '/otp' });
+          // Redirect to home page
+          this.$router.push('/');
           return;
         }
 
@@ -79,10 +80,6 @@ export default {
 
           this.$store.commit('auth/SET_AUTH', userData);
           await this.$store.dispatch('cart/loadCart');
-
-
-
-
 
           this.$router.push('/');
           this.errorMessage = '';

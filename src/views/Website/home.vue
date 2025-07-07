@@ -3,6 +3,7 @@
     <Loader v-if="loading" />
     <Header />
     <VerifyOtp v-if="showVerifyOtp" :user="user" :token="token" />
+    <verify-otp-popup v-if="showVerifyOtpPopup" @close="showVerifyOtpPopup = false" />
 
 
     <!-- Hero Section with Ramadan Theme -->
@@ -54,6 +55,7 @@ import i18n from '@/i18n.js'
 import Footer from '@/components/Website/Footer.vue'
 import Loader from '@/components/Loader.vue'
 import VerifyOtp from '@/components/verifyOtpPopup.vue'
+import VerifyOtpPopup from '@/components/verifyOtpPopup.vue'
 
 export default {
   name: 'Home',
@@ -68,6 +70,7 @@ export default {
     Footer,
     Loader,
     VerifyOtp,
+    VerifyOtpPopup,
   },
   computed: {
     showVerifyOtp() {
@@ -87,10 +90,15 @@ export default {
       loading: true,
       user: null,
       token: null,
+      showVerifyOtpPopup: false,
     };
   },
   mounted() {
     this.fetchSettings();
+    if (localStorage.getItem('showVerifyOtpPopup') === 'true') {
+      this.showVerifyOtpPopup = true;
+      localStorage.removeItem('showVerifyOtpPopup');
+    }
   },
   methods: {
 

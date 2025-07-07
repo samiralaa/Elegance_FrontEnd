@@ -35,7 +35,7 @@
                 <small class="text-muted">
                   {{ isArabic(query) ? item.name_en : item.name_ar }}
                 </small>
-                <div class="mt-1">{{ item.price }} {{ item.currency?.name_en }}</div>
+                <div class="mt-1">{{ item.converted_price }} {{ item.currency_code }}</div>
               </div>
             </template>
 

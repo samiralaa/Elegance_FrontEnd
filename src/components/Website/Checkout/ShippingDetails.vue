@@ -1,23 +1,15 @@
 <template>
   <div class="checkout-step">
     <h2>{{ $t('checkout.shippingDetails') }}</h2>
-  
+
     <!-- Address Type Selection -->
     <div class="address-type-selector">
-      <button 
-        class="type-btn" 
-        :class="{ active: !isNewAddress }"
-        @click="isNewAddress = false"
-      >
+      <button class="type-btn" :class="{ active: !isNewAddress }" @click="isNewAddress = false">
         {{ $t('checkout.selectExistingAddress') }}
       </button>
-      <button 
-        class="type-btn" 
-        :class="{ active: isNewAddress }"
-        @click="isNewAddress = true"
-      >
+      <button class="type-btn" :class="{ active: isNewAddress }" @click="isNewAddress = true">
         {{ $t('checkout.createNewAddress') }}
-    
+
       </button>
     </div>
 
@@ -25,10 +17,8 @@
     <div class="saved-addresses" v-if="!isNewAddress && savedAddresses.length">
       <h3>{{ $t('checkout.savedAddresses') }}</h3>
       <div class="address-list">
-        <div v-for="address in savedAddresses" :key="address.id" 
-             class="address-card" 
-             :class="{ 'selected': selectedAddressId === address.id }"
-             @click="selectAddress(address)">
+        <div v-for="address in savedAddresses" :key="address.id" class="address-card"
+          :class="{ 'selected': selectedAddressId === address.id }" @click="selectAddress(address)">
           <div class="address-info">
             <p><strong>{{ address.building_name }}</strong></p>
             <p>{{ address.landmark }}</p>
@@ -91,12 +81,7 @@
       <button type="button" class="btn-secondary" @click="$emit('previous-step')">
         {{ $t('checkout.back') }}
       </button>
-      <button 
-        type="button" 
-        class="btn-primary" 
-        @click="handleSubmit"
-        :disabled="!isValid"
-      >
+      <button type="button" class="btn-primary" @click="handleSubmit" :disabled="!isValid">
         {{ $t('checkout.continueToPayment') }}
       </button>
     </div>
@@ -142,13 +127,13 @@ export default {
     },
     isValid() {
       if (this.isNewAddress) {
-        return this.shippingDetails.buildingName && 
-               this.shippingDetails.floorNumber && 
-               this.shippingDetails.apartmentNumber && 
-               this.shippingDetails.landmark && 
-               this.shippingDetails.postalCode &&
-               this.shippingDetails.cityId &&
-               this.shippingDetails.countryId;
+        return this.shippingDetails.buildingName &&
+          this.shippingDetails.floorNumber &&
+          this.shippingDetails.apartmentNumber &&
+          this.shippingDetails.landmark &&
+          this.shippingDetails.postalCode &&
+          this.shippingDetails.cityId &&
+          this.shippingDetails.countryId;
       }
       return this.selectedAddressId !== null;
     }
@@ -183,7 +168,7 @@ export default {
       this.selectedAddressId = address.id;
       this.selectedAddress = address;
       this.isNewAddress = false;
-      
+
       // Map all address properties to shipping details
       this.shippingDetails = {
         ...this.shippingDetails,
@@ -204,7 +189,7 @@ export default {
         // Get user ID from localStorage token
         const token = localStorage.getItem('auth_token');
         let userId = 1; // Default to 1 if no token
-        
+
         if (token) {
           try {
             // Decode the JWT token to get user ID
@@ -251,7 +236,7 @@ export default {
       if (this.isValid) {
         try {
           let addressId = this.selectedAddressId;
-          
+
           if (this.isNewAddress) {
             addressId = await this.saveNewAddress();
           }
@@ -527,21 +512,24 @@ export default {
   .address-type-selector {
     flex-direction: column;
   }
+
   .address-list {
     grid-template-columns: 1fr;
   }
+
   .button-group {
     flex-direction: column-reverse;
   }
+
   .form-row {
     flex-direction: column;
   }
-  
+
   .button-group {
     flex-direction: column-reverse;
     gap: 1rem;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     width: 100%;
@@ -599,7 +587,8 @@ select {
   font-size: 1rem;
   width: 100%;
   max-width: 100%;
-  appearance: none; /* Remove default arrow */
+  appearance: none;
+  /* Remove default arrow */
   background-image: url("@/assets/images/arrow-down.svg");
   background-repeat: no-repeat;
   background-position: right 1rem center;
@@ -613,6 +602,7 @@ select:focus {
   background-color: #fff;
   box-shadow: 0 0 0 2px rgba(163, 133, 44, 0.3);
 }
+
 /* Option styles – will only work in some browsers */
 select option {
   padding: 0.5rem;
@@ -620,11 +610,13 @@ select option {
   color: #333;
   background-color: #fff;
 }
+
 select option:checked {
   background-color: #a3852c !important;
   color: white !important;
 }
+
 select option:hover {
   background-color: #f1f1f1;
 }
-</style> 
+</style>
