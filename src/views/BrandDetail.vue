@@ -21,11 +21,11 @@
       <div class="container">
         <div class="title">
           <i class="fas fa-th-large fa-icon"></i>
-          <h2 class="section-title mb-0">{{ $t('Categories') }}</h2>
+          <h2 class="section-title mb-0">{{ $t('categories.title') }}</h2>
         </div>
 
         <div class="slider-wrapper">
-          <div class="slider row slick-track">
+          <div class="slider row slick-track p-4">
             <div
               v-for="category in brand.categories"
               :key="category.id"
@@ -41,7 +41,7 @@
                     :alt="currentLang === 'ar' ? category.name_ar : category.name_en"
                   />
                   <p>{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</p>
-                  <span class="product-count">{{ category.products.length }} {{ $t('Products') }}</span>
+                  <span class="product-count"> {{ $t('Products.Products') }} : {{ category.products.length }}</span>
                 </div>
               </router-link>
             </div>
@@ -53,7 +53,7 @@
     <!-- Products Section -->
     <div class="products-section py-5">
       <div class="container">
-        <h2 class="section-title mb-4">{{ $t('Products') }}</h2>
+        <h2 class="section-title mb-4">{{ $t('Products.Products') }}</h2>
         <div v-for="category in brand.categories" :key="category.id">
           <div v-if="category.products.length > 0" class="category-products mb-5">
             <h3 class="category-title mb-4">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</h3>
@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { ElNotification } from 'element-plus'
@@ -130,6 +130,23 @@ const currentLang = computed(() => localStorage.getItem('lang') || 'en')
 
 const favoritesStore = useFavoritesStore()
 
+onMounted(() => {
+  fetchBrandDetails()
+  window.addEventListener('currency-changed', () => {
+    fetchBrandDetails()
+  })
+})
+
+watch(
+  () => route.params.id,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      loading.value = true
+      await fetchBrandDetails()
+    }
+  }
+)
+
 const fetchBrandDetails = async () => {
   try {
     const brandId = route.params.id
@@ -145,12 +162,6 @@ const fetchBrandDetails = async () => {
   }
 }
 
-onMounted(() => {
-  fetchBrandDetails()
-  window.addEventListener('currency-changed', () => {
-    fetchBrandDetails()
-  })
-})
 
 // Helpers
 const getBrandImage = (brandObj) => {

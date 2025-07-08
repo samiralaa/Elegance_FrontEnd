@@ -194,8 +194,8 @@
     
   },
 
-  "Categories":{
-    "Categories":"الفئات",
+  "categories":{
+    "title":"الفئات",
     "AddCategory":"إضافة فئة",
     "Image":"الصورة",
     "NameEn":"الاسم (إنجليزي)",
