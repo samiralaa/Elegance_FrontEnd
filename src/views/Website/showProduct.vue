@@ -32,10 +32,10 @@
             </div>
 
             <div class="weight" v-if="product.amounts && product.amounts.length > 0">
-              <h1 class="weight-title">Select Weight</h1>
+              <h1 class="weight-title">{{ $t('amount.weight') }}</h1>
               <div class="reset" @click="resetActive">
                 <fa icon="rotate-right"></fa>
-                <a>reset</a>
+                <a>{{ $t('amount.reset') }}</a>
               </div>
               <div class="weight-container">
                 <div class="row g-4">
@@ -47,14 +47,14 @@
               </div>
               <div v-if="selectedAmount" class="amount-details" style="margin-top: 1rem;">
                 <p>
-                  <strong>Selected:</strong>
+                  <strong>{{ $t('amount.selected') }}:</strong>
                   {{ selectedAmount.weight }} {{ selectedAmount.unit.name_en }} -
                   {{ selectedAmount.price }} {{ product.currency_code }}
                 </p>
                 <!-- Add more details here if needed -->
               </div>
               <div v-else>
-                <p>No amount selected.</p>
+                <p>{{ $t('amount.noAmount') }}</p>
               </div>
             </div>
 

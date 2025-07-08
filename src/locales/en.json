@@ -512,6 +512,14 @@
     "close": "Close"
   },
 
+  "amount": {
+    "noAmount": "No amount selected.",
+    "weight": "Select Weight",
+    "selected": "Selected",
+    "reset": "Reset"
+
+  },
+
 
   "Nobrandsfound" : "No brands found"
 }
