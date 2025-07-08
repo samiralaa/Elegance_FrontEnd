@@ -80,6 +80,10 @@ export default {
       return i18n.global.locale === 'ar' ? 'rtl' : 'ltr';
     }
   },
+    mounted() {
+    this.debouncedSearch();
+    window.addEventListener('currency-changed', this.debouncedSearch);
+  },
   methods: {
     isArabic(text) {
       return /[\u0600-\u06FF]/.test(text);
