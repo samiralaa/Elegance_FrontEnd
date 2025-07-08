@@ -84,7 +84,7 @@ export default {
   background: none;
   border: none;
   width: 100%;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -96,5 +96,10 @@ export default {
 .dropdown-item:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+[dir="rtl"] .dropdown-menu {
+  right: auto;
+  left: 0;
 }
 </style> 

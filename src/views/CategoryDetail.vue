@@ -28,8 +28,8 @@
       <div class="products-section py-5">
         <div class="container">
           <div class="section-header d-flex justify-content-between align-items-center mb-4">
-            <h2 class="section-title">{{ $t('Products') }}</h2>
-            <div class="products-count">{{ category.products.length }} {{ $t('Products') }}</div>
+            <h2 class="section-title">{{ $t('Products.Products') }}</h2>
+            <div class="products-count">{{ category.products.length }} {{ $t('Products.Products') }}</div>
           </div>
           <section class="products-grid">
             <div v-for="product in category.products" :key="product.id" class="product-card" :class="{ 'unavailable': !product.is_available }">
@@ -109,6 +109,11 @@ export default {
       lang: localStorage.getItem('lang') || 'en',
       favoritesStore: null,
     };
+  },
+  computed: {
+    currentLang() {
+      return this.lang === 'ar' ? 'ar' : 'en';
+    }
   },
   created() {
     this.fetchCategoryDetails();

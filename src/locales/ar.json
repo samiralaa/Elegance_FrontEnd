@@ -3,7 +3,7 @@
     "joinUs": "انضم ",
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
-    "aboutUs":"عننا",
+    "aboutUs":"من نحن",
     "contactUs":"تواصل معنا",
     "products":"المنتجات",
     "fullName":"الاسم الكامل",
@@ -194,8 +194,8 @@
     
   },
 
-  "Categories":{
-    "Categories":"الفئات",
+  "categories":{
+    "title":"الفئات",
     "AddCategory":"إضافة فئة",
     "Image":"الصورة",
     "NameEn":"الاسم (إنجليزي)",
@@ -510,6 +510,14 @@
     "search": "بحث",
     "close": "إغلاق"
   },
+
+  "amount": {
+    "noAmount": "لم يتم تحديد الكمية.",
+    "weight": "اختر الوزن",
+    "selected": "تم التحديد",
+    "reset": "إعادة تعيين"
+  },
+
 
 
   "Nobrandsfound": "لا توجد علامات تجارية"
