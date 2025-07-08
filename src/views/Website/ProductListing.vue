@@ -57,7 +57,7 @@
               :max="priceRangeLimit.max"
             />
             <div class="price-values">
-              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ currencyCode }}</span>
+              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ fetchCurrencyCode() }}</span>
             </div>
           </div>
         </div>
@@ -142,10 +142,13 @@
   const favoritesStore = useFavoritesStore()
 
   // Currency code from localStorage
-  const currencyCode = computed(() => {
-    const stored = localStorage.getItem('selectedCurrency');
-    return stored ? JSON.parse(stored).code : 'AED';
-  });
+    const fetchCurrencyCode = () => {
+    const currencyCode = computed(() => {
+      const stored = localStorage.getItem('selectedCurrency');
+      return stored ? JSON.parse(stored).code : 'AED';
+    });
+    return currencyCode.value;
+  }
 
   // Toggle Sidebar
   const toggleSidebar = () => {
@@ -271,6 +274,7 @@
     fetchProducts()
     window.addEventListener('currency-changed', () => {
       fetchProducts()
+      fetchCurrencyCode()
     })
   })
 
