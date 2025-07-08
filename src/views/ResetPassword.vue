@@ -131,10 +131,7 @@ export default {
                 return;
             }
 
-            if (!this.email) {
-                this.error = 'Email is required.';
-                return;
-            }
+            
             this.loading = true;
             try {
                 const response = await axios.post('api/reset-password', {

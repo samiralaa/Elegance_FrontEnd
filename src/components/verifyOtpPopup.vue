@@ -13,7 +13,11 @@
           <p class="text-center mb-4">sorry to say</p>
           <fa icon="circle-exclamation" size="xl" class="icon mb-2"></fa>
           <h5>Enter the <span>OTP</span> sent in the email to <span>active</span> your <span>account</span></h5>
-          <button type="button" @click="resendOtp" class="login-btn btn my-4">active now</button>
+          <button type="button" @click="handleActiveNow" class="login-btn btn my-4">active now</button>
+        </div>
+        <div v-if="showOtpInput" class="w-100 d-flex flex-column align-items-center mt-3">
+          <input v-model="otp" type="text" maxlength="6" placeholder="Enter OTP" class="form-control mb-2" style="max-width: 200px; text-align: center;" />
+          <button type="button" @click="verifyOtp" class="btn btn-success mb-2">Verify OTP</button>
         </div>
         <div v-if="success" class="success-message">{{ success }}</div>
         <div v-if="error" class="error-message">{{ error }}</div>
@@ -29,10 +33,18 @@ export default {
   data() {
     return {
       success: '',
-      error: ''
+      error: '',
+      showOtpInput: false,
+      otp: ''
     }
   },
   methods: {
+    async handleActiveNow() {
+      this.success = '';
+      this.error = '';
+      await this.resendOtp();
+      this.showOtpInput = true;
+    },
     async resendOtp() {
       try {
         const email = localStorage.getItem('otp_email');
@@ -46,9 +58,38 @@ export default {
 
         if (response.data?.success) {
           this.success = response.data?.message || 'OTP resent successfully.';
-          this.$router.push('/otp');
         } else {
           this.error = response.data?.message || 'Failed to resend OTP.';
+        }
+      } catch (error) {
+        console.error(error);
+        this.error = 'Something went wrong. Please try again.';
+      }
+    },
+    async verifyOtp() {
+      this.success = '';
+      this.error = '';
+      try {
+        const email = localStorage.getItem('otp_email');
+       
+        if (!email) {
+          this.error = 'No email found. Please login again.';
+          return;
+        }
+        if (!this.otp) {
+          this.error = 'Please enter the OTP.';
+          return;
+        }
+        const response = await axios.post('https://backend.webenia.org/api/verify-otp', {
+          email: email,
+          otp: this.otp
+        });
+        if (response.data?.success) {
+          this.success = response.data?.message || 'Account activated successfully!';
+          this.showOtpInput = false;
+          // Optionally emit an event or redirect
+        } else {
+          this.error = response.data?.message || 'Invalid OTP.';
         }
       } catch (error) {
         console.error(error);
