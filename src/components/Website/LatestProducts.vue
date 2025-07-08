@@ -88,7 +88,7 @@ const fetchProducts = async () => {
     const selectedCurrency =
       JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
 
-    const response = await axios.get('https://backend.webenia.org/api/website/latest/products', {
+    const response = await axios.get('http://elegance_backend.test/api/website/latest/products', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         Currency: selectedCurrency.code,
@@ -105,7 +105,7 @@ const fetchProducts = async () => {
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('https://backend.webenia.org/api/favorites', {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
@@ -118,7 +118,7 @@ const fetchFavorites = async () => {
   }
 }
 
-const getImageUrl = (path) => `https://backend.webenia.org/public/storage/${path}`
+const getImageUrl = (path) => `http://elegance_backend.test/public/storage/${path}`
 
 const isInFavorites = (productId) => {
   return favoritesStore.favorites.some(fav => fav.product_id === productId)
@@ -189,7 +189,7 @@ const addToCart = async (product) => {
       payload.amount_id = product.amounts[0].id
     }
 
-    const response = await axios.post('https://backend.webenia.org/api/cart-items', payload, {
+    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         'Content-Type': 'application/json',

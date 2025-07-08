@@ -127,21 +127,51 @@ export default {
     }
   },
   methods: {
+    validateForm() {
+      if (!this.contactForm.name.trim()) {
+        this.error = this.$t ? this.$t('contact.nameRequired') : 'Name is required.';
+        return false;
+      }
+      if (!this.contactForm.email.trim()) {
+        this.error = this.$t ? this.$t('contact.emailRequired') : 'Email is required.';
+        return false;
+      }
+      // Simple email regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.contactForm.email)) {
+        this.error = this.$t ? this.$t('contact.emailInvalid') : 'Invalid email address.';
+        return false;
+      }
+      if (!this.contactForm.subject.trim()) {
+        this.error = this.$t ? this.$t('contact.subjectRequired') : 'Subject is required.';
+        return false;
+      }
+      if (!this.contactForm.message.trim()) {
+        this.error = this.$t ? this.$t('contact.messageRequired') : 'Message is required.';
+        return false;
+      }
+      this.error = null;
+      return true;
+    },
     async handleSubmit() {
-      this.loading = true;
       this.success = false;
       this.error = null;
+      if (!this.validateForm()) {
+        return;
+      }
+      this.loading = true;
       try {
         const response = await axios.post('/api/contact', this.contactForm, {
           headers: {
             'Content-Type': 'application/json'
           }
-        })
-        ElNotification.success('Message sent successfully!')
-        this.contactForm = { name: '', email: '', subject: '', message: '' }
+        });
+        ElNotification.success('Message sent successfully!');
+        this.contactForm = { name: '', email: '', subject: '', message: '' };
+        this.success = true;
       } catch (e) {
-        this.error = 'Failed to send message.'
-        console.error('Contact form error:', e)
+        this.error = 'Failed to send message.';
+        console.error('Contact form error:', e);
       } finally {
         this.loading = false;
       }

@@ -36,7 +36,7 @@ const getCurrencyName = (currency) => {
 
 const fetchCurrencies = async () => {
   try {
-    const response = await axios.get('https://backend.webenia.org/api/currencies')
+    const response = await axios.get('http://elegance_backend.test/api/currencies')
     if (response.data && Array.isArray(response.data)) {
       currencies.value = response.data
       if (!selectedCurrency.value) {
@@ -56,7 +56,7 @@ const fetchCurrencies = async () => {
 
 const handleCurrencyChange = async (currency) => {
   try {
-    await axios.post('https://backend.webenia.org/api/change-currency', {
+    await axios.post('http://elegance_backend.test/api/change-currency', {
       currency: currency.code
     })
 
