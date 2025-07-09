@@ -108,6 +108,9 @@
   "itemRemoved": "Item removed successfully",
   "minimumQuantity": "Minimum quantity is 1",
   "maxQuantity": "Maximum quantity is 99"
-}
+},
+  "contact": {
+    "nameNotNumber": "Name cannot be only numbers."
+  }
 
 }
