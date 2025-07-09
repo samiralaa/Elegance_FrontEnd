@@ -29,7 +29,7 @@
 
         <div class="register-section">
           <p>
-            <router-link to="/login" class="link">{{ $t('forgotPassword.loginHere') }}</router-link>
+            <router-link to="account/login" class="link">{{ $t('forgotPassword.loginHere') }}</router-link>
           </p>
         </div>
       </form>

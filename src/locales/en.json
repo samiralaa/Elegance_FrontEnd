@@ -528,6 +528,7 @@
     "emailPlaceholder": "Enter your email",
     "submit": "Submit",
     "loginHere": "Login here",
+    
     "validation": {
       "emailRequired": "Email is required",
       "emailInvalid": "Email is invalid"
