@@ -520,6 +520,19 @@
     "reset": "Reset"
   },
 
+  "forgotPassword": {
+    "title": "Forget Password",
+    "description": "Enter your email address and we'll send you a link to reset your password.",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "submit": "Submit",
+    "loginHere": "Login here",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Email is invalid"
+    }
+  },
+
 
   "Nobrandsfound" : "No brands found"
 }

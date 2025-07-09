@@ -28,7 +28,7 @@
         </button>
 
         <div class="register-section">
-          <p>{{ $t('forgotPassword.rememberPassword') }}
+          <p>
             <router-link to="/login" class="link">{{ $t('forgotPassword.loginHere') }}</router-link>
           </p>
         </div>
