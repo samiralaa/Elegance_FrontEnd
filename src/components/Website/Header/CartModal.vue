@@ -2,7 +2,7 @@
   <div class="modal-overlay d-flex justify-content-center align-items-center">
     <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
       <!-- Close Button -->
-      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="$emit('close')"
+      <button type="button" class="btn-close m-3" @click="$emit('close')"
         aria-label="Close"></button>
 
       <!-- Title -->
@@ -298,6 +298,17 @@ export default {
   max-height: 90vh;
   overflow: hidden;
   animation: fadeInUp 0.3s ease-in-out;
+}
+
+.btn-close{
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+[dir="rtl"] .btn-close {
+  right: auto;
+  left: 0;
 }
 
 @keyframes fadeInUp {
