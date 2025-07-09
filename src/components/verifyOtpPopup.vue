@@ -16,7 +16,8 @@
           <button type="button" @click="handleActiveNow" class="login-btn btn my-4">active now</button>
         </div>
         <div v-if="showOtpInput" class="w-100 d-flex flex-column align-items-center mt-3">
-          <input v-model="otp" type="text" maxlength="6" placeholder="Enter OTP" class="form-control mb-2" style="max-width: 200px; text-align: center;" />
+          <input v-model="otp" type="text" maxlength="6" placeholder="Enter OTP" class="form-control mb-2"
+            style="max-width: 200px; text-align: center;" />
           <button type="button" @click="verifyOtp" class="btn btn-success mb-2">Verify OTP</button>
         </div>
         <div v-if="success" class="success-message">{{ success }}</div>
@@ -69,37 +70,61 @@ export default {
     async verifyOtp() {
       this.success = '';
       this.error = '';
+      this.otpMessage = '';
+
+      // Convert OTP array to string if necessary
+      const code = Array.isArray(this.otp) ? this.otp.join('') : this.otp;
+      const isValid = code && /^\d{4}$/.test(code); // Must be 4 digits
+
+      if (!code || !isValid) {
+        const msg = this.$t?.('otp.invalidLength') || 'Please enter a valid 4-digit code';
+        this.otpMessage = msg;
+        this.$toast?.error?.(msg);
+        return;
+      }
+
+      const email = localStorage.getItem('otp_email');
+      if (!email) {
+        const msg = this.$t?.('otp.emailMissing') || 'No email found. Please login again.';
+        this.error = msg;
+        this.$toast?.error?.(msg);
+        return;
+      }
+
       try {
-        const email = localStorage.getItem('otp_email');
-       
-        if (!email) {
-          this.error = 'No email found. Please login again.';
-          return;
-        }
-        if (!this.otp) {
-          this.error = 'Please enter the OTP.';
-          return;
-        }
         const response = await axios.post('https://backend.webenia.org/api/client/verify-otp', {
           email: email,
-          otp: this.otp
+          otp: code
         });
 
-        if (response.data.success) {
-          localStorage.setItem('auth_user', JSON.stringify(response.data.user));
+        if (response.data.status === true) {
+          const userData = {
+            ...this.user,
+            ...response.data.data.user
+          };
 
-          localStorage.setItem('auth_token', response.data.token);
-          this.$toast && this.$toast.success(response.data.message || 'Email verified successfully');
-          
-          this.$router.push('/');
+          localStorage.setItem('user', JSON.stringify(userData));
+          localStorage.setItem('auth_token', response.data.data.token);
+
+          this.success = this.$t?.('otp.success') || 'OTP verified successfully!';
+          this.otpMessage = '';
+
+          // ✅ Reload the page
+          window.location.reload();
         } else {
-          this.$toast && this.$toast.error(response.data.message || 'Verification failed');
+          const msg = response.data.message || this.$t?.('otp.failed') || 'OTP verification failed.';
+          this.otpMessage = msg;
+          this.$toast?.error?.(msg);
         }
       } catch (error) {
-        console.error(error);
-        this.error = 'Something went wrong. Please try again.';
+        console.error('OTP verification error:', error);
+        const errorMessage = error.response?.data?.message || this.$t?.('otp.error') || 'OTP verification failed';
+        this.otpMessage = errorMessage;
+        this.$toast?.error?.(errorMessage);
       }
     }
+
+
   },
 }
 </script>
@@ -230,6 +255,7 @@ h5 span {
   margin-top: 10px;
   text-align: center;
 }
+
 .error-message {
   color: #c53030;
   background: #fed7d7;

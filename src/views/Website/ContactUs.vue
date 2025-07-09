@@ -132,6 +132,11 @@ export default {
         this.error = this.$t ? this.$t('contact.nameRequired') : 'Name is required.';
         return false;
       }
+      // Name cannot be only numbers
+      if (/^\d+$/.test(this.contactForm.name.trim())) {
+        this.error = this.$t ? this.$t('contact.nameNotNumber') : 'Name cannot be only numbers.';
+        return false;
+      }
       if (!this.contactForm.email.trim()) {
         this.error = this.$t ? this.$t('contact.emailRequired') : 'Email is required.';
         return false;

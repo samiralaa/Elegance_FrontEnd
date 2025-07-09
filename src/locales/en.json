@@ -393,6 +393,7 @@
   "contact": {
     "title": "Contact Us",
     "subtitle": "We are always ready to assist you and answer any questions you may have.",
+   "nameNotNumber": "Name cannot be only numbers.",
     "description": "If you're making great products or looking to collaborate with us, don't hesitate to reach out.",
     "name": "Name",
     "email": "Email",
