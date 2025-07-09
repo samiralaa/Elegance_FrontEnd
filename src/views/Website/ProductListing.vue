@@ -43,7 +43,7 @@
             <input type="range" v-model.number="priceRange.min" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
             <input type="range" v-model.number="priceRange.max" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
             <div class="price-values">
-              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ fetchCurrencyCode() }}</span>
+              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ currencyCode.value }}</span>
             </div>
           </div>
         </div>
@@ -116,13 +116,10 @@ const favoritesStore = useFavoritesStore()
 
 
   // Currency code from localStorage
-    const fetchCurrencyCode = () => {
-    const currencyCode = computed(() => {
-      const stored = localStorage.getItem('selectedCurrency');
-      return stored ? JSON.parse(stored).code : 'AED';
-    });
-    return currencyCode.value;
-  }
+const currencyCode = computed(() => {
+  const stored = localStorage.getItem('selectedCurrency');
+  return stored ? JSON.parse(stored).code : 'AED';
+});
 
 
 // Currency conversion helper
@@ -263,7 +260,7 @@ onMounted(() => {
   fetchProducts()
   window.addEventListener('currency-changed', () => {
     fetchProducts()
-    fetchCurrencyCode()
+    // currencyCode.value is now a computed property, no need to call fetchCurrencyCode() here
   })
 })
 
