@@ -6,10 +6,17 @@
         <h2>{{ $t('home.brands') }}</h2>
       </div>
       <div class="content">
-        <div v-for="brand in brands" :key="brand.id" class="brand-img">
-          <img v-if="brand.images.length" :src="getImageUrl(brand.images[0].path)" :alt="brand.name_en" class="img-fluid"/>
-          <span v-else class="text-muted small">No Image</span>
-        </div>
+        
+       
+
+          <div v-for="brand in brands" :key="brand.id" class="brand-img" >
+           <router-link :to="`/brand/${brand.id}`" class="text-decoration-none">
+            <img v-if="brand.images.length" :src="getImageUrl(brand.images[0].path)" :alt="brand.name_en" class="img-fluid"/>
+            <span v-else class="text-muted small">No Image</span>
+          </router-link>
+              
+          </div>
+      
       </div>
     </div>
   </section>
