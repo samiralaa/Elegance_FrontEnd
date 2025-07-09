@@ -492,7 +492,8 @@
     "passwordTooShort": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
     "passwordResetSuccess": "تمت إعادة تعيين كلمة المرور بنجاح!",
     "passwordResetFailed": "فشل في إعادة تعيين كلمة المرور.",
-    "backToProfile": "العودة إلى الملف الشخصي"
+    "backToProfile": "العودة إلى الملف الشخصي",
+    "editAddress":  "تعديل العنوان"
   },
 
   "otp": { 

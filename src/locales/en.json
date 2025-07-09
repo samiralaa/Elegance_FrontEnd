@@ -493,7 +493,8 @@
     "passwordTooShort": "Password must be at least 8 characters long.",
     "passwordResetSuccess": "Password reset successfully!",
     "passwordResetFailed": "Failed to reset password.",
-    "backToProfile": "Back to Profile"
+    "backToProfile": "Back to Profile",
+    "editAddress":  "Edit Address"
   },
 
   "otp": {
