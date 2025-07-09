@@ -20,7 +20,7 @@
       <h3>{{ $t('checkout.orderSummary') }}</h3>
       <div class="summary-details">
         <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
-        <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
+        <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.address }}</p>
 
         <!-- Subtotal -->
 
@@ -615,9 +615,14 @@ export default {
 
     // سعر التوصيل بناءً على الدولة
     deliveryCharge() {
-      const countryId = this.shippingDetails.countryId;
-      let charge = 20;
-      if (countryId === 57) charge = 10;
+      const countryId = this.shippingDetails.country_id;
+      let charge ;
+    
+      if (countryId === 57) {
+        charge = 10;
+      } else {
+        charge = 20;    
+      }
       return convertToAED(charge, this.currency).toFixed(2);
     },
 

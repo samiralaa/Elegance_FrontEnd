@@ -339,7 +339,8 @@
     "processing": "Processing",
     "select": "Select",
     "totalAmount": "Total Amount",
-    "placeOrder": "Place Order"
+    "placeOrder": "Place Order",
+    "deliveryCharge":"Delivery Charge"
   },
 
   "joinUs": {

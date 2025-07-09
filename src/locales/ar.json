@@ -342,7 +342,8 @@
     "processing": "جاري المعالجة",
     "select": "اختيار",
     "totalAmount": "المبلغ الإجمالي",
-    "placeOrder": "إتمام الطلب"
+    "placeOrder": "إتمام الطلب",
+    "deliveryCharge": "رسوم التوصيل"
   },
 
   "joinUs" : {
