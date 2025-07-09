@@ -32,7 +32,7 @@
 <script>
 import axios from 'axios'
 
-const API_URL = 'http://elegance_backend.test/api'
+const API_URL = 'https://backend.webenia.org/api'
 
 export default {
   data() {

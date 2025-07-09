@@ -52,7 +52,7 @@ export default {
           this.error = 'No email found. Please login again.';
           return;
         }
-        const response = await axios.post('http://elegance_backend.test/api/resend-otp', {
+        const response = await axios.post('https://backend.webenia.org/api/resend-otp', {
           email: email,
         });
 
@@ -80,7 +80,7 @@ export default {
           this.error = 'Please enter the OTP.';
           return;
         }
-        const response = await axios.post('http://elegance_backend.test/api/verify-otp', {
+        const response = await axios.post('https://backend.webenia.org/api/verify-otp', {
           email: email,
           otp: this.otp
         });

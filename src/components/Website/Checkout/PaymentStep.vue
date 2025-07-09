@@ -17,24 +17,24 @@
       </div>
     </div>
     <div class="order-summary">
-  <h3>{{ $t('checkout.orderSummary') }}</h3>
-  <div class="summary-details">
-    <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
-    <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
+      <h3>{{ $t('checkout.orderSummary') }}</h3>
+      <div class="summary-details">
+        <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
+        <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.city }}</p>
 
-    <!-- Subtotal -->
+        <!-- Subtotal -->
 
-    <!-- Delivery charge -->
-    <p>{{ $t('checkout.deliveryCharge') }}: {{ deliveryCharge }} {{ currency }}</p>
+        <!-- Delivery charge -->
+        <p>{{ $t('checkout.deliveryCharge') }}: {{ deliveryCharge }} {{ currency }}</p>
 
-    <!-- Tax -->
-   
-    <!-- Total -->
-    <div class="total-amount">
-      {{ $t('checkout.totalAmount') }}: {{ totalAmount }} {{ currency }}
+        <!-- Tax -->
+
+        <!-- Total -->
+        <div class="total-amount">
+          {{ $t('checkout.totalAmount') }}: {{ totalAmount }} {{ currency }}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
     <div class="button-group">
       <button class="btn-secondary" @click="$emit('previous-step')">
@@ -103,7 +103,8 @@ export default {
           this.initStripeElements();
         });
       }
-    }
+    },
+
   },
   methods: {
     selectPaymentMethod(methodId) {
@@ -181,9 +182,9 @@ export default {
             product_id: item.product?.id,
             product_name: item.product?.name || '',
             quantity: parseInt(item.quantity) || 0,
-            price: parseFloat(item.price) || 0,
+            price: parseFloat(item.product?.converted_price) || parseFloat(item.price) || 0,
             subtotal:
-              (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+              (parseFloat(item.product?.converted_price) || parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
           }))
           .filter((item) => item.product_id && item.quantity > 0);
 
@@ -285,9 +286,9 @@ export default {
                 product_id: item.product?.id,
                 product_name: item.product?.name || '',
                 quantity: parseInt(item.quantity) || 0,
-                price: parseFloat(item.price) || 0,
+                price: parseFloat(item.product?.converted_price) || parseFloat(item.price) || 0,
                 subtotal:
-                  (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+                  (parseFloat(item.product?.converted_price) || parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
               }))
@@ -349,9 +350,9 @@ export default {
                     product_id: item.product?.id,
                     product_name: item.product?.name || '',
                     quantity: parseInt(item.quantity) || 0,
-                    price: parseFloat(item.price) || 0,
+                    price: parseFloat(item.product?.converted_price) || parseFloat(item.price) || 0,
                     subtotal:
-                      (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+                      (parseFloat(item.product?.converted_price) || parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
                   }))
                   .filter((item) => item.product_id && item.quantity > 0),
                 total_price: totalPrice,
@@ -602,36 +603,36 @@ export default {
     },
   },
   computed: {
-  // المجموع الفرعي (أسعار المنتجات فقط)
-  subTotal() {
-    // استخدم السعر الأصلي وحول حسب العملة المختارة
-    return this.cartItems.reduce((sum, item) => {
-      const price = parseFloat(item.product.price) || 0;
-      const quantity = parseInt(item.quantity) || 0;
-      return sum + convertToAED(price, this.currency) * quantity;
-    }, 0).toFixed(2);
-  },
+    // المجموع الفرعي (أسعار المنتجات فقط)
+    subTotal() {
+      // استخدم السعر الأصلي وحول حسب العملة المختارة
+      return this.cartItems.reduce((sum, item) => {
+        const price = parseFloat(item.product.price) || 0;
+        const quantity = parseInt(item.quantity) || 0;
+        return sum + convertToAED(price, this.currency) * quantity;
+      }, 0).toFixed(2);
+    },
 
-  // سعر التوصيل بناءً على الدولة
-  deliveryCharge() {
-    const countryId = this.shippingDetails.countryId;
-    let charge = 20;
-    if (countryId === 57) charge = 10;
-    return convertToAED(charge, this.currency).toFixed(2);
-  },
+    // سعر التوصيل بناءً على الدولة
+    deliveryCharge() {
+      const countryId = this.shippingDetails.countryId;
+      let charge = 20;
+      if (countryId === 57) charge = 10;
+      return convertToAED(charge, this.currency).toFixed(2);
+    },
 
-  taxAmount() {
-    return 0;
-  },
+    taxAmount() {
+      return 0;
+    },
 
-  // المجموع النهائي
-  totalAmount() {
-    const subtotal = parseFloat(this.subTotal);
-    const delivery = parseFloat(this.deliveryCharge);
-    const tax = parseFloat(this.taxAmount);
-    return (subtotal + delivery + tax).toFixed(2);
+    // المجموع النهائي
+    totalAmount() {
+      const subtotal = parseFloat(this.subTotal);
+      const delivery = parseFloat(this.deliveryCharge);
+      const tax = parseFloat(this.taxAmount);
+      return (subtotal + delivery + tax).toFixed(2);
+    }
   }
-}
 }
 </script>
 

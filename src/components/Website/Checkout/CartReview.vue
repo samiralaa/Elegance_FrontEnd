@@ -65,6 +65,7 @@ export default {
     },
     subtotal() {
       return this.cartItems.reduce((total, item) => {
+        if (!item.product || !item.product.converted_price) return total;
         return total + (parseFloat(item.product.converted_price) * item.quantity);
       }, 0).toFixed(2);
     },
@@ -198,13 +199,15 @@ export default {
     },
 
     calculateDiscountedPrice(item) {
-      if (item.product.discount && item.product.discount.length > 0) {
-        const discountValue = parseFloat(item.product.discount[0].discount_value)
-        const originalPrice = parseFloat(item.product.converted_price)
+      const product = item.product;
+      if (!product) return '';
+      if (product.discount && product.discount.length > 0) {
+        const discountValue = parseFloat(product.discount[0].discount_value)
+        const originalPrice = parseFloat(product.converted_price)
         const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
         return discountedPrice.toFixed(2)
       }
-      return item.product.converted_price
+      return product.converted_price
     }
   }
 }

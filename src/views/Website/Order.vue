@@ -9,15 +9,18 @@
         <h3>In Progress</h3>
         <h3 class="num">{{ allOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#" @click.prevent="filterOrders('pending')" :class="{ active: currentFilter === 'pending' }">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('pending')"
+        :class="{ active: currentFilter === 'pending' }">
         <h3>In Progress</h3>
         <h3 class="num">{{ pendingOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#" @click.prevent="filterOrders('completed')" :class="{ active: currentFilter === 'completed' }">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('completed')"
+        :class="{ active: currentFilter === 'completed' }">
         <h3>Completed</h3>
         <h3 class="num">{{ completedOrdersCount }}</h3>
       </a>
-      <a class="order-stage" href="#" @click.prevent="filterOrders('cancelled')" :class="{ active: currentFilter === 'cancelled' }">
+      <a class="order-stage" href="#" @click.prevent="filterOrders('cancelled')"
+        :class="{ active: currentFilter === 'cancelled' }">
         <h3>Cancelled</h3>
         <h3 class="num">{{ cancelledOrdersCount }}</h3>
       </a>
@@ -28,11 +31,7 @@
     </div>
 
     <div v-else-if="filteredOrders.length > 0" class="row g-4">
-      <div 
-        v-for="order in filteredOrders"
-        :key="order.id"
-        class="col-12 col-md-6"
-      >
+      <div v-for="order in filteredOrders" :key="order.id" class="col-12 col-md-6">
         <div class="order-card p-4 rounded-4 shadow-sm bg-white">
           <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
             <div>
@@ -48,17 +47,14 @@
           </div>
 
           <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
-            <div
-              v-for="item in order.items"
-              :key="item.id"
-              class="d-flex flex-column align-items-start col-4"
-            >
-              <img
-                :src="imageUrl(item.product.images[0].path)"
-                class="rounded mb-2"
-                style="width: 100%; aspect-ratio: 1; object-fit: cover"
-              />
-              <strong class="small">{{ item.product.name_en }}</strong>
+            <div v-for="item in order.items" :key="item.id" class="d-flex flex-column align-items-start col-4">
+              <img v-if="item.product && item.product.images && item.product.images.length"
+                :src="imageUrl(item.product.images[0].path)" class="rounded mb-2"
+                style="width: 100%; aspect-ratio: 1; object-fit: cover" />
+              <img v-else src="https://via.placeholder.com/150" class="rounded mb-2"
+                style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
+              <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name'
+                }}</strong>
               <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
               <small class="text-muted">Size: {{ item.size || '-' }}</small>
             </div>
@@ -75,69 +71,66 @@
     <div v-else class="alert alert-info text-center">
       No orders found.
     </div>
-  </div> 
-      <!-- <el-dialog v-model="isDialogVisible" title="Order Details" width="500px" center>
+  </div>
+  <!-- <el-dialog v-model="isDialogVisible" title="Order Details" width="500px" center>
 
       <template #footer>
         <button class="btn btn-outline-dark btn-sm" @click="isDialogVisible = false">Close</button>
       </template>
-    </el-dialog> -->
-      <div class="modal-overlay d-flex justify-content-center align-items-center" v-if="isDialogVisible">
-        <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
-          <!-- Close Button -->
-          <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="isDialogVisible = false" aria-label="Close"></button>
+</el-dialog> -->
+  <div class="modal-overlay d-flex justify-content-center align-items-center" v-if="isDialogVisible">
+    <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
+      <!-- Close Button -->
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="isDialogVisible = false"
+        aria-label="Close"></button>
 
-          <!-- Title -->
-          <h4 class="mb-3">{{ $t('order.orderDetails') }}</h4>
+      <!-- Title -->
+      <h4 class="mb-3">{{ $t('order.orderDetails') }}</h4>
 
-          <!-- Loading Spinner -->
-          <div v-if="loading" class="text-center">
-            <div class="spinner-border" role="status"></div>
+      <!-- Loading Spinner -->
+      <div v-if="loading" class="text-center">
+        <div class="spinner-border" role="status"></div>
+      </div>
+
+      <!-- Order content -->
+      <div v-else class="cart-content overflow-auto" style="max-height: 60vh;">
+        <!-- Order Info -->
+        <div class="mb-3">
+          <strong>Status:</strong>
+          <span :class="['badge', getStatusBadgeClass(selectedOrder.status)]">
+            {{ formatStatus(selectedOrder.status) }}
+          </span>
+        </div>
+        <div class="mb-3" v-if="selectedOrder.address">
+          <strong>Address:</strong>
+          <div v-if="typeof selectedOrder.address === 'object'">
+            <div v-if="selectedOrder.address.street">{{ selectedOrder.address.street }}</div>
+            <div v-if="selectedOrder.address.city">{{ selectedOrder.address.city }}</div>
+            <div v-if="selectedOrder.address.state">{{ selectedOrder.address.state }}</div>
+            <div v-if="selectedOrder.address.country">{{ selectedOrder.address.country }}</div>
+            <div v-if="selectedOrder.address.zip">{{ selectedOrder.address.zip }}</div>
+            <!-- Add more fields as needed -->
           </div>
-
-          <!-- Order content -->
-          <div v-else class="cart-content overflow-auto" style="max-height: 60vh;">
-            <!-- Order Info -->
-            <div class="mb-3">
-              <strong>Status:</strong>
-              <span :class="['badge', getStatusBadgeClass(selectedOrder.status)]">
-                {{ formatStatus(selectedOrder.status) }}
-              </span>
-            </div>
-            <div class="mb-3" v-if="selectedOrder.address">
-              <strong>Address:</strong>
-              <div v-if="typeof selectedOrder.address === 'object'">
-                <div v-if="selectedOrder.address.street">{{ selectedOrder.address.street }}</div>
-                <div v-if="selectedOrder.address.city">{{ selectedOrder.address.city }}</div>
-                <div v-if="selectedOrder.address.state">{{ selectedOrder.address.state }}</div>
-                <div v-if="selectedOrder.address.country">{{ selectedOrder.address.country }}</div>
-                <div v-if="selectedOrder.address.zip">{{ selectedOrder.address.zip }}</div>
-                <!-- Add more fields as needed -->
-              </div>
-              <div v-else>
-                {{ selectedOrder.address }}
-              </div>
-            </div>
-            <!-- Items List -->
-            <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
-              <div
-                v-for="item in selectedOrder.items"
-                :key="item.id"
-                class="d-flex flex-column align-items-start col-4"
-              >
-                <img
-                  :src="imageUrl(item.product.images[0].path)"
-                  class="rounded mb-2"
-                  style="width: 100%; aspect-ratio: 1; object-fit: cover"
-                />
-                <strong class="small">{{ item.product.name_en }}</strong>
-                <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
-                <small class="text-muted">Size: {{ item.size || '-' }}</small>
-              </div>
-            </div>
+          <div v-else>
+            {{ selectedOrder.address }}
+          </div>
+        </div>
+        <!-- Items List -->
+        <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
+          <div v-for="item in selectedOrder.items" :key="item.id" class="d-flex flex-column align-items-start col-4">
+            <img v-if="item.product && item.product.images && item.product.images.length"
+              :src="imageUrl(item.product.images[0].path)" class="rounded mb-2"
+              style="width: 100%; aspect-ratio: 1; object-fit: cover" />
+            <img v-else src="https://via.placeholder.com/150" class="rounded mb-2"
+              style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
+            <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name' }}</strong>
+            <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
+            <small class="text-muted">Size: {{ item.size || '-' }}</small>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -145,7 +138,7 @@ import axios, { all } from 'axios';
 import Header from "@/components/Website/Header.vue";
 
 export default {
-   components: {
+  components: {
     Header,
   },
   name: 'UserOrder',
@@ -169,7 +162,7 @@ export default {
       return this.orders.filter(order => order.status === 'pending').length;
     },
     completedOrdersCount() {
-      return this.orders.filter(order => 
+      return this.orders.filter(order =>
         order.status === 'completed' || order.status === 'completed'
       ).length;
     },
@@ -198,7 +191,7 @@ export default {
           return;
         }
 
-        const res = await axios.get('http://elegance_backend.test/api/orders/user', {
+        const res = await axios.get('https://backend.webenia.org/api/orders/user', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -226,7 +219,7 @@ export default {
       this.currentFilter = this.currentFilter === status ? null : status;
     },
     imageUrl(path) {
-      return `http://elegance_backend.test/public/storage/${path}`;
+      return `https://backend.webenia.org/public/storage/${path}`;
     },
     formatDate(datetime) {
       const date = new Date(datetime);
@@ -251,7 +244,7 @@ export default {
       try {
         this.loading = true
         const token = localStorage.getItem('auth_token');
-        const res = await axios.get(`http://elegance_backend.test/api/orders/${orderId}`, {
+        const res = await axios.get(`https://backend.webenia.org/api/orders/${orderId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -382,6 +375,7 @@ export default {
   border: 1px solid #eee;
   transition: box-shadow 0.3s ease;
 }
+
 .order-card:hover {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
@@ -416,6 +410,7 @@ export default {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

@@ -224,13 +224,17 @@ export default {
     },
     
     calculateDiscountedPrice(item) {
-      if (item.product.discount && item.product.discount.is_active) {
-        const discountValue = parseFloat(item.product.discount.discount_value)
-        const originalPrice = parseFloat(item.product.converted_price)
-        const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
-        return discountedPrice.toFixed(2)
+      const product = item.product;
+      if (!product) return '';
+      if (product.discount && product.discount.is_active) {
+        const discountValue = parseFloat(product.discount.discount_value);
+        const originalPrice = parseFloat(product.converted_price);
+        if (!isNaN(originalPrice) && !isNaN(discountValue)) {
+          const discountedPrice = originalPrice - (originalPrice * (discountValue / 100));
+          return discountedPrice.toFixed(2);
+        }
       }
-      return item.product.converted_price
+      return product.converted_price;
     }
   },
   computed: {

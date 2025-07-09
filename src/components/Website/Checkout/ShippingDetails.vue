@@ -142,7 +142,7 @@ export default {
     async fetchSavedAddresses() {
       this.loading = true;
       try {
-        const response = await axios.get('http://elegance_backend.test/api/address', {
+        const response = await axios.get('https://backend.webenia.org/api/address', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
@@ -212,7 +212,7 @@ export default {
           is_primary: this.savedAddresses.length === 0
         };
 
-        const response = await axios.post('http://elegance_backend.test/api/address', addressData, {
+        const response = await axios.post('https://backend.webenia.org/api/address', addressData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
@@ -264,7 +264,7 @@ export default {
     async fetchCountries() {
       this.countryLoading = true;
       try {
-        const response = await axios.get('http://elegance_backend.test/api/countries');
+        const response = await axios.get('https://backend.webenia.org/api/countries');
         this.countries = response.data?.data || [];
       } catch (error) {
         console.error('Error fetching countries:', error);
@@ -278,7 +278,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`http://elegance_backend.test/api/countries/${this.shippingDetails.countryId}`);
+        const response = await axios.get(`https://backend.webenia.org/api/countries/${this.shippingDetails.countryId}`);
         this.cities = response.data.data.original.data.cities;
       } catch (error) {
         console.error('Failed to fetch cities:', error);
