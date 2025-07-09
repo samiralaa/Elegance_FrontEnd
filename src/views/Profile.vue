@@ -1,103 +1,119 @@
 <template>
   <Header />
-  <div class="profile-outer">
-    <div v-if="loading" class="profile-loading">
-      <span class="loader"></span>
-      <span>{{ $t('profile.loading') }}</span>
-    </div>
-    <div v-else-if="error" class="profile-error">
-      <span>{{ error }}</span>
-    </div>
-    <div v-else class="profile-card">
-      <div class="profile-header">
-        <div class="avatar">
-          <span>{{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}</span>
+   <div class="profile-outer container my-5">
+  <!-- Loading State -->
+  <div v-if="loading" class="d-flex flex-column align-items-center justify-content-center py-5">
+    <span class="loader mb-2"></span>
+    <span>{{ $t('profile.loading') }}</span>
+  </div>
+
+  <!-- Error State -->
+  <div v-else-if="error" class="text-center text-danger">
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Profile Card -->
+  <div v-else class="card p-4 shadow">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <div class="d-flex align-items-center gap-3">
+        <div class="avatar bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+             style="width: 60px; height: 60px; font-size: 24px;">
+          {{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}
         </div>
-        <div class="user-info">
-          <h1>{{ user.name }}</h1>
-          <span class="user-role">{{ user.role }}</span>
+        <div>
+          <h5 class="mb-0">{{ user.name }}</h5>
+          <small class="text-muted">{{ user.role }}</small>
         </div>
-        <button class="reset-password-btn" @click="goToResetPassword">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <path d="M12 15v2m0 0v2m0-2h2m-2 0H10m8-6a8 8 0 11-16 0 8 8 0 0116 0z" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          {{ $t('profile.resetPassword') }}
-        </button>
       </div>
-      <div class="profile-details">
-        <div class="detail-row">
-          <span>{{ $t('profile.name') }}</span>
-          <span>{{ user.name }}</span>
-        </div>
-        <div class="detail-row">
-          <span>{{ $t('profile.email') }}</span>
-          <span>{{ user.email }}</span>
-        </div>
+      <button class="btn btn-outline-secondary d-flex align-items-center gap-1"
+              @click="goToResetPassword"
+              aria-label="Reset Password">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+          <path d="M12 15v2m0 0v2m0-2h2m-2 0H10m8-6a8 8 0 11-16 0 8 8 0 0116 0z"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        {{ $t('profile.resetPassword') }}
+      </button>
+    </div>
 
-        <div class="detail-row">
-          <span>{{ $t('profile.phone') }}</span>
-          <span>{{ user.phone }}</span>
-        </div>
+    <!-- Basic Details -->
+    <div class="d-flex flex-column gap-3">
+      <div class="d-flex justify-content-between border-bottom pb-2">
+        <strong>{{ $t('profile.name') }}</strong>
+        <span>{{ user.name }}</span>
+      </div>
+      <div class="d-flex justify-content-between border-bottom pb-2">
+        <strong>{{ $t('profile.email') }}</strong>
+        <span>{{ user.email }}</span>
+      </div>
+      <div class="d-flex justify-content-between border-bottom pb-2">
+        <strong>{{ $t('profile.phone') }}</strong>
+        <span>{{ user.phone }}</span>
+      </div>
+    </div>
 
-
-        <div v-if="user.address && user.address.length" class="address-block">
-          <h3>{{ $t('profile.address') }}</h3>
-          <div v-for="(addr, idx) in user.address" :key="addr.id || idx" class="address-details"
-            style="margin-bottom: 0.5em;">
-            <div class="detail-row">
-              <span>{{ formatAddress(addr) }}</span>
-              <button class="edit-btn" @click="openEditDialog(addr)">Edit</button>
-            </div>
-          </div>
-        </div>
+    <!-- Address -->
+    <div v-if="user.address?.length" class="mt-4">
+      <h6 class="mb-3">{{ $t('profile.address') }}</h6>
+      <div v-for="(addr, idx) in user.address" :key="addr.id || idx"
+           class="d-flex justify-content-between align-items-center border rounded p-3 mb-2">
+        <span>{{ formatAddress(addr) }}</span>
+        <button class="btn btn-sm btn-outline-primary" @click="openEditDialog(addr)">Edit</button>
       </div>
     </div>
   </div>
-  <!-- Address Edit Dialog -->
-  <div v-if="showAddressDialog" class="modal-overlay">
-    <div class="modal-content">
-      <h3>Edit Address</h3>
-      <form @submit.prevent="saveAddress(editingAddressId)">
+
+  <!-- Edit Address Modal -->
+ <div v-if="showAddressDialog" class="modal-overlay">
+  <div class="modal-dialog-centered">
+    <div class="modal-content bg-white p-4 rounded shadow w-100">
+      <h5 class="mb-4">Edit Address</h5>
+      <form @submit.prevent="saveAddress(editingAddressId)" class="d-flex flex-column gap-3">
         <div class="form-group">
           <label>Building Name</label>
-          <input v-model="addressForm.building_name" placeholder="Building Name" />
+          <input v-model="addressForm.building_name" class="form-control" placeholder="Building Name" />
         </div>
         <div class="form-group">
           <label>Floor Number</label>
-          <input v-model="addressForm.floor_number" placeholder="Floor Number" />
+          <input v-model="addressForm.floor_number" class="form-control" placeholder="Floor Number" />
         </div>
         <div class="form-group">
           <label>Apartment Number</label>
-          <input v-model="addressForm.apartment_number" placeholder="Apartment Number" />
+          <input v-model="addressForm.apartment_number" class="form-control" placeholder="Apartment Number" />
         </div>
         <div class="form-group">
           <label>Postal Code</label>
-          <input v-model="addressForm.postal_code" placeholder="Postal Code" />
+          <input v-model="addressForm.postal_code" class="form-control" placeholder="Postal Code" />
         </div>
         <div class="form-group">
           <label>Landmark</label>
-          <input v-model="addressForm.landmark" placeholder="Landmark" />
+          <input v-model="addressForm.landmark" class="form-control" placeholder="Landmark" />
         </div>
         <div class="form-group">
           <label>City ID</label>
-          <input v-model="addressForm.city_id" placeholder="City ID" />
+          <input v-model="addressForm.city_id" class="form-control" placeholder="City ID" />
         </div>
         <div class="form-group">
           <label>Country ID</label>
-          <input v-model="addressForm.country_id" placeholder="Country ID" />
+          <input v-model="addressForm.country_id" class="form-control" placeholder="Country ID" />
         </div>
-        <div class="modal-actions">
-          <button type="submit" class="btn-primary">Save</button>
-          <button type="button" class="btn-secondary" @click="closeEditDialog">Cancel</button>
+
+        <div class="d-flex justify-content-end gap-2 mt-2">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" @click="closeEditDialog">Cancel</button>
         </div>
-        <div v-if="addressSuccess" class="success-message">
-          <fa icon="check-circle" style="color: #28a745; margin-right: 6px;" />
+
+        <div v-if="addressSuccess" class="alert alert-success d-flex align-items-center mt-3">
+          <i class="bi bi-check-circle-fill me-2"></i>
           Address updated successfully!
         </div>
       </form>
     </div>
   </div>
+</div>
+</div>
 </template>
 
 <script>
@@ -246,6 +262,30 @@ export default {
   height: 32px;
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
+}
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.modal-dialog-centered {
+  max-width: 600px;
+  width: 100%;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 0.5rem;
+  max-height: 90vh;    
+  overflow-y: auto;        
 }
 
 @keyframes spin {
