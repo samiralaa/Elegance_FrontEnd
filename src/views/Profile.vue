@@ -43,13 +43,59 @@
 
         <div v-if="user.address && user.address.length" class="address-block">
           <h3>{{ $t('profile.address') }}</h3>
-          <div v-for="(addr, idx) in user.address" :key="addr.id || idx" class="address-details" style="margin-bottom: 0.5em;">
+          <div v-for="(addr, idx) in user.address" :key="addr.id || idx" class="address-details"
+            style="margin-bottom: 0.5em;">
             <div class="detail-row">
               <span>{{ formatAddress(addr) }}</span>
+              <button class="edit-btn" @click="openEditDialog(addr)">Edit</button>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <!-- Address Edit Dialog -->
+  <div v-if="showAddressDialog" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Edit Address</h3>
+      <form @submit.prevent="saveAddress(editingAddressId)">
+        <div class="form-group">
+          <label>Building Name</label>
+          <input v-model="addressForm.building_name" placeholder="Building Name" />
+        </div>
+        <div class="form-group">
+          <label>Floor Number</label>
+          <input v-model="addressForm.floor_number" placeholder="Floor Number" />
+        </div>
+        <div class="form-group">
+          <label>Apartment Number</label>
+          <input v-model="addressForm.apartment_number" placeholder="Apartment Number" />
+        </div>
+        <div class="form-group">
+          <label>Postal Code</label>
+          <input v-model="addressForm.postal_code" placeholder="Postal Code" />
+        </div>
+        <div class="form-group">
+          <label>Landmark</label>
+          <input v-model="addressForm.landmark" placeholder="Landmark" />
+        </div>
+        <div class="form-group">
+          <label>City ID</label>
+          <input v-model="addressForm.city_id" placeholder="City ID" />
+        </div>
+        <div class="form-group">
+          <label>Country ID</label>
+          <input v-model="addressForm.country_id" placeholder="Country ID" />
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Save</button>
+          <button type="button" class="btn-secondary" @click="closeEditDialog">Cancel</button>
+        </div>
+        <div v-if="addressSuccess" class="success-message">
+          <fa icon="check-circle" style="color: #28a745; margin-right: 6px;" />
+          Address updated successfully!
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -64,7 +110,19 @@ export default {
     return {
       loading: true,
       error: null,
-      user: {}
+      user: {},
+      showAddressDialog: false,
+      editingAddressId: null,
+      addressForm: {
+        building_name: '',
+        floor_number: '',
+        apartment_number: '',
+        postal_code: '',
+        landmark: '',
+        city_id: '',
+        country_id: ''
+      },
+      addressSuccess: false
     };
   },
   methods: {
@@ -77,6 +135,13 @@ export default {
     },
     // Format address as one line, skipping empty fields
     formatAddress(addr) {
+      // Get country name from nested country object if available
+      let countryName = '';
+      if (addr.country) {
+        countryName = this.$i18n && this.$i18n.locale === 'ar' ? addr.country.name_ar : addr.country.name_en;
+      } else if (addr.country_id) {
+        countryName = addr.country_id;
+      }
       return [
         addr.building_name,
         addr.floor_number,
@@ -84,9 +149,57 @@ export default {
         addr.postal_code,
         addr.landmark,
         addr.city_id,
-        addr.country_id
+        countryName
       ].filter(Boolean).join(', ');
+    },
+    openEditDialog(addr) {
+      this.editingAddressId = addr.id;
+      this.addressForm = { ...addr };
+      this.showAddressDialog = true;
+    },
+    closeEditDialog() {
+      this.showAddressDialog = false;
+      this.editingAddressId = null;
+      this.addressForm = {
+        building_name: '',
+        floor_number: '',
+        apartment_number: '',
+        postal_code: '',
+        landmark: '',
+        city_id: '',
+        country_id: ''
+      };
+    },
+   async saveAddress(addressId) {
+  try {
+    const response = await axios.post(`api/address/${addressId}`, this.addressForm, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+      }
+    });
+
+    const idx = this.user.address.findIndex(a => a.id === addressId);
+    if (idx !== -1 && response.data && response.data.data) {
+      this.$set(this.user.address, idx, response.data.data);
     }
+
+    this.addressSuccess = true;
+
+    // ✅ عرض الرسالة القادمة من السيرفر
+    this.$toast && this.$toast.success(response.data.message || 'Address updated successfully!');
+
+    setTimeout(() => {
+      this.addressSuccess = false;
+      this.closeEditDialog();
+    }, 1200);
+
+  } catch (err) {
+    // ✅ عرض رسالة الخطأ القادمة من السيرفر إن وجدت
+    const errorMessage = err?.response?.data?.message || 'Failed to update address';
+    this.$toast && this.$toast.error(errorMessage);
+  }
+}
+
   },
   async created() {
     try {
@@ -260,6 +373,119 @@ export default {
   border-bottom: none;
   padding: 4px 0;
   font-size: 0.98em;
+}
+
+/* Modal styles for address editing */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2em;
+  border-radius: 10px;
+  min-width: 300px;
+  max-width: 90vw;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.edit-btn {
+  margin-left: 1em;
+  background: #eee;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background: #ccc;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.3em;
+  color: #232946;
+}
+
+.form-group input {
+  padding: 0.5em 0.7em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  background: #f8f9fa;
+  transition: border 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #8b6b3d;
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1em;
+  margin-top: 1em;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  background: #8b6b3d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5em 1.5em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #725932;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #8b6b3d;
+  border: 1px solid #8b6b3d;
+  border-radius: 4px;
+  padding: 0.5em 1.5em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
+  color: #725932;
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  color: #28a745;
+  font-weight: 500;
+  margin-top: 1em;
+  font-size: 1.1em;
+  justify-content: center;
 }
 
 @media (max-width: 600px) {

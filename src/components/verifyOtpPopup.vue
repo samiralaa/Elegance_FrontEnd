@@ -34,7 +34,7 @@ export default {
     return {
       success: '',
       error: '',
-      showOtpInput: false,
+      showOtpInput: true,
       otp: ''
     }
   },
@@ -80,16 +80,20 @@ export default {
           this.error = 'Please enter the OTP.';
           return;
         }
-        const response = await axios.post('https://backend.webenia.org/api/verify-otp', {
+        const response = await axios.post('https://backend.webenia.org/api/client/verify-otp', {
           email: email,
           otp: this.otp
         });
-        if (response.data?.success) {
-          this.success = response.data?.message || 'Account activated successfully!';
-          this.showOtpInput = false;
-          // Optionally emit an event or redirect
+
+        if (response.data.success) {
+          localStorage.setItem('auth_user', JSON.stringify(response.data.user));
+
+          localStorage.setItem('auth_token', response.data.token);
+          this.$toast && this.$toast.success(response.data.message || 'Email verified successfully');
+          
+          this.$router.push('/');
         } else {
-          this.error = response.data?.message || 'Invalid OTP.';
+          this.$toast && this.$toast.error(response.data.message || 'Verification failed');
         }
       } catch (error) {
         console.error(error);

@@ -263,10 +263,7 @@ onMounted(() => {
   fetchProducts()
   window.addEventListener('currency-changed', () => {
     fetchProducts()
-    window.addEventListener('currency-changed', () => {
-      fetchProducts()
-      fetchCurrencyCode()
-
+    fetchCurrencyCode()
   })
 })
 
