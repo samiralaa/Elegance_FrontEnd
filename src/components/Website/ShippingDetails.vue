@@ -112,7 +112,7 @@ export default {
     async fetchSavedAddresses() {
       this.loading = true;
       try {
-        const response = await axios.get('http://elegance_backend.test/api/address');
+        const response = await axios.get('https://backend.webenia.org/api/address');
         this.savedAddresses = response.data;
       } catch (error) {
         console.error('Error fetching addresses:', error);
@@ -124,7 +124,7 @@ export default {
     async fetchCountries() {
       this.countryLoading = true;
       try {
-        const response = await axios.get('http://elegance_backend.test/api/countries');
+        const response = await axios.get('https://backend.webenia.org/api/countries');
         this.countries = response.data?.data || [];
       } catch (error) {
         console.error('Error fetching countries:', error);
