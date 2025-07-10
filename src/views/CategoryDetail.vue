@@ -34,7 +34,9 @@
           <section class="products-grid">
             <div v-for="product in category.products" :key="product.id" class="product-card" :class="{ 'unavailable': !product.is_available }">
               <div class="image-container mb-3 bg-light rounded">
-                <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en"/>
+               <RouterLink :to="`/read/products/${product.id}`" class="product-link">
+                 <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en"/>
+               </RouterLink>
                 <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
                 <div class="product-actions d-flex justify-content-center gap-5 w-100">
                   <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
