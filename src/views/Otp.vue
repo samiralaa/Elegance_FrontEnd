@@ -6,7 +6,7 @@
       <span>{{ user.email }}</span>
 
       <form @submit.prevent="handleOtpVerification">
-        <div class="otp-input-group">
+        <div class="otp-input-group" dir="ltr">
           <input v-for="i in 4" :key="i" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]*"
             v-model="otp[i - 1]" @input="handleInput($event, i)" @keydown="handleKeyDown($event, i)" class="otp-input"
             placeholder="_" />
