@@ -42,8 +42,8 @@
                     class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input class="qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
-                    @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(item.quantity, 99)">
+                  <input class="qty-number" type="number" min="1" max="99" step="1" v-model.number="item.quantity"
+                    @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(item.quantity, 99)" @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()">
 
                   <el-button size="small" @click="increaseQuantity(item)" :disabled="item.quantity >= 99"
                     class="qty-btn">
@@ -69,7 +69,7 @@
 <div v-if="cartItems.length" class="d-flex justify-content-between mt-3">
   <span><strong>{{ $t('cart.total') }}:</strong></span>
   <span>
-    {{ convertedTotal }} {{ cartItems[0]?.currency_code || 'AUD' }}
+    {{ convertedTotal }} {{ cartItems[0]?.currency_code || 'AED' }}
   </span>
 </div>
 
@@ -235,6 +235,10 @@ export default {
         }
       }
       return product.converted_price;
+    },
+
+    removeDecimals(event) {
+      event.target.value = event.target.value.replace(/\.\d*/g, '');
     }
   },
   computed: {
