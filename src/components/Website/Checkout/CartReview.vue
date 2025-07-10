@@ -238,7 +238,7 @@ export default {
   height: 100px;
   object-fit: cover;
   border-radius: 8px;
-  margin-right: 1rem;
+  margin: 0 1rem;
 }
 
 .item-details {
@@ -288,6 +288,11 @@ export default {
   position: absolute;
   right: 1rem;
   top: 1rem;
+}
+
+[dir="rtl"] .remove-item {
+  left: 1rem;
+  right: auto;
 }
 
 .cart-summary {

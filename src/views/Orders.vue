@@ -2,7 +2,7 @@
   <div class="orders-page">
     <!-- Header: Title & Search -->
     <div class="orders-header">
-      <h2>My Orders</h2>
+      <h2>{{ $t(orders.myOrders) }}</h2>
       <el-input
         v-model="searchQuery"
         placeholder="Search orders..."

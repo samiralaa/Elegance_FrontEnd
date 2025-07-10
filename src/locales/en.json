@@ -299,7 +299,12 @@
   
   "orders" : {
     "myOrders" : "My Orders",
+    "allOrders" : "All Orders",
+    "inProgress" : "In Progress",
+    "completed" : "Completed",
+    "cancelled" : "Cancelled",
     "orderId" : "ID",
+    "size": "Size",
     "orderDate" : "Date",
     "total" : "Total",
     "status" : "Status",
@@ -529,7 +534,7 @@
     "emailPlaceholder": "Enter your email",
     "submit": "Submit",
     "loginHere": "Login here",
-    
+
     "validation": {
       "emailRequired": "Email is required",
       "emailInvalid": "Email is invalid"
