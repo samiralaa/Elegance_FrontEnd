@@ -11,7 +11,7 @@ import users from './modules/users'
 import favorites from './modules/favorites'
 
 
-export const API_URL = 'https://backend.webenia.org';
+export const API_URL = 'http://elegance_backend.test';
 
 
 const api = axios.create({
@@ -127,7 +127,7 @@ export default createStore({
       } catch (error) {
         console.error('Login error:', error)
         const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.'
-        commit('SET_ERROR', errorMessage) 
+        commit('SET_ERROR', errorMessage)
         throw error
       } finally {
         commit('SET_LOADING', false)

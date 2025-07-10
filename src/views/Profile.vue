@@ -4,13 +4,13 @@
   <!-- Loading State -->
   <div v-if="loading" class="d-flex flex-column align-items-center justify-content-center py-5">
     <span class="loader mb-2"></span>
-    <span>{{ $t('profile.loading') }}</span>
-  </div>
+      <span>{{ $t('profile.loading') }}</span>
+    </div>
 
   <!-- Error State -->
   <div v-else-if="error" class="text-center text-danger">
-    <span>{{ error }}</span>
-  </div>
+      <span>{{ error }}</span>
+    </div>
 
   <!-- Profile Card -->
   <div v-else class="card p-4 shadow">
@@ -29,20 +29,20 @@
       <button class="btn btn-outline-secondary d-flex align-items-center gap-1"
               @click="goToResetPassword"
               aria-label="Reset Password">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
           <path d="M12 15v2m0 0v2m0-2h2m-2 0H10m8-6a8 8 0 11-16 0 8 8 0 0116 0z"
                 stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        {{ $t('profile.resetPassword') }}
-      </button>
-    </div>
+          </svg>
+          {{ $t('profile.resetPassword') }}
+        </button>
+      </div>
 
     <!-- Basic Details -->
     <div class="d-flex flex-column gap-3">
       <div class="d-flex justify-content-between border-bottom pb-2">
         <strong>{{ $t('profile.name') }}</strong>
-        <span>{{ user.name }}</span>
+          <span>{{ user.name }}</span>
       </div>
       <div class="d-flex justify-content-between border-bottom pb-2">
         <strong>{{ $t('profile.email') }}</strong>
@@ -90,15 +90,15 @@
         <div class="form-group">
           <label>Landmark</label>
           <input v-model="addressForm.landmark" class="form-control" placeholder="Landmark" />
-        </div>
+            </div>
         <div class="form-group">
           <label>City ID</label>
           <input v-model="addressForm.city_id" class="form-control" placeholder="City ID" />
-        </div>
+            </div>
         <div class="form-group">
           <label>Country ID</label>
           <input v-model="addressForm.country_id" class="form-control" placeholder="Country ID" />
-        </div>
+          </div>
 
         <div class="d-flex justify-content-end gap-2 mt-2">
           <button type="submit" class="btn btn-primary">Save</button>
@@ -111,9 +111,9 @@
         </div>
       </form>
     </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
 </template>
 
 <script>

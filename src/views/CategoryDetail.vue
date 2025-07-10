@@ -187,7 +187,7 @@ methods: {
         JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
 
       const response = await axios.post(
-        'https://backend.webenia.org/api/cart-items',
+        'http://elegance_backend.test/api/cart-items',
         {
           product_id: product.id,
           quantity: 1,
