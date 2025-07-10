@@ -114,7 +114,7 @@ export default {
       }
     },
     getImage(product) {
-      const base = 'https://backend.webenia.org/public/storage/';
+      const base = 'http://elegance_backend.test/public/storage/';
       if (product.images && product.images.length && product.images[0].path) {
         const path = product.images[0].path;
         return path.startsWith('http') ? path : base + path;
