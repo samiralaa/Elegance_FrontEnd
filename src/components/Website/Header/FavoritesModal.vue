@@ -39,13 +39,19 @@
                   </span>
                 </div>
                 <div class="d-flex gap-2">
+                 
+                 <div class="cart-button-parent" :style="{
+                      cursor:  !favorite.is_available ? 'not-allowed' : 'pointer',
+                    }">
                   <button 
                     class="btn btn-sm btn-outline-primary" 
                     @click="addToCart(favorite)"
-                    :disabled="isLoading"
+                    :disabled="isLoading || !favorite.is_available"
+                    
                   >
                     <fa icon="shopping-cart" />
                   </button>
+                 </div> 
                   <button 
                     class="btn btn-sm btn-outline-danger" 
                     @click="removeFavorite(favorite.favorite_id)"
@@ -108,6 +114,8 @@ export default {
   },
   async created() {
     await this.favoritesStore.fetchFavorites();
+    
+    
   },
   methods: {
     getProductImage(favorite) {
@@ -295,12 +303,14 @@ export default {
 .btn-outline-primary:hover {
   background-color: #8B6B3D;
   color: white;
+
 }
 
-.btn:disabled {
+.btn-outline-primary:disabled {
   opacity: 0.65;
-  cursor: not-allowed;
+ 
 }
+
 
 @media (max-width: 768px) {
   .product-image {
