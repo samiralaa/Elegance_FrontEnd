@@ -32,7 +32,7 @@
             <div class="products-count">{{ category.products.length }} {{ $t('Products.Products') }}</div>
           </div>
           <section class="products-grid">
-            <div v-for="product in category.products" :key="product.id" class="product-card" :class="{ 'unavailable': !product.is_available }">
+            <div v-for="product in category.products" :key="product.id" class="product-card">
               <div class="image-container mb-3 bg-light rounded">
                <RouterLink :to="`/read/products/${product.id}`" class="product-link">
                  <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en"/>
@@ -67,7 +67,7 @@
                   </span>
                 </div>
               </div>
-              <div class="addToCart-btn">
+              <div class="addToCart-btn" :style="{ cursor: !product.is_available ? 'not-allowed' : 'pointer' }">
                 <button 
                   :disabled="!product.is_available" 
                   @click="addToCart(product)" 
