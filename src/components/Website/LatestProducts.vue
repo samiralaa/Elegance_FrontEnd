@@ -173,10 +173,10 @@ const addToCart = async (product) => {
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
-      const originalPrice = parseFloat(product.converted_price);
+      const originalPrice = parseFloat(product.price); // Always use product.price
       priceToSend = originalPrice - (originalPrice * (discountValue / 100));
     } else {
-      priceToSend = parseFloat(product.converted_price);
+      priceToSend = parseFloat(product.price); // Always use product.price
     }
 
     const payload = {

@@ -82,7 +82,7 @@ const addToCart = async (product) => {
       {
         product_id: product.id,
         quantity: 1,
-        price: parseFloat(product.converted_price),
+        price: parseFloat(product.price), // Always use product.price
       },
       {
         headers: {

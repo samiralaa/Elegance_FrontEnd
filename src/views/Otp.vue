@@ -72,6 +72,8 @@ export default {
     this.token = token
 
     this.startTimer()
+    localStorage.removeItem('user');
+
   },
   methods: {
     focusNext(index) {
@@ -99,45 +101,37 @@ export default {
       }
     },
     async handleOtpVerification() {
-      const code = this.otp.join('')
-      const isValid = this.otp.every(digit => /^\d$/.test(digit))
-
-      if (code.length !== 4 || !isValid) {
-        this.$toast?.error?.(
-          this.$t?.('otp.invalidLength') || 'Please enter a valid 4-digit code'
-        )
-        return
-      }
-
+      const code = this.otp.join('');
       try {
-        const response = await axios.post(`${API_URL}/client/verify-otp`, {
-          otp: code,
-          email: this.user.email
+        const response = await axios.post(`https://backend.webenia.org/api/client/verify-otp`, {
+          email: this.user.email,
+          otp: code
         }, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
-        })
+        });
 
-        if (response.data.status === true) {
-          const userData = {
-            ...this.user,
-            ...response.data.data.user
-          }
+        const userData = response.data.data;
 
-          localStorage.setItem('user', JSON.stringify(userData))
-          localStorage.setItem('auth_token', response.data.data.token)
+        if (userData.token && userData.user) {
+          localStorage.setItem('auth_token', userData.token);
+          localStorage.setItem('auth_user', JSON.stringify(userData.user));
 
-          this.otpMessage = '';
-          this.$router.push('/')
+          this.$store.commit('auth/SET_AUTH', userData);
+          await this.$store.dispatch('cart/loadCart');
+
+          this.$router.push('/');
+        } else {
+          this.otpMessage = response.data.message || 'Verification failed.';
         }
-      } catch (error) {
-        console.error('OTP verification error:', error)
-        const errorMessage = error.response?.data?.message || this.$t?.('otp.error') || 'OTP verification failed'
-        this.otpMessage = errorMessage;
-        this.$toast?.error?.(errorMessage)
+      } catch (err) {
+        const msg = err.response?.data?.message || 'Invalid OTP';
+        this.otpMessage = msg;
+        this.$toast?.error?.(msg);
       }
     },
+
     startTimer() {
       let minutes = 3
       let seconds = 0

@@ -116,6 +116,21 @@ export default {
             this.email = localStorage.getItem('user_email') || '';
         }
     },
+
+    created() {
+        // Get email and token from URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        const token = urlParams.get('token');
+
+        if (!email || !token) {
+            this.$router.push('/register')
+            return
+        }
+
+        this.token = token
+        this.email = email // Set the email from URL parameter
+    },
     methods: {
         async resetPassword() {
             this.error = null;
@@ -131,7 +146,13 @@ export default {
                 return;
             }
 
-            
+            // Debug: Check if email is available
+            console.log('Email being sent:', this.email);
+            if (!this.email) {
+                this.error = 'Email is required but not available';
+                return;
+            }
+
             this.loading = true;
             try {
                 const response = await axios.post('api/reset-password', {
@@ -140,17 +161,28 @@ export default {
                     password_confirmation: this.password_confirmation
                 });
 
-                if (response.data && response.data.status && response.data.token && response.data.user) {
-                    localStorage.setItem('auth_token', response.data.token);
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                if (response.data.status && response.data.data) {
+                    const userData = response.data.data;
+                    
+                    // Store token and user data like login
+                    localStorage.setItem('auth_token', userData.token);
+                    localStorage.setItem('auth_user', JSON.stringify(userData.user));
+
+                    // Update store if available
+                    if (this.$store && this.$store.commit) {
+                        this.$store.commit('auth/SET_AUTH', userData);
+                        await this.$store.dispatch('cart/loadCart');
+                    }
+
+                    // Show success message
                     this.success = response.data.message || this.$t('profile.passwordResetSuccess');
-                    this.password = '';
-                    this.password_confirmation = '';
+
+                    // Redirect to home page after a short delay
                     setTimeout(() => {
                         this.$router.push('/');
-                    }, 2000);
+                    }, 1500);
                 } else {
-                    throw new Error(response.data?.message || 'Failed to reset password');
+                    this.error = response.data.message || this.$t('profile.passwordResetFailed');
                 }
             } catch (err) {
                 this.error = err.response?.data?.message || this.$t('profile.passwordResetFailed');
