@@ -40,10 +40,32 @@
           <h3 class="sidebar-title">{{ t('products.price') }}</h3>
           <hr style="color: #8b6b3d; opacity: 1; border-top: 3px solid;" />
           <div class="price-range">
-            <input type="range" v-model.number="priceRange.min" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
-            <input type="range" v-model.number="priceRange.max" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
+            <input type="range" v-model.number="priceRange.min" step="10" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
+            <input type="range" v-model.number="priceRange.max" step="10" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
             <div class="price-values">
-              <span>{{ priceRange.min }} - {{ priceRange.max }} {{ currencyCode.value }}</span>
+              <span>
+                <input
+                  type="number"
+                  v-model.number="priceRange.min"
+                  :step="10"
+                  :min="priceRangeLimit.min"
+                  :max="priceRangeLimit.max"
+                  @input="priceRange.min = Math.floor(Math.min(priceRange.min, 2000))"
+                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()"
+                />
+                -
+                <input
+                  type="number"
+                  v-model.number="priceRange.max"
+                  :step="10"
+                  :min="priceRangeLimit.min"
+                  :max="priceRangeLimit.max"
+                  @input="priceRange.max = Math.floor(Math.min(priceRange.max, 2000))"
+                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()"
+                />
+                {{ currencyCode.value }}
+              </span>
+
             </div>
           </div>
         </div>
@@ -261,6 +283,7 @@ onMounted(() => {
   window.addEventListener('currency-changed', () => {
     fetchProducts()
     // currencyCode.value is now a computed property, no need to call fetchCurrencyCode() here
+    resetFilters()
   })
 })
 
@@ -289,6 +312,14 @@ const filteredProducts = computed(() => {
     return matchCategory && matchPrice;
   });
 })
+
+const resetFilters = () => {
+  selectedCategories.value = [];
+  priceRange.value.min = priceRangeLimit.min;
+  priceRange.value.max = priceRangeLimit.max;
+  isSidebarActive.value = false;
+  document.body.classList.remove('no-scroll');
+}
 
 const calculateDiscountedPrice = (product) => {
   let price = product.discount && product.discount.is_active
@@ -725,5 +756,21 @@ watch(() => priceRange.value.max, (newMax) => {
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 600;
+}
+
+.price-values span input{
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  min-width: 20px;
+  width: fit-content;
+  padding: 0 8px;
+  text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>
