@@ -17,7 +17,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://elegance_backend.test/api/units')
+    axios.get('https://backend.webenia.org/api/units')
 
       .then(response => {
         this.units = response.data;

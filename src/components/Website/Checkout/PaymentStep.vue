@@ -318,7 +318,7 @@ export default {
               ...orderData,
               amount: totalPrice,
               currency: this.currency,
-               delivery_charge: parseFloat(this.deliveryCharge), // ✅ Add this at root
+              delivery_charge: parseFloat(this.deliveryCharge), // ✅ Add this at root
               payment_method: 'stripe',
             },
             { headers }
@@ -622,12 +622,12 @@ export default {
     // سعر التوصيل بناءً على الدولة
     deliveryCharge() {
       const countryId = this.shippingDetails.country_id;
-      let charge ;
-    
+      let charge;
+
       if (countryId === 57) {
         charge = 10;
       } else {
-        charge = 20;    
+        charge = 20;
       }
       return convertToAED(charge, this.currency).toFixed(2);
     },

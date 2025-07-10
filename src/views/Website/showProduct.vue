@@ -292,7 +292,7 @@ const addToCart = async () => {
       payload.amount_id = product.value.amount_id;
     }
     const response = await axios.post(
-      'http://elegance_backend.test/api/cart-items',
+      'https://backend.webenia.org/api/cart-items',
       payload,
       {
         headers: {
@@ -317,7 +317,7 @@ const addToCart = async () => {
 // Helper methods
 const getImageUrl = (path) => {
   if (!path) return placeholder;
-  return `http://elegance_backend.test/public/storage/${path}`;
+  return `https://backend.webenia.org/public/storage/${path}`;
 };
 
 const handleImageError = (e) => {
@@ -341,7 +341,7 @@ const fetchProduct = async () => {
     const selectedCurrency =
       JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
     const res = await axios.get(
-      `http://elegance_backend.test/api/website/show/products/${route.params.id}`,
+      `https://backend.webenia.org/api/website/show/products/${route.params.id}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -396,7 +396,7 @@ const addChildToCart = async (childProduct) => {
       payload.amount_id = childProduct.amount_id;
     }
 
-    const response = await axios.post('http://elegance_backend.test/api/cart-items', payload, {
+    const response = await axios.post('https://backend.webenia.org/api/cart-items', payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -525,7 +525,7 @@ const updateSelectedImage = () => {
   const $slider = $(slider.value);
   if ($slider.length && $slider.hasClass('slick-initialized')) {
     const currentSlide = $slider.find('.slick-current');
-    const imagePath = currentSlide.find('img').attr('src').replace('http://elegance_backend.test/public/storage/', '');
+    const imagePath = currentSlide.find('img').attr('src').replace('https://backend.webenia.org/public/storage/', '');
     setSelectedImage(imagePath);
   }
 };
