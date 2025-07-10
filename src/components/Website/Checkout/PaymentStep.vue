@@ -197,6 +197,7 @@ export default {
         const orderData = {
           user_id: userId,
           total_price: totalPrice,
+          delivery_charge: parseFloat(this.deliveryCharge), // <-- Added
           shipping_address: this.shippingDetails.address || '',
           address_id: this.shippingDetails.addressId,
           items: orderItems,
@@ -294,6 +295,7 @@ export default {
               }))
               .filter((item) => item.product_id && item.quantity > 0),
             total_price: totalPrice,
+            delivery_charge: parseFloat(this.deliveryCharge), // <-- Added
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           },
@@ -316,6 +318,7 @@ export default {
               ...orderData,
               amount: totalPrice,
               currency: this.currency,
+              delivery_charge: parseFloat(this.deliveryCharge), // ✅ Add this at root
               payment_method: 'stripe',
             },
             { headers }
@@ -339,6 +342,7 @@ export default {
             `${API_URL}/api/payment/process`,
             {
               user_id: userId,
+              delivery_charge: parseFloat(this.deliveryCharge), // ✅ Add this at root
               payment_method: 'tabby',
               order: {
                 status: 'pending',
@@ -356,6 +360,7 @@ export default {
                   }))
                   .filter((item) => item.product_id && item.quantity > 0),
                 total_price: totalPrice,
+                delivery_charge: parseFloat(this.deliveryCharge), // <-- Added
               },
               user: {
                 name: this.user.name,
@@ -450,7 +455,8 @@ export default {
           price: item.price,
           subtotal: item.price * item.quantity
         })),
-        total_price: totalPrice
+        total_price: totalPrice,
+        delivery_charge: parseFloat(this.deliveryCharge), // <-- Added
       };
 
       try {
@@ -616,12 +622,12 @@ export default {
     // سعر التوصيل بناءً على الدولة
     deliveryCharge() {
       const countryId = this.shippingDetails.country_id;
-      let charge ;
-    
+      let charge;
+
       if (countryId === 57) {
         charge = 10;
       } else {
-        charge = 20;    
+        charge = 20;
       }
       return convertToAED(charge, this.currency).toFixed(2);
     },

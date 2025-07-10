@@ -127,7 +127,7 @@ export default createStore({
       } catch (error) {
         console.error('Login error:', error)
         const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.'
-        commit('SET_ERROR', errorMessage) 
+        commit('SET_ERROR', errorMessage)
         throw error
       } finally {
         commit('SET_LOADING', false)
