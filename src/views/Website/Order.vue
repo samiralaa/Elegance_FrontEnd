@@ -26,6 +26,37 @@
       </a>
     </div>
 
+    <div class="dropdown-container">
+      <button id="selectDropdownButton" type="button" class="select-dropdown-button">
+        <span id="selectedValue" class="selected-value">{{ $t('orders.allOrders') }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <div id="selectDropdownContent" class="select-dropdown-content">
+        <div style="padding-top: 0.25rem; padding-bottom: 0.25rem;" role="menu" aria-orientation="vertical" aria-labelledby="selectDropdownButton">
+          <a class="select-option" href="#" @click.prevent="filterOrders(null)">
+            {{ $t('orders.allOrders') }}
+            <h3 class="num">{{ allOrdersCount }}</h3>
+          </a>
+          <a class="select-option" href="#" @click.prevent="filterOrders('pending')">
+            {{ $t('orders.inProgress') }}
+            <h3 class="num">{{ pendingOrdersCount }}</h3>
+          </a>
+          <a class="select-option" href="#" @click.prevent="filterOrders('completed')">
+            {{ $t('orders.completed') }}
+            <h3 class="num">{{ completedOrdersCount }}</h3>
+          </a>
+          <a class="select-option" href="#" @click.prevent="filterOrders('cancelled')">
+            {{ $t('orders.cancelled') }}
+            <h3 class="num">{{ cancelledOrdersCount }}</h3>
+          </a>
+        </div>
+      </div>
+      <input type="hidden" id="hiddenSelectValue" name="selectOption" value="">
+    </div>
+
     <div v-if="loading" class="text-center">
       <div class="spinner-border" role="status"></div>
     </div>
@@ -88,28 +119,12 @@
 
       <!-- Order content -->
       <div v-else class="cart-content">
-        <!-- Order Info -->
         <div class="mb-3">
           <strong>Status:</strong>
           <span :class="['badge', getStatusBadgeClass(selectedOrder.status)]">
             {{ formatStatus(selectedOrder.status) }}
           </span>
         </div>
-        <div class="mb-3" v-if="selectedOrder.address">
-          <strong>Address:</strong>
-          <div v-if="typeof selectedOrder.address === 'object'">
-            <div v-if="selectedOrder.address.street">{{ selectedOrder.address.street }}</div>
-            <div v-if="selectedOrder.address.city">{{ selectedOrder.address.city }}</div>
-            <div v-if="selectedOrder.address.state">{{ selectedOrder.address.state }}</div>
-            <div v-if="selectedOrder.address.country">{{ selectedOrder.address.country }}</div>
-            <div v-if="selectedOrder.address.zip">{{ selectedOrder.address.zip }}</div>
-            <!-- Add more fields as needed -->
-          </div>
-          <div v-else>
-            {{ selectedOrder.address }}
-          </div>
-        </div>
-        <!-- Items List -->
         <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
           <div v-for="item in selectedOrder.items" :key="item.id" class="d-flex flex-column align-items-start col-4">
             <img v-if="item.product && item.product.images && item.product.images.length"
@@ -119,7 +134,6 @@
               style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
             <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name' }}</strong>
             <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
-            <small class="text-muted">{{ $t('orders.size') }}: {{ item.size || '-' }}</small>
           </div>
         </div>
       </div>
@@ -128,13 +142,11 @@
 </template>
 
 <script>
-import axios, { all } from 'axios';
+import axios from 'axios';
 import Header from "@/components/Website/Header.vue";
 
 export default {
-  components: {
-    Header,
-  },
+  components: { Header },
   name: 'UserOrder',
   data() {
     return {
@@ -146,7 +158,6 @@ export default {
       selectedCurrency: localStorage.getItem('selectedCurrency')
         ? JSON.parse(localStorage.getItem('selectedCurrency')).code
         : 'EGP',
-      
     };
   },
   computed: {
@@ -157,23 +168,15 @@ export default {
       return this.orders.filter(order => order.status === 'pending').length;
     },
     completedOrdersCount() {
-      return this.orders.filter(order =>
-        order.status === 'completed' || order.status === 'completed'
-      ).length;
+      return this.orders.filter(order => order.status === 'completed').length;
     },
     cancelledOrdersCount() {
       return this.orders.filter(order => order.status === 'cancelled').length;
     },
     filteredOrders() {
-      if (!this.currentFilter) {
-        return this.orders;
-      }
-      return this.orders.filter(order => {
-        if (this.currentFilter === 'completed') {
-          return order.status === 'completed';
-        }
-        return order.status === this.currentFilter;
-      });
+      return !this.currentFilter
+        ? this.orders
+        : this.orders.filter(order => order.status === this.currentFilter);
     },
   },
   methods: {
@@ -219,12 +222,8 @@ export default {
     formatDate(datetime) {
       const date = new Date(datetime);
       return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hour12: true
       });
     },
     formatStatus(status) {
@@ -235,33 +234,6 @@ export default {
       };
       return statusMap[status.toLowerCase()] || status;
     },
-  async showOrderDetailsPopup(orderId) {
-    this.isDialogVisible = true;
-    this.loading = true;
-    try {
-      const token = localStorage.getItem('auth_token');
-      const res = await axios.get(`https://backend.webenia.org/api/orders/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (res.data.status && res.data.data.original.success) {
-        // ✅ fix here
-        this.selectedOrder = res.data.data.original.orders[0];
-      } else {
-        this.$toast.error(res.data.message || 'Failed to fetch order details');
-      }
-    } catch (err) {
-      console.error('Failed to fetch order details:', err);
-      this.$toast.error(err.response?.data?.message || 'Failed to fetch order details');
-    } finally {
-      this.loading = false;
-    }
-  },
-
-
     getStatusBadgeClass(status) {
       const statusClasses = {
         'pending': 'bg-warning',
@@ -273,17 +245,77 @@ export default {
     updateCurrency() {
       const stored = localStorage.getItem('selectedCurrency');
       this.selectedCurrency = stored ? JSON.parse(stored).code : 'EGP';
+    },
+    toggleDropdown(el) {
+      el.classList.toggle("show");
+    },
+    setupDropdown() {
+      const btn = document.getElementById("selectDropdownButton");
+      const content = document.getElementById("selectDropdownContent");
+      const selectedValue = document.getElementById("selectedValue");
+      const hiddenInput = document.getElementById("hiddenSelectValue");
+      const options = content.querySelectorAll(".select-option");
+
+      btn?.addEventListener("click", () => this.toggleDropdown(content));
+
+      options.forEach(option => {
+        option.addEventListener("click", (e) => {
+          e.preventDefault();
+          selectedValue.textContent = option.textContent;
+          hiddenInput.value = option.getAttribute("data-value");
+          content.classList.remove("show");
+        });
+      });
+
+      window.addEventListener("click", (e) => {
+        if (!btn.contains(e.target) && content.classList.contains("show")) {
+          content.classList.remove("show");
+        }
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && content.classList.contains("show")) {
+          content.classList.remove("show");
+        }
+      });
+    },
+    async showOrderDetailsPopup(orderId) {
+      this.isDialogVisible = true;
+      this.loading = true;
+      try {
+        const token = localStorage.getItem('auth_token');
+        const res = await axios.get(`https://backend.webenia.org/api/orders/${orderId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (res.data.status && res.data.data.original.success) {
+          this.selectedOrder = res.data.data.original.orders.find(o => o.id === orderId);
+
+        } else {
+          this.$toast.error(res.data.message || 'Failed to fetch order details');
+        }
+      } catch (err) {
+        console.error('Failed to fetch order details:', err);
+        this.$toast.error(err.response?.data?.message || 'Failed to fetch order details');
+      } finally {
+        this.loading = false;
+      }
     }
   },
   mounted() {
     this.fetchOrders();
+    this.setupDropdown();
     window.addEventListener('currency-changed', this.updateCurrency);
   },
   beforeUnmount() {
     window.removeEventListener('currency-changed', this.updateCurrency);
-  },
+  }
 };
 </script>
+
 
 <style scoped>
 .items {
@@ -433,5 +465,197 @@ export default {
 .cart-content::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 5px;
+}
+
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  margin-bottom: 2rem;
+  display: none;
+}
+
+.dropdown-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.dropdown-button {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  outline: none;
+}
+
+.dropdown-button:hover {
+  background-color: #f9fafb;
+}
+
+.dropdown-button:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5), 0 0 #0000;
+  border-color: #6366f1;
+}
+
+.dropdown-button svg {
+  margin-left: 0.5rem;
+  margin-right: -0.25rem;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  width: 14rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  outline: none;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.9);
+  transform-origin: top left;
+  visibility: hidden;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+    visibility 0s linear 0.2s;
+}
+
+.dropdown-content.show {
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+    visibility 0s linear;
+}
+
+.dropdown-content .menu-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.dropdown-content .menu-item:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.select-dropdown-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 14rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  outline: none;
+}
+
+.select-dropdown-button:hover {
+  background-color: #f9fafb;
+}
+
+.select-dropdown-button:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5), 0 0 #0000;
+  border-color: #6366f1;
+}
+
+.select-dropdown-button .selected-value {
+  flex-grow: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select-dropdown-button svg {
+  margin-left: 0.5rem;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.select-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  width: 14rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  outline: none;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.9);
+  transform-origin: top left;
+  visibility: hidden;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+    visibility 0s linear 0.2s;
+}
+
+.select-dropdown-content.show {
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+    visibility 0s linear;
+}
+
+.select-dropdown-content .select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.select-dropdown-content .select-option:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .orders-header{
+    display: none;
+  }
+
+  .dropdown-container {
+    display: block;
+  }
 }
 </style>

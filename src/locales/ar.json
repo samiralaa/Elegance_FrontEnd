@@ -302,6 +302,7 @@
 
   "orders": {
     "myOrders": "طلباتي",
+    "selectOrder": "اختر الطلب",
     "allOrders": "كل الطلبات",
     "inProgress": "قيد التنفيذ",
     "completed": "مكتمل",

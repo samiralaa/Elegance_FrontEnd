@@ -299,6 +299,7 @@
   
   "orders" : {
     "myOrders" : "My Orders",
+    "selectOrder" : "Select Order",
     "allOrders" : "All Orders",
     "inProgress" : "In Progress",
     "completed" : "Completed",
