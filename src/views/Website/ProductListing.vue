@@ -81,7 +81,7 @@
               </span>
             </div>
           </div>
-          <div class="addToCart-btn">
+          <div class="addToCart-btn" :style="!product.is_available ? 'cursor: not-allowed;' : ''">
             <button :disabled="!product.is_available" @click="addToCart(product)" class="btn">
               {{ $t('products.addToCart') }}
             </button>
@@ -276,7 +276,7 @@ const filteredProducts = computed(() => {
 
     // Convert product price to selected currency for filtering
     const productPriceInSelectedCurrency = convertPrice(
-      p.price,
+      p.converted_price,
       p.currency_code || 'AED',
       currencyCode.value
     );
