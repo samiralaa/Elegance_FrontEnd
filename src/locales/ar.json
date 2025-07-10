@@ -300,16 +300,22 @@
     }
   },
 
-  "orders" : {
-    "myOrders" : "طلباتي",
-    "orderId" : "ID",
-    "orderDate" : "تاريخ",
-    "total" : "المجموع",
-    "status" : "الحالة",
-    "actions" : "الإجراءات",
-    "filterByStatus" : "الحالة",
-    "searchPlaceholder" : "بحث..."
+  "orders": {
+    "myOrders": "طلباتي",
+    "allOrders": "كل الطلبات",
+    "inProgress": "قيد التنفيذ",
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "orderId": "رقم الطلب",
+    "size": "المقاس",
+    "orderDate": "تاريخ الطلب",
+    "total": "الإجمالي",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "filterByStatus": "تصفية حسب الحالة",
+    "searchPlaceholder": "ابحث..."
   },
+
 
   "checkout": {
     "checkout": "الدفع",

@@ -2,26 +2,26 @@
   <Header />
 
   <div class="container py-4">
-    <h2 class="mb-4 fw-bold">My Orders</h2>
+    <h2 class="mb-4 fw-bold">{{ $t('orders.myOrders') }}</h2>
 
     <div class="orders-header">
       <a class="order-stage" href="#" @click.prevent="filterOrders(null)" :class="{ active: !currentFilter }">
-        <h3>In Progress</h3>
+        <h3>{{ $t('orders.allOrders') }}</h3>
         <h3 class="num">{{ allOrdersCount }}</h3>
       </a>
       <a class="order-stage" href="#" @click.prevent="filterOrders('pending')"
         :class="{ active: currentFilter === 'pending' }">
-        <h3>In Progress</h3>
+        <h3>{{ $t('orders.inProgress') }}</h3>
         <h3 class="num">{{ pendingOrdersCount }}</h3>
       </a>
       <a class="order-stage" href="#" @click.prevent="filterOrders('completed')"
         :class="{ active: currentFilter === 'completed' }">
-        <h3>Completed</h3>
+        <h3>{{ $t('orders.completed') }}</h3>
         <h3 class="num">{{ completedOrdersCount }}</h3>
       </a>
       <a class="order-stage" href="#" @click.prevent="filterOrders('cancelled')"
         :class="{ active: currentFilter === 'cancelled' }">
-        <h3>Cancelled</h3>
+        <h3>{{ $t('orders.cancelled') }}</h3>
         <h3 class="num">{{ cancelledOrdersCount }}</h3>
       </a>
     </div>
@@ -35,7 +35,7 @@
         <div class="order-card p-4 rounded-4 shadow-sm bg-white">
           <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
             <div>
-              <small class="text-muted">Order ID</small>
+              <small class="text-muted">{{ $t('orders.orderId') }}</small>
               <h5 class="fw-bold">#{{ order.id }}</h5>
             </div>
             <div class="text-end">
@@ -56,13 +56,12 @@
               <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name'
                 }}</strong>
               <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
-              <small class="text-muted">Size: {{ item.size || '-' }}</small>
             </div>
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
             <strong>Total: {{ order.total_price }} {{ selectedCurrency }} ({{ order.items.length }} Items)</strong>
-            <button class="btn btn-outline-dark btn-sm" @click="showOrderDetails(order.id)">Details</button>
+            <button class="btn btn-outline-dark btn-sm" @click="showOrderDetailsPopup(order.id)">Details</button>
           </div>
         </div>
       </div>
@@ -72,12 +71,7 @@
       No orders found.
     </div>
   </div>
-  <!-- <el-dialog v-model="isDialogVisible" title="Order Details" width="500px" center>
 
-      <template #footer>
-        <button class="btn btn-outline-dark btn-sm" @click="isDialogVisible = false">Close</button>
-      </template>
-</el-dialog> -->
   <div class="modal-overlay d-flex justify-content-center align-items-center" v-if="isDialogVisible">
     <div class="cart-modal bg-white rounded-4 shadow p-4 position-relative">
       <!-- Close Button -->
@@ -93,7 +87,7 @@
       </div>
 
       <!-- Order content -->
-      <div v-else class="cart-content overflow-auto" style="max-height: 60vh;">
+      <div v-else class="cart-content">
         <!-- Order Info -->
         <div class="mb-3">
           <strong>Status:</strong>
@@ -125,7 +119,7 @@
               style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
             <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name' }}</strong>
             <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
-            <small class="text-muted">Size: {{ item.size || '-' }}</small>
+            <small class="text-muted">{{ $t('orders.size') }}: {{ item.size || '-' }}</small>
           </div>
         </div>
       </div>
@@ -152,6 +146,7 @@ export default {
       selectedCurrency: localStorage.getItem('selectedCurrency')
         ? JSON.parse(localStorage.getItem('selectedCurrency')).code
         : 'EGP',
+      
     };
   },
   computed: {
@@ -240,23 +235,33 @@ export default {
       };
       return statusMap[status.toLowerCase()] || status;
     },
-    async showOrderDetails(orderId) {
-      try {
-        this.loading = true
-        const token = localStorage.getItem('auth_token');
-        const res = await axios.get(`https://backend.webenia.org/api/orders/${orderId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        this.selectedOrder = res.data.data.order;
-        this.isDialogVisible = true;
-      } catch (err) {
-        this.$toast.error('حدث خطأ أثناء تحميل تفاصيل الطلب');
-      } finally {
-        this.loading = false;
+  async showOrderDetailsPopup(orderId) {
+    this.isDialogVisible = true;
+    this.loading = true;
+    try {
+      const token = localStorage.getItem('auth_token');
+      const res = await axios.get(`https://backend.webenia.org/api/orders/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (res.data.status && res.data.data.original.success) {
+        // ✅ fix here
+        this.selectedOrder = res.data.data.original.orders[0];
+      } else {
+        this.$toast.error(res.data.message || 'Failed to fetch order details');
       }
-    },
+    } catch (err) {
+      console.error('Failed to fetch order details:', err);
+      this.$toast.error(err.response?.data?.message || 'Failed to fetch order details');
+    } finally {
+      this.loading = false;
+    }
+  },
+
+
     getStatusBadgeClass(status) {
       const statusClasses = {
         'pending': 'bg-warning',
@@ -282,7 +287,7 @@ export default {
 
 <style scoped>
 .items {
-  max-height: 270px;
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -358,7 +363,7 @@ export default {
 .num {
   background-color: #fff;
   aspect-ratio: 1 / 1;
-  padding: 0.15rem 0.3rem;
+  padding: 0.15rem 0.5rem;
   text-align: center;
   vertical-align: middle;
   border-radius: 50%;
@@ -398,9 +403,8 @@ export default {
 }
 
 .cart-modal {
-  width: 100%;
-  max-width: 70%;
-  max-height: 90vh;
+  max-width: 80%;
+  height: 90vh;
   overflow: hidden;
   animation: fadeInUp 0.3s ease-in-out;
 }
