@@ -151,7 +151,7 @@ export default {
 
         if (response.data.status && response.data.data) {
           this.savedAddresses = response.data.data;
-          console.log('Saved Addresses:', this.savedAddresses);
+          
           
           // Select primary address if exists
           const primaryAddress = this.savedAddresses.find(addr => addr.is_primary);

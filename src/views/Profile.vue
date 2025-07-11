@@ -86,13 +86,35 @@
 
     <!-- Address -->
     <div v-if="user.address?.length" class="mt-4">
-      <h6 class="mb-3">{{ $t('profile.address') }}</h6>
-      <div v-for="(addr, idx) in user.address" :key="addr.id || idx"
-           class="d-flex justify-content-between align-items-center border rounded p-3 mb-2">
-        <span>{{ formatAddress(addr) }}</span>
-        <button class="btn btn-sm btn-outline-primary" @click="openEditDialog(addr)">Edit</button>
-      </div>
+  <!-- Header with Icon -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0 text-dark">
+      <fa :icon="['fas', 'map-marker-alt']" class="me-2 text-primary" />
+      {{ $t('profile.address') }}
+    </h5>
+    <button class="btn btn-outline-info btn-sm" @click="openEditDialog()">
+      <fa :icon="['fas', 'plus']" class="me-1" />
+      {{ $t('profile.addAddress') }}
+    </button>
+  </div>
+
+  <!-- Address List -->
+  <div
+    v-for="(addr, idx) in user.address"
+    :key="addr.id || idx"
+    class="d-flex justify-content-between align-items-center border rounded p-3 mb-2 bg-light"
+  >
+    <div class="d-flex align-items-center">
+      <fa :icon="['fas', 'location-dot']" class="text-secondary me-3" />
+      <span class="text-muted">{{ formatAddress(addr) }}</span>
     </div>
+    <button class="btn btn-sm btn-outline-primary" @click="openEditDialog(addr)">
+      <fa :icon="['fas', 'pen']" class="me-1" />
+      {{ $t('profile.editAddress') }}
+    </button>
+  </div>
+</div>
+
   </div>
 
   <!-- Edit Address Modal -->
@@ -121,24 +143,30 @@
           <label>Landmark</label>
           <input v-model="addressForm.landmark" class="form-control" placeholder="Landmark" />
             </div>
-        <div class="form-group">
-          <label>City ID</label>
-          <input v-model="addressForm.city_id" class="form-control" placeholder="City ID" />
-            </div>
-        <div class="form-group">
-          <label>Country ID</label>
-          <input v-model="addressForm.country_id" class="form-control" placeholder="Country ID" />
-          </div>
+      <div class="form-group">
+        <label for="country">country</label>
+        <select id="country" class="form-control" v-model="addressForm.country_id" required @change="fetchCities(addressForm.country_id)">
+          <option v-if="countryLoading" disabled>Loading...</option>
+          <option v-for="country in countries" :key="country.id" :value="country.id" >
+            {{ country.name_en || country.name_ar }}
+          </option>
+        </select>
+      </div>
+
+         <div class="form-group">
+        <label for="city">{{ $t('checkout.city') }}</label>
+        <select id="city" class="form-select" v-model="addressForm.city_id" required>
+          <option v-for="city in cities" :key="city.id" :value="city.id">
+            {{ $i18n.locale === 'ar' ? city.name_ar : city.name_en }}
+          </option>
+        </select>
+      </div>
 
         <div class="d-flex justify-content-end gap-2 mt-2">
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="button" class="btn btn-secondary" @click="closeEditDialog">Cancel</button>
         </div>
 
-        <div v-if="addressSuccess" class="alert alert-success d-flex align-items-center mt-3">
-          <i class="bi bi-check-circle-fill me-2"></i>
-          Address updated successfully!
-        </div>
       </form>
     </div>
       </div>
@@ -149,11 +177,14 @@
 <script>
 import axios from 'axios';
 import Header from '@/components/Website/Header.vue'
-
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 export default {
-  components: { Header },
+  components: { Header,fa: FontAwesomeIcon },
   data() {
     return {
+      cities: [],
+      countries: [],
+      countryLoading: false,
       loading: true,
       error: null,
       user: {},
@@ -178,6 +209,7 @@ export default {
     };
   },
   methods: {
+    
     formatDate(dateString) {
       if (!dateString) return 'N/A';
       return new Date(dateString).toLocaleDateString();
@@ -204,10 +236,19 @@ export default {
         countryName
       ].filter(Boolean).join(', ');
     },
-    openEditDialog(addr) {
-      this.editingAddressId = addr.id;
-      this.addressForm = { ...addr };
+    openEditDialog(addr = null) {
+  
+     if (addr) {
+       this.editingAddressId = addr?.id;
+       this.addressForm = { ...addr };
+       this.showAddressDialog = true;
+      
+     }else{
       this.showAddressDialog = true;
+      this.addressForm ={...addr};
+     
+      
+     }
     },
     closeEditDialog() {
       this.showAddressDialog = false;
@@ -224,6 +265,7 @@ export default {
     },
    async saveAddress(addressId) {
   try {
+    
     const response = await axios.post(`api/address/${addressId}`, this.addressForm, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
@@ -238,19 +280,19 @@ export default {
     this.addressSuccess = true;
 
     // ✅ عرض الرسالة القادمة من السيرفر
-    this.$toast && this.$toast.success(response.data.message || 'Address updated successfully!');
+     this.$toast?.success(response.data.message || 'Address updated successfully');
 
-    setTimeout(() => {
-      this.addressSuccess = false;
-      this.closeEditDialog();
-    }, 1200);
-
+    
+    await created()
   } catch (err) {
     // ✅ عرض رسالة الخطأ القادمة من السيرفر إن وجدت
     const errorMessage = err?.response?.data?.message || 'Failed to update address';
-    this.$toast && this.$toast.error(errorMessage);
+    this.$toast.error(errorMessage);
+  }finally {
+    this.closeEditDialog();
   }
 },
+
 async resetPassword() {
   this.resetPasswordError = null;
   this.resetPasswordSuccess = null;
@@ -289,9 +331,42 @@ async resetPassword() {
   }
 },
 
-  },
-  async created() {
-    try {
+async fetchCountries() {
+      this.countryLoading = true;
+      try {
+        const response = await axios.get('https://backend.webenia.org/api/countries');
+        this.countries = response.data?.data || [];
+        
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      } finally {
+        this.countryLoading = false;
+      }
+    },
+
+
+    async fetchCities(id) {
+      console.log(id);
+      this.countryLoading = true;
+      try {
+        const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
+        
+        this.cities = response.data.data.original.data.cities;
+        console.log('Cities:', this.cities);
+        
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+
+        this.cities = [];
+        this.countryLoading = false;
+      }
+      finally {
+        this.countryLoading = false;
+      }
+      
+    },
+    async fetchUserProfile() {
+       try {
       const response = await axios.get('api/me', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
@@ -303,6 +378,34 @@ async resetPassword() {
     } finally {
       this.loading = false;
     }
+    }
+    
+  },
+  
+  
+  async created() {
+    // Fetch user profile data
+    await this.fetchUserProfile();
+    
+    // Fetch countries for address form
+    await this.fetchCountries();
+    
+    // If user has address, fetch cities for the first country
+    if (this.user.address && this.user.address.length > 0) {
+      const firstCountryId = this.user.address[0].country_id || this.user.address[0].country?.id;
+      if (firstCountryId) {
+        await this.fetchCities(firstCountryId);
+      } 
+    } else {
+      this.cities = []; 
+    }
+    
+    
+  },
+ async mounted(){
+    // Fetch countries when component is mounted
+  await  this.fetchCountries();
+         
   }
 };
 </script>
