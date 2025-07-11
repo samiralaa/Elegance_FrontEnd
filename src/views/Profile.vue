@@ -27,7 +27,7 @@
         </div>
       </div>
       <button class="btn btn-outline-secondary d-flex align-items-center gap-1"
-              @click="goToResetPassword"
+              @click="showResetPasswordModal = true"
               aria-label="Reset Password">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
           <path d="M12 15v2m0 0v2m0-2h2m-2 0H10m8-6a8 8 0 11-16 0 8 8 0 0116 0z"
@@ -37,6 +37,36 @@
           {{ $t('profile.resetPassword') }}
         </button>
       </div>
+
+    <!-- Reset Password Modal -->
+    <div v-if="showResetPasswordModal" class="modal-overlay">
+      <div class="modal-dialog-centered">
+        <div class="modal-content bg-white p-4 rounded shadow w-100">
+          <h5 class="mb-4">{{ $t('profile.resetPassword') }}</h5>
+          <form @submit.prevent="resetPassword" class="d-flex flex-column gap-3">
+            <div class="form-group">
+              <label>{{ $t('profile.newPassword') }}</label>
+              <input type="password" v-model="password" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label>{{ $t('profile.confirmPassword') }}</label>
+              <input type="password" v-model="password_confirmation" class="form-control" required />
+            </div>
+            <div v-if="resetPasswordError" class="alert alert-danger">{{ resetPasswordError }}</div>
+            <div v-if="resetPasswordSuccess" class="alert alert-success">{{ resetPasswordSuccess }}</div>
+            <div class="d-flex justify-content-end gap-2 mt-2">
+              <button type="submit" class="btn btn-primary" :disabled="resetPasswordLoading">
+                <span v-if="resetPasswordLoading" class="spinner-border spinner-border-sm"></span>
+                {{ $t('profile.submit') }}
+              </button>
+              <button type="button" class="btn btn-secondary" @click="showResetPasswordModal = false">
+                {{ $t('profile.cancel') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <!-- Basic Details -->
     <div class="d-flex flex-column gap-3">
@@ -138,7 +168,13 @@ export default {
         city_id: '',
         country_id: ''
       },
-      addressSuccess: false
+      addressSuccess: false,
+      showResetPasswordModal: false,
+      password: '',
+      password_confirmation: '',
+      resetPasswordLoading: false,
+      resetPasswordError: null,
+      resetPasswordSuccess: null
     };
   },
   methods: {
@@ -214,7 +250,44 @@ export default {
     const errorMessage = err?.response?.data?.message || 'Failed to update address';
     this.$toast && this.$toast.error(errorMessage);
   }
-}
+},
+async resetPassword() {
+  this.resetPasswordError = null;
+  this.resetPasswordSuccess = null;
+
+  if (this.password !== this.password_confirmation) {
+    this.resetPasswordError = this.$t('profile.passwordsDoNotMatch');
+    return;
+  }
+  if (this.password.length < 8) {
+    this.resetPasswordError = this.$t('profile.passwordTooShort');
+    return;
+  }
+
+  this.resetPasswordLoading = true;
+  try {
+    const response = await axios.post('api/reset-password', {
+      email: this.user.email,
+      password: this.password,
+      password_confirmation: this.password_confirmation
+    });
+
+    if (response.data.status && response.data.data) {
+      this.resetPasswordSuccess = response.data.message || this.$t('profile.passwordResetSuccess');
+      setTimeout(() => {
+        this.showResetPasswordModal = false;
+        this.password = '';
+        this.password_confirmation = '';
+      }, 1500);
+    } else {
+      this.resetPasswordError = response.data.message || this.$t('profile.passwordResetFailed');
+    }
+  } catch (err) {
+    this.resetPasswordError = err.response?.data?.message || this.$t('profile.passwordResetFailed');
+  } finally {
+    this.resetPasswordLoading = false;
+  }
+},
 
   },
   async created() {

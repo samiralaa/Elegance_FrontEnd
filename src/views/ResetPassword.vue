@@ -71,7 +71,7 @@
                 </div>
             </form>
 
-            <div class="back-to-profile">
+            <div class="back-to-profile" v-if="isAuthenticated">
                 <button @click="goBackToProfile" class="back-btn">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
                         <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -192,6 +192,11 @@ export default {
         },
         goBackToProfile() {
             this.$router.push({ name: 'Profile' });
+        }
+    },
+    computed: {
+        isAuthenticated() {
+            return !!localStorage.getItem('auth_user');
         }
     }
 };

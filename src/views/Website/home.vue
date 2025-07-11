@@ -167,7 +167,7 @@ export default {
   },
 
   created() {
-    const savedUser = localStorage.getItem('user')
+    const savedUser = localStorage.getItem('auth_user')
     const savedToken = localStorage.getItem('token')
 
     if (savedUser) {

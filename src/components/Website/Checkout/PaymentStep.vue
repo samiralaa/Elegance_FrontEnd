@@ -23,12 +23,10 @@
         <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.address }}</p>
 
         <!-- Subtotal -->
-
+        <p>{{ $t('checkout.subtotal') }}: {{ apiCartTotal }} {{ currency }}</p>
         <!-- Delivery charge -->
         <p>{{ $t('checkout.deliveryCharge') }}: {{ deliveryCharge }} {{ currency }}</p>
-
         <!-- Tax -->
-
         <!-- Total -->
         <div class="total-amount">
           {{ $t('checkout.totalAmount') }}: {{ totalAmount }} {{ currency }}
@@ -90,11 +88,13 @@ export default {
       stripePromise: null,
       stripeClientSecret: null,
       stripeElements: null,
-      cardElement: null
+      cardElement: null,
+      apiCartTotal: 0, // <-- Added
     };
   },
   created() {
     this.stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_your_stripe_key');
+    this.fetchCartTotal(); // <-- Added
   },
   watch: {
     selectedPaymentMethod(newValue) {
@@ -481,6 +481,21 @@ export default {
 
       }
     },
+    async fetchCartTotal() {
+      try {
+        const token = localStorage.getItem('auth_token');
+        const response = await axios.get('https://backend.webenia.org/api/cart-items', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const items = response.data?.data?.original?.data || [];
+        this.apiCartTotal = items.reduce((sum, item) => sum + Number(item.converted_total), 0);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+        this.apiCartTotal = 0;
+      }
+    },
     getCountryCode(countryName) {
       // Common country mappings
       const countryMap = {
@@ -612,11 +627,12 @@ export default {
     // المجموع الفرعي (أسعار المنتجات فقط)
     subTotal() {
       // استخدم السعر الأصلي وحول حسب العملة المختارة
-      return this.cartItems.reduce((sum, item) => {
-        const price = parseFloat(item.product.price) || 0;
-        const quantity = parseInt(item.quantity) || 0;
-        return sum + convertToAED(price, this.currency) * quantity;
-      }, 0).toFixed(2);
+      // return this.cartItems.reduce((sum, item) => {
+      //   const price = parseFloat(item.product.price) || 0;
+      //   const quantity = parseInt(item.quantity) || 0;
+      //   return sum + convertToAED(price, this.currency) * quantity;
+      // }, 0).toFixed(2);
+      return this.apiCartTotal.toFixed(2); // <-- Use API total
     },
 
     // سعر التوصيل بناءً على الدولة
@@ -638,7 +654,7 @@ export default {
 
     // المجموع النهائي
     totalAmount() {
-      const subtotal = parseFloat(this.subTotal);
+      const subtotal = parseFloat(this.apiCartTotal); // Use API total
       const delivery = parseFloat(this.deliveryCharge);
       const tax = parseFloat(this.taxAmount);
       return (subtotal + delivery + tax).toFixed(2);
