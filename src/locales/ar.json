@@ -493,7 +493,8 @@
     "passwordResetSuccess": "تمت إعادة تعيين كلمة المرور بنجاح!",
     "passwordResetFailed": "فشل في إعادة تعيين كلمة المرور.",
     "backToProfile": "العودة إلى الملف الشخصي",
-    "editAddress":  "تعديل العنوان"
+    "editAddress":  "تعديل العنوان",
+    "addAddress":" إضافة عنوان"
   },
 
   "otp": { 
