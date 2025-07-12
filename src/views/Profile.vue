@@ -1,174 +1,198 @@
 <template>
   <Header />
-   <div class="profile-outer container my-5">
-  <!-- Loading State -->
-  <div v-if="loading" class="d-flex flex-column align-items-center justify-content-center py-5">
-    <span class="loader mb-2"></span>
+  <div class="profile-outer container my-5">
+    <!-- Loading State -->
+    <div v-if="loading" class="d-flex flex-column align-items-center justify-content-center py-5">
+      <span class="loader mb-2"></span>
       <span>{{ $t('profile.loading') }}</span>
     </div>
 
-  <!-- Error State -->
-  <div v-else-if="error" class="text-center text-danger">
+    <!-- Error State -->
+    <div v-else-if="error" class="text-center text-danger">
       <span>{{ error }}</span>
     </div>
 
-  <!-- Profile Card -->
-  <div v-else class="card p-4 shadow">
-    <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-      <div class="d-flex align-items-center gap-3">
-        <div class="avatar bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
-             style="width: 60px; height: 60px; font-size: 24px;">
-          {{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}
+    <!-- Profile Card -->
+    <div v-else class="card p-4 shadow">
+      <!-- Header -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="avatar bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+            style="width: 60px; height: 60px; font-size: 24px;">
+            {{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}
+          </div>
+          <div>
+            <h5 class="mb-0">{{ user.name }}</h5>
+            <small class="text-muted">{{ user.role }}</small>
+          </div>
         </div>
-        <div>
-          <h5 class="mb-0">{{ user.name }}</h5>
-          <small class="text-muted">{{ user.role }}</small>
-        </div>
-      </div>
-      <button class="btn btn-outline-secondary d-flex align-items-center gap-1"
-              @click="showResetPasswordModal = true"
-              aria-label="Reset Password">
+        <button class="btn btn-outline-secondary d-flex align-items-center gap-1" @click="showResetPasswordModal = true"
+          aria-label="Reset Password">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-          <path d="M12 15v2m0 0v2m0-2h2m-2 0H10m8-6a8 8 0 11-16 0 8 8 0 0116 0z"
-                stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 15v2m0 0v2m0-2h2m-2 0H10m8-6a8 8 0 11-16 0 8 8 0 0116 0z" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           {{ $t('profile.resetPassword') }}
         </button>
       </div>
 
-    <!-- Reset Password Modal -->
-    <div v-if="showResetPasswordModal" class="modal-overlay">
+      <!-- Reset Password Modal -->
+      <div v-if="showResetPasswordModal" class="modal-overlay">
+        <div class="modal-dialog-centered">
+          <div class="modal-content bg-white p-4 rounded shadow w-100">
+            <h5 class="mb-4">{{ $t('profile.resetPassword') }}</h5>
+            <form @submit.prevent="resetPassword" class="d-flex flex-column gap-3">
+              <div class="form-group">
+                <label>{{ $t('profile.newPassword') }}</label>
+                <input type="password" v-model="password" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label>{{ $t('profile.confirmPassword') }}</label>
+                <input type="password" v-model="password_confirmation" class="form-control" required />
+              </div>
+              <div v-if="resetPasswordError" class="alert alert-danger">{{ resetPasswordError }}</div>
+              <div v-if="resetPasswordSuccess" class="alert alert-success">{{ resetPasswordSuccess }}</div>
+              <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="submit" class="btn btn-primary" :disabled="resetPasswordLoading">
+                  <span v-if="resetPasswordLoading" class="spinner-border spinner-border-sm"></span>
+                  {{ $t('profile.submit') }}
+                </button>
+                <button type="button" class="btn btn-secondary" @click="showResetPasswordModal = false">
+                  {{ $t('profile.cancel') }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Details -->
+      <div class="d-flex flex-column gap-3">
+        <div class="d-flex justify-content-between border-bottom pb-2">
+          <strong>{{ $t('profile.name') }}</strong>
+          <span>{{ user.name }}</span>
+        </div>
+        <div class="d-flex justify-content-between border-bottom pb-2">
+          <strong>{{ $t('profile.email') }}</strong>
+          <span>{{ user.email }}</span>
+        </div>
+        <div class="d-flex justify-content-between border-bottom pb-2">
+          <strong>{{ $t('profile.phone') }}</strong>
+          <span>{{ user.phone }}</span>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div v-if="user.address?.length" class="mt-4">
+        <!-- Header with Icon -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0 text-dark">
+            <fa :icon="['fas', 'map-marker-alt']" class="me-2 text-primary" />
+            {{ $t('profile.address') }}
+          </h5>
+          <button class="btn btn-outline-info btn-sm" @click="openEditDialog()">
+            <fa :icon="['fas', 'plus']" class="me-1" />
+            {{ $t('profile.addAddress') }}
+          </button>
+        </div>
+
+        <!-- Address List -->
+        <div v-for="(addr, idx) in user.address" :key="addr.id || idx"
+          class="d-flex justify-content-between align-items-center border rounded p-3 mb-2 bg-light">
+          <div class="d-flex align-items-center">
+            <fa :icon="['fas', 'location-dot']" class="text-secondary me-3" />
+            <span class="text-muted">{{ formatAddress(addr) }}</span>
+          </div>
+          <button class="btn btn-sm btn-outline-primary" @click="openEditDialog(addr)">
+            <fa :icon="['fas', 'pen']" class="me-1" />
+            {{ $t('profile.editAddress') }}
+          </button>
+          <button class="btn btn-sm btn-outline-danger ms-2" @click="openDeleteDialog(addr)">
+            <fa :icon="['fas', 'trash']" class="me-1" />
+            {{ $t('profile.deleteAddress') }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Edit Address Modal -->
+    <div v-if="showAddressDialog" class="modal-overlay">
       <div class="modal-dialog-centered">
         <div class="modal-content bg-white p-4 rounded shadow w-100">
-          <h5 class="mb-4">{{ $t('profile.resetPassword') }}</h5>
-          <form @submit.prevent="resetPassword" class="d-flex flex-column gap-3">
+          <h5 class="mb-4">Edit Address</h5>
+          <form @submit.prevent="saveAddress(editingAddressId)" class="d-flex flex-column gap-3">
             <div class="form-group">
-              <label>{{ $t('profile.newPassword') }}</label>
-              <input type="password" v-model="password" class="form-control" required />
+              <label>Building Name</label>
+              <input v-model="addressForm.building_name" class="form-control" placeholder="Building Name" />
             </div>
             <div class="form-group">
-              <label>{{ $t('profile.confirmPassword') }}</label>
-              <input type="password" v-model="password_confirmation" class="form-control" required />
+              <label>Floor Number</label>
+              <input v-model="addressForm.floor_number" class="form-control" placeholder="Floor Number" />
             </div>
-            <div v-if="resetPasswordError" class="alert alert-danger">{{ resetPasswordError }}</div>
-            <div v-if="resetPasswordSuccess" class="alert alert-success">{{ resetPasswordSuccess }}</div>
+            <div class="form-group">
+              <label>Apartment Number</label>
+              <input v-model="addressForm.apartment_number" class="form-control" placeholder="Apartment Number" />
+            </div>
+            <div class="form-group">
+              <label>Postal Code</label>
+              <input v-model="addressForm.postal_code" class="form-control" placeholder="Postal Code" />
+            </div>
+            <div class="form-group">
+              <label>Landmark</label>
+              <input v-model="addressForm.landmark" class="form-control" placeholder="Landmark" />
+            </div>
+            <div class="form-group">
+              <label for="country">country</label>
+              <select id="country" class="form-control" v-model="addressForm.country_id" required
+                @change="fetchCities(addressForm.country_id)">
+                <option v-if="countryLoading" disabled>Loading...</option>
+                <option v-for="country in countries" :key="country.id" :value="country.id">
+                  {{ country.name_en || country.name_ar }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="city">{{ $t('checkout.city') }}</label>
+              <select id="city" class="form-select" v-model="addressForm.city_id" required>
+                <option v-for="city in cities" :key="city.id" :value="city.id">
+                  {{ $i18n.locale === 'ar' ? city.name_ar : city.name_en }}
+                </option>
+              </select>
+            </div>
+
             <div class="d-flex justify-content-end gap-2 mt-2">
-              <button type="submit" class="btn btn-primary" :disabled="resetPasswordLoading">
-                <span v-if="resetPasswordLoading" class="spinner-border spinner-border-sm"></span>
-                {{ $t('profile.submit') }}
-              </button>
-              <button type="button" class="btn btn-secondary" @click="showResetPasswordModal = false">
-                {{ $t('profile.cancel') }}
-              </button>
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-secondary" @click="closeEditDialog">Cancel</button>
             </div>
+
           </form>
         </div>
       </div>
     </div>
-
-    <!-- Basic Details -->
-    <div class="d-flex flex-column gap-3">
-      <div class="d-flex justify-content-between border-bottom pb-2">
-        <strong>{{ $t('profile.name') }}</strong>
-          <span>{{ user.name }}</span>
-      </div>
-      <div class="d-flex justify-content-between border-bottom pb-2">
-        <strong>{{ $t('profile.email') }}</strong>
-        <span>{{ user.email }}</span>
-      </div>
-      <div class="d-flex justify-content-between border-bottom pb-2">
-        <strong>{{ $t('profile.phone') }}</strong>
-        <span>{{ user.phone }}</span>
-      </div>
-    </div>
-
-    <!-- Address -->
-    <div v-if="user.address?.length" class="mt-4">
-  <!-- Header with Icon -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0 text-dark">
-      <fa :icon="['fas', 'map-marker-alt']" class="me-2 text-primary" />
-      {{ $t('profile.address') }}
-    </h5>
-    <button class="btn btn-outline-info btn-sm" @click="openEditDialog()">
-      <fa :icon="['fas', 'plus']" class="me-1" />
-      {{ $t('profile.addAddress') }}
-    </button>
   </div>
 
-  <!-- Address List -->
-  <div
-    v-for="(addr, idx) in user.address"
-    :key="addr.id || idx"
-    class="d-flex justify-content-between align-items-center border rounded p-3 mb-2 bg-light"
-  >
-    <div class="d-flex align-items-center">
-      <fa :icon="['fas', 'location-dot']" class="text-secondary me-3" />
-      <span class="text-muted">{{ formatAddress(addr) }}</span>
-    </div>
-    <button class="btn btn-sm btn-outline-primary" @click="openEditDialog(addr)">
-      <fa :icon="['fas', 'pen']" class="me-1" />
-      {{ $t('profile.editAddress') }}
-    </button>
-  </div>
-</div>
-
-  </div>
-
-  <!-- Edit Address Modal -->
- <div v-if="showAddressDialog" class="modal-overlay">
-  <div class="modal-dialog-centered">
-    <div class="modal-content bg-white p-4 rounded shadow w-100">
-      <h5 class="mb-4">Edit Address</h5>
-      <form @submit.prevent="saveAddress(editingAddressId)" class="d-flex flex-column gap-3">
-        <div class="form-group">
-          <label>Building Name</label>
-          <input v-model="addressForm.building_name" class="form-control" placeholder="Building Name" />
-        </div>
-        <div class="form-group">
-          <label>Floor Number</label>
-          <input v-model="addressForm.floor_number" class="form-control" placeholder="Floor Number" />
-        </div>
-        <div class="form-group">
-          <label>Apartment Number</label>
-          <input v-model="addressForm.apartment_number" class="form-control" placeholder="Apartment Number" />
-        </div>
-        <div class="form-group">
-          <label>Postal Code</label>
-          <input v-model="addressForm.postal_code" class="form-control" placeholder="Postal Code" />
-        </div>
-        <div class="form-group">
-          <label>Landmark</label>
-          <input v-model="addressForm.landmark" class="form-control" placeholder="Landmark" />
-            </div>
-      <div class="form-group">
-        <label for="country">country</label>
-        <select id="country" class="form-control" v-model="addressForm.country_id" required @change="fetchCities(addressForm.country_id)">
-          <option v-if="countryLoading" disabled>Loading...</option>
-          <option v-for="country in countries" :key="country.id" :value="country.id" >
-            {{ country.name_en || country.name_ar }}
-          </option>
-        </select>
-      </div>
-
-         <div class="form-group">
-        <label for="city">{{ $t('checkout.city') }}</label>
-        <select id="city" class="form-select" v-model="addressForm.city_id" required>
-          <option v-for="city in cities" :key="city.id" :value="city.id">
-            {{ $i18n.locale === 'ar' ? city.name_ar : city.name_en }}
-          </option>
-        </select>
-      </div>
-
+  <!-- Delete Confirmation Dialog -->
+  <div v-if="showDeleteDialog" class="modal-overlay">
+    <div class="modal-dialog-centered">
+      <div class="modal-content bg-white p-4 rounded shadow w-100">
+        <h5 class="mb-3">{{ $t('profile.confirmDeleteAddress') || 'Are you sure you want to delete this address?' }}
+        </h5>
         <div class="d-flex justify-content-end gap-2 mt-2">
-          <button type="submit" class="btn btn-primary">Save</button>
-          <button type="button" class="btn btn-secondary" @click="closeEditDialog">Cancel</button>
+          <button class="btn btn-danger" @click="confirmDeleteAddress">{{ $t('profile.deleteAddress') }}</button>
+          <button class="btn btn-secondary" @click="showDeleteDialog = false">{{ $t('profile.cancel') }}</button>
         </div>
-
-      </form>
+      </div>
     </div>
+  </div>
+
+  <!-- Success Message Dialog -->
+  <div v-if="showDeleteSuccess" class="modal-overlay">
+    <div class="modal-dialog-centered">
+      <div class="modal-content bg-white p-4 rounded shadow w-100 text-center">
+        <h5 class="mb-3 text-success">{{ $t('profile.addressDeleted') || 'Address deleted successfully' }}</h5>
+        <button class="btn btn-primary" @click="showDeleteSuccess = false">OK</button>
       </div>
     </div>
   </div>
@@ -179,7 +203,7 @@ import axios from 'axios';
 import Header from '@/components/Website/Header.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 export default {
-  components: { Header,fa: FontAwesomeIcon },
+  components: { Header, fa: FontAwesomeIcon },
   data() {
     return {
       cities: [],
@@ -205,11 +229,14 @@ export default {
       password_confirmation: '',
       resetPasswordLoading: false,
       resetPasswordError: null,
-      resetPasswordSuccess: null
+      resetPasswordSuccess: null,
+      showDeleteDialog: false,
+      addressToDelete: null,
+      showDeleteSuccess: false,
     };
   },
   methods: {
-    
+
     formatDate(dateString) {
       if (!dateString) return 'N/A';
       return new Date(dateString).toLocaleDateString();
@@ -237,18 +264,18 @@ export default {
       ].filter(Boolean).join(', ');
     },
     openEditDialog(addr = null) {
-  
-     if (addr) {
-       this.editingAddressId = addr?.id;
-       this.addressForm = { ...addr };
-       this.showAddressDialog = true;
-      
-     }else{
-      this.showAddressDialog = true;
-      this.addressForm ={...addr};
-     
-      
-     }
+
+      if (addr) {
+        this.editingAddressId = addr?.id;
+        this.addressForm = { ...addr };
+        this.showAddressDialog = true;
+
+      } else {
+        this.showAddressDialog = true;
+        this.addressForm = { ...addr };
+
+
+      }
     },
     closeEditDialog() {
       this.showAddressDialog = false;
@@ -263,80 +290,87 @@ export default {
         country_id: ''
       };
     },
-   async saveAddress(addressId) {
-  try {
-    
-    const response = await axios.post(`api/address/${addressId}`, this.addressForm, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+    async saveAddress(addressId) {
+      try {
+
+        const response = await axios.post(`api/address/`, this.addressForm, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+
+        const updatedAddress = response.data.data;
+        const idx = this.user.address.findIndex(a => a.id === addressId);
+
+        if (idx !== -1) {
+          // Update existing address
+          this.$set(this.user.address, idx, updatedAddress);
+        } else {
+          // Add new address
+          this.user.address.push(updatedAddress);
+        }
+
+        this.addressSuccess = true;
+        this.$toast?.success(response.data.message || 'Address updated successfully');
+
+        // Re-fetch the user profile for full sync
+        await this.fetchUserProfile();
+
+        // Wait a short moment to ensure UI updates, then close the dialog
+        setTimeout(() => {
+          this.closeEditDialog();
+        }, 300);
+      } catch (err) {
+        const errorMessage = err?.response?.data?.message || 'Failed to update address';
+        this.$toast.error(errorMessage);
+        this.closeEditDialog();
       }
-    });
+    },
 
-    const idx = this.user.address.findIndex(a => a.id === addressId);
-    if (idx !== -1 && response.data && response.data.data) {
-      this.$set(this.user.address, idx, response.data.data);
-    }
+    async resetPassword() {
+      this.resetPasswordError = null;
+      this.resetPasswordSuccess = null;
 
-    this.addressSuccess = true;
+      if (this.password !== this.password_confirmation) {
+        this.resetPasswordError = this.$t('profile.passwordsDoNotMatch');
+        return;
+      }
+      if (this.password.length < 8) {
+        this.resetPasswordError = this.$t('profile.passwordTooShort');
+        return;
+      }
 
-    // ✅ عرض الرسالة القادمة من السيرفر
-     this.$toast?.success(response.data.message || 'Address updated successfully');
+      this.resetPasswordLoading = true;
+      try {
+        const response = await axios.post('api/reset-password', {
+          email: this.user.email,
+          password: this.password,
+          password_confirmation: this.password_confirmation
+        });
 
-    
-    await created()
-  } catch (err) {
-    // ✅ عرض رسالة الخطأ القادمة من السيرفر إن وجدت
-    const errorMessage = err?.response?.data?.message || 'Failed to update address';
-    this.$toast.error(errorMessage);
-  }finally {
-    this.closeEditDialog();
-  }
-},
+        if (response.data.status && response.data.data) {
+          this.resetPasswordSuccess = response.data.message || this.$t('profile.passwordResetSuccess');
+          setTimeout(() => {
+            this.showResetPasswordModal = false;
+            this.password = '';
+            this.password_confirmation = '';
+          }, 1500);
+        } else {
+          this.resetPasswordError = response.data.message || this.$t('profile.passwordResetFailed');
+        }
+      } catch (err) {
+        this.resetPasswordError = err.response?.data?.message || this.$t('profile.passwordResetFailed');
+      } finally {
+        this.resetPasswordLoading = false;
+      }
+    },
 
-async resetPassword() {
-  this.resetPasswordError = null;
-  this.resetPasswordSuccess = null;
-
-  if (this.password !== this.password_confirmation) {
-    this.resetPasswordError = this.$t('profile.passwordsDoNotMatch');
-    return;
-  }
-  if (this.password.length < 8) {
-    this.resetPasswordError = this.$t('profile.passwordTooShort');
-    return;
-  }
-
-  this.resetPasswordLoading = true;
-  try {
-    const response = await axios.post('api/reset-password', {
-      email: this.user.email,
-      password: this.password,
-      password_confirmation: this.password_confirmation
-    });
-
-    if (response.data.status && response.data.data) {
-      this.resetPasswordSuccess = response.data.message || this.$t('profile.passwordResetSuccess');
-      setTimeout(() => {
-        this.showResetPasswordModal = false;
-        this.password = '';
-        this.password_confirmation = '';
-      }, 1500);
-    } else {
-      this.resetPasswordError = response.data.message || this.$t('profile.passwordResetFailed');
-    }
-  } catch (err) {
-    this.resetPasswordError = err.response?.data?.message || this.$t('profile.passwordResetFailed');
-  } finally {
-    this.resetPasswordLoading = false;
-  }
-},
-
-async fetchCountries() {
+    async fetchCountries() {
       this.countryLoading = true;
       try {
         const response = await axios.get('https://backend.webenia.org/api/countries');
         this.countries = response.data?.data || [];
-        
+
       } catch (error) {
         console.error('Error fetching countries:', error);
       } finally {
@@ -350,10 +384,10 @@ async fetchCountries() {
       this.countryLoading = true;
       try {
         const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
-        
+
         this.cities = response.data.data.original.data.cities;
         console.log('Cities:', this.cities);
-        
+
       } catch (error) {
         console.error('Failed to fetch cities:', error);
 
@@ -363,49 +397,72 @@ async fetchCountries() {
       finally {
         this.countryLoading = false;
       }
-      
+
     },
     async fetchUserProfile() {
-       try {
-      const response = await axios.get('api/me', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-        }
-      });
-      this.user = response.data.data.user;
-    } catch (err) {
-      this.error = err.response?.data?.message || 'Failed to fetch profile';
-    } finally {
-      this.loading = false;
-    }
-    }
-    
+      try {
+        const response = await axios.get('api/me', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.user = response.data.data.user;
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Failed to fetch profile';
+      } finally {
+        this.loading = false;
+      }
+    },
+    openDeleteDialog(addr) {
+      this.addressToDelete = addr;
+      this.showDeleteDialog = true;
+    },
+    async confirmDeleteAddress() {
+      if (!this.addressToDelete) return;
+      try {
+        await axios.delete(`api/address/${this.addressToDelete.id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        this.user.address = this.user.address.filter(a => a.id !== this.addressToDelete.id);
+        this.showDeleteDialog = false;
+        this.showDeleteSuccess = true;
+        this.addressToDelete = null;
+      } catch (err) {
+        const errorMessage = err?.response?.data?.message || this.$t('profile.errorDeletingAddress') || 'Failed to delete address';
+        this.$toast?.error(errorMessage);
+        this.showDeleteDialog = false;
+        this.addressToDelete = null;
+      }
+    },
+
   },
-  
-  
+
+
   async created() {
     // Fetch user profile data
     await this.fetchUserProfile();
-    
+
     // Fetch countries for address form
     await this.fetchCountries();
-    
+
     // If user has address, fetch cities for the first country
     if (this.user.address && this.user.address.length > 0) {
       const firstCountryId = this.user.address[0].country_id || this.user.address[0].country?.id;
       if (firstCountryId) {
         await this.fetchCities(firstCountryId);
-      } 
+      }
     } else {
-      this.cities = []; 
+      this.cities = [];
     }
-    
-    
+
+
   },
- async mounted(){
+  async mounted() {
     // Fetch countries when component is mounted
-  await  this.fetchCountries();
-         
+    await this.fetchCountries();
+
   }
 };
 </script>
@@ -439,6 +496,7 @@ async fetchCountries() {
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
 }
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -460,8 +518,8 @@ async fetchCountries() {
 .modal-content {
   background: white;
   border-radius: 0.5rem;
-  max-height: 90vh;    
-  overflow-y: auto;        
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @keyframes spin {

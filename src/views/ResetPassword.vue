@@ -6,68 +6,25 @@
                 <p>{{ $t('profile.resetPasswordDesc') }}</p>
             </div>
 
-            <form @submit.prevent="resetPassword" class="reset-password-form">
-                <!-- <div class="form-group">
-                    <label for="email">{{ $t('profile.email') }}</label>
-                    <input type="email" id="email" v-model="email" required readonly />
-                </div> -->
-
-                <div class="form-group password-group">
-                    <label for="password">{{ $t('profile.newPassword') }}</label>
-                    <div class="password-input-wrapper">
-                        <input :type="showPassword ? 'text' : 'password'" v-model="password" id="password" required
-                            :placeholder="$t('profile.newPasswordPlaceholder')" />
-                        <button type="button" class="toggle-password" @click="showPassword = !showPassword"
-                            tabindex="-1">
-                            <svg v-if="showPassword" width="20" height="20" fill="none" viewBox="0 0 24 24">
-                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#667eea"
-                                    stroke-width="2" />
-                                <circle cx="12" cy="12" r="3" stroke="#667eea" stroke-width="2" />
-                            </svg>
-                            <svg v-else width="20" height="20" fill="none" viewBox="0 0 24 24">
-                                <path
-                                    d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a21.77 21.77 0 015.06-6.06M9.88 9.88A3 3 0 0112 9c1.66 0 3 1.34 3 3 0 .52-.13 1.01-.35 1.43"
-                                    stroke="#667eea" stroke-width="2" />
-                                <path d="M1 1l22 22" stroke="#667eea" stroke-width="2" />
-                            </svg>
-                        </button>
-                    </div>
+            <form @submit.prevent="resetPassword" class="d-flex flex-column gap-3">
+                <div class="form-group">
+                    <label>{{ $t('profile.newPassword') }}</label>
+                    <input :type="showPassword ? 'text' : 'password'" v-model="password" class="form-control" required />
                 </div>
-
-                <div class="form-group password-group">
-                    <label for="password_confirmation">{{ $t('profile.confirmPassword') }}</label>
-                    <div class="password-input-wrapper">
-                        <input :type="showConfirmPassword ? 'text' : 'password'" v-model="password_confirmation"
-                            id="password_confirmation" required
-                            :placeholder="$t('profile.confirmPasswordPlaceholder')" />
-                        <button type="button" class="toggle-password"
-                            @click="showConfirmPassword = !showConfirmPassword" tabindex="-1">
-                            <svg v-if="showConfirmPassword" width="20" height="20" fill="none" viewBox="0 0 24 24">
-                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#667eea"
-                                    stroke-width="2" />
-                                <circle cx="12" cy="12" r="3" stroke="#667eea" stroke-width="2" />
-                            </svg>
-                            <svg v-else width="20" height="20" fill="none" viewBox="0 0 24 24">
-                                <path
-                                    d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a21.77 21.77 0 015.06-6.06M9.88 9.88A3 3 0 0112 9c1.66 0 3 1.34 3 3 0 .52-.13 1.01-.35 1.43"
-                                    stroke="#667eea" stroke-width="2" />
-                                <path d="M1 1l22 22" stroke="#667eea" stroke-width="2" />
-                            </svg>
-                        </button>
-                    </div>
+                <div class="form-group">
+                    <label>{{ $t('profile.confirmPassword') }}</label>
+                    <input :type="showConfirmPassword ? 'text' : 'password'" v-model="password_confirmation" class="form-control" required />
                 </div>
-
-                <button type="submit" :disabled="loading" class="submit-btn">
-                    <span v-if="loading" class="loader-small"></span>
-                    {{ loading ? $t('profile.loading') : $t('profile.submit') }}
-                </button>
-
-                <div v-if="error" class="error-message">
-                    {{ error }}
-                </div>
-
-                <div v-if="success" class="success-message">
-                    {{ success }}
+                <div v-if="error" class="alert alert-danger">{{ error }}</div>
+                <div v-if="success" class="alert alert-success">{{ success }}</div>
+                <div class="d-flex justify-content-end gap-2 mt-2">
+                    <button type="submit" class="btn btn-primary" :disabled="loading">
+                        <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                        {{ $t('profile.submit') }}
+                    </button>
+                    <button v-if="isAuthenticated" type="button" class="btn btn-secondary" @click="goBackToProfile">
+                        {{ $t('profile.backToProfile') }}
+                    </button>
                 </div>
             </form>
 
