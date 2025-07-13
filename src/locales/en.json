@@ -448,7 +448,9 @@
     "subtotal": "Subtotal",
     "tax": "Tax",
     "grandTotal": "Grand Total",
-    "emptyCartMessage": "Your cart is currently empty. Start adding products to your cart."
+    "emptyCartMessage": "Your cart is currently empty. Start adding products to your cart.",
+    "added_to_cart": "Product added to cart",
+    "item_removed": "Item removed from cart"
   },
 
   "favorites": {
