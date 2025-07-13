@@ -40,15 +40,28 @@
           <h3 class="sidebar-title">{{ t('products.price') }}</h3>
           <hr style="color: #8b6b3d; opacity: 1; border-top: 3px solid;" />
           <div class="price-range">
-            <input type="range" v-model.number="priceRange.min" step="10" :min="priceRangeLimit.min"
-              :max="priceRangeLimit.max" />
-            <input type="range" v-model.number="priceRange.max" step="10" :min="priceRangeLimit.min"
-              :max="priceRangeLimit.max" />
-            <div class="price-values">
+            <!-- Sliders -->
+            <input
+              type="range"
+              v-model.number="priceRange.min"
+              :step="10"
+              :min="priceRangeLimit.min"
+              :max="priceRangeLimit.max"
+            />
+            <input
+              type="range"
+              v-model.number="priceRange.max"
+              :step="10"
+              :min="priceRangeLimit.min"
+              :max="priceRangeLimit.max"
+            />
+
+            <!-- Number Inputs -->
+            <div class="price-values mt-2">
               <div class="d-flex gap-2 align-items-center">
                 <input
                   type="number"
-                  v-model.lazy="priceRange.min"
+                  v-model.number.lazy="priceRange.min"
                   :step="10"
                   :min="priceRangeLimit.min"
                   :max="priceRangeLimit.max"
@@ -58,15 +71,15 @@
                 <span>-</span>
                 <input
                   type="number"
-                  v-model.lazy="priceRange.max"
+                  v-model.number.lazy="priceRange.max"
                   :step="10"
                   :min="priceRangeLimit.min"
-                  :max="2000"
+                  :max="priceRangeLimit.max"
                   @keydown="blockInvalidKeys"
                   class="form-control qty-number"
                 />
+                {{ currencyCode() }}
               </div>
-              {{ currencyCode.value }}
             </div>
           </div>
         </div>
@@ -147,15 +160,14 @@ const cartStore = useCartStore()
 
 
 // Currency code from localStorage
-const currencyCode = computed(() => {
+
+const currencyCode = () => {
   const stored = localStorage.getItem('selectedCurrency');
   return stored ? JSON.parse(stored).code : 'AED';
-});
+}
 
 
-// Currency conversion helper
 const convertPrice = (price, from, to) => {
-  // Example static rates, replace with real rates if needed
   const rates = {
     AED: 1,
     USD: 1 / 3.67,
@@ -245,7 +257,6 @@ const fetchProducts = async () => {
 
 const addToCart = async (product) => {
   try {
-    // Calculate the price to send: discounted if discount is active, else regular
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
@@ -316,7 +327,7 @@ const filteredProducts = computed(() => {
 
     // Convert product price to selected currency for filtering
     const productPriceInSelectedCurrency = convertPrice(
-      p.converted_price,
+      calculateDiscountedPrice(p),
       p.currency_code || 'AED',
       currencyCode.value
     );
@@ -356,25 +367,31 @@ const getDiscountPercentage = (product) => {
   return 0
 }
 
-const sanitizePrice = (val) => {
-  const parsed = parseInt(val)
-  if (isNaN(parsed)) return priceRangeLimit.min
-  return Math.min(parsed, priceRangeLimit.max)
-}
-
 const blockInvalidKeys = (e) => {
-  if (['e', 'E', '.', '+', '-'].includes(e.key)) {
+  if (['e', 'E', '+', '-', '.'].includes(e.key)) {
     e.preventDefault()
   }
 }
 
-watch(() => priceRange.value.min, val => {
-  priceRange.value.min = sanitizePrice(val)
+// Watchers to keep min <= max
+watch(() => priceRange.value.min, (val) => {
+  if (val > priceRange.value.max) {
+    priceRange.value.min = priceRange.value.max
+  }
+  if (val < priceRangeLimit.min) {
+    priceRange.value.min = priceRangeLimit.min
+  }
 })
 
-watch(() => priceRange.value.max, val => {
-  priceRange.value.max = sanitizePrice(val)
+watch(() => priceRange.value.max, (val) => {
+  if (val < priceRange.value.min) {
+    priceRange.value.max = priceRange.value.min
+  }
+  if (val > priceRangeLimit.max) {
+    priceRange.value.max = priceRangeLimit.max
+  }
 })
+
 </script>
 
 <style scoped>
