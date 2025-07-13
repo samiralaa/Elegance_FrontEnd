@@ -314,7 +314,9 @@
     "status": "الحالة",
     "actions": "الإجراءات",
     "filterByStatus": "تصفية حسب الحالة",
-    "searchPlaceholder": "ابحث..."
+    "searchPlaceholder": "ابحث...",
+    "orderDetails": "تفاصيل الطلب",
+    "details": "التفاصيل"
   },
 
 
