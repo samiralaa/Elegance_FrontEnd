@@ -500,12 +500,18 @@
     "passwordResetSuccess": "Password reset successfully!",
     "passwordResetFailed": "Failed to reset password.",
     "backToProfile": "Back to Profile",
-    "editAddress":  "Edit Address",
+    "editAddress":  "Edit ",
     "addAddress":" Add Address",
-    "deleteAddress":" Delete Address",
+    "deleteAddress":" Delete ",
     "confirmDeleteAddress": "Are you sure you want to delete this address?",
     "addressDeleted": "Address deleted successfully.",
-    "addSuccess": "Address added successfully."
+    "addSuccess": "Address added successfully.",
+    "editAddressSuccess": "Edit Address successfully.",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "save": "Save",
+    "errorEditing": "Error editing address. Please try again.",
+    "errorAdding": "Error adding address. Please try again."
   },
 
   "otp": {
