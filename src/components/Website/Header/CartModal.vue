@@ -204,7 +204,7 @@ export default {
         });
 
         ElNotification({
-          title: this.t('cart.success'),
+          title: this.t('success'),
           message: this.t('cart.item_removed'),
           type: 'success'
         });

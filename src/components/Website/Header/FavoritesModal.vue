@@ -176,7 +176,7 @@ export default {
         if (response.data.status) {
           ElNotification({
             title: this.t('success'),
-            message: this.t('added_to_cart'),
+            message: this.t('cart.added_to_cart'),
             type: 'success',
           });
           this.$emit('close');

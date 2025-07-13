@@ -99,18 +99,20 @@
         <!-- Address List -->
         <div v-for="(addr, idx) in user.address" :key="addr.id || idx"
           class="d-flex justify-content-between align-items-center border rounded p-3 mb-2 bg-light">
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center ">
             <fa :icon="['fas', 'location-dot']" class="text-secondary me-3" />
             <span class="text-muted">{{ formatAddress(addr) }}</span>
           </div>
-          <button class="btn btn-sm btn-outline-primary" @click="openEditDialog(addr)">
-            <fa :icon="['fas', 'pen']" class="me-1" />
-            {{ $t('profile.editAddress') }}
-          </button>
-          <button class="btn btn-sm btn-outline-danger ms-2" @click="openDeleteDialog(addr)">
-            <fa :icon="['fas', 'trash']" class="me-1" />
-            {{ $t('profile.deleteAddress') }}
-          </button>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-primary " @click="openEditDialog(addr)">
+              <fa :icon="['fas', 'pen']" class="me-1" />
+              {{ $t('profile.editAddress') }}
+            </button>
+            <button class="btn btn-sm btn-outline-danger ms-2" @click="openDeleteDialog(addr)">
+              <fa :icon="['fas', 'trash']" class="me-1" />
+              {{ $t('profile.deleteAddress') }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -163,8 +165,8 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-2">
-              <button type="submit" class="btn btn-primary">Save</button>
-              <button type="button" class="btn btn-secondary" @click="closeEditDialog">Cancel</button>
+              <button type="submit" class="btn btn-primary">{{$t('profile.save') }}</button>
+              <button type="button" class="btn btn-secondary" @click="closeEditDialog">{{$t('profile.cancel') }}</button>
             </div>
 
           </form>
@@ -195,7 +197,9 @@
         <button class="btn btn-primary" @click="showDeleteSuccess = false">OK</button>
       </div>
     </div>
+    
   </div>
+  
 </template>
 
 <script >
@@ -262,14 +266,22 @@ export default {
         countryName = this.$i18n && this.$i18n.locale === 'ar' ? addr.country.name_ar : addr.country.name_en;
       } else if (addr.country_id) {
         countryName = addr.country_id;
+        
       }
+      let cityName = '';
+      if (addr.city) {
+        cityName = this.$i18n && this.$i18n.locale === 'ar' ? addr.city.name_ar : addr.city.name_en;
+      } else if (addr.city_id) {
+        cityName = addr.city_id;
+      }
+      
       return [
         addr.building_name,
         addr.floor_number,
         addr.apartment_number,
         addr.postal_code,
         addr.landmark,
-        addr.city_id,
+        cityName,
         countryName
       ].filter(Boolean).join(', ');
     },
@@ -301,43 +313,55 @@ export default {
       };
     },
     async saveAddress(addressId) {
-      console.log(addressId,"there is addressId");
+      
       if (addressId == null || addressId == undefined) { 
           this.addAddress()
           return;
       }
       try {
-
-        const response = await axios.post(`api/address/`, this.addressForm, {
+        
+        
+        const response = await axios.post(`api/address/${addressId}`, this.addressForm, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
-
-        const updatedAddress = response.data.data;
-        const idx = this.user.address.findIndex(a => a.id === addressId);
-
-        if (idx !== -1) {
-          // Update existing address
-          this.$set(this.user.address, idx, updatedAddress);
-        } else {
-          // Add new address
-          this.user.address.push(updatedAddress);
-        }
-
-        this.addressSuccess = true;
-        this.$toast?.success(response.data.message || 'Address updated successfully');
-
-        // Re-fetch the user profile for full sync
+         ElNotification({
+          title: this.$t('success'),
+          message: this.$t('profile.editAddressSuccess'),
+          type: 'success',
+        })
+         // Re-fetch the user profile for full sync
         await this.fetchUserProfile();
 
         // Wait a short moment to ensure UI updates, then close the dialog
-        setTimeout(() => {
           this.closeEditDialog();
-        }, 300);
+        
+        this.addressSuccess = true;
+        
+        
+        
+        // const updatedAddress = response.data.data;
+        // const idx = this.user.address.findIndex(a => a.id === addressId);
+
+        // if (idx !== -1) {
+        //   // Update existing address
+        //   this.$set(this.user.address, idx, updatedAddress);
+        // } else {
+        //   // Add new address
+        //   this.user.address.push(updatedAddress);
+        // }
+
+        
+
+       
       } catch (err) {
-        const errorMessage = err?.response?.data?.message || 'Failed to update address';
-        this.$toast.error(errorMessage);
+       
+         ElNotification({
+          title: this.$t('error'),
+          message:this.$t('profile.errorEditing'),
+          type: 'error',
+        })
         this.closeEditDialog();
       }
     },
@@ -371,8 +395,11 @@ export default {
         })
         this.fetchUserProfile();
       }catch(error){
-        
-        this.error = error.response?.data?.message || error.message;
+         ElNotification({
+          title: this.$t('error'),
+          message:this.$t('profile.errorAdding'),
+          type: 'error',
+        })
         throw error;
         
       }
@@ -433,13 +460,14 @@ export default {
 
 
     async fetchCities(id) {
-      console.log(id);
+     
       this.countryLoading = true;
       try {
         const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
 
         this.cities = response.data.data.original.data.cities;
-        console.log('Cities:', this.cities);
+       console.log('Cities:', this.cities);
+       
 
       } catch (error) {
         console.error('Failed to fetch cities:', error);
@@ -499,7 +527,9 @@ export default {
 
     // Fetch countries for address form
     await this.fetchCountries();
-
+    
+   
+   
     // If user has address, fetch cities for the first country
     if (this.user.address && this.user.address.length > 0) {
       const firstCountryId = this.user.address[0].country_id || this.user.address[0].country?.id;
@@ -514,8 +544,9 @@ export default {
   },
   async mounted() {
     // Fetch countries when component is mounted
-    // await this.fetchCountries();
+    await this.fetchCountries();
 
+    
   }
 };
 </script>

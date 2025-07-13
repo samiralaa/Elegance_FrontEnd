@@ -163,7 +163,7 @@ const addToFavorites = async (product) => {
       const response = await favoritesStore.addToFavorites(product.id)
       ElNotification({
         title: t('success'),
-        message: response.message || t('favorite_added') || 'Product added to favorites',
+        message: t('favorite_added') ,
         type: 'success',
       })
     }

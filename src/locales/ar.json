@@ -449,7 +449,9 @@
     "removeItem": "إزالة العنصر",
     "updateQuantity": "تحديث الكمية",
     "subtotal": "المجموع الفرعي",
-    "emptyCartMessage": "عربة التسوق الخاصة بك فارغة. ابدأ في إضافة المنتجات!"
+    "emptyCartMessage": "عربة التسوق الخاصة بك فارغة. ابدأ في إضافة المنتجات!",
+    "added_to_cart": "تم إضافة المنتج إلى السلة",
+    "item_removed": "تمت إزالة العنصر من السلة"
   },
 
   "favorites": {
@@ -501,12 +503,18 @@
     "passwordResetSuccess": "تمت إعادة تعيين كلمة المرور بنجاح!",
     "passwordResetFailed": "فشل في إعادة تعيين كلمة المرور.",
     "backToProfile": "العودة إلى الملف الشخصي",
-    "editAddress":  "تعديل العنوان",
+    "editAddress":  "تعديل ",
     "addAddress":" إضافة عنوان",
-    "deleteAddress":" حذف العنوان",
+    "deleteAddress":" حذف ",
     "confirmDeleteAddress": "هل أنت متأكد أنك تريد حذف هذا العنوان؟",
     "addressDeleted": "تم حذف العنوان بنجاح.",
-    "addSuccess": "تم إضافة العنوان بنجاح."
+    "addSuccess": "تم إضافة العنوان بنجاح.",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "save": "حفظ",
+    "editAddressSuccess": "تم تعديل العنوان بنجاح.",
+    "errorAdding": "حدث خطأ أثناء إضافة العنوان. يرجى المحاولة مرة أخرى.",
+    "errorEditing": "حدث خطأ أثناء تعديل العنوان. يرجى المحاولة مرة أخرى."
   },
 
   "otp": { 
