@@ -237,6 +237,13 @@ export default {
       }
     },
 
+    original_totalPrice() {
+  return this.cartItems.reduce((sum, item) => {
+    const originalPrice = parseFloat(item.product?.price) || 0;
+    const quantity = parseInt(item.quantity) || 0;
+    return sum + originalPrice * quantity;
+  }, 0).toFixed(2);
+},
     async placeOrder() {
       try {
         this.loading = true;
@@ -300,6 +307,8 @@ export default {
             delivery_charge: parseFloat(this.deliveryCharge), // <-- Added
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
+            original_total_price: this.original_totalPrice(),
+            original_currency: this.currency, // أو تخزن العملة الأصلية من الـ backend عند بداية الجلسة
           },
         };
 
