@@ -501,7 +501,10 @@
     "passwordResetFailed": "فشل في إعادة تعيين كلمة المرور.",
     "backToProfile": "العودة إلى الملف الشخصي",
     "editAddress":  "تعديل العنوان",
-    "addAddress":" إضافة عنوان"
+    "addAddress":" إضافة عنوان",
+    "deleteAddress":" حذف العنوان",
+    "confirmDeleteAddress": "هل أنت متأكد أنك تريد حذف هذا العنوان؟",
+    "addressDeleted": "تم حذف العنوان بنجاح."
   },
 
   "otp": { 
