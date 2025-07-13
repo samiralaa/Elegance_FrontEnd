@@ -13,7 +13,7 @@
     </div>
 
     <!-- Profile Card -->
-    <div v-else class="card p-4 shadow">
+    <div v-else class="card p-4 shadow w-75">
       <!-- Header -->
       <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div class="d-flex align-items-center gap-3">
@@ -83,18 +83,18 @@
       </div>
 
       <!-- Address -->
+      <div class="d-flex justify-content-between align-items-center my-3">
+        <h5 class="mb-0 text-dark">
+          <fa :icon="['fas', 'map-marker-alt']" class="me-2 text-primary" />
+          {{ $t('profile.address') }}
+        </h5>
+        <button class="btn btn-outline-info btn-sm" @click="openEditDialog()">
+          <fa :icon="['fas', 'plus']" class="me-1" />
+          {{ $t('profile.addAddress') }}
+        </button>
+      </div>
       <div v-if="user.address?.length" class="mt-4">
         <!-- Header with Icon -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="mb-0 text-dark">
-            <fa :icon="['fas', 'map-marker-alt']" class="me-2 text-primary" />
-            {{ $t('profile.address') }}
-          </h5>
-          <button class="btn btn-outline-info btn-sm" @click="openEditDialog()">
-            <fa :icon="['fas', 'plus']" class="me-1" />
-            {{ $t('profile.addAddress') }}
-          </button>
-        </div>
 
         <!-- Address List -->
         <div v-for="(addr, idx) in user.address" :key="addr.id || idx"
@@ -198,11 +198,21 @@
   </div>
 </template>
 
-<script>
+<script >
 import axios from 'axios';
 import Header from '@/components/Website/Header.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { ElNotification } from 'element-plus';
+import { useI18n } from 'vue-i18n'
+
 export default {
+  setup() {
+    const { t } = useI18n()
+
+    return {
+      t
+    }
+  },
   components: { Header, fa: FontAwesomeIcon },
   data() {
     return {
@@ -291,9 +301,10 @@ export default {
       };
     },
     async saveAddress(addressId) {
-      console.log(addressId,"ssssssss");
+      console.log(addressId,"there is addressId");
       if (addressId == null || addressId == undefined) { 
           this.addAddress()
+          return;
       }
       try {
 
@@ -331,19 +342,11 @@ export default {
       }
     },
     async addAddress(){
-      console.log('userId', this.user.id);
-      console.log('addressForm', this.addressForm);
       
-      const tokenData = JSON.parse(localStorage.getItem('auth_token'))
-      console.log(tokenData,"token");
       try{
-         
-    if (!tokenData || !tokenData.token) {
-      throw new Error('Authentication token not found')
-    }
     
         const addressData ={
-          user_id: this.userId,
+          user_id: this.user.id,
           building_name: this.addressForm.building_name,
         floor_number: this.addressForm.floor_number,
         apartment_number: this.addressForm.apartment_number,
@@ -352,7 +355,7 @@ export default {
         city_id: this.addressForm.city_id,
         country_id: this.addressForm.country_id
         };
-        console.log(addressData,"addressDataaaaaaaaaaa");
+       
         const response = await axios.post('https://backend.webenia.org/api/address', addressData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -360,11 +363,17 @@ export default {
           }
         });
         
-        
-        console.log('response.data', response);
-        
+        this.closeEditDialog();
+         ElNotification({
+          title: this.$t('success'),
+          message: this.$t('profile.addSuccess'),
+          type: 'success',
+        })
+        this.fetchUserProfile();
       }catch(error){
-        console.log('Error adding address:', error);
+        
+        this.error = error.response?.data?.message || error.message;
+        throw error;
         
       }
 
@@ -505,7 +514,7 @@ export default {
   },
   async mounted() {
     // Fetch countries when component is mounted
-    await this.fetchCountries();
+    // await this.fetchCountries();
 
   }
 };
