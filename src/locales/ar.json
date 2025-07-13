@@ -505,7 +505,8 @@
     "addAddress":" إضافة عنوان",
     "deleteAddress":" حذف العنوان",
     "confirmDeleteAddress": "هل أنت متأكد أنك تريد حذف هذا العنوان؟",
-    "addressDeleted": "تم حذف العنوان بنجاح."
+    "addressDeleted": "تم حذف العنوان بنجاح.",
+    "addSuccess": "تم إضافة العنوان بنجاح."
   },
 
   "otp": { 
