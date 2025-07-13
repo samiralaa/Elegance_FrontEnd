@@ -2,8 +2,12 @@
   <div class="home">
     <Loader v-if="loading" />
     <Header />
-    <VerifyOtp v-if="showVerifyOtp" :user="user" :token="token" />
-    <verify-otp-popup v-if="showVerifyOtpPopup" @close="showVerifyOtpPopup = false" />
+    <verify-otp-popup
+      v-if="showVerifyOtp || showVerifyOtpPopup"
+      :user="user"
+      :token="token"
+      @close="handleCloseOtp"
+    />
 
 
     <!-- Hero Section with Ramadan Theme -->
@@ -54,7 +58,6 @@ import LatestProducts from '@/components/Website/LatestProducts.vue'
 import i18n from '@/i18n.js'
 import Footer from '@/components/Website/Footer.vue'
 import Loader from '@/components/Loader.vue'
-import VerifyOtp from '@/components/verifyOtpPopup.vue'
 import VerifyOtpPopup from '@/components/verifyOtpPopup.vue'
 
 export default {
@@ -69,12 +72,10 @@ export default {
     WhyChooseUs,
     Footer,
     Loader,
-    VerifyOtp,
     VerifyOtpPopup,
   },
   computed: {
     showVerifyOtp() {
-      // Show VerifyOtp only if user exists and is_verified is not true (0 or false)
       return this.user && !this.user.is_verified;
     },
     direction() {
@@ -163,6 +164,10 @@ export default {
         const gap = 30; // optional for bigger screens
         this.$refs.slider.scrollBy({ left: cardWidth * 7 + gap, behavior: 'smooth' });
       }
+    },
+    handleCloseOtp() {
+      this.showVerifyOtpPopup = false;
+      this.user.is_verified = true;
     }
   },
 
