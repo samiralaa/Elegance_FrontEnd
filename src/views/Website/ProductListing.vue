@@ -45,17 +45,28 @@
             <input type="range" v-model.number="priceRange.max" step="10" :min="priceRangeLimit.min"
               :max="priceRangeLimit.max" />
             <div class="price-values">
-              <span>
-                <input type="number" v-model.number="priceRange.min" :step="10" :min="priceRangeLimit.min"
-                  :max="priceRangeLimit.max" @input="priceRange.min = Math.floor(Math.min(priceRange.min, 2000))"
-                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()" />
-                -
-                <input type="number" v-model.number="priceRange.max" :step="10" :min="priceRangeLimit.min"
-                  :max="priceRangeLimit.max" @input="priceRange.max = Math.floor(Math.min(priceRange.max, 2000))"
-                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()" />
-                {{ currencyCode.value }}
-              </span>
-
+              <div class="d-flex gap-2 align-items-center">
+                <input
+                  type="number"
+                  v-model.lazy="priceRange.min"
+                  :step="10"
+                  :min="priceRangeLimit.min"
+                  :max="priceRangeLimit.max"
+                  @keydown="blockInvalidKeys"
+                  class="form-control qty-number"
+                />
+                <span>-</span>
+                <input
+                  type="number"
+                  v-model.lazy="priceRange.max"
+                  :step="10"
+                  :min="priceRangeLimit.min"
+                  :max="2000"
+                  @keydown="blockInvalidKeys"
+                  class="form-control qty-number"
+                />
+              </div>
+              {{ currencyCode.value }}
             </div>
           </div>
         </div>
@@ -345,17 +356,24 @@ const getDiscountPercentage = (product) => {
   return 0
 }
 
-// Watchers to ensure min does not exceed max and vice versa
-watch(() => priceRange.value.min, (newMin) => {
-  if (newMin > priceRange.value.max) {
-    priceRange.value.min = priceRange.value.max
+const sanitizePrice = (val) => {
+  const parsed = parseInt(val)
+  if (isNaN(parsed)) return priceRangeLimit.min
+  return Math.min(parsed, priceRangeLimit.max)
+}
+
+const blockInvalidKeys = (e) => {
+  if (['e', 'E', '.', '+', '-'].includes(e.key)) {
+    e.preventDefault()
   }
+}
+
+watch(() => priceRange.value.min, val => {
+  priceRange.value.min = sanitizePrice(val)
 })
 
-watch(() => priceRange.value.max, (newMax) => {
-  if (newMax < priceRange.value.min) {
-    priceRange.value.max = priceRange.value.min
-  }
+watch(() => priceRange.value.max, val => {
+  priceRange.value.max = sanitizePrice(val)
 })
 </script>
 
