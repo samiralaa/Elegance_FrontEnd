@@ -97,6 +97,9 @@ export default {
     this.fetchCartTotal(); // <-- Added
   },
   watch: {
+    currency(newCurrency, oldCurrency) {
+      this.fetchCartTotal();
+    },
     selectedPaymentMethod(newValue) {
       if (newValue === 1) {
         this.$nextTick(() => {
@@ -104,7 +107,6 @@ export default {
         });
       }
     },
-
   },
   methods: {
     selectPaymentMethod(methodId) {
@@ -659,6 +661,11 @@ export default {
       const tax = parseFloat(this.taxAmount);
       return (subtotal + delivery + tax).toFixed(2);
     }
+  },
+  onMounted() {
+    window.addEventListener('currency-changed', () => {
+      fetchCartTotal()
+    })
   }
 }
 </script>
