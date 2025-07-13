@@ -49,7 +49,7 @@
                 <p>
                   <strong>{{ $t('amount.selected') }}:</strong>
                   {{ selectedAmount.weight }} {{ selectedAmount.unit.name_en }} -
-                  {{ selectedAmount.price }} {{ product.currency_code }}
+                  {{ selectedAmount.converted_price }} {{ product.currency_code }}
                 </p>
                 <!-- Add more details here if needed -->
               </div>
@@ -68,7 +68,7 @@
                   <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input class="qty-number" type="number" min="1" max="99" v-model.number="quantity"
+                  <input class="form-control qty-number" type="number" min="1" max="99" v-model.number="quantity"
                     @input="quantity = Math.min(quantity)">
                   <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />
@@ -276,9 +276,9 @@ const addToCart = async () => {
   try {
     let priceToSend = 0;
     if (selectedAmount.value) {
-      priceToSend = parseFloat(selectedAmount.value.price);
+      priceToSend = parseFloat(selectedAmount.value.converted_price);
     } else {
-      priceToSend = parseFloat(product.value.price);
+      priceToSend = parseFloat(product.value.converted_price);
     }
     // Apply discount if active
     if (product.value.discount && product.value.discount.is_active) {
@@ -353,7 +353,7 @@ const fetchProduct = async () => {
     );
     if (res.data.status) {
       product.value = res.data.data;
-      product.value._original_price = product.value.price;
+      product.value._original_price = product.value.converted_price;
       if (product.value.images?.length) {
         // Set initial image
         selectedImage.value = product.value.images[0].path;
@@ -378,10 +378,10 @@ const addChildToCart = async (childProduct) => {
     let priceToSend = 0;
     if (childProduct.discount && childProduct.discount.is_active) {
       const discountValue = parseFloat(childProduct.discount.discount_value);
-      const originalPrice = parseFloat(childProduct.price); // Always use childProduct.price
+      const originalPrice = parseFloat(childProduct.converted_price); // Always use childProduct.price
       priceToSend = originalPrice - (originalPrice * (discountValue / 100));
     } else {
-      priceToSend = parseFloat(childProduct.price); // Always use childProduct.price
+      priceToSend = parseFloat(childProduct.converted_price); // Always use childProduct.price
     }
     const payload = {
       product_id: childProduct.id,
@@ -682,7 +682,7 @@ const selectedAmount = computed(() => {
 
 // Add this computed property for discount logic
 const discountedPriceToShow = computed(() => {
-  let basePrice = selectedAmount.value ? parseFloat(selectedAmount.value.price) : parseFloat(product.value.price);
+  let basePrice = selectedAmount.value ? parseFloat(selectedAmount.value.converted_price) : parseFloat(product.value.converted_price);
   if (product.value.discount && product.value.discount.is_active) {
     const discountValue = parseFloat(product.value.discount.discount_value);
     return (basePrice - (basePrice * (discountValue / 100))).toFixed(2);
