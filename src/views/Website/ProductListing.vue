@@ -129,6 +129,7 @@ import Header from '@/components/Website/Header.vue'
 import { useI18n } from 'vue-i18n'
 import { useFavoritesStore } from '@/store/favorites'
 import { useCartStore } from '@/store/cart'
+import { useRouter } from 'vue-router'
 
 const { locale, t } = useI18n();
 const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
@@ -216,7 +217,15 @@ const addToFavorites = async (product) => {
       })
     }
   } catch (error) {
-    console.error('Favorite error:', error)
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification({
       title: t('error'),
       message: error.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
@@ -285,7 +294,15 @@ const addToCart = async (product) => {
       })
     }
   } catch (error) {
-    console.error('Error adding to cart:', error)
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification({
       title: t('error'),
       message: error.response?.data?.message,

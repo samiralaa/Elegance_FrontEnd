@@ -112,6 +112,8 @@
   "contact": {
     "nameNotNumber": "Name cannot be only numbers."
   },
-  "view-all-products": "View All Products"
+  "view-all-products": "View All Products",
+  "unauthenticated": "You must be logged in to access this page. Please log in and try again.",
+  "login_required_favorite": "Login required to favorite product"
 
 }

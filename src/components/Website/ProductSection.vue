@@ -168,7 +168,16 @@ const addToFavorites = async (product) => {
       })
     }
   } catch (error) {
-    console.error('Favorite error:', error)
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+    
+      return
+    }
     ElNotification({
       title: t('error'),
       message: error.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
@@ -211,7 +220,15 @@ const addToCart = async (product) => {
       ElNotification.error(response.data.message)
     }
   } catch (error) {
-    console.error('Error adding to cart:', error)
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification.error(
       error.response?.data?.message || 'Error adding product to cart'
     )

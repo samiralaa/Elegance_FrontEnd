@@ -75,6 +75,7 @@ import { useFavoritesStore } from '@/store/favorites'
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '@/store/cart'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const products = ref([])
 const showSuccessDialog = ref(false)
@@ -82,6 +83,7 @@ const successMessage = ref('')
 const favoritesStore = useFavoritesStore()
 const cartStore = useCartStore()
 const { locale, t } = useI18n()
+const router = useRouter()
 
 const fetchProducts = async () => {
   try {
@@ -149,7 +151,15 @@ const addToFavorites = async (product) => {
       })
     }
   } catch (error) {
-    console.error('Favorite error:', error)
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification({
       title: t('error'),
       message: error.response?.data?.message || t('login_required_favorite') || 'Login required to favorite product',
@@ -223,7 +233,15 @@ const addToCart = async (product) => {
       })
     }
   } catch (error) {
-    console.error('Error adding to cart:', error)
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification({
       title: t('error'),
       message: error.response?.data?.message,

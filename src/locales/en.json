@@ -470,6 +470,7 @@
   "login_required_favorite": "Login required to favorite product",
   "success": "Success",
   "error": "Error",
+  
 
   "profile": {
     "loading": "Loading...",
@@ -547,6 +548,7 @@
     }
   },
 
+  "unauthenticated": "You must be logged in to access this page. Please log in and try again.",
 
   "Nobrandsfound" : "No brands found"
 }

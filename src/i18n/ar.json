@@ -111,6 +111,7 @@
     "logout": "تسجيل الخروج"
   },
 
+  "login_required_favorite": "يجب تسجيل الدخول لإضافة المنتج إلى المفضلة",
   "error": "خطأ",
   "update_quantity_error": "فشل تحديث الكمية. يرجى المحاولة مرة أخرى.",
   "max_quantity_reached": "تم الوصول إلى الحد الأقصى للكمية",
@@ -121,8 +122,10 @@
   "errorUpdatingQuantity": "Failed to update quantity",
   "itemRemoved": "Item removed successfully",
   "minimumQuantity": "Minimum quantity is 1",
-  "maxQuantity": "Maximum quantity is 99"
+  "maxQuantity": "Maximum quantity is 99",
+  "unauthenticated": "يجب عليك تسجيل الدخول للوصول إلى هذه الصفحة. يرجى تسجيل الدخول والمحاولة مرة أخرى."
 
 },
-  "view-all-products": "عرض جميع المنتجات"
+  "view-all-products": "عرض جميع المنتجات",
+  "unauthenticated": "يجب عليك تسجيل الدخول للوصول إلى هذه الصفحة. يرجى تسجيل الدخول والمحاولة مرة أخرى."
 }
