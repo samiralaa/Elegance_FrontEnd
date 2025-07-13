@@ -291,6 +291,10 @@ export default {
       };
     },
     async saveAddress(addressId) {
+      console.log(addressId,"ssssssss");
+      if (addressId == null || addressId == undefined) { 
+          this.addAddress()
+      }
       try {
 
         const response = await axios.post(`api/address/`, this.addressForm, {
@@ -325,6 +329,46 @@ export default {
         this.$toast.error(errorMessage);
         this.closeEditDialog();
       }
+    },
+    async addAddress(){
+      console.log('userId', this.user.id);
+      console.log('addressForm', this.addressForm);
+      
+      const tokenData = JSON.parse(localStorage.getItem('auth_token'))
+      console.log(tokenData,"token");
+      try{
+         
+    if (!tokenData || !tokenData.token) {
+      throw new Error('Authentication token not found')
+    }
+    
+        const addressData ={
+          user_id: this.userId,
+          building_name: this.addressForm.building_name,
+        floor_number: this.addressForm.floor_number,
+        apartment_number: this.addressForm.apartment_number,
+        postal_code: this.addressForm.postal_code,
+        landmark: this.addressForm.landmark,
+        city_id: this.addressForm.city_id,
+        country_id: this.addressForm.country_id
+        };
+        console.log(addressData,"addressDataaaaaaaaaaa");
+        const response = await axios.post('https://backend.webenia.org/api/address', addressData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        
+        console.log('response.data', response);
+        
+      }catch(error){
+        console.log('Error adding address:', error);
+        
+      }
+
+
     },
 
     async resetPassword() {
