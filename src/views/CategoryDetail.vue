@@ -55,11 +55,10 @@
               <div class="card-body">
                 <h5 class="card-title">{{ product.name_en }}</h5>
                 <div class="price-container">
-                  <span v-if="product.discount && product.discount.length > 0" class="discount-badge">
+                  <span v-if="product.discount && product.discount.length > 0 && product.discount[0].is_active" class="discount-badge">
                     {{ product.discount[0].discount_value }}% OFF
                   </span>
-
-                  <span v-if="product.discount && product.discount.length > 0 && product.old_price" class="price-old">
+                  <span v-if="product.discount && product.discount.length > 0 && product.discount[0].is_active && product.old_price" class="price-old">
                     {{ product.old_price }} {{ product.currency_code }}
                   </span>
                   <span class="card-text card-price">
@@ -185,20 +184,26 @@ methods: {
 
   async addToCart(product) {
     try {
-      const selectedCurrency =
-        JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
+      // Calculate the price to send: discounted if discount is active, else regular
+      let priceToSend = 0;
+      if (product.discount && product.discount.length > 0 && product.discount[0].is_active) {
+        const discountValue = parseFloat(product.discount[0].discount_value);
+        const originalPrice = parseFloat(product.converted_price || product.price);
+        priceToSend = originalPrice - originalPrice * (discountValue / 100);
+      } else {
+        priceToSend = parseFloat(product.converted_price || product.price);
+      }
 
       const response = await axios.post(
         'https://backend.webenia.org/api/cart-items',
         {
           product_id: product.id,
           quantity: 1,
-          price: parseFloat(product.price)
+          price: priceToSend
         },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-            Currency: selectedCurrency.code,
           }
         }
       )
@@ -270,10 +275,10 @@ methods: {
   },
 
   calculateDiscountedPrice(product) {
-    if (product.discount && product.discount.length > 0) {
+    if (product.discount && product.discount.length > 0 && product.discount[0].is_active) {
       const discountValue = parseFloat(product.discount[0].discount_value)
       const originalPrice = parseFloat(product.converted_price || product.price)
-      const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+      const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
       return discountedPrice.toFixed(2)
     }
     return product.converted_price || product.price

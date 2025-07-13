@@ -167,7 +167,7 @@ export default {
         const response = await axios.post(`${API_URL}/api/cart-items`, {
           product_id: favorite.product_id,
           quantity: 1,
-          price: parseFloat(favorite.price)
+          price: parseFloat(this.calculateDiscountedPrice(favorite))
         }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`

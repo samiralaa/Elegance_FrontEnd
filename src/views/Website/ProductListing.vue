@@ -98,8 +98,14 @@
           <div class="card-body">
             <h5 class="card-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h5>
             <div class="price-container">
-              <span class="card-text card-price">
+              <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                {{ getDiscountPercentage(product) }}% OFF
+              </span>
+              <span v-if="product.discount && product.discount.is_active" class="price-old">
                 {{ product.converted_price }} {{ product.currency_code }}
+              </span>
+              <span class="card-text card-price">
+                {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
               </span>
             </div>
           </div>
@@ -121,6 +127,7 @@ import { ElNotification, ElDialog, ElButton } from 'element-plus'
 import Header from '@/components/Website/Header.vue'
 import { useI18n } from 'vue-i18n'
 import { useFavoritesStore } from '@/store/favorites'
+import { useCartStore } from '@/store/cart'
 
 const { locale, t } = useI18n();
 const direction = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
@@ -135,6 +142,7 @@ const priceRange = ref({ min: 0, max: 2000 })
 const priceRangeLimit = { min: 0, max: 2000 }
 const isSidebarActive = ref(false)
 const favoritesStore = useFavoritesStore()
+const cartStore = useCartStore()
 
 
   // Currency code from localStorage
@@ -236,21 +244,27 @@ const fetchProducts = async () => {
 
 const addToCart = async (product) => {
   try {
-    const selectedCurrency =
-      JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
+    // Calculate the price to send: discounted if discount is active, else regular
+    let priceToSend = 0;
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value);
+      const originalPrice = parseFloat(product.converted_price || product.price);
+      priceToSend = originalPrice - originalPrice * (discountValue / 100);
+    } else {
+      priceToSend = parseFloat(product.converted_price || product.price);
+    }
 
     const response = await axios.post(
       'https://backend.webenia.org/api/cart-items',
       {
         product_id: product.id,
         quantity: 1,
-        price: parseFloat(product.price)
+        price: priceToSend,
       },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-          Currency: selectedCurrency.code,
-        }
+        },
       }
     )
 
@@ -260,6 +274,8 @@ const addToCart = async (product) => {
         message: response.data.message,
         type: 'success'
       })
+      cartStore.incrementCount();
+      await cartStore.fetchCartCount();
     } else {
       ElNotification({
         title: t('error'),
@@ -322,16 +338,19 @@ const resetFilters = () => {
 }
 
 const calculateDiscountedPrice = (product) => {
-  let price = product.discount && product.discount.is_active
-    ? (parseFloat(product.converted_price || product.price) * (1 - parseFloat(product.discount.discount_value) / 100))
-    : parseFloat(product.converted_price || product.price);
-  // Convert to selected currency
-  return convertPrice(price, product.currency_code || 'AED', currencyCode.value).toFixed(2);
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
+    const originalPrice = parseFloat(product.converted_price || product.price)
+    const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
+    return discountedPrice.toFixed(2)
+  }
+  return product.converted_price || product.price
 }
 
 const getDiscountPercentage = (product) => {
   if (product.discount && product.discount.is_active) {
-    return Math.round(parseFloat(product.discount.discount_value))
+    const discountValue = parseFloat(product.discount.discount_value)
+    return Math.round(discountValue)
   }
   return 0
 }

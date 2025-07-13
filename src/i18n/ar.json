@@ -123,5 +123,6 @@
   "minimumQuantity": "Minimum quantity is 1",
   "maxQuantity": "Maximum quantity is 99"
 
-}
+},
+  "view-all-products": "عرض جميع المنتجات"
 }

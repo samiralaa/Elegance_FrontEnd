@@ -5,62 +5,58 @@
         <fa class="fa-icon me-2" :icon="['fas', 'shopping-basket']" />
         <h2 class="mb-0">{{ $t('home.products') }}</h2>
       </div>
-
       <div v-if="loading" class="text-center my-4">Loading products...</div>
-
-      <div v-else class="row g-3">
-        <div v-for="product in products" :key="product.id" class="col-sm-6 col-md-4 col-lg-3">
-          <div class="product-card card border-0 h-100">
-            <div class="position-relative overflow-hidden bg-light">
-              <router-link :to="`/read/products/${product.id}`">
-                <img v-if="product.images && product.images.length" :src="getImageUrl(product.images[0].path)"
-                  :alt="product.name_en" class="card-img-top product-img" />
-              </router-link>
-
-              <div v-if="!product.is_available" class="sale-badge">
-                {{ $t('products.outOfStock') }}
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="product-actions d-flex justify-content-center gap-2 w-100">
-                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm"
-                  title="View">
-                  <fa icon="eye" />
+      <div v-else>
+        <div class="row g-3">
+          <div v-for="product in products" :key="product.id" class="col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card card border-0 h-100">
+              <div class="position-relative overflow-hidden bg-light">
+                <router-link :to="`/read/products/${product.id}`">
+                  <img v-if="product.images && product.images.length" :src="getImageUrl(product.images[0].path)"
+                    :alt="product.name_en" class="card-img-top product-img" />
                 </router-link>
-
-                <button @click="addToCart(product)" class="btn btn-light shadow-sm disable"
-                  :class="{ disabled: !product.is_available }" :disabled="!product.is_available">
-                  {{ $t('home.add-to-cart') }}
-                </button>
-                <button @click="addToCart(product)" class="d-none btn rounded-circle shadow-sm btn-light enable">
-                  <fa icon="shopping-cart" />
-                </button>
-
-                <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
-                  :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
-                  <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
-                </button>
+                <div v-if="!product.is_available" class="sale-badge">
+                  {{ $t('products.outOfStock') }}
+                </div>
+                <!-- Action Buttons -->
+                <div class="product-actions d-flex justify-content-center gap-2 w-100">
+                  <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                    <fa icon="eye" />
+                  </router-link>
+                  <button @click="addToCart(product)" class="btn btn-light shadow-sm disable" :class="{ disabled: !product.is_available }" :disabled="!product.is_available">
+                    {{ $t('home.add-to-cart') }}
+                  </button>
+                  <button @click="addToCart(product)" class="d-none btn rounded-circle shadow-sm btn-light enable">
+                    <fa icon="shopping-cart" />
+                  </button>
+                  <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
+                    :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                    :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
+                    <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div class="card-body">
-              <h5 class="card-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h5>
-              <div class="price-container">
-                <span v-if="product.discount && product.discount.is_active" class="discount-badge">
-                  {{ getDiscountPercentage(product) }}% OFF
-                </span>
-
-                <span v-if="product.discount && product.discount.is_active" class="price-old">
-                  {{ product.converted_price }} {{ product.currency_code }}
-                </span>
-
-                <span class="card-text card-price">
-                  {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
-                </span>
+              <div class="card-body">
+                <h5 class="card-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h5>
+                <div class="price-container">
+                  <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                    {{ getDiscountPercentage(product) }}% OFF
+                  </span>
+                  <span v-if="product.discount && product.discount.is_active" class="price-old">
+                    {{ product.converted_price }} {{ product.currency_code }}
+                  </span>
+                  <span class="card-text card-price">
+                    {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+          <button class="btn view-all-btn" @click="goToAllProducts">
+            {{ $t('home.view-all-products') }}
+          </button>
         </div>
       </div>
     </div>
@@ -74,6 +70,7 @@ import { ElNotification } from 'element-plus'
 import { useFavoritesStore } from '@/store/favorites'
 import { useCartStore } from '@/store/cart'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const products = ref([])
 const currencies = ref([])
@@ -82,6 +79,7 @@ const loading = ref(false)
 const favoritesStore = useFavoritesStore()
 const cartStore = useCartStore()
 const { locale, t } = useI18n()
+const router = useRouter()
 
 const getImageUrl = (path) =>
   `https://backend.webenia.org/public/storage/${path}`
@@ -238,6 +236,10 @@ const getDiscountPercentage = (product) => {
   return 0
 }
 
+const goToAllProducts = () => {
+  router.push('/product-listing')
+}
+
 
 onMounted(async () => {
   await fetchCurrencies()
@@ -343,6 +345,22 @@ onMounted(async () => {
   transition: all 0.2s ease-in;
   font-weight: 600;
   font-size: 1.2rem;
+}
+
+.view-all-btn {
+  background-color: #8b6b3d;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px rgba(139, 107, 61, 0.08);
+}
+.view-all-btn:hover, .view-all-btn:focus {
+  background-color: #a07a47;
+  color: #fff;
 }
 
 @media (max-width: 1200px) {

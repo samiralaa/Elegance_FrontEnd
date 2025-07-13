@@ -111,6 +111,7 @@
 },
   "contact": {
     "nameNotNumber": "Name cannot be only numbers."
-  }
+  },
+  "view-all-products": "View All Products"
 
 }

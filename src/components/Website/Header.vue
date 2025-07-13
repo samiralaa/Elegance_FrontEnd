@@ -372,13 +372,15 @@ export default {
     async logout() {
       try {
         this.isLoggingOut = true;
-        await axios.post(`${API_URL}/api/logout`, {}, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-          }
-        });
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          await axios.post(`${API_URL}/api/logout`, {}, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        }
+        localStorage.clear();
         this.$router.push('/Account/Login');
         this.showProfileMenu = false;
         this.$toast.success('Logged out successfully');

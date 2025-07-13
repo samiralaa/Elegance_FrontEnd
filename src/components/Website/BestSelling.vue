@@ -23,7 +23,7 @@
                     {{ getDiscountPercentage(product) }}% OFF
                   </span>
                   <span v-if="product.discount && product.discount.is_active" class="price-old">
-                    {{ (product.converted_price || product.price).toFixed(2) }} {{ product.currency_code }}
+                    {{ product.price }} {{ product.currency_code }}
                   </span>
                   <span class="card-text card-price">
                     {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
@@ -172,13 +172,14 @@ const addToFavorites = async (product) => {
 
 const addToCart = async (product) => {
   try {
+    // Calculate the price to send: discounted if discount is active, else regular
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
-      const originalPrice = parseFloat(product.price); // Always use product.price
-      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+      const originalPrice = parseFloat(product.converted_price || product.price);
+      priceToSend = originalPrice - originalPrice * (discountValue / 100);
     } else {
-      priceToSend = parseFloat(product.price); // Always use product.price
+      priceToSend = parseFloat(product.converted_price || product.price);
     }
 
     const userId = localStorage.getItem('user_id');
@@ -226,15 +227,16 @@ const calculateDiscountedPrice = (product) => {
   if (product.discount && product.discount.is_active) {
     const discountValue = parseFloat(product.discount.discount_value)
     const originalPrice = parseFloat(product.converted_price || product.price)
-    const discountedPrice = originalPrice - (originalPrice * (discountValue / 100))
+    const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
     return discountedPrice.toFixed(2)
   }
-  return (product.converted_price || product.price).toFixed(2)
+  return product.converted_price || product.price
 };
 
 const getDiscountPercentage = (product) => {
   if (product.discount && product.discount.is_active) {
-    return Math.round(parseFloat(product.discount.discount_value))
+    const discountValue = parseFloat(product.discount.discount_value)
+    return Math.round(discountValue)
   }
   return 0
 }

@@ -85,10 +85,17 @@
 
                 <div class="card-body">
                   <h5 class="card-title">{{ product.name_en }}</h5>
-                  <span v-if="product.discount" class="price-old">{{ product.converted_price }} {{ product.currency_code }}</span>
-                  <span class="card-text card-price">
-                    {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
-                  </span>
+                  <div class="price-container">
+                    <span v-if="product.discount && product.discount.is_active" class="discount-badge">
+                      {{ getDiscountPercentage(product) }}% OFF
+                    </span>
+                    <span v-if="product.discount && product.discount.is_active" class="price-old">
+                      {{ product.converted_price }} {{ product.currency_code }}
+                    </span>
+                    <span class="card-text card-price">
+                      {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
+                    </span>
+                  </div>
                 </div>
                 <div class="addToCart-btn">
                   <button 
@@ -227,13 +234,20 @@ const addToFavorites = async (product) => {
 
 const addToCart = async (product) => {
   try {
-    const selectedCurrency =
-      JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
+    // Calculate the price to send: discounted if discount is active, else regular
+    let priceToSend = 0;
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value);
+      const originalPrice = parseFloat(product.converted_price || product.price);
+      priceToSend = originalPrice - originalPrice * (discountValue / 100);
+    } else {
+      priceToSend = parseFloat(product.converted_price || product.price);
+    }
 
     const payload = {
       product_id: product.id,
       quantity: 1,
-      price: product.price,
+      price: priceToSend,
     }
 
     if (product.amounts) {
@@ -246,7 +260,6 @@ const addToCart = async (product) => {
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-          Currency: selectedCurrency.code,
         },
       }
     )
@@ -282,6 +295,14 @@ const addToCart = async (product) => {
       return discountedPrice.toFixed(2)
     }
     return product.converted_price || product.price
+  }
+
+  const getDiscountPercentage = (product) => {
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value)
+      return Math.round(discountValue)
+    }
+    return 0
   }
 </script>
 
