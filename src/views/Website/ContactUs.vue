@@ -283,6 +283,9 @@ button:disabled {
 .content-info{
   margin: 2rem 0;
 }
+.content-info h5{
+  text-align: start;
+}
 .content-info p{
     color: #7c7c7c;
     margin: 0;
