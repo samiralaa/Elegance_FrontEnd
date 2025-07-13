@@ -200,7 +200,7 @@ const addToCart = async (product) => {
     if (response.data.status) {
       ElNotification({
         title: t('success'),
-        message: response.data.message ,
+        message: t('cart.added_to_cart') ,
         type: 'success'
         
       })
