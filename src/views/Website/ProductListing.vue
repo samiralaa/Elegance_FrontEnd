@@ -40,29 +40,19 @@
           <h3 class="sidebar-title">{{ t('products.price') }}</h3>
           <hr style="color: #8b6b3d; opacity: 1; border-top: 3px solid;" />
           <div class="price-range">
-            <input type="range" v-model.number="priceRange.min" step="10" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
-            <input type="range" v-model.number="priceRange.max" step="10" :min="priceRangeLimit.min" :max="priceRangeLimit.max" />
+            <input type="range" v-model.number="priceRange.min" step="10" :min="priceRangeLimit.min"
+              :max="priceRangeLimit.max" />
+            <input type="range" v-model.number="priceRange.max" step="10" :min="priceRangeLimit.min"
+              :max="priceRangeLimit.max" />
             <div class="price-values">
               <span>
-                <input
-                  type="number"
-                  v-model.number="priceRange.min"
-                  :step="10"
-                  :min="priceRangeLimit.min"
-                  :max="priceRangeLimit.max"
-                  @input="priceRange.min = Math.floor(Math.min(priceRange.min, 2000))"
-                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()"
-                />
+                <input type="number" v-model.number="priceRange.min" :step="10" :min="priceRangeLimit.min"
+                  :max="priceRangeLimit.max" @input="priceRange.min = Math.floor(Math.min(priceRange.min, 2000))"
+                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()" />
                 -
-                <input
-                  type="number"
-                  v-model.number="priceRange.max"
-                  :step="10"
-                  :min="priceRangeLimit.min"
-                  :max="priceRangeLimit.max"
-                  @input="priceRange.max = Math.floor(Math.min(priceRange.max, 2000))"
-                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()"
-                />
+                <input type="number" v-model.number="priceRange.max" :step="10" :min="priceRangeLimit.min"
+                  :max="priceRangeLimit.max" @input="priceRange.max = Math.floor(Math.min(priceRange.max, 2000))"
+                  @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()" />
                 {{ currencyCode.value }}
               </span>
 
@@ -145,7 +135,7 @@ const favoritesStore = useFavoritesStore()
 const cartStore = useCartStore()
 
 
-  // Currency code from localStorage
+// Currency code from localStorage
 const currencyCode = computed(() => {
   const stored = localStorage.getItem('selectedCurrency');
   return stored ? JSON.parse(stored).code : 'AED';
@@ -777,7 +767,7 @@ watch(() => priceRange.value.max, (newMax) => {
   font-weight: 600;
 }
 
-.price-values span input{
+.price-values span input {
   font-size: 16px;
   font-weight: 600;
   color: #333;
