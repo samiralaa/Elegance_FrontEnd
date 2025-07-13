@@ -6,7 +6,8 @@
         <img src="@/assets/images/EleganceLogo.png" alt="Logo" />
       </div>
 
-      <button class="close-btn" @click="$emit('close')">×</button>
+      <button type="button" class="btn-close m-3" @click="$emit('close')"
+        aria-label="Close"></button>
 
       <div class="cart-content overflow-auto d-flex align-items-center flex-column" style="max-height: 70vh;">
         <div class="w-50 d-flex align-items-center flex-column text-center">
@@ -31,6 +32,7 @@
 import axios from 'axios';
 export default {
   name: 'VerifyOtp',
+  emits: ['close'],
   data() {
     return {
       success: '',
@@ -264,5 +266,16 @@ h5 span {
   border-radius: 8px;
   margin-top: 10px;
   text-align: center;
+}
+
+.btn-close{
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+[dir="rtl"] .btn-close {
+  right: auto;
+  left: 0;
 }
 </style>
