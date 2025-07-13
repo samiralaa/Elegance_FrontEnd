@@ -39,7 +39,7 @@
           </li>
           <li class="phone">
             <fa icon="phone" class="fa" />
-            <a href="">+971 54 488 7138</a>
+            <a href=""><span dir="ltr">+971 54 488 7138</span></a>
           </li>
         </ul>
       </div>
