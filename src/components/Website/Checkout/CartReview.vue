@@ -9,8 +9,8 @@
           <p class="item-price">{{ calculateDiscountedPrice(item) }} {{ currency }}</p>
           <div class="quantity-controls">
             <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">-</button>
-            <input class="qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
-              @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(Math.max(item.quantity, 1), 99)">
+            <input class="form-control qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
+              @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(Math.max(item.quantity, 1), 99)" @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()">
             <button @click="increaseQuantity(item)" :disabled="item.quantity >= 99">+</button>
           </div>
         </div>
@@ -23,10 +23,6 @@
       <div class="summary-row">
         <span>{{ $t('checkout.subtotal') }}</span>
         <span>{{ subtotal }} {{ currency }}</span>
-      </div>
-      <div class="summary-row">
-        <span>{{ $t('checkout.shipping') }}</span>
-        <span>{{ shippingCost }} {{ currency }}</span>
       </div>
       <div class="summary-row total">
         <span>{{ $t('checkout.total') }}</span>
@@ -335,5 +331,21 @@ export default {
 .btn-primary:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.qty-number{
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  min-width: 20px;
+  width: fit-content;
+  padding: 0 8px;
+  text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style> 
