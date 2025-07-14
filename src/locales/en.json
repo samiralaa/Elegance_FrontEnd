@@ -402,7 +402,7 @@
   "contact": {
     "title": "Contact Us",
     "subtitle": "We are always ready to assist you and answer any questions you may have.",
-   "nameNotNumber": "Name cannot be only numbers.",
+    "nameNotNumber": "Name cannot be only numbers.",
     "description": "If you're making great products or looking to collaborate with us, don't hesitate to reach out.",
     "name": "Name",
     "email": "Email",
@@ -422,7 +422,11 @@
       "from": "From",
       "to": "To"
     },
-    "mapTitle": "We are always ready to assist you and answer any questions you may have."
+    "mapTitle": "We are always ready to assist you and answer any questions you may have.",
+    "nameRequired": "Name is required",
+    "emailRequired": "Email is required",
+    "subjectRequired": "Subject is required",
+    "messageRequired": "Message is required"
   },
 
   
