@@ -429,7 +429,11 @@
      "nameRequired": "الاسم مطلوب",
     "emailRequired": "البريد الإلكتروني مطلوب",
     "subjectRequired": "الموضوع مطلوب",
-    "messageRequired": "الرسالة مطلوبة"
+    "messageRequired": "الرسالة مطلوبة",
+     "namePlaceholder": "أدخل اسمك",
+    "emailPlacehodler": "أدخل بريدك الإلكتروني",
+    "subjectPlaceholder": "أدخل الموضوع",
+    "messagePlaceholder": "أدخل رسالتك"
     
   },
 
@@ -485,7 +489,7 @@
     "name": "الاسم",
     "email": "البريد الإلكتروني",
     "role": "الدور",
-    "phone": "الهاتف",
+    "phone": "رقم الهاتف",
     "emailVerified": "تم التحقق من البريد الإلكتروني في",
     "memberSince": "عضو منذ",
     "address": "العنوان",

@@ -426,7 +426,11 @@
     "nameRequired": "Name is required",
     "emailRequired": "Email is required",
     "subjectRequired": "Subject is required",
-    "messageRequired": "Message is required"
+    "messageRequired": "Message is required",
+    "namePlaceholder": "Enter your name",
+    "emailPlacehodler": "Enter your email",
+    "subjectPlaceholder": "Enter subject",
+    "messagePlaceholder": "Enter your message"
   },
 
   
@@ -485,7 +489,7 @@
     "name": "Name",
     "email": "Email",
     "role": "Role",
-    "phone": "Phone",
+    "phone": "Phone Number",
     "emailVerified": "Email Verified At",
     "memberSince": "Member Since",
     "address": "Address",
