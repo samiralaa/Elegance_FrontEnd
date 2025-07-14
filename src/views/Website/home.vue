@@ -141,7 +141,7 @@ export default {
         const gap = 50;
         this.$refs.slider.scrollBy({ left: -(cardWidth * 4 + gap), behavior: 'smooth' });
       } else {
-        const gap = 30; // optional for bigger screens
+        const gap = 30;
         this.$refs.slider.scrollBy({ left: -(cardWidth * 7 + gap), behavior: 'smooth' });
       }
     },

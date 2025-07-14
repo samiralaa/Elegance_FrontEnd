@@ -7,8 +7,12 @@
       </div>
       <div class="slider-wrapper">
         <div class="scrollers ms-3 mb-2">
-          <button class="btn nav-button left" @click="scrollLeft">&#8592;</button>
-          <button class="btn nav-button right" @click="scrollRight">&#8594;</button>
+          <button class="btn nav-button left" @click="scrollLeft">
+            <fa icon="arrow-left"></fa>
+          </button>
+          <button class="btn nav-button right" @click="scrollRight">
+            <fa icon="arrow-right"></fa>
+          </button>
         </div>
         <div class="slider" ref="slider">
           <a v-for="category in categories" :key="category.id" class="card" :href="`/category/${category.id}`">
@@ -238,6 +242,14 @@ export default {
   position: absolute;
   right: 5px;
   top: 0;
+}
+
+[dir="rtl"] .scrollers {
+  left: 5px;
+  right: auto;
+  margin-right: 0;
+  margin-left: 8px;
+  flex-direction: row-reverse;
 }
 
 .slick-track {

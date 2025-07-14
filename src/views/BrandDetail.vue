@@ -177,7 +177,6 @@ const fetchBrandDetails = async () => {
 }
 
 
-// Helpers
 const getBrandImage = (brandObj) => {
   return brandObj?.images?.[0]?.path
     ? `${API_URL}/public/storage/${brandObj.images[0].path}`
@@ -237,7 +236,6 @@ const addToFavorites = async (product) => {
 
 const addToCart = async (product) => {
   try {
-    // Calculate the price to send: discounted if discount is active, else regular
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
@@ -309,7 +307,7 @@ const addToCart = async (product) => {
   }
 
   watch(locale, () => {
-    fetchBrandDetails() // اللغة اتغيرت
+    fetchBrandDetails()
   })
 </script>
 
