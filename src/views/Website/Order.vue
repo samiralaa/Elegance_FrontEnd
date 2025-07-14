@@ -63,7 +63,7 @@
 
     <div v-else-if="filteredOrders.length > 0" class="row g-4">
       <div v-for="order in filteredOrders" :key="order.id" class="col-12 col-md-6">
-        <div class="order-card p-4 rounded-4 shadow-sm bg-white">
+        <div class="order-card p-4 rounded-4 shadow-sm bg-white ">
           <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
             <div>
               <small class="text-muted">{{ $t('orders.orderId') }}</small>
@@ -77,7 +77,7 @@
             </div>
           </div>
 
-          <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
+          <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom ">
             <div v-for="item in order.items" :key="item.id" class="d-flex flex-column align-items-start col-4">
               <img v-if="item.product && item.product.images && item.product.images.length"
                 :src="imageUrl(item.product.images[0].path)" class="rounded mb-2"
@@ -92,7 +92,7 @@
 
           <div class="d-flex justify-content-between align-items-center">
             <strong>Total: {{ order.total_price }} {{ selectedCurrency }} ({{ order.items.length }} Items)</strong>
-            <button class="btn btn-outline-dark btn-sm" @click="showOrderDetailsPopup(order.id)">Details</button>
+            <button class="btn btn-outline-dark btn-sm" @click="showOrderDetailsPopup(order.id)">{{$t('orders.details')}}</button>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@
         aria-label="Close"></button>
 
       <!-- Title -->
-      <h4 class="mb-3">{{ $t('order.orderDetails') }}</h4>
+      <h4 class="mb-3">{{ $t('orders.orderDetails') }}</h4>
 
       <!-- Loading Spinner -->
       <div v-if="loading" class="text-center">
@@ -118,24 +118,48 @@
       </div>
 
       <!-- Order content -->
-      <div v-else class="cart-content">
+      <div v-else class="cart-content   " >
         <div class="mb-3">
           <strong>Status:</strong>
           <span :class="['badge', getStatusBadgeClass(selectedOrder.status)]">
             {{ formatStatus(selectedOrder.status) }}
           </span>
         </div>
-        <div class="items row gy-3 overflow-auto mb-3 pb-2 border-bottom">
-          <div v-for="item in selectedOrder.items" :key="item.id" class="d-flex flex-column align-items-start col-4">
-            <img v-if="item.product && item.product.images && item.product.images.length"
-              :src="imageUrl(item.product.images[0].path)" class="rounded mb-2"
-              style="width: 100%; aspect-ratio: 1; object-fit: cover" />
-            <img v-else src="https://via.placeholder.com/150" class="rounded mb-2"
-              style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
-            <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name' }}</strong>
-            <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
-          </div>
-        </div>
+        <div
+  class="row flex-wrap gap-2 align-items-start border-bottom flex justify-content-center py-3 px-2"
+  style="max-height: 70vh; overflow-y: auto;"
+>
+  <div
+    v-for="item in selectedOrder.items"
+    :key="item.id"
+    class="col-12 col-md-4 col-lg-3"
+  >
+    <div class="card h-100 border-0 shadow-sm rounded-3">
+      <img
+        v-if="item.product?.images?.length"
+        :src="imageUrl(item.product.images[0].path)"
+        class="card-img-top rounded-top"
+        style="aspect-ratio: 1 / 1; object-fit: cover"
+        alt="Product Image"
+      />
+      <img
+        v-else
+        src="https://via.placeholder.com/300x300?text=No+Image"
+        class="card-img-top rounded-top"
+        style="aspect-ratio: 1 / 1; object-fit: cover"
+        alt="No Image Available"
+      />
+      <div class="card-body d-flex flex-column">
+        <strong class="card-title small mb-1">
+          {{ item.product?.name_en || 'No Name' }}
+        </strong>
+        <small class="text-muted">
+          {{ item.price }} {{ selectedCurrency }} × {{ item.quantity }}
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>

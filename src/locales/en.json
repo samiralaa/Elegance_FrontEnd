@@ -312,7 +312,9 @@
     "status" : "Status",
     "actions" : "Actions",
     "filterByStatus" : "Status",
-    "searchPlaceholder" : "Search..."
+    "searchPlaceholder" : "Search...",
+    "orderDetails" : "Order Details",
+    "details": "Details"
   },
   
   "checkout": {
