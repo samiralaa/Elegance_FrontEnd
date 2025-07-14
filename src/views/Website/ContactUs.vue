@@ -7,8 +7,10 @@
               <h2>{{ $t('contact.title') }}</h2>
           </div>
       </div>
-      <div class="contact-container pb-5 mb-5">
-        <div class="contact-body">
+
+      <div class="container">
+       <div class="row">
+        <div class=" col-12 col-md-6" :dir="direction">
           <div class="content-info">
             <h2>{{ $t('contact.subtitle') }}</h2>
             <p>{{ $t('contact.description') }}</p>
@@ -42,8 +44,10 @@
             </div>
           </div>  
         </div>
-        <form @submit.prevent="handleSubmit" class="contact-form">
-          <div class="container">
+
+         <div class="col-12 col-md-6 col-lg-6 contact-form" :dir="direction">
+        <form @submit.prevent="handleSubmit" class="">
+          <div class="">
             <div class="form-group">
               <label for="name">
                 {{ $t('contact.name') }}
@@ -80,7 +84,10 @@
             <p v-if="error" class="error">{{ error }}</p>
           </div>
         </form>
+        </div>
+        </div>
       </div>
+
       <div class="contact-footer mb-5">
         <div class="content-info col-md-12 col-lg-6">
           <h2>
@@ -110,7 +117,9 @@ export default {
   },
   computed: {
     direction() {
-      return i18n.global.locale === 'ar' ? 'rtl' : 'ltr';
+    console.log('i18n.global.locale:', i18n.global.locale.value);
+    
+      return i18n.global.locale.value === 'ar' ? 'rtl' : 'ltr';
     }
   },
   data() {
@@ -187,10 +196,6 @@ export default {
 
 <style scoped>
 .contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
   background: #f8f8f8;
   padding: 2rem 3rem;
   border-radius: 10px;
