@@ -53,7 +53,7 @@
                 </div>
               </div>
               <div class="card-body">
-                <h5 class="card-title">{{ product.name_en }}</h5>
+                <h5 class="card-title">{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
                 <div class="price-container">
                   <span v-if="product.discount && product.discount.length > 0 && product.discount[0].is_active" class="discount-badge">
                     {{ product.discount[0].discount_value }}% OFF
@@ -184,7 +184,6 @@ methods: {
 
   async addToCart(product) {
     try {
-      // Calculate the price to send: discounted if discount is active, else regular
       let priceToSend = 0;
       if (product.discount && product.discount.length > 0 && product.discount[0].is_active) {
         const discountValue = parseFloat(product.discount[0].discount_value);
