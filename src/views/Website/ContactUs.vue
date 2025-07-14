@@ -52,25 +52,25 @@
               <label for="name">
                 {{ $t('contact.name') }}
               </label>
-              <input v-model="contactForm.name" type="text" id="name" placeholder="Name"  />
+              <input v-model="contactForm.name" type="text" id="name" :placeholder="$t('contact.namePlaceholder')"  />
             </div>
             <div class="form-group">
               <label for="email">
                 {{ $t('contact.email') }}
               </label>
-              <input v-model="contactForm.email" type="email" id="email" placeholder="Email"  />
+              <input v-model="contactForm.email" type="email" id="email" :placeholder="$t('contact.emailPlacehodler')"  />
             </div>
             <div class="form-group">
               <label for="subject">
                 {{ $t('contact.subject') }}
               </label>
-              <input v-model="contactForm.subject" type="text" id="subject" placeholder="Subject"  />
+              <input v-model="contactForm.subject" type="text" id="subject" :placeholder="$t('contact.subjectPlaceholder')"  />
             </div>
             <div class="form-group">
               <label for="message">
                 {{ $t('contact.message') }}
               </label>
-              <textarea v-model="contactForm.message" id="message" rows="5" placeholder="Message" ></textarea>
+              <textarea v-model="contactForm.message" id="message" rows="5" :placeholder="$t('contact.messagePlaceholder')" ></textarea>
             </div>
             <div class="submit-btn">
               <button class="btn" type="submit" :disabled="loading">

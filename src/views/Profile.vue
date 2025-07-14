@@ -21,9 +21,9 @@
             style="width: 60px; height: 60px; font-size: 24px;">
             {{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}
           </div>
-          <div>
-            <h5 class="mb-0">{{ user.name }}</h5>
-            <small class="text-muted">{{ user.role }}</small>
+          <div class="user-info  ">
+            <h5 class="mb-0 fw-bold">{{ user.name }}</h5>
+            <small class="text-muted">{{ user.email }}</small>
           </div>
         </div>
         <button class="btn btn-outline-secondary d-flex align-items-center gap-1" @click="showResetPasswordModal = true"
@@ -68,17 +68,11 @@
 
       <!-- Basic Details -->
       <div class="d-flex flex-column gap-3">
+        
+        
         <div class="d-flex justify-content-between border-bottom pb-2">
-          <strong>{{ $t('profile.name') }}</strong>
-          <span>{{ user.name }}</span>
-        </div>
-        <div class="d-flex justify-content-between border-bottom pb-2">
-          <strong>{{ $t('profile.email') }}</strong>
-          <span>{{ user.email }}</span>
-        </div>
-        <div class="d-flex justify-content-between border-bottom pb-2">
-          <strong>{{ $t('profile.phone') }}</strong>
-          <span>{{ user.phone }}</span>
+          <strong>{{ $t('profile.phone') }} :</strong>
+          <span>{{ user.phone }} </span>
         </div>
       </div>
 
@@ -93,28 +87,38 @@
           {{ $t('profile.addAddress') }}
         </button>
       </div>
-      <div v-if="user.address?.length" class="mt-4">
+      <div v-if="user.address?.length" class="mt-4 d-flex justify-content-start flex-wrap gap-4" >
         <!-- Header with Icon -->
 
         <!-- Address List -->
-        <div v-for="(addr, idx) in user.address" :key="addr.id || idx"
-          class="d-flex justify-content-between align-items-center border rounded p-3 mb-2 bg-light">
-          <div class="d-flex align-items-center ">
-            <fa :icon="['fas', 'location-dot']" class="text-secondary me-3" />
-            <span class="text-muted">{{ formatAddress(addr) }}</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-outline-primary " @click="openEditDialog(addr)">
-              <fa :icon="['fas', 'pen']" class="me-1" />
-              {{ $t('profile.editAddress') }}
-            </button>
-            <button class="btn btn-sm btn-outline-danger ms-2" @click="openDeleteDialog(addr)">
-              <fa :icon="['fas', 'trash']" class="me-1" />
-              {{ $t('profile.deleteAddress') }}
-            </button>
-          </div>
-        </div>
+    
+          
+
+          
+<div class="card shadow-sm  bg-light p-3   col-12 col-md-5 rounded-3 mx-auto"  v-for="(addr, idx) in user.address" :key="addr.id || idx">
+  <div class="p-1">
+    <h6 class="card-title fw-bold mb-2">{{ this.$i18n.locale === 'ar'?addr.country.name_ar : addr.country.name_en }}</h6>
+    <p class="mb-1">{{ this.$i18n.locale === 'ar'?addr.city.name_ar : addr.city.name_en }}</p>
+
+    <p class="mb-1"><strong>Postal Code</strong> <span class="text-muted">{{ addr.postal_code }}</span></p>
+    <p class="mb-3"><strong>Building Name</strong> <span class="text-muted">{{ addr.building_name }}</span></p>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-danger btn-sm d-flex align-items-center"  @click="openDeleteDialog(addr)" >
+        <fa :icon="['fas','fa-trash-alt']"  class=" me-2"/> {{ $t('profile.deleteAddress') }}
+      </button>
+      <button class="btn btn-outline-dark btn-sm d-flex align-items-center" @click="openEditDialog(addr)">
+        <fa :icon="['fas','fa-pen']" class=" me-2"/> {{ $t('profile.editAddress') }}
+      </button>
+    </div>
+  </div>
+</div>
       </div>
+      
+
+    
+
+
 
     </div>
 
