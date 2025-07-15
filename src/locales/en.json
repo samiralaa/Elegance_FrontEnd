@@ -363,7 +363,8 @@
     "forgotPassword": "Forgot Password?",
     "login": "Login",
     "registerHere": "Register Here",
-    "notMember": "Not a member?"
+    "notMember": "Not a member?",
+    "go-home": "Go to Home"
   },
   
     "register": {
