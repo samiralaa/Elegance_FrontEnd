@@ -70,13 +70,24 @@
         </el-form-item>
 
         <!-- Images Upload (optional for edit) -->
+        <!-- Existing Product Images -->
+        <div v-if="existingImages.length" class="existing-images">
+          <h4>{{ $t('Products.ExistingImages') }}</h4>
+          <div class="image-list">
+            <div v-for="(img, index) in existingImages" :key="img.id" class="image-item">
+              <img :src="`${BASE_URL}/public/storage/${img.path}`" alt="Product Image" />
+            </div>
+          </div>
+        </div>
+
         <el-form-item :label="$t('Products.Images')" prop="images">
-          <el-upload class="upload-demo" drag action="" :auto-upload="false" :limit="5" :file-list="fileList"
-            list-type="picture" :on-change="handleFileChange" :on-remove="handleRemove">
+          <el-upload class="upload-demo" drag action="" list-type="picture" :auto-upload="false" :file-list="fileList"
+            :on-change="handleFileChange" :on-remove="handleRemove" :before-remove="beforeRemove">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">{{ $t('Products.DropFiles') }}</div>
           </el-upload>
         </el-form-item>
+
 
         <!-- Submit Button -->
         <el-form-item>
@@ -116,10 +127,13 @@ const rules = {
   country_id: [{ required: true, message: 'Please select a country', trigger: 'change' }],
 }
 const fileList = ref([])
+
 const categories = ref([])
 const currencies = ref([])
 const countries = ref([])
 const parentProducts = ref([])
+const existingImages = ref([]) // to store fetched product images
+
 const BASE_URL = 'https://backend.webenia.org'
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`
@@ -131,6 +145,17 @@ const activeCurrencies = computed(() => {
 const getCurrencyLabel = (currency) => {
   const lang = localStorage.getItem('lang') || 'en'
   return lang === 'ar' ? currency.name_ar : currency.name_en
+}
+
+
+const transformImagesToFileList = () => {
+  fileList.value = existingImages.value.map((img) => ({
+    name: img.path.split('/').pop(),
+    url: `${BASE_URL}/storage/${img.path}`,
+    status: 'success',
+    isExisting: true, // custom flag to track server image
+    id: img.id        // keep ID to delete later if needed
+  }))
 }
 const fetchSelectOptions = async () => {
   try {
@@ -170,6 +195,9 @@ const fetchProduct = async () => {
     const response = await axios.get(`${PRODUCTS_API}/${id}`)
     if (response.data.status) {
       Object.assign(form.value, response.data.data)
+      existingImages.value = response.data.data.images || []
+      transformImagesToFileList()
+
     } else {
       throw new Error(response.data.message || 'Failed to fetch product')
     }
@@ -229,5 +257,23 @@ onMounted(() => {
 
 .product-card {
   padding: 20px;
+}
+
+.existing-images {
+  margin-bottom: 20px;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 </style>

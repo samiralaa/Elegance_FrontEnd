@@ -237,6 +237,8 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
   const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+  // and type admin
+  const isAdmin = tokenData?.user?.role === 'admin'
 
   if (to.meta.requiresAuth && !tokenData?.token) {
     next('/login')
