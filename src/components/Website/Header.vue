@@ -13,14 +13,79 @@
     </div>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg">
       <div class="container-xl">
         <router-link to="/" class="navbar-brand">
           <img src="@/assets/images/EleganceLogo.png" alt="Logo" height="40" />
         </router-link>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-          <span class="navbar-toggler-icon"></span>
+
+        <button class="navbar-toggler" id="mobileMenuToggle" aria-label="Toggle navigation">
+          <fa icon="fas fa-bars"></fa>
         </button>
+
+        <div class="mobile-nav sidebar" id="mobileNav">
+          <span class="close-btn" id="closeMobileNav">&times;</span>
+          <ul class="mobile-menu">
+            <li><router-link to="/" @click="closeMobileMenu">{{ $t('header.home') }}</router-link></li>
+            <li><router-link to="/product-listing" @click="closeMobileMenu">{{ $t('header.products') }}</router-link></li>
+
+            <li class="mobile-services" @click.prevent="toggleDropdown('brands')" :class="{ active: activeDropdown === 'brands' }">
+              <a href="#" class="nav-link">
+                {{ $t('header.brands') }}
+                <i class="fa-solid fa-chevron-down"></i>
+              </a>
+              <ul class="mobile-dropdown">
+                <li v-for="brand in brands" :key="brand.id">
+                  <router-link :to="`/brand/${brand.id}`" class="dropdown-item" @click="closeMobileMenu">
+                    {{ currentLang === 'ar' ? brand.name_ar : brand.name_en }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+
+            <li class="mobile-services" @click.prevent="toggleDropdown('categories')" :class="{ active: activeDropdown === 'categories' }">
+              <a href="#" class="nav-link">
+                {{ $t('header.categories') }}
+                <i class="fa-solid fa-chevron-down"></i>
+              </a>
+              <ul class="mobile-dropdown">
+                <li v-for="category in categories" :key="category.id">
+                  <router-link :to="`/category/${category.id}`" class="dropdown-item" @click="closeMobileMenu">
+                    {{ currentLang === 'ar' ? category.name_ar : category.name_en }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+
+            <li><router-link to="/contact" @click="closeMobileMenu">{{ $t('header.contactUs') }}</router-link></li>
+            <li><router-link to="/about" @click="closeMobileMenu">{{ $t('header.aboutUs') }}</router-link></li>
+            <li><a><search-button @toggle="toggleSearchDialog" class="nav-icon"/></a></li>
+            <li><a><cart-button @show="showCartModal" class="nav-icon"/></a></li>
+            <li><a><favorite-button @show="fetchFavorites" class="nav-icon"/></a></li>
+            <li class="mobile-services" @click.prevent="toggleDropdown('profile')" :class="{ active: activeDropdown === 'profile' }" v-if="isAuthenticated">
+              <a class="nav-link">
+                <button class="profile-btn nav-icon">
+                  <fa icon="user" />
+                  <span class="title">{{ $t('header.profile') }}</span>
+                </button>
+              </a>
+              <ul v-if="activeDropdown === 'profile'" class="mobile-dropdown">
+                <li><router-link to="/profile" class="dropdown-item">{{ $t('header.profile') }}</router-link></li>
+                <li><router-link to="/orders/user" class="dropdown-item">{{ $t('header.orders') }}</router-link></li>
+                <li>
+                  <button class="dropdown-item" @click="logout" :disabled="isLoggingOut">
+                    <span v-if="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    {{ $t('header.logout') }}
+                  </button>
+                </li>
+              </ul>
+            </li>
+            <li v-if="!isAuthenticated">
+              <router-link to="/Account/Login" class="login-btn btn">{{ $t('header.login') }}</router-link>
+            </li>
+          </ul>
+
+        </div>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
@@ -170,6 +235,7 @@ export default {
       showCategoriesDropdown: false,
       isLoadingFavorites: false,
       isLoading: false,
+      activeDropdown: null,
     };
   },
   computed: {
@@ -187,6 +253,17 @@ export default {
     currentLang() {
       return localStorage.getItem('lang') || 'en';
     }
+  },
+  mounted() {
+    this.initMobileMenu();
+    document.addEventListener("click", (event) => {
+      const mobileNav = document.getElementById("mobileNav");
+      const toggleBtn = document.getElementById("mobileMenuToggle");
+      if (mobileNav && !mobileNav.contains(event.target) && !toggleBtn.contains(event.target)) {
+        mobileNav.classList.remove("active");
+        this.activeDropdown = null;
+      }
+    });
   },
   created() {
     if (this.isAuthenticated) {
@@ -402,12 +479,67 @@ export default {
         return `${API_URL}/public/storage/${category.images[0].path}`;
       }
       return '/placeholder-image.jpg';
-    }
+    },
+    toggleDropdown(type) {
+      this.activeDropdown = this.activeDropdown === type ? null : type;
+    },
+    closeMobileMenu() {
+      const mobileNav = document.getElementById("mobileNav");
+      if (mobileNav) {
+        mobileNav.classList.remove("active");
+        this.activeDropdown = null;
+      }
+    },
+    initMobileMenu() {
+      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+      const mobileNav = document.getElementById("mobileNav");
+      const closeMobileNav = document.getElementById("closeMobileNav");
+
+      if (!mobileMenuToggle || !mobileNav) return;
+
+      mobileMenuToggle.addEventListener("click", function () {
+        mobileNav.classList.add("active");
+      });
+
+      if (closeMobileNav) {
+        closeMobileNav.addEventListener("click", function () {
+          mobileNav.classList.remove("active");
+        });
+      }
+    },
   }
 };
 </script>
 
 <style scoped>
+.nav-icon {
+  color: #222 !important;
+  padding: 0;
+  padding-inline-end: 10px;
+}
+
+::v-deep(.nav-icon .title){
+  display: inline-block;
+  font-weight: 500;
+  padding-inline-start: 10px;
+}
+
+::v-deep(.nav-icon .cart-count),
+::v-deep(.nav-icon .favorite-count) {
+  display: none;
+}
+
+.profile-btn{
+  position: relative;
+  border: none;
+  cursor: pointer;
+  isolation: isolate;
+  background-color: transparent;
+  overflow: hidden;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
 .header {
   position: sticky;
   top: 0;
@@ -506,5 +638,100 @@ export default {
     width: 30px;
     height: 30px;
   }
+}
+
+.navbar-toggler {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.mobile-nav.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background-color: #f4f4f4;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 20px;
+  z-index: 1050;
+}
+
+[dir="rtl"] .mobile-nav.sidebar {
+  right: 0;
+  left: auto;
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .mobile-nav.sidebar.active {
+  transform: translateX(0);
+  right: 0;
+  left: auto;
+}
+
+.mobile-nav.sidebar.active {
+  transform: translateX(0);
+}
+
+.close-btn {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  margin-bottom: 1rem;
+  display: block;
+  text-align: end;
+}
+
+[dir="rtl"] .close-btn {
+  right: auto;
+  left: 16px;
+}
+
+.mobile-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.mobile-menu li {
+  margin-bottom: 10px;
+}
+
+.mobile-menu a,
+.mobile-menu button {
+  color: #222;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+}
+
+.mobile-services .nav-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-dropdown {
+  list-style: none;
+  padding-left: 15px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.mobile-services.active .mobile-dropdown {
+  max-height: 500px;
+}
+
+.dropdown-item {
+  color: #555;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: block;
+  margin-top: 5px;
 }
 </style>
