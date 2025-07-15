@@ -236,13 +236,11 @@
 
   "Products": {
     "NoImageAvailable": "لا توجد صورة متاحة",
-    
     "Availability": "التوافر",
     "Available": "متاح",
     "NotAvailable": "غير متاح",
     "DescriptionEn": "الوصف (إنجليزي)",
     "DescriptionAr": "الوصف (عربي)",
-    
     "Loading": "جاري التحميل...",
     "Products": "المنتجات",
     "AddProduct": "إضافة منتج",
@@ -274,7 +272,8 @@
     "None": "لا شيء",
     "Images": "الصور",
     "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
-    "CreateButton": "إنشاء المنتج"
+    "CreateButton": "إنشاء المنتج",
+    "addedSussess": "تم إضافة المنتج بنجاح"
   },
 
   "Footer": {

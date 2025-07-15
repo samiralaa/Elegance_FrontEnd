@@ -20,7 +20,7 @@
             <img src="@/assets/images/Hero/1.jpg" class="d-block w-100" alt="...">
           </div>
           <div class="carousel-item ">
-            <img src="@/assets/images/Hero/slider1.png" class="d-block w-100" alt="...">
+            <img src="@/assets/images/Hero/2.jpg" class="d-block w-100" alt="...">
           </div>
           <div class="carousel-item">
             <img src="@/assets/images/Hero/slider2.png" class="d-block w-100" alt="...">
