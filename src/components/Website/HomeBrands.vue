@@ -1,104 +1,109 @@
 <template>
-  <section class="our-brands">
+  <section class="our-brands py-5">
     <div class="container">
-      <div class="title mt-5">
-        <fa class="fa-icon" :icon="['fas','diagram-project']"></fa>
-        <h2>{{ $t('home.brands') }}</h2>
+      <!-- Title -->
+      <div class="section-title d-flex align-items-center gap-2 mb-4">
+        <fa class="icon" :icon="['fas','diagram-project']" />
+        <h2 class="m-0">{{ $t('home.brands') }}</h2>
       </div>
-      <div class="content">
-        
-       
 
-          <div v-for="brand in brands" :key="brand.id" class="brand-img" >
-           <router-link :to="`/brand/${brand.id}`" class="text-decoration-none">
-            <img v-if="brand.images.length" :src="getImageUrl(brand.images[0].path)" :alt="brand.name_en" class="img-fluid"/>
-            <span v-else class="text-muted small">No Image</span>
+      <!-- Brands Flex Row -->
+      <div class="d-flex flex-wrap justify-content-center gap-4">
+        <div
+          v-for="brand in brands"
+          :key="brand.id"
+          class="brand-card d-flex align-items-center justify-content-center"
+        >
+          <router-link :to="`/brand/${brand.id}`" class="brand-link text-decoration-none">
+            <img
+              v-if="brand.images.length"
+              :src="getImageUrl(brand.images[0].path)"
+              :alt="brand.name_en"
+              class="brand-image"
+              loading="lazy"
+            />
+            <div v-else class="no-image">No Image</div>
           </router-link>
-              
-          </div>
-      
+        </div>
       </div>
     </div>
   </section>
 </template>
-  
+
 <script>
-  import axios from "axios";
-  
-  export default {
-    name: "HomeBrands",
-    data() {
-      return {
-        brands: [],
-      };
+import axios from "axios";
+
+export default {
+  name: "HomeBrands",
+  data() {
+    return {
+      brands: [],
+    };
+  },
+  created() {
+    this.fetchBrands();
+  },
+  methods: {
+    async fetchBrands() {
+      try {
+        const response = await axios.get("https://backend.webenia.org/api/website/brands/section");
+        this.brands = response.data.data;
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
     },
-    created() {
-      this.fetchBrands();
+    getImageUrl(path) {
+      return `https://backend.webenia.org/public/storage/${path}`;
     },
-    methods: {
-      async fetchBrands() {
-        try {
-          const response = await axios.get(
-
-            "https://backend.webenia.org/api/website/brands/section"
-
-          );
-          this.brands = response.data.data;
-        } catch (error) {
-          console.error("Error fetching brands:", error);
-        }
-      },
-      getImageUrl(path) {
-
-        return `https://backend.webenia.org/public/storage/${path}`;
-
-      },
-      likeBrand(id) {
-        console.log(`Brand ${id} liked!`);
-      },
-    },
-  };
+  },
+};
 </script>
-  
+
 <style scoped>
-  .object-fit-contain {
-    object-fit: contain;
-  }
+.our-brands {
+  background-color: #f9f9f9;
+}
 
-  .title{
-    margin-bottom: 15px;
-    color: #8b6b3d;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.section-title {
+  color: #8b6b3d;
+  font-weight: 600;
+}
 
-  .fa-icon{
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-  }
+.section-title .icon {
+  font-size: 1.8rem;
+}
 
-  .our-brands .content{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    gap: 30px;
-  }
+.brand-card {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 160px;
+  height: 160px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 12px;
+}
 
-  .our-brands .content .brand-img{
-    transition: all 0.2s ease-in-out;
-  }
+.brand-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
 
-  .our-brands .content .brand-img:hover{
-    scale: 1.2;
-  }
+.brand-link {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .our-brands .content .brand-img img{
-    height: 200px;
-    margin: 10px;
-    margin-bottom: 20px;
-    width: auto;
-  }
+.brand-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.no-image {
+  font-size: 0.9rem;
+  color: #999;
+}
 </style>
-
-  
