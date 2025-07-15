@@ -19,7 +19,7 @@
                   -{{ product.discount.discount_value }}%
                 </span>
               </div>
-              <span class="price-new">{{ discountedPriceToShow }} {{ product.currency_code }}</span>
+              <span class="price-new">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
             </div>
 
             <button @click="toggleFavorite(product)" class="btn rounded-circle shadow-sm btn-light"
@@ -276,7 +276,7 @@ const addToCart = async () => {
   try {
     let priceToSend = 0;
     if (selectedAmount.value) {
-      priceToSend = parseFloat(selectedAmount.value.converted_price);
+      priceToSend = parseFloat(selectedAmount.value?.converted_price);
     } else {
       priceToSend = parseFloat(product.value.converted_price);
     }
@@ -293,6 +293,8 @@ const addToCart = async () => {
     if (selectedAmount.value) {
       payload.amount_id = selectedAmount.value.id;
     }
+    
+    
     const response = await axios.post(
       'https://backend.webenia.org/api/cart-items',
       payload,
@@ -437,7 +439,7 @@ const setActive = (index, amount) => {
 };
 
 const resetActive = () => {
-  selectedAmountIndex.value = null;
+  selectedAmountIndex.value = 0;
   product.value.amount_id = null;
   product.value.price = product.value._original_price !== undefined
     ? product.value._original_price
@@ -682,13 +684,21 @@ const selectedAmount = computed(() => {
 
 // Add this computed property for discount logic
 const discountedPriceToShow = computed(() => {
-  let basePrice = selectedAmount.value ? parseFloat(selectedAmount.value.converted_price) : parseFloat(product.value.converted_price);
-  if (product.value.discount && product.value.discount.is_active) {
+  let basePrice ;
+   basePrice = selectedAmount.value ? parseFloat(selectedAmount.value?.converted_price) : parseFloat(product.value.converted_price);
+
+    if (product.value.discount && product.value.discount.is_active) {
     const discountValue = parseFloat(product.value.discount.discount_value);
-    return (basePrice - (basePrice * (discountValue / 100))).toFixed(2);
+  
+     basePrice = basePrice - (basePrice * (discountValue / 100))
+    
+    return basePrice.toFixed(2);
   }
+  
   return basePrice;
 });
+
+
 </script>
 
 <style scoped>
