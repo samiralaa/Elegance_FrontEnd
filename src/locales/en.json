@@ -194,7 +194,8 @@
     "Password": "Password",
     "RememberMe": "Remember me",
     "ForgotPassword": "Forgot your password?",
-    "Login": "Login"
+    "Login": "Login",
+    "incorret": "Incorrect email or password"
   },
   
   "Categories": {
@@ -362,7 +363,8 @@
     "forgotPassword": "Forgot Password?",
     "login": "Login",
     "registerHere": "Register Here",
-    "notMember": "Not a member?"
+    "notMember": "Not a member?",
+    "go-home": "Go to Home"
   },
   
     "register": {

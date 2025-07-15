@@ -3,8 +3,11 @@
     <div class="banner-section">
       <img src="@/assets/images/perfume-banner.svg" alt="Elegance Perfume" class="banner-image">
     </div>
-    <div class="join-us-content">
+    
+    <div class="join-us-content  ">
+     <router-link to="/" class="link mb-4"><span >{{ $t('joinUs.go-home') }}</span></router-link> 
       <div class="form-header">
+        
         <h1 class="elegant-title">{{ $t('joinUs.title') }}</h1>
         <p class="elegant-description">{{ $t('joinUs.description') }}</p>
       </div>
@@ -88,11 +91,7 @@ export default {
         }
 
       } catch (error) {
-        this.errorMessage =
-          error.response?.data?.message ||
-          error.response?.data?.errors?.email?.[0] ||
-          error.message ||
-          'Login failed.';
+        this.errorMessage = 'Incorrect email or password';
       }
     },
     togglePassword() {
