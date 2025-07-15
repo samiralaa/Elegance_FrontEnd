@@ -92,6 +92,7 @@ import Footer from '@/components/Website/Footer.vue';
 import { useStore } from 'vuex';
 import { ElNotification } from 'element-plus'
 import { useFavoritesStore } from '@/store/favorites'
+import { useCartStore } from '@/store/cart'
 
 export default {
   name: 'CategoryDetail',
@@ -119,8 +120,10 @@ export default {
   created() {
     this.fetchCategoryDetails();
     this.favoritesStore = useFavoritesStore();
+    this.cartStore = useCartStore();
     if (localStorage.getItem('auth_token')) {
       this.favoritesStore.fetchFavorites();
+      this.cartStore.fetchCartCount();
     }
   },
   watch: {
@@ -183,14 +186,22 @@ methods: {
   },
 
   async addToCart(product) {
+    if (!product || !product.price) {
+      ElNotification({
+        title: this.$t('error'),
+        message: this.$t('invalid_product'),
+        type: 'error',
+      });
+      return;
+    }
     try {
       let priceToSend = 0;
       if (product.discount && product.discount.length > 0 && product.discount[0].is_active) {
         const discountValue = parseFloat(product.discount[0].discount_value);
-        const originalPrice = parseFloat(product.converted_price || product.price);
+        const originalPrice = parseFloat(product.price); // Use original price only
         priceToSend = originalPrice - originalPrice * (discountValue / 100);
       } else {
-        priceToSend = parseFloat(product.converted_price || product.price);
+        priceToSend = parseFloat(product.price); // Use original price only
       }
 
       const response = await axios.post(
@@ -213,6 +224,8 @@ methods: {
           message: response.data.message,
           type: 'success'
         })
+        this.cartStore.incrementCount();
+        await this.cartStore.fetchCartCount();
       } else {
         ElNotification({
           title: this.$t('error'),

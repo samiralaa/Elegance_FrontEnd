@@ -269,10 +269,10 @@ const addToCart = async (product) => {
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
-      const originalPrice = parseFloat(product.converted_price || product.price);
+      const originalPrice = parseFloat(product.price); // Use original price only
       priceToSend = originalPrice - originalPrice * (discountValue / 100);
     } else {
-      priceToSend = parseFloat(product.converted_price || product.price);
+      priceToSend = parseFloat(product.price); // Use original price only
     }
 
     const response = await axios.post(

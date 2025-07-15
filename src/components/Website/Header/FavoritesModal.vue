@@ -88,6 +88,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import axios from 'axios';
 import { useFavoritesStore } from '@/store/favorites';
 import { storeToRefs } from 'pinia';
+import { useCartStore } from '@/store/cart';
 
 export default {
   name: 'FavoritesModal',
@@ -104,12 +105,14 @@ export default {
     const { t } = useI18n();
     const favoritesStore = useFavoritesStore();
     const { favorites, isLoading } = storeToRefs(favoritesStore);
+    const cartStore = useCartStore();
 
     return { 
       t,
       favorites,
       isLoading,
-      favoritesStore
+      favoritesStore,
+      cartStore
     };
   },
   async created() {
@@ -164,10 +167,18 @@ export default {
         return;
       }
       try {
+        let priceToSend = 0;
+        if (this.isDiscountActive(favorite)) {
+          const discountValue = this.getDiscountPercentage(favorite);
+          const originalPrice = parseFloat(favorite.price); // Use original price only
+          priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+        } else {
+          priceToSend = parseFloat(favorite.price); // Use original price only
+        }
         const response = await axios.post(`${API_URL}/api/cart-items`, {
           product_id: favorite.product_id,
           quantity: 1,
-          price: parseFloat(this.calculateDiscountedPrice(favorite))
+          price: priceToSend
         }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
@@ -179,6 +190,8 @@ export default {
             message: this.t('cart.added_to_cart'),
             type: 'success',
           });
+          await this.cartStore.incrementCount();
+          await this.cartStore.fetchCartCount();
           this.$emit('close');
         }
       } catch (error) {
