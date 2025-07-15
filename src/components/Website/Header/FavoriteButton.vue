@@ -2,6 +2,7 @@
   <button class="favorite-btn" @click="handleClick">
     <fa icon="heart" />
     <span v-if="favoritesStore.count > 0" class="favorite-count">{{ favoritesStore.count }}</span>
+    <span class="title">{{ $t('favorites.title') }}</span>
   </button>
 </template>
 
@@ -38,6 +39,10 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  display: none;
+}
+
 .favorite-btn {
   position: relative;
   border: none;
