@@ -3,19 +3,19 @@
     <div class="button-group">
       <a 
         v-if="locale !== 'en'"
-        :class="['lang-btn', { active: locale === 'en' }]"
+        :class="['lang-btn', { active: locale === 'en' }, 'text-uppercase text-center']"
         @click="switchLanguage('en')"
       >
-        <span class="lang-code">EN</span>
-        <span class="lang-name">English</span>
+        <!-- <span class="lang-code">EN</span> -->
+        <span class="lang-name ">English</span>
       </a>
       <a 
         v-if="locale !== 'ar'"
-        :class="['lang-btn', { active: locale === 'ar' }]"
+        :class="['lang-btn', { active: locale === 'ar' }, 'text-uppercase text-center']"
         @click="switchLanguage('ar')"
       >
-        <span class="lang-code">ع</span>
-        <span class="lang-name">{{ $t('common.languages.arabic') }}</span>
+        <!-- <span class="lang-code">ع</span> -->
+        <span class="lang-name">العربية</span>
       </a>
     </div>
   </div>

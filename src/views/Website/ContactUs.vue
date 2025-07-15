@@ -27,9 +27,9 @@
           </div>  
           <div class="content-info">
             <h5>{{ $t('contact.workingHours.title') }}:</h5>
-            <div class="info">
+            <div class="info" >
               <fa icon="clock" class="icon" />
-              <p>{{ $t('contact.workingHours.from') }} <span>10:00 AM</span> {{ $t('contact.workingHours.to') }} <span>10:00 PM</span></p>
+              <p  >{{ $t('contact.workingHours.from') }} <span >10:00 AM </span> {{ $t('contact.workingHours.to') }} <span>10:00 PM</span></p>
             </div>
           </div>  
           <div class="content-info">
@@ -38,9 +38,9 @@
               <fa icon="envelope" class="icon" />
               <a href="mailto:Eleganceoud22@gmail.com">Eleganceoud22@gmail.com</a>
             </div>
-            <div class="info">
+            <div class="info" >
               <fa icon="fab fa-whatsapp" class="icon" />
-              <a href="https://wa.me/971544887138">+971 54 488 7138</a>
+              <a href="https://wa.me/971544887138" dir="ltr">+971 54 488 7138</a>
             </div>
           </div>  
         </div>
