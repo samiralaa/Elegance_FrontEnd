@@ -2,6 +2,7 @@
   <div class="cart-button" @click="$emit('show')">
     <fa icon="shopping-cart" />
     <span v-if="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+    <span class="title">{{ $t('cart.title') }}</span>
   </div>
 </template>
 
@@ -27,9 +28,17 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  display: none;
+}
+
 .cart-button {
   position: relative;
+  border: none;
   cursor: pointer;
+  isolation: isolate;
+  background-color: transparent;
+  overflow: hidden;
   padding: 16px;
   color: #a07840;
   transition: all 0.3s ease;

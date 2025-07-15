@@ -82,8 +82,6 @@
 
 
 <script setup>
-
-// Add any necessary JavaScript here
 </script>
 
 <style scoped>

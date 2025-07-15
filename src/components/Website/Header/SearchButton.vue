@@ -1,6 +1,7 @@
 <template>
   <button class="search-btn" @click="$emit('toggle')">
     <fa icon="search" />
+    <span class="title">{{ $t('search.search') }}</span>
   </button>
 </template>
 
@@ -12,37 +13,24 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  display: none;
+}
+
 .search-btn {
   position: relative;
-  padding: 1em;
-  background: transparent;
   border: none;
   cursor: pointer;
   isolation: isolate;
+  background-color: transparent;
   overflow: hidden;
-  color: #8b6b3d;
-  border-radius: 50%;
+  padding: 16px;
+  color: #a07840;
+  transition: all 0.3s ease;
 }
 
-.search-btn::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 45px;
-  width: 45px;
-  background-color: #8b6b3d;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
-  transition: transform 0.3s ease;
-}
 
 .search-btn:hover {
-  color: #fff;
-}
-
-.search-btn:hover::after {
-  transform: translate(-50%, -50%) scale(1);
+  color: #6b4d2d;
 }
 </style> 

@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">{{ product.name_en }}</h5>
+                  <h5 class="card-title">{{ currentLang === 'ar' ? product.name_ar : product.name_en }}</h5>
                   <div class="price-container">
                     <span v-if="product.discount && product.discount.is_active" class="discount-badge">
                       {{ getDiscountPercentage(product) }}% OFF
@@ -137,6 +137,9 @@ const showSuccessDialog = ref(false)
 const successMessage = ref('')
 const { t } = useI18n()
 
+
+const { locale } = useI18n()
+
 const currentLang = computed(() => localStorage.getItem('lang') || 'en')
 
 const favoritesStore = useFavoritesStore()
@@ -174,7 +177,6 @@ const fetchBrandDetails = async () => {
 }
 
 
-// Helpers
 const getBrandImage = (brandObj) => {
   return brandObj?.images?.[0]?.path
     ? `${API_URL}/public/storage/${brandObj.images[0].path}`
@@ -234,7 +236,6 @@ const addToFavorites = async (product) => {
 
 const addToCart = async (product) => {
   try {
-    // Calculate the price to send: discounted if discount is active, else regular
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
@@ -304,6 +305,10 @@ const addToCart = async (product) => {
     }
     return 0
   }
+
+  watch(locale, () => {
+    fetchBrandDetails()
+  })
 </script>
 
 <style scoped>

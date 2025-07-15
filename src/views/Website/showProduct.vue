@@ -305,7 +305,12 @@ const addToCart = async () => {
       }
     );
     if (response.data.status) {
-      ElNotification.success(response.data.message);
+      
+       ElNotification({
+          title: t('success'),
+          message: t('Products.addedSussess') ,
+          type: 'success',
+        })
       cartStore.incrementCount();
       await cartStore.fetchCartCount();
     } else {

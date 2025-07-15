@@ -150,7 +150,7 @@
 
   const BASE_URL = 'https://backend.webenia.org'
 
-  const API_URL = `${BASE_URL}/api/products`
+  const API_URL = `${BASE_URL}/api/dashboard/products`
 
   const fetchProducts = async () => {
     loading.value = true
