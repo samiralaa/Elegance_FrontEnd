@@ -88,11 +88,7 @@ export default {
         }
 
       } catch (error) {
-        this.errorMessage =
-          error.response?.data?.message ||
-          error.response?.data?.errors?.email?.[0] ||
-          error.message ||
-          'Login failed.';
+        this.errorMessage = 'Incorrect email or password';
       }
     },
     togglePassword() {

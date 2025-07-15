@@ -90,9 +90,7 @@
 
       <div class="contact-footer mb-5">
         <div class="content-info col-md-12 col-lg-6">
-          <h2>
-            {{ $t('contact.mapTitle') }}
-          </h2>
+
         </div>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3631.6485909291746!2d54.386216025984375!3d24.462974461050244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e6629e81bf275%3A0xe4551295f406885e!2zMzcg2LTYp9ix2Lkg2YPZktmI2Y7Yp9ixIC0g2KLZhCDZhtmH2YrYp9mGIC0gWm9uZSAxIC0g2KPYqNmIINi42KjZig!5e0!3m2!1sar!2sae!4v1723272974133!5m2!1sar!2sae" frameborder="0" width="100%" height="500"></iframe>
       </div>

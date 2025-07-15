@@ -194,7 +194,8 @@
     "Password": "Password",
     "RememberMe": "Remember me",
     "ForgotPassword": "Forgot your password?",
-    "Login": "Login"
+    "Login": "Login",
+    "incorret": "Incorrect email or password"
   },
   
   "Categories": {
