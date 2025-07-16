@@ -65,6 +65,18 @@
           </el-select>
         </el-form-item>
 
+        <!-- Add after category select -->
+        <el-form-item label="Brand" prop="brand_id">
+          <el-select v-model="form.brand_id" placeholder="Select Brand" filterable clearable>
+            <el-option
+              v-for="brand in brands"
+              :key="brand.id"
+              :label="brand.name_en"
+              :value="brand.id"
+            />
+          </el-select>
+        </el-form-item>
+
         <!-- Currency -->
         <el-form-item :label="$t('Products.Currency')" prop="currency_id">
           <el-select v-model="form.currency_id" :placeholder="$t('Products.SelectCurrency')" filterable clearable>
@@ -127,6 +139,7 @@ const form = ref({
   currency_id: null,
   country_id: null,
   parent_id: null,
+  brand_id: null, // Add brand_id to form
 })
 
 const amountForm = ref({
@@ -142,6 +155,7 @@ const currencies = ref([])
 const countries = ref([])
 const parentProducts = ref([])
 const units = ref([])
+const brands = ref([])
 
 const rules = {
   name_en: [{ required: true, message: 'Please input product name (EN)', trigger: 'blur' }],
@@ -149,6 +163,7 @@ const rules = {
   category_id: [{ required: true, message: 'Please select a category', trigger: 'change' }],
   currency_id: [{ required: true, message: 'Please select a currency', trigger: 'change' }],
   country_id: [{ required: true, message: 'Please select a country', trigger: 'change' }],
+  brand_id: [{ required: true, message: 'Please select a brand', trigger: 'change' }], // Add validation
 }
 
 const BASE_URL = 'https://backend.webenia.org'
@@ -173,6 +188,17 @@ const fetchSelectOptions = async () => {
     units.value = unitRes.data.data || []
   } catch (error) {
     ElMessage.error(error.response?.data?.message || 'Failed to load form options')
+  }
+}
+
+const fetchBrands = async () => {
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const res = await axios.get('https://backend.webenia.org/api/brands')
+    brands.value = Array.isArray(res.data.data) ? res.data.data : [res.data.data]
+  } catch (err) {
+    ElMessage.error('Failed to load brands')
   }
 }
 
@@ -221,7 +247,10 @@ const submitForm = () => {
   })
 }
 
-onMounted(fetchSelectOptions)
+onMounted(() => {
+  fetchSelectOptions()
+  fetchBrands()
+})
 </script>
 
 <style scoped>

@@ -1,14 +1,12 @@
 <template>
   <div class="brands-container">
     <div class="header">
-      <h1 class="text-2xl font-bold text-gray-800">{{$t('Brands.Management')}}</h1>
-      <el-button
-        type="primary"
-        @click="openCreateDialog"
-        class="add-brand-btn"
-      >
-        <el-icon class="mr-2"><Plus /></el-icon>
-        {{$t('Brands.AddBrands')}}
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('Brands.Management') }}</h1>
+      <el-button type="primary" @click="openCreateDialog" class="add-brand-btn">
+        <el-icon class="mr-2">
+          <Plus />
+        </el-icon>
+        {{ $t('Brands.AddBrands') }}
       </el-button>
     </div>
 
@@ -17,31 +15,25 @@
     </div>
 
     <div v-else class="table-container">
-      <el-table
-        :data="brands"
-        style="width: 100%"
-        :border="true"
-        v-loading="loading"
-      >
+      <el-table :data="brands" style="width: 100%" :border="true" v-loading="loading">
         <el-table-column :label="$t('Brands.Logo')" min-width="200" :resizable="true">
           <template #default="scope">
             <div class="d-flex align-center brand-name">
               <div class="brand-logo-container" @click="previewImage(scope.row)">
                 <el-avatar :size="120" class="brand-logo">
-                  <el-image
-                    v-if="scope.row.media && scope.row.media.length > 0"
-                    :src="scope.row.media[0].original_url"
-                   
-                    class="logo-img"
-                    :preview-src-list="[scope.row.media[0].original_url]"
-                  />
-                  <el-icon v-else size="24" color="#909399"><Picture /></el-icon>
+                  <el-image v-if="scope.row.media && scope.row.media.length > 0" :src="scope.row.media[0].original_url"
+                    class="logo-img" :preview-src-list="[scope.row.media[0].original_url]" />
+                  <el-icon v-else size="24" color="#909399">
+                    <Picture />
+                  </el-icon>
                 </el-avatar>
                 <div class="logo-overlay">
-                  <el-icon><ZoomIn /></el-icon>
+                  <el-icon>
+                    <ZoomIn />
+                  </el-icon>
                 </div>
               </div>
-             
+
             </div>
           </template>
         </el-table-column>
@@ -74,23 +66,17 @@
           <template #default="scope">
             <div class="button-group">
               <el-tooltip content="Edit Brand" placement="top">
-                <el-button
-                  type="primary"
-                  size="small"
-                  class="action-button"
-                  @click="editItem(scope.row)"
-                >
-                  <el-icon><Edit /></el-icon>
+                <el-button type="primary" size="small" class="action-button" @click="editItem(scope.row)">
+                  <el-icon>
+                    <Edit />
+                  </el-icon>
                 </el-button>
               </el-tooltip>
               <el-tooltip content="Delete Brand" placement="top">
-                <el-button
-                  type="danger"
-                  size="small"
-                  class="action-button"
-                  @click="deleteItem(scope.row)"
-                >
-                  <el-icon><Delete /></el-icon>
+                <el-button type="danger" size="small" class="action-button" @click="deleteItem(scope.row)">
+                  <el-icon>
+                    <Delete />
+                  </el-icon>
                 </el-button>
               </el-tooltip>
             </div>
@@ -99,39 +85,20 @@
       </el-table>
 
       <!-- Empty State -->
-      <el-empty
-        v-if="!loading && brands.length === 0"
-        description="No brands found"
-      />
+      <el-empty v-if="!loading && brands.length === 0" description="No brands found" />
     </div>
 
     <!-- Brand Form Dialog -->
-    <el-dialog
-      v-model="dialogVisible"
-      :title="dialogType === 'create' ? 'Create New Brand' : 'Edit Brand'"
-      width="600px"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="brandFormRef"
-        :model="brandForm"
-        :rules="formRules"
-        label-position="top"
-      >
+    <el-dialog v-model="dialogVisible" :title="dialogType === 'create' ? 'Create New Brand' : 'Edit Brand'"
+      width="600px" :close-on-click-modal="false">
+      <el-form ref="brandFormRef" :model="brandForm" :rules="formRules" label-position="top">
         <el-form-item label="Brand Logo" prop="logo">
-          <el-upload
-            class="logo-uploader"
-            action="#"
-            :show-file-list="false"
-            :auto-upload="false"
-            :on-change="handleLogoChange"
-          >
-            <el-image
-              v-if="brandForm.logo"
-              :src="brandForm.logo"
-              class="logo-preview"
-            />
-            <el-icon v-else class="logo-uploader-icon"><Plus /></el-icon>
+          <el-upload class="logo-uploader" action="#" :show-file-list="false" :auto-upload="false"
+            :on-change="handleLogoChange">
+            <el-image v-if="brandForm.logo" :src="brandForm.logo" class="logo-preview" />
+            <el-icon v-else class="logo-uploader-icon">
+              <Plus />
+            </el-icon>
           </el-upload>
         </el-form-item>
 
@@ -151,23 +118,14 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Description (English)" prop="description_en">
-              <el-input
-                v-model="brandForm.description_en"
-                type="textarea"
-                :rows="3"
-                placeholder="Enter brand description in English"
-              />
+              <el-input v-model="brandForm.description_en" type="textarea" :rows="3"
+                placeholder="Enter brand description in English" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Description (Arabic)" prop="description_ar">
-              <el-input
-                v-model="brandForm.description_ar"
-                type="textarea"
-                :rows="3"
-                placeholder="Enter brand description in Arabic"
-                dir="rtl"
-              />
+              <el-input v-model="brandForm.description_ar" type="textarea" :rows="3"
+                placeholder="Enter brand description in Arabic" dir="rtl" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -184,12 +142,7 @@
     </el-dialog>
 
     <!-- Delete Confirmation Dialog -->
-    <el-dialog
-      v-model="deleteDialogVisible"
-      title="Delete Brand"
-      width="400px"
-      :close-on-click-modal="false"
-    >
+    <el-dialog v-model="deleteDialogVisible" title="Delete Brand" width="400px" :close-on-click-modal="false">
       <p>Are you sure you want to delete this brand? This action cannot be undone.</p>
       <template #footer>
         <span class="dialog-footer">
@@ -309,14 +262,14 @@ export default defineComponent({
 
         await store.dispatch('fetchBrands')
         brands.value = store.getters.getBrands
-        
+
         console.log('Brands loaded:', brands.value)
       } catch (err) {
         console.error('Error loading brands:', err)
-        error.value = err.response?.data?.message || 
-                     err.message || 
-                     'Failed to load brands'
-        
+        error.value = err.response?.data?.message ||
+          err.message ||
+          'Failed to load brands'
+
         if (err.response?.status === 401) {
           localStorage.removeItem('tokenData')
           router.push('/login')
@@ -364,11 +317,8 @@ export default defineComponent({
 
     const submitForm = async () => {
       try {
-        if (!brandFormRef.value) {
-          console.error('Form reference is not available')
-          return
-        }
-        
+        if (!brandFormRef.value) return
+
         await brandFormRef.value.validate()
         submitting.value = true
 
@@ -377,7 +327,9 @@ export default defineComponent({
         formData.append('name_ar', brandForm.name_ar)
         formData.append('description_en', brandForm.description_en || '')
         formData.append('description_ar', brandForm.description_ar || '')
-        
+
+        // Do NOT append _method or use PUT for updates
+
         if (brandForm.logo instanceof File) {
           formData.append('logo', brandForm.logo)
         } else if (brandForm.logo && typeof brandForm.logo === 'string') {
@@ -387,10 +339,11 @@ export default defineComponent({
           formData.append('logo', file)
         }
 
-        const url = dialogType.value === 'create' ? '/brands' : `/brands/${selectedBrand.value.id}`
-        const method = dialogType.value === 'create' ? 'post' : 'put'
+        const url = dialogType.value === 'create'
+          ? '/brands'
+          : `/brands/${selectedBrand.value.id}`
 
-        await api[method](url, formData, {
+        await api.post(url, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -404,26 +357,12 @@ export default defineComponent({
         dialogVisible.value = false
         fetchBrands()
       } catch (err) {
-        console.error('Error saving brand:', err)
-        if (err.response?.data?.errors) {
-          Object.values(err.response.data.errors).forEach(errors => {
-            ElMessage({
-              message: errors[0],
-              type: 'error',
-              duration: 5000
-            })
-          })
-        } else {
-          ElMessage({
-            message: 'Failed to save brand',
-            type: 'error',
-            duration: 5000
-          })
-        }
+        // error handling
       } finally {
         submitting.value = false
       }
     }
+
 
     const confirmDelete = async () => {
       try {
@@ -545,7 +484,7 @@ export default defineComponent({
 .brand-logo-container {
   position: relative;
   margin-right: 16px;
- 
+
   cursor: pointer;
   transition: all 0.3s ease;
 }

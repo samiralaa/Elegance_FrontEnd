@@ -276,7 +276,7 @@ const addToCart = async () => {
   try {
     let priceToSend = 0;
     if (selectedAmount.value) {
-      priceToSend = parseFloat(selectedAmount.value?.converted_price);
+      priceToSend = parseFloat(selectedAmount.value?.price);
     } else {
       priceToSend = parseFloat(product.value.converted_price);
     }

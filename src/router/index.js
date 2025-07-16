@@ -56,12 +56,12 @@ const routes = [
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')
   },
-// log
-{
-  path: '/log',
-  name: 'Log',
-  component: () => import('../views/Log.vue')
-},
+  // log
+  {
+    path: '/log',
+    name: 'Log',
+    component: () => import('../views/Log.vue')
+  },
   {
     path: '/login',
     name: 'Login',
@@ -103,6 +103,12 @@ const routes = [
     path: '/categories/create',
     name: 'CategoryCreate',
     component: () => import('../views/Categories/create.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/categories/edit/:id',
+    name: 'CategoryEdit',
+    component: () => import('../views/Categories/edit.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -183,7 +189,7 @@ const routes = [
     path: '/reset-password',
     name: 'ResetPassword',
     component: () => import('../views/ResetPassword.vue'),
- 
+
   },
   {
     path: '/help',

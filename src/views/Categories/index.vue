@@ -1,63 +1,61 @@
 <template>
   <div class="categories-container">
     <div class="header">
-      <h2>{{$t('Categories.Categories')}}</h2>
-      <el-button type="primary" :icon="Plus" @click="openCreateDialog"> {{$t('Categories.AddCategory')}}</el-button>
+      <h2>{{ $t('Categories.Categories') }}</h2>
+      <el-button type="primary" :icon="Plus" @click="openCreateDialog"> {{ $t('Categories.AddCategory') }}</el-button>
     </div>
 
     <el-card class="categories-table">
       <el-table v-loading="loading" :data="categories" style="width: 100%">
-  <el-table-column :label="$t('Categories.Image')" width="120">
-    <template #default="{ row }">
-      <el-image
-        v-if="row.images && row.images.length > 0"
-        :src="`${BASE_URL}/${row.images[0].path}`"
-        fit="cover"
-        class="category-image"
-        :preview-src-list="[`${BASE_URL}/${row.images[0].path}`]"
-        :initial-index="0"
-        preview-teleported
-      >
-        <template #error>
-          <div class="image-error">
-            <el-icon><Picture /></el-icon>
-          </div>
-        </template>
-      </el-image>
-      <div v-else class="image-error">
-        <el-icon><Picture /></el-icon>
-      </div>
-    </template>
-  </el-table-column>
+        <el-table-column :label="$t('Categories.Image')" width="120">
+          <template #default="{ row }">
+            <el-image v-if="row.images && row.images.length > 0" :src="`${BASE_URL}/${row.images[0].path}`" fit="cover"
+              class="category-image" :preview-src-list="[`${BASE_URL}/${row.images[0].path}`]" :initial-index="0"
+              preview-teleported>
+              <template #error>
+                <div class="image-error">
+                  <el-icon>
+                    <Picture />
+                  </el-icon>
+                </div>
+              </template>
+            </el-image>
+            <div v-else class="image-error">
+              <el-icon>
+                <Picture />
+              </el-icon>
+            </div>
+          </template>
+        </el-table-column>
 
-  <el-table-column prop="name_en" :label="$t('Categories.Categories')" />
-  
-  <el-table-column prop="name_ar" :label="$t('Categories.name')">
-    <template #default="{ row }">
-      <div dir="rtl">{{ row.name_ar || 'N/A' }}</div>
-    </template>
-  </el-table-column>
+        <el-table-column prop="name_en" :label="$t('Categories.Categories')" />
 
-  <el-table-column prop="brand.name_en" :label="$t('Categories.Brand')" />
+        <el-table-column prop="name_ar" :label="$t('Categories.name')">
+          <template #default="{ row }">
+            <div dir="rtl">{{ row.name_ar || 'N/A' }}</div>
+          </template>
+        </el-table-column>
 
-  <el-table-column prop="description_en" :label="$t('Categories.DescriptionEn')" />
+        <el-table-column prop="brand.name_en" :label="$t('Categories.Brand')" />
 
-  <el-table-column prop="description_ar" :label="$t('Categories.DescriptionAr')">
-    <template #default="{ row }">
-      <div dir="rtl">{{ row.description_ar || 'N/A' }}</div>
-    </template>
-  </el-table-column>
+        <el-table-column prop="description_en" :label="$t('Categories.DescriptionEn')" />
 
-  <el-table-column :label="$t('Categories.Actions')" width="200">
-    <template #default="{ row }">
-      <el-button-group>
-        <el-button type="primary" :icon="View" @click="viewCategory(row.id)">{{ $t('Global.View') }}</el-button>
-        <el-button type="warning" :icon="Edit" @click="editCategory(row)">{{ $t('Global.Edit') }}</el-button>
-        <el-button type="danger" :icon="Delete" @click="deleteCategory(row)">{{ $t('Global.Delete') }}</el-button>
-      </el-button-group>
-    </template>
-  </el-table-column>
-</el-table>
+        <el-table-column prop="description_ar" :label="$t('Categories.DescriptionAr')">
+          <template #default="{ row }">
+            <div dir="rtl">{{ row.description_ar || 'N/A' }}</div>
+          </template>
+        </el-table-column>
+
+        <el-table-column :label="$t('Categories.Actions')" width="200">
+          <template #default="{ row }">
+            <el-button-group>
+              <el-button type="primary" :icon="View" @click="viewCategory(row.id)">{{ $t('Global.View') }}</el-button>
+              <el-button type="warning" :icon="Edit" @click="editCategory(row)">{{ $t('Global.Edit') }}</el-button>
+              <el-button type="danger" :icon="Delete" @click="deleteCategory(row)">{{ $t('Global.Delete') }}</el-button>
+            </el-button-group>
+          </template>
+        </el-table-column>
+      </el-table>
 
     </el-card>
   </div>
@@ -117,7 +115,7 @@ const viewCategory = (id) => {
 }
 
 const editCategory = (category) => {
-  // Logic to open edit category dialog
+  router.push(`/categories/edit/${category.id}`)
 }
 
 const deleteCategory = async (category) => {

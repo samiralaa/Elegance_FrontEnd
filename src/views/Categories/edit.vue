@@ -1,7 +1,7 @@
 <template>
-  <div class="category-create">
+  <div class="category-edit">
     <div class="form-card">
-      <h2 class="form-title">{{ $t('Categories.AddCategory') }}</h2>
+      <h2 class="form-title">{{ $t('Categories.EditCategory') }}</h2>
 
       <div v-if="loading" class="loading-overlay">
         <span class="spinner"></span>
@@ -51,22 +51,19 @@
           <label>Selected Brand ID</label>
           <input class="form-input" :value="form.brand_id" readonly />
         </div>
-
         <div class="form-group">
           <label>{{ $t('Categories.Image') }}</label>
           <div class="file-input-wrapper">
-            <input type="file" @change="onFileChange" accept="image/*" required class="form-input file-input" />
+            <input type="file" @change="onFileChange" accept="image/*" class="form-input file-input" />
           </div>
         </div>
-
         <div v-if="imagePreview" class="image-preview-container">
           <p class="preview-title">{{ $t('Categories.ImagePreview') }}</p>
           <div class="image-preview">
             <img :src="imagePreview" alt="Image Preview" />
           </div>
         </div>
-
-        <button type="submit" class="submit-button">{{ $t('Categories.CreateButton') }}</button>
+        <button type="submit" class="submit-button">{{ $t('Categories.UpdateButton') }}</button>
       </form>
     </div>
   </div>
@@ -74,9 +71,10 @@
 
 <script>
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 export default {
-  name: 'CreateCategory',
+  name: 'EditCategory',
   data() {
     return {
       form: {
@@ -96,6 +94,7 @@ export default {
   },
   created() {
     this.fetchBrands()
+    this.fetchCategory()
   },
   methods: {
     async fetchBrands() {
@@ -104,10 +103,7 @@ export default {
         if (tokenData?.token) {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
-
         const response = await axios.get('https://backend.webenia.org/api/brands')
-
-
         if (response.data.status) {
           const data = response.data.data
           this.brands = Array.isArray(data) ? data : [data]
@@ -116,10 +112,40 @@ export default {
         }
       } catch (error) {
         console.error('Error fetching brands:', error)
-        alert('Failed to load brands')
+        ElMessage.error('Failed to load brands')
       }
     },
-
+    async fetchCategory() {
+      this.loading = true
+      try {
+        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+        if (tokenData?.token) {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+        }
+        const id = this.$route.params.id
+        const response = await axios.get(`https://backend.webenia.org/api/categories/${id}`)
+        if (response.data.status && response.data.data) {
+          const cat = response.data.data
+          this.form = {
+            name: cat.name_en || '',
+            name_ar: cat.name_ar || '',
+            description: cat.description_en || '',
+            description_ar: cat.description_ar || '',
+            brand_id: cat.brand_id || '',
+            image: null,
+          }
+          if (cat.image) {
+            this.imagePreview = cat.image
+          }
+        } else {
+          throw new Error(response.data.message || 'Failed to fetch category')
+        }
+      } catch (error) {
+        this.errorMessage = error.response?.data?.message || error.message || 'An error occurred while fetching the category.'
+      } finally {
+        this.loading = false
+      }
+    },
     onFileChange(event) {
       const file = event.target.files[0]
       if (file) {
@@ -130,11 +156,10 @@ export default {
         this.imagePreview = null
       }
     },
-
     async submitCategory() {
-      this.successMessage = '';
-      this.errorMessage = '';
-      this.loading = true;
+      this.successMessage = ''
+      this.errorMessage = ''
+      this.loading = true
       try {
         const formData = new FormData()
         formData.append('name_en', this.form.name)
@@ -145,39 +170,28 @@ export default {
         if (this.form.image) {
           formData.append('image', this.form.image)
         }
-
         const tokenData = JSON.parse(localStorage.getItem('tokenData'))
         if (tokenData?.token) {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
-
-        const response = await axios.post('https://backend.webenia.org/api/categories', formData, {
+        const id = this.$route.params.id
+        const response = await axios.post(`https://backend.webenia.org/api/categories/${id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
-
         if (response.data?.status && response.data?.data) {
-          this.loading = false;
-          this.successMessage = 'Category created successfully!';
-          this.form = {
-            name: '',
-            name_ar: '',
-            description: '',
-            description_ar: '',
-            brand_id: '',
-            image: null,
-          }
-          this.imagePreview = null;
+          this.loading = false
+          this.successMessage = 'Category updated successfully!'
           setTimeout(() => {
-            this.$router.push('/categories');
-          }, 1500);
+            this.$router.push('/categories')
+          }, 1500)
         } else {
-          throw new Error(response.data?.message || 'Failed to create category')
+          throw new Error(response.data?.message || 'Failed to update category')
         }
       } catch (error) {
-        this.loading = false;
-        this.errorMessage = error.response?.data?.message || error.message || 'An error occurred while creating the category.'
+        this.loading = false
+        this.errorMessage = error.response?.data?.message || error.message || 'An error occurred while updating the category.'
       }
     },
   },
@@ -185,12 +199,12 @@ export default {
 </script>
 
 <style scoped>
-.category-create {
+/* Copy the styles from create.vue for consistency */
+.category-edit {
   padding: 2rem;
   display: flex;
   justify-content: center;
 }
-
 .form-card {
   background: white;
   border-radius: 8px;
@@ -199,25 +213,21 @@ export default {
   width: 100%;
   max-width: 600px;
 }
-
 .form-title {
   color: #8b6b3d;
   margin-bottom: 2rem;
   text-align: center;
   font-size: 1.8rem;
 }
-
 .form-group {
   margin-bottom: 1.5rem;
 }
-
 label {
   display: block;
   margin-bottom: 0.5rem;
   color: #333;
   font-weight: 500;
 }
-
 .form-input {
   width: 100%;
   padding: 0.75rem;
@@ -226,18 +236,15 @@ label {
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
-
 .form-input:focus {
   border-color: #8b6b3d;
   box-shadow: 0 0 0 2px rgba(139, 107, 61, 0.1);
   outline: none;
 }
-
 .form-textarea {
   min-height: 100px;
   resize: vertical;
 }
-
 .form-select {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -245,37 +252,30 @@ label {
   background-position: right 0.75rem center;
   background-size: 1em;
 }
-
 .file-input-wrapper {
   position: relative;
 }
-
 .file-input {
   cursor: pointer;
 }
-
 .image-preview-container {
   margin-top: 1.5rem;
 }
-
 .preview-title {
   color: #666;
   margin-bottom: 0.5rem;
 }
-
 .image-preview {
   border: 2px dashed #ddd;
   border-radius: 4px;
   padding: 1rem;
   text-align: center;
 }
-
 .image-preview img {
   max-width: 100%;
   max-height: 200px;
   object-fit: contain;
 }
-
 .submit-button {
   background-color: #8b6b3d;
   color: white;
@@ -289,15 +289,12 @@ label {
   margin-top: 1.5rem;
   transition: background-color 0.3s;
 }
-
 .submit-button:hover {
   background-color: #725932;
 }
-
 .submit-button:active {
   transform: translateY(1px);
 }
-
 .success-message {
   color: #388e3c;
   background: #e8f5e9;
@@ -307,7 +304,6 @@ label {
   margin-bottom: 1rem;
   text-align: center;
 }
-
 .error-message {
   color: #d32f2f;
   background: #ffebee;
@@ -317,7 +313,6 @@ label {
   margin-bottom: 1rem;
   text-align: center;
 }
-
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -330,7 +325,6 @@ label {
   justify-content: center;
   z-index: 9999;
 }
-
 .spinner {
   width: 48px;
   height: 48px;
@@ -340,14 +334,12 @@ label {
   animation: spin 1s linear infinite;
   display: inline-block;
 }
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
-
   100% {
     transform: rotate(360deg);
   }
 }
-</style>
+</style> 
