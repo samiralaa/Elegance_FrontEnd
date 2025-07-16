@@ -656,7 +656,8 @@ export default {
   background-color: #f4f4f4;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(-100%);
-  transition: transform 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
   overflow-y: auto;
   padding: 20px;
   z-index: 1050;
@@ -676,6 +677,7 @@ export default {
 
 .mobile-nav.sidebar.active {
   transform: translateX(0);
+  opacity: 1;
 }
 
 .close-btn {
