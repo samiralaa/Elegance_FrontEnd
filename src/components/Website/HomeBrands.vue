@@ -2,9 +2,9 @@
   <section class="our-brands py-5">
     <div class="container">
       <!-- Title -->
-      <div class="section-title d-flex align-items-center gap-2 mb-4">
-        <fa class="icon" :icon="['fas','diagram-project']" />
-        <h2 class="m-0">{{ $t('home.brands') }}</h2>
+      <div class="title">
+        <fa class="fa-icon" :icon="['fas', 'cubes']"></fa>
+        <h2>{{ $t('home.categories') }}</h2>
       </div>
 
       <!-- Brands Flex Row -->
@@ -62,14 +62,18 @@ export default {
 <style scoped>
 .our-brands {
   background-color: #f9f9f9;
+  margin-bottom: 10px;
 }
 
-.section-title {
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
   color: #8b6b3d;
-  font-weight: 600;
 }
 
-.section-title .icon {
+.fa-icon {
   font-size: 1.8rem;
 }
 

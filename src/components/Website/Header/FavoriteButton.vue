@@ -18,14 +18,12 @@ export default {
 
     const handleClick = () => {
       if (!localStorage.getItem('auth_token')) {
-        // Redirect to login if not authenticated
         window.location.href = '/Account/Login';
         return;
       }
       emit('show');
     };
 
-    // Fetch favorites count when component is mounted
     onMounted(async () => {
       await favoritesStore.fetchFavorites();
     });

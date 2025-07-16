@@ -2,11 +2,11 @@
   <div class="checkout-step">
     <h2>{{ $t('checkout.payment') }}</h2>
     <div class="payment-methods">
-      <div v-for="method in paymentMethods" :key="method.id" class="payment-method"
-        :class="{ active: selectedPaymentMethod === method.id }" @click="selectPaymentMethod(method.id)">
-        <fa :icon="method.icon" />
+      <button :disabled="method.name === 'Tabby' && currency === 'USD'" v-for="method in paymentMethods" :key="method.id" class="payment-method"
+        :class="{active: selectedPaymentMethod === method.id , [method.class]: currency === 'USD'}" @click="selectPaymentMethod(method.id)">
+        <fa :icon="method.icon"/>
         <span>{{ method.name }}</span>
-      </div>
+      </button>
     </div>
 
     <!-- Stripe Card Element -->
@@ -80,9 +80,9 @@ export default {
     return {
       selectedPaymentMethod: null,
       paymentMethods: [
-        { id: 1, name: 'Stripe', icon: 'credit-card' },
-        { id: 2, name: 'Tabby', icon: 'credit-card-alt' },
-        { id: 3, name: 'Cash on Delivery', icon: 'money-bill' }
+        { id: 1, name: 'Stripe', icon: 'credit-card', class: '' },
+        { id: 2, name: 'Tabby', icon: 'credit-card-alt', class: 'tappy-disabled' },
+        { id: 3, name: 'Cash on Delivery', icon: 'money-bill', class: '' }
       ],
       loading: false,
       stripePromise: null,
@@ -99,6 +99,11 @@ export default {
   watch: {
     currency(newCurrency, oldCurrency) {
       this.fetchCartTotal();
+
+      // Reset selected payment method when currency changes
+      if (this.selectedPaymentMethod === 2 && newCurrency === 'USD') {
+        this.selectedPaymentMethod = null;
+      }
     },
     selectedPaymentMethod(newValue) {
       if (newValue === 1) {
@@ -106,8 +111,9 @@ export default {
           this.initStripeElements();
         });
       }
-    },
+    }
   },
+
   methods: {
     selectPaymentMethod(methodId) {
       this.selectedPaymentMethod = methodId;
@@ -348,7 +354,7 @@ export default {
         }
 
         // Tabby
-        if (this.selectedPaymentMethod === 2) {
+        if (this.selectedPaymentMethod === 2 && !currency === "USD") {
           const tabbyResponse = await axios.post(
             `${API_URL}/api/payment/process`,
             {
@@ -702,12 +708,17 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
+  background-color: transparent;
   transition: all 0.3s ease;
 }
 
 .payment-method.active {
   border-color: #8b6b3d;
   background: #fff;
+}
+
+.tappy-disabled{
+  cursor: not-allowed;
 }
 
 .stripe-container {

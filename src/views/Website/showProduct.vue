@@ -659,7 +659,7 @@ const currentPrice = computed(() => {
   if (selectedAmount.value) {
     return selectedAmount.value.converted_price !== undefined
       ? selectedAmount.value.converted_price
-      : selectedAmount.value.converted_price;
+      : selectedAmount.value.price;
   }
   return product.value.converted_price !== undefined
     ? product.value.converted_price

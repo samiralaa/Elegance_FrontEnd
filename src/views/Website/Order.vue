@@ -86,12 +86,12 @@
                 style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
               <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name'
                 }}</strong>
-              <small class="text-muted">{{ item.price }} {{ selectedCurrency }} x{{ item.quantity }}</small>
+              <small class="text-muted">{{ item.price }} {{ order.currency }} x{{ item.quantity }}</small>
             </div>
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
-            <strong>Total: {{ order.total_price }} {{ selectedCurrency }} ({{ order.items.length }} Items)</strong>
+            <strong>Total: {{ order.total_price }} {{ order.currency }} ({{ order.items.length }} Items)</strong>
             <button class="btn btn-outline-dark btn-sm" @click="showOrderDetailsPopup(order.id)">{{$t('orders.details')}}</button>
           </div>
         </div>
@@ -343,7 +343,7 @@ export default {
 
 <style scoped>
 .items {
-  height: 100%;
+  height: 255px;
   overflow-y: auto;
 }
 

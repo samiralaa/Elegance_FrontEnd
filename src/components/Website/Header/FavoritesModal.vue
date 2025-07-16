@@ -2,7 +2,7 @@
   <div class="modal-overlay d-flex justify-content-center align-items-center">
     <div class="favorites-modal bg-white rounded-4 shadow p-4 position-relative">
       <!-- Close Button -->
-      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" @click="$emit('close')" aria-label="Close"></button>
+      <button type="button" class="close btn-close position-absolute top-0 m-3" @click="$emit('close')" aria-label="Close"></button>
 
       <!-- Title -->
       <h4 class="mb-3">❤️ {{ $t('favorites.title') }}</h4>
@@ -262,6 +262,15 @@ export default {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+.close{
+  right: 0;
+}
+
+[dir="rtl"] .close{
+  left: 0;
+  right: auto;
 }
 
 .favorites-content {
