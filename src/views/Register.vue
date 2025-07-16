@@ -81,7 +81,7 @@
             <input type="tel" id="phoneNumber" v-model="phoneNumber"
               :placeholder="$t('register.phoneNumberPlaceholder')"
               :class="{ 'error': errors.phoneNumber, 'valid': phoneNumber && !errors.phoneNumber }" required
-              minlength="10" maxlength="18" @input="formatPhoneNumber">
+              minlength="8" maxlength="18" @input="formatPhoneNumber">
           </div>
           <span class="error-message" v-if="errors.phoneNumber">{{ errors.phoneNumber }}</span>
         </div>
@@ -342,7 +342,7 @@ export default {
         this.errors.phoneNumber = this.$t('register.validation.phoneRequired');
       } else if (!this.countryCode) {
         this.errors.phoneNumber = this.$t('register.validation.countryRequired');
-      } else if (value.length < 10 || value.length > 18) {
+      } else if (value.length < 6 || value.length > 18) {
         this.errors.phoneNumber = this.$t('register.validation.phoneLength');
       } else if (!/^\d+$/.test(value)) {
         this.errors.phoneNumber = this.$t('register.validation.phoneInvalid');
