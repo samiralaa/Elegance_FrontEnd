@@ -34,7 +34,7 @@
               {{ showPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
             <button type="button" class="copy-password-btn" @click="copyPassword(formData.password)">
-             
+
             </button>
           </div>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
@@ -46,8 +46,7 @@
             <input :type="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
               v-model="formData.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
               :class="{ 'error': errors.confirmPassword, 'valid': formData.confirmPassword && !errors.confirmPassword }"
-              required
-              @copy.prevent @cut.prevent @paste.prevent>
+              required @copy.prevent @cut.prevent @paste.prevent>
             <button type="button" class="show-password-btn" @click="toggleConfirmPassword">
               {{ showConfirmPassword ? $t('joinUs.hidePassword') : $t('joinUs.showPassword') }}
             </button>
@@ -382,7 +381,8 @@ export default {
           password_confirmation: this.formData.confirmPassword,
           country_id: this.formData.country_id,
           phone: this.formData.phoneNumber,
-          role: 'user' // Default role
+          role: 'user', // Default role
+          dialing_code: this.selectedCountryDialCode // Send the selected country's dialing code
         })
 
         // Check if we have the expected response structure
@@ -400,14 +400,31 @@ export default {
         }
       } catch (error) {
         console.error('Registration error:', error)
+        // Backend error message mapping
+        const backendErrorMap = {
+          "رقم الهاتف غير صالح لهذا الرمز.": "رقم الهاتف غير صالح لهذا الرمز.",
+          "The phone number is not valid for this code.": "رقم الهاتف غير صالح لهذا الرمز."
+        }
         if (error.response?.data?.errors) {
           // Handle validation errors from backend
           const backendErrors = error.response.data.errors
           Object.keys(backendErrors).forEach(field => {
-            if (this.errors.hasOwnProperty(field)) {
-              this.errors[field] = backendErrors[field][0]
+            let backendMsg = backendErrors[field][0]
+            // Map backend 'phone' to local 'phoneNumber'
+            if (field === 'phone') {
+              const translationKey = backendErrorMap[backendMsg]
+              this.errors.phoneNumber = translationKey ? this.$t(translationKey) : backendMsg
+            } else if (this.errors.hasOwnProperty(field)) {
+              const translationKey = backendErrorMap[backendMsg]
+              this.errors[field] = translationKey ? this.$t(translationKey) : backendMsg
             }
           })
+          // Handle top-level message
+          if (error.response.data.message) {
+            const msg = error.response.data.message
+            const translationKey = backendErrorMap[msg]
+            this.$toast?.error?.(translationKey ? this.$t(translationKey) : msg)
+          }
         } else {
           const errorMessage = error.response?.data?.message || this.$t?.('register.error') || 'Registration failed'
           this.$toast?.error?.(errorMessage)
@@ -417,7 +434,7 @@ export default {
     updateFullPhoneNumber() {
       // Only update if we have a country code
       if (this.countryCode) {
-        this.formData.phoneNumber = this.countryCode + this.phoneNumber;
+        this.formData.phoneNumber = this.phoneNumber;
       } else {
         this.formData.phoneNumber = this.phoneNumber;
       }
