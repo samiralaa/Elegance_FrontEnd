@@ -89,6 +89,7 @@
         </el-form-item>
 
 
+
         <!-- Submit Button -->
         <el-form-item>
           <el-button type="primary" @click="submitForm">{{ $t('Products.UpdateButton') }}</el-button>
@@ -153,8 +154,8 @@ const transformImagesToFileList = () => {
     name: img.path.split('/').pop(),
     url: `${BASE_URL}/storage/${img.path}`,
     status: 'success',
-    isExisting: true, // custom flag to track server image
-    id: img.id        // keep ID to delete later if needed
+    isExisting: true, // this image is from server
+    id: img.id        // used for existing_images[]
   }))
 }
 const fetchSelectOptions = async () => {
@@ -214,23 +215,46 @@ const handleRemove = (file, fileList_) => {
 const submitForm = async () => {
   formRef.value.validate(async (valid) => {
     if (!valid) return
+
     try {
       const tokenData = JSON.parse(localStorage.getItem('tokenData'))
       if (!tokenData || !tokenData.token) {
         throw new Error('Authentication token not found')
       }
+
       axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+
       const { id } = route.params
       const formData = new FormData()
+
+      // ✅ Append all form fields
       for (const key in form.value) {
         formData.append(key, form.value[key])
       }
+
+      // ✅ Append new uploaded images
       fileList.value.forEach((file) => {
-        formData.append('images[]', file.raw)
+        if (!file.isExisting && file.raw) {
+          formData.append('images[]', file.raw)
+        }
       })
-      const response = await axios.post(`${PRODUCTS_API}/${id}?_method=PUT`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+
+      // ✅ Append IDs of existing images to keep
+      fileList.value.forEach((file) => {
+        if (file.isExisting && file.id) {
+          formData.append('existing_images[]', file.id)
+        }
       })
+
+      // ✅ Spoof HTTP method as PUT
+      formData.append('_method', 'PUT')
+
+      const response = await axios.post(`${PRODUCTS_API}/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
       if (response.data.status) {
         ElMessage.success(response.data.message || 'Product updated successfully')
         router.push('/products')
@@ -242,6 +266,7 @@ const submitForm = async () => {
     }
   })
 }
+
 onMounted(() => {
   fetchSelectOptions()
   fetchProduct()
