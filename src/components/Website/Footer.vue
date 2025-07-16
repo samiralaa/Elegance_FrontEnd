@@ -14,16 +14,17 @@
       <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.QuickLink') }}</h3>
         <ul>
-          <li><a href="#">{{ $t('Footer.PrivacyPolicy') }}</a></li>
-          <li><a href="#">{{ $t('Footer.TermsOfService') }}</a></li>
-          <li><a href="#">{{ $t('Footer.RefundPolicy') }}</a></li>
-          <li><a href="#">{{ $t('Footer.Contact') }}</a></li>
+          <li><router-link to="#">{{ $t('Footer.PrivacyPolicy') }}</router-link></li>
+          <li><router-link to="#">{{ $t('Footer.TermsOfService') }}</router-link></li>
+          <li><router-link to="#">{{ $t('Footer.RefundPolicy') }}</router-link></li>
+          <li><router-link to="/contact">{{ $t('Footer.Contact') }}</router-link></li>
         </ul>
       </div>
       <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.Account') }}</h3>
         <ul>
-          <li><a href="#">{{ $t('Footer.LoginRegister') }}</a></li>
+          <li><router-link to="/profile" v-if="isAuthenticated()">{{ $t('Footer.profile') }}</router-link></li>
+          <li><router-link to="Account/login" v-if="!isAuthenticated()">{{ $t('Footer.LoginRegister') }}</router-link></li>
         </ul>
       </div>
       <div class="footer-section col-12 col-lg-3 col-sm-6">
@@ -82,7 +83,11 @@
 
 
 <script setup>
+const isAuthenticated = () => {
+  return !!localStorage.getItem('auth_token');
+}
 </script>
+
 
 <style scoped>
 .footer {
