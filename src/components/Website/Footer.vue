@@ -16,7 +16,7 @@
         <ul>
           <li><a href="#">{{ $t('Footer.PrivacyPolicy') }}</a></li>
           <li><a href="#">{{ $t('Footer.TermsOfService') }}</a></li>
-          <li><a href="#">{{ $t('Footer.RefundPolicy') }}</a></li>
+          <li><a href="Refund-policy">{{ $t('Footer.RefundPolicy') }}</a></li>
           <li><a href="#">{{ $t('Footer.Contact') }}</a></li>
         </ul>
       </div>

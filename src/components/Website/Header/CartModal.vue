@@ -106,10 +106,7 @@ export default {
       type: [Number, String],
       required: true
     },
-    currentLang: {
-      type: String,
-      default: 'en'
-    }
+  
   },
   emits: ['close', 'checkout', 'update-quantity'],
   setup() {
@@ -118,7 +115,8 @@ export default {
   },
   data() {
     return {
-      isLoading: false
+      isLoading: false ,
+      lang: localStorage.getItem('lang') || 'en',
     };
   },
   methods: {
@@ -282,7 +280,10 @@ export default {
   
   currency() {
     return this.selectedCurrency || 'USD';
-  }
+  },
+   currentLang() {
+      return this.lang === 'ar' ? 'ar' : 'en';
+    }
 }
 
 }

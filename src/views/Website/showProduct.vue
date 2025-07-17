@@ -41,14 +41,14 @@
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
                     :class="{ active: selectedAmountIndex === index }" @click="setActive(index, amount)">
-                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.converted_price }} {{ product.currency_code }}</p>
+                    <p>{{ direction === 'rtl' ? amount.weight + '' +  amount.unit.name_en     : amount.weight + ' ' + amount.unit.name_en }} For {{ amount.converted_price }} {{ product.currency_code }}</p>
                   </div>
                 </div>
               </div>
               <div v-if="selectedAmount" class="amount-details" style="margin-top: 1rem;">
                 <p>
                   <strong>{{ $t('amount.selected') }}:</strong>
-                  {{ selectedAmount.weight }} {{ selectedAmount.unit.name_en }} -
+                  {{direction ==='rtl' ?  selectedAmount.weight + ""+ selectedAmount.unit.name_en : selectedAmount.unit.name_en +' '+ selectedAmount.weight    }} -
                   {{ selectedAmount.converted_price }} {{ product.currency_code }}
                 </p>
                 <!-- Add more details here if needed -->

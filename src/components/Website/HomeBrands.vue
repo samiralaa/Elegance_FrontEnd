@@ -4,7 +4,7 @@
       <!-- Title -->
       <div class="title">
         <fa class="fa-icon" :icon="['fas', 'cubes']"></fa>
-        <h2>{{ $t('home.categories') }}</h2>
+        <h2>{{ $t('home.brands') }}</h2>
       </div>
 
       <!-- Brands Flex Row -->
@@ -15,6 +15,7 @@
           class="brand-card d-flex align-items-center justify-content-center"
         >
           <router-link :to="`/brand/${brand.id}`" class="brand-link text-decoration-none">
+            
             <img
               v-if="brand.images.length"
               :src="getImageUrl(brand.images[0].path)"
