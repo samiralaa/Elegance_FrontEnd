@@ -234,6 +234,12 @@ const routes = [
     component: () => import('../views/Website/RefundPolicy.vue'),
     
   },
+  {
+    path: '/terms-service',
+    name: 'TermsService',
+    component: () => import('../views/Website/TermsOfService.vue'),
+    
+  },
 ]
 
 const router = createRouter({

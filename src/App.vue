@@ -69,18 +69,18 @@
             <Menu />
           </el-icon>
         </button>
-
+        <div></div>
         <!-- Search Bar -->
-        <div class="search-bar">
+        <!-- <div class="search-bar">
           <el-icon>
             <Search />
           </el-icon>
           <input type="text" :placeholder="$t('common.search')" v-model="searchQuery" @input="handleSearch" />
-        </div>
+        </div> -->
 
         <div class="header-actions">
           <!-- Theme Switcher -->
-          <ThemeSwitcher class="header-item" />
+          <!-- <ThemeSwitcher class="header-item" /> -->
 
           <!-- Language Switcher -->
           <LanguageSwitcher class="header-item"/>
@@ -159,7 +159,7 @@ export default {
     const router = useRouter()
     const route = useRoute()
 
-    const searchQuery = ref('')
+    // const searchQuery = ref('')
     const isSidebarOpen = ref(false)
     const isMobile = ref(window.innerWidth <= 768)
 
@@ -206,10 +206,10 @@ export default {
     const unreadNotifications = computed(() => store.state.notifications?.unread || 0)
 
     // Methods
-    const handleSearch = () => {
-      // Implement search functort', namionality
-      console.log('Searching:', searchQuery.value)
-    }
+    // const handleSearch = () => {
+    //   // Implement search functort', namionality
+    //   console.log('Searching:', searchQuery.value)
+    // }
 
     const handleCommand = async (command) => {
       switch (command) {
@@ -266,7 +266,7 @@ export default {
     }
 
     return {
-      searchQuery,
+      // searchQuery,
       isSidebarOpen,
       isMobile,
       mainMenuItems,
@@ -277,7 +277,7 @@ export default {
       userInitials,
       currentRoute,
       unreadNotifications,
-      handleSearch,
+      // handleSearch,
       handleCommand,
       toggleSidebar,
       showNotifications,

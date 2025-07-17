@@ -14,10 +14,10 @@
       <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.QuickLink') }}</h3>
         <ul>
-          <li><a href="#">{{ $t('Footer.PrivacyPolicy') }}</a></li>
-          <li><a href="#">{{ $t('Footer.TermsOfService') }}</a></li>
-          <li><a href="Refund-policy">{{ $t('Footer.RefundPolicy') }}</a></li>
-          <li><a href="#">{{ $t('Footer.Contact') }}</a></li>
+          <li><router-link to="#">{{ $t('Footer.PrivacyPolicy') }}</router-link></li>
+          <li><router-link to="/terms-service">{{ $t('Footer.TermsOfService') }}</router-link></li>
+          <li><router-link to="/Refund-policy">{{ $t('Footer.RefundPolicy') }}</router-link></li>
+          <li><router-link to="#">{{ $t('Footer.Contact') }}</router-link></li>
         </ul>
       </div>
       <div class="footer-section col-12 col-lg-3 col-sm-6">
