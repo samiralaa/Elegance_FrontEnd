@@ -250,7 +250,7 @@ const addToFavorites = async (product) => {
 
 const fetchCategories = async () => {
   try {
-    const res = await axios.get('https://backend.webenia.org/api/website')
+    const res = await axios.get('https://backend.webenia.org/api/categories/website/homepage')
     categories.value = res.data.data || []
   } catch (err) {
     console.error('Error loading categories', err)

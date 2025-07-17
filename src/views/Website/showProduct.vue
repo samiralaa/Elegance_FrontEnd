@@ -41,7 +41,8 @@
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
                     :class="{ active: selectedAmountIndex === index }" @click="setActive(index, amount)">
-                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.converted_price }} {{ product.currency_code }}</p>
+                    <p>{{ amount.weight }} {{ amount.unit.name_en }} For {{ amount.converted_price }} {{
+                      product.currency_code }}</p>
                   </div>
                 </div>
               </div>
@@ -293,8 +294,8 @@ const addToCart = async () => {
     if (selectedAmount.value) {
       payload.amount_id = selectedAmount.value.id;
     }
-    
-    
+
+
     const response = await axios.post(
       'https://backend.webenia.org/api/cart-items',
       payload,
@@ -305,12 +306,12 @@ const addToCart = async () => {
       }
     );
     if (response.data.status) {
-      
-       ElNotification({
-          title: t('success'),
-          message: t('Products.addedSussess') ,
-          type: 'success',
-        })
+
+      ElNotification({
+        title: t('success'),
+        message: t('Products.addedSussess'),
+        type: 'success',
+      })
       cartStore.incrementCount();
       await cartStore.fetchCartCount();
     } else {
@@ -689,17 +690,17 @@ const selectedAmount = computed(() => {
 
 // Add this computed property for discount logic
 const discountedPriceToShow = computed(() => {
-  let basePrice ;
-   basePrice = selectedAmount.value ? parseFloat(selectedAmount.value?.converted_price) : parseFloat(product.value.converted_price);
+  let basePrice;
+  basePrice = selectedAmount.value ? parseFloat(selectedAmount.value?.converted_price) : parseFloat(product.value.converted_price);
 
-    if (product.value.discount && product.value.discount.is_active) {
+  if (product.value.discount && product.value.discount.is_active) {
     const discountValue = parseFloat(product.value.discount.discount_value);
-  
-     basePrice = basePrice - (basePrice * (discountValue / 100))
-    
+
+    basePrice = basePrice - (basePrice * (discountValue / 100))
+
     return basePrice.toFixed(2);
   }
-  
+
   return basePrice;
 });
 

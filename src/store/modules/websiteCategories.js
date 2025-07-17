@@ -29,7 +29,7 @@ const actions = {
       commit('SET_LOADING', true)
       commit('SET_ERROR', null)
 
-      const response = await axios.get(`${API_URL}/api/website`)
+      const response = await axios.get(`${API_URL}/api/categories/website/homepage`)
 
       if (response.data?.status && response.data?.data) {
         const categories = Array.isArray(response.data.data) ? response.data.data : [response.data.data]
