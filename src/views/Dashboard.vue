@@ -100,7 +100,7 @@
             </el-table-column>
             <el-table-column prop="total_price" label="Total" width="120">
               <template #default="{ row }">
-                ${{ row.total_price }}
+                {{ row.currency }}{{ row.total_price }}
               </template>
             </el-table-column>
             <el-table-column prop="status" label="Status" width="120">

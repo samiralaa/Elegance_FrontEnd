@@ -179,7 +179,7 @@ export default {
       },
       { path: '/orders', name: 'common.menu.orders', icon: 'ShoppingCartFull' },
       { path: '/customers', name: 'common.menu.customers', icon: 'User' },
-      { path: '/analytics', name: 'common.menu.analytics', icon: 'DataLine' }
+     
     ]
 
     const secondaryMenuItems = [

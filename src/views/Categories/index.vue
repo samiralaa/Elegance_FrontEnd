@@ -49,7 +49,7 @@
         <el-table-column :label="$t('Categories.Actions')" width="200">
           <template #default="{ row }">
             <el-button-group>
-              <el-button type="primary" :icon="View" @click="viewCategory(row.id)">{{ $t('Global.View') }}</el-button>
+           
               <el-button type="warning" :icon="Edit" @click="editCategory(row)">{{ $t('Global.Edit') }}</el-button>
               <el-button type="danger" :icon="Delete" @click="deleteCategory(row)">{{ $t('Global.Delete') }}</el-button>
             </el-button-group>
