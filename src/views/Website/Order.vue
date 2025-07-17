@@ -84,7 +84,7 @@
                 style="width: 100%; aspect-ratio: 1; object-fit: cover" />
               <img v-else src="https://via.placeholder.com/150" class="rounded mb-2"
                 style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
-              <strong class="small">{{ item.product && item.product.name_en ? item.product.name_en : 'No Name'
+              <strong class="small">{{ $i18n.locale ==  'ar' ? item.product.name_ar : item.product.name_en
                 }}</strong>
               <small class="text-muted">{{ item.price }} {{ order.currency }} x{{ item.quantity }}</small>
             </div>
@@ -138,10 +138,11 @@
       <img
         v-if="item.product?.images?.length"
         :src="imageUrl(item.product.images[0].path)"
-        class="card-img-top rounded-top"
+        class="card-img-top rounded-top "
         style="aspect-ratio: 1 / 1; object-fit: cover"
         alt="Product Image"
       />
+      
       <img
         v-else
         src="https://via.placeholder.com/300x300?text=No+Image"
@@ -163,11 +164,13 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
 import axios from 'axios';
 import Header from "@/components/Website/Header.vue";
+
 
 export default {
   components: { Header },
@@ -182,9 +185,11 @@ export default {
       selectedCurrency: localStorage.getItem('selectedCurrency')
         ? JSON.parse(localStorage.getItem('selectedCurrency')).code
         : 'EGP',
+      
     };
   },
   computed: {
+
     allOrdersCount() {
       return this.orders.length;
     },
@@ -204,6 +209,8 @@ export default {
     },
   },
   methods: {
+    
+  
     async fetchOrders() {
       try {
         const token = localStorage.getItem('auth_token');
@@ -330,6 +337,7 @@ export default {
     }
   },
   mounted() {
+    
     this.fetchOrders();
     this.setupDropdown();
     window.addEventListener('currency-changed', this.updateCurrency);
