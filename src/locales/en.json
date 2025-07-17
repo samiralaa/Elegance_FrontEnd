@@ -573,5 +573,31 @@
 
   "unauthenticated": "You must be logged in to access this page. Please log in and try again.",
 
-  "Nobrandsfound" : "No brands found"
+  "Nobrandsfound" : "No brands found",
+
+  "refundPlice":{
+    "REFUNDPOLICY": "Refund Policy",
+    "description": "We strive to provide our customers with the highest quality oud and perfumes. However, we understand that there may be instances where a refund is necessary. Please take a moment to review our refund policy for oud and perfumes:",
+    "ELIGIBILITY":{
+      "ELIGIBILITY-FOR-REFUND": "ELIGIBILITY FOR REFUND",
+      "sub1":"Refunds will only be considered for unopened and unused oud and perfume products.",
+      "sub2":"The original proof of purchase, such as a receipt or invoice, is required for all refund requests."
+    },
+    "TIMEFRAME":{
+      "TIMEFRAME-FOR-REFUND": "TIMEFRAME FOR REFUND:",
+      "sub1":"Refund requests must be made within 14 days from the date of purchase.",
+      "sub2":"After the 14-day period, we are unable to process any refund requests."
+    },
+    "NON-REFUNDABLE-ITEMS": {
+      "NON-REFUNDABLE-ITEMS": "NON-REFUNDABLE ITEMS:",
+      "sub1":"Due to hygiene reasons, opened or used oud and perfume products cannot be refunded.",
+      "sub2":"Gift cards or vouchers issued by Elegance Oud are non-refundable and cannot be exchanged for cash."
+    },
+    "STORE-CREDIT": {
+      "STORE-CREDIT": "STORE CREDIT:",
+      "sub1":"In certain cases where a refund is not possible, we may offer store credit as an alternative.",
+      "sub2":"Store credit can be used for future purchases at Elegance Oud and will be issued in the form of a gift card or voucher."
+    }
+    
+  }
 }

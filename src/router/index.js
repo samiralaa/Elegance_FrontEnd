@@ -232,7 +232,13 @@ const routes = [
     path: '/verify-otp',
     name: 'VerifyOtp',
     component: () => import('../views/Website/VerifyOtp.vue')
-  }
+  },
+  {
+    path: '/Refund-policy',
+    name: 'Refund-policy',
+    component: () => import('../views/Website/RefundPolicy.vue'),
+    
+  },
 ]
 
 const router = createRouter({
