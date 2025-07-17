@@ -50,7 +50,7 @@
                     <fa icon="plus" />
                   </el-button>
                 </div>
-                <button class="btn btn-sm btn-outline-danger ms-auto" @click="removeItem(item.id)"
+                <button class="trash btn btn-sm btn-outline-danger" @click="removeItem(item.id)"
                   :disabled="isLoading">
                   <fa icon="trash" />
                 </button>
@@ -79,9 +79,11 @@
         <button class="btn btn-outline-secondary" @click="$emit('close')">
           {{ $t('cart.close') }}
         </button>
-        <button class="btn btn-primary" @click="$emit('checkout')">
+      <div :class="{ 'checkout-btn': !cartItems.length  }">
+        <button :disabled="!cartItems.length" class="btn btn-primary" @click="$emit('checkout')">
           {{ $t('cart.checkout') }}
         </button>
+      </div>
       </div>
     </div>
   </div>
@@ -408,5 +410,17 @@ input[type=number]::-webkit-outer-spin-button {
   .qty-number {
     min-width: 25px;
   }
+}
+
+.trash{
+  margin-left: auto;
+}
+[dir="rtl"] .trash{
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.checkout-btn {
+  cursor: not-allowed;
 }
 </style>

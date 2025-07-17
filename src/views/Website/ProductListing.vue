@@ -20,7 +20,7 @@
       </div>
 
       <!-- Sidebar Filters -->
-      <aside class="sidebar">
+      <aside class="sidebar" :class="{ active: isSidebarActive }">
         <div class="sidebar-container">
           <!-- Close Button -->
           <button class="close-btn" @click="toggleSidebar">&times;</button>
@@ -182,19 +182,21 @@ const convertPrice = (price, from, to) => {
 
 // Toggle Sidebar
 const toggleSidebar = () => {
-  isSidebarActive.value = !isSidebarActive.value
-  const sidebar = document.querySelector('.sidebar')
+  isSidebarActive.value = !isSidebarActive.value;
+  const sidebar = document.querySelector('.sidebar');
   const body = document.body;
-  if (sidebar) {
-    sidebar.classList.toggle('active', isSidebarActive.value)
 
-    if (sidebar.classList.contains('active')) {
+  if (sidebar) {
+    if (isSidebarActive.value) {
+      sidebar.classList.add('active');
       body.classList.add('no-scroll');
     } else {
+      sidebar.classList.remove('active');
       body.classList.remove('no-scroll');
     }
   }
 }
+
 
 // Helpers
 const getImageUrl = (path) => `https://backend.webenia.org/public/storage/${path}`

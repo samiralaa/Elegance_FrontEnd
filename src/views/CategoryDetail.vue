@@ -11,12 +11,6 @@
               <img :src="getCategoryImage(category)" :alt="currentLang === 'ar' ? category.name_ar : category.name_en" class="category-image">
             </div>
             <div class="col-md-8">
-              <div class="brand-info mb-3">
-                <router-link :to="`/brand/${category.brand.id}`" class="brand-link">
-                  <img :src="getBrandImage(category.brand)" :alt="currentLang === 'ar' ? category.brand.name_ar : category.brand.name_en" class="brand-logo">
-                  <span class="brand-name">{{ currentLang === 'ar' ? category.brand.name_ar : category.brand.name_en }}</span>
-                </router-link>
-              </div>
               <h1 class="category-name">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</h1>
               <p class="category-description">{{ currentLang === 'ar' ? category.description_ar : category.description_en }}</p>
             </div>
