@@ -13,7 +13,7 @@ export default {
   methods: {
     async fetchOrders() {
       try {
-        const response = await axios.get('http://elegance_backend.test/api/orders/user', {
+        const response = await axios.get('https://backend.webenia.org/api/orders/user', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`
           }
@@ -35,7 +35,7 @@ export default {
     },
     getImageUrl(path) {
       if (!path) return '';
-      return `http://elegance_backend.test/public/storage/${path}`;
+      return `https://backend.webenia.org/public/storage/${path}`;
     },
     statusClass(status) {
       const classes = {

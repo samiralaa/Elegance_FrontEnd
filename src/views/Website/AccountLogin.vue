@@ -60,7 +60,7 @@ export default {
   methods: {
     async handleSubmit() {
       try {
-        const response = await axios.post('http://elegance_backend.test/api/login', this.formData);
+        const response = await axios.post('https://backend.webenia.org/api/login', this.formData);
 
         if (response.data.is_verified === false) {
           // Store email and flag to show OTP popup

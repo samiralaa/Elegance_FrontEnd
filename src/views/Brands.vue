@@ -167,7 +167,7 @@ import axios from 'axios'
 // Create axios instance with default config
 const api = axios.create({
 
-  baseURL: 'http://elegance_backend.test/api',
+  baseURL: 'https://backend.webenia.org/api',
 
   headers: {
     'Accept': 'application/json',

@@ -46,14 +46,14 @@ export default {
   methods: {
     async fetchBrands() {
       try {
-        const response = await axios.get("http://elegance_backend.test/api/website/brands/section");
+        const response = await axios.get("https://backend.webenia.org/api/website/brands/section");
         this.brands = response.data.data;
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
     },
     getImageUrl(path) {
-      return `http://elegance_backend.test/public/storage/${path}`;
+      return `https://backend.webenia.org/public/storage/${path}`;
     },
   },
 };

@@ -135,7 +135,7 @@ const countries = ref([])
 const parentProducts = ref([])
 const existingImages = ref([]) // to store fetched product images
 
-const BASE_URL = 'http://elegance_backend.test'
+const BASE_URL = 'https://backend.webenia.org'
 const PRODUCTS_API = `${BASE_URL}/api/products`
 const CATEGORIES_API = `${BASE_URL}/api/categories`
 const CURRENCIES_API = `${BASE_URL}/api/currencies`

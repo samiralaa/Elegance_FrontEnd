@@ -199,7 +199,7 @@ methods: {
       }
 
       const response = await axios.post(
-        'http://elegance_backend.test/api/cart-items',
+        'https://backend.webenia.org/api/cart-items',
         {
           product_id: product.id,
           quantity: 1,
