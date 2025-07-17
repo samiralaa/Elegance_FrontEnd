@@ -99,7 +99,7 @@
     </div>
 
     <div v-else class="alert alert-info text-center">
-      No orders found.
+      {{ $t('orders.noOrder') }}
     </div>
   </div>
 

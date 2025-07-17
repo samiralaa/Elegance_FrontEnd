@@ -317,7 +317,8 @@
     "filterByStatus" : "Status",
     "searchPlaceholder" : "Search...",
     "orderDetails" : "Order Details",
-    "details": "Details"
+    "details": "Details",
+    "noOrder": "No orders found"
   },
   
   "checkout": {

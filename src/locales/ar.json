@@ -319,7 +319,8 @@
     "filterByStatus": "تصفية حسب الحالة",
     "searchPlaceholder": "ابحث...",
     "orderDetails": "تفاصيل الطلب",
-    "details": "التفاصيل"
+    "details": "التفاصيل",
+    "noOrder": "لا توجد طلبات"
   },
 
 
