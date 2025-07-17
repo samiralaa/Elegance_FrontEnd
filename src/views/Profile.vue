@@ -384,7 +384,7 @@ export default {
         country_id: this.addressForm.country_id
         };
        
-        const response = await axios.post('https://backend.webenia.org/api/address', addressData, {
+        const response = await axios.post('http://elegance_backend.test/api/address', addressData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
             'Content-Type': 'application/json'
@@ -452,7 +452,7 @@ export default {
     async fetchCountries() {
       this.countryLoading = true;
       try {
-        const response = await axios.get('https://backend.webenia.org/api/countries');
+        const response = await axios.get('http://elegance_backend.test/api/countries');
         this.countries = response.data?.data || [];
 
       } catch (error) {
@@ -467,7 +467,7 @@ export default {
      
       this.countryLoading = true;
       try {
-        const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
+        const response = await axios.get(`http://elegance_backend.test/api/countries/${id}`);
 
         this.cities = response.data.data.original.data.cities;
        console.log('Cities:', this.cities);

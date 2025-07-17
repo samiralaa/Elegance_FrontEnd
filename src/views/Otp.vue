@@ -32,7 +32,7 @@
 <script>
 import axios from 'axios'
 
-const API_URL = 'https://backend.webenia.org/api'
+const API_URL = 'http://elegance_backend.test/api'
 
 export default {
   data() {
@@ -103,7 +103,7 @@ export default {
     async handleOtpVerification() {
       const code = this.otp.join('');
       try {
-        const response = await axios.post(`https://backend.webenia.org/api/client/verify-otp`, {
+        const response = await axios.post(`http://elegance_backend.test/api/client/verify-otp`, {
           email: this.user.email,
           otp: code
         }, {

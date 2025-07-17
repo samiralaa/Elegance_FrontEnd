@@ -501,7 +501,7 @@ export default {
     async fetchCartTotal() {
       try {
         const token = localStorage.getItem('auth_token');
-        const response = await axios.get('https://backend.webenia.org/api/cart-items', {
+        const response = await axios.get('http://elegance_backend.test/api/cart-items', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

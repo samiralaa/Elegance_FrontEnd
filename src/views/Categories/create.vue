@@ -105,7 +105,7 @@ export default {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
 
-        const response = await axios.get('https://backend.webenia.org/api/brands')
+        const response = await axios.get('http://elegance_backend.test/api/brands')
 
 
         if (response.data.status) {
@@ -151,7 +151,7 @@ export default {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
 
-        const response = await axios.post('https://backend.webenia.org/api/categories', formData, {
+        const response = await axios.post('http://elegance_backend.test/api/categories', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

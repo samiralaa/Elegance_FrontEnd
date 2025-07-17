@@ -166,7 +166,7 @@ const rules = {
   brand_id: [{ required: true, message: 'Please select a brand', trigger: 'change' }], // Add validation
 }
 
-const BASE_URL = 'https://backend.webenia.org'
+const BASE_URL = 'http://elegance_backend.test'
 
 const fetchSelectOptions = async () => {
   try {
@@ -195,7 +195,7 @@ const fetchBrands = async () => {
   try {
     const tokenData = JSON.parse(localStorage.getItem('tokenData'))
     axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-    const res = await axios.get('https://backend.webenia.org/api/brands')
+    const res = await axios.get('http://elegance_backend.test/api/brands')
     brands.value = Array.isArray(res.data.data) ? res.data.data : [res.data.data]
   } catch (err) {
     ElMessage.error('Failed to load brands')

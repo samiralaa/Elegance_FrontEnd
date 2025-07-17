@@ -11,7 +11,7 @@ import users from './modules/users'
 import favorites from './modules/favorites'
 
 
-export const API_URL = 'https://backend.webenia.org';
+export const API_URL = 'http://elegance_backend.test';
 
 
 const api = axios.create({

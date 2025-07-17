@@ -82,11 +82,11 @@ const { locale, t } = useI18n()
 const router = useRouter()
 
 const getImageUrl = (path) =>
-  `https://backend.webenia.org/public/storage/${path}`
+  `http://elegance_backend.test/public/storage/${path}`
 
 const fetchCurrencies = async () => {
   try {
-    const response = await axios.get('https://backend.webenia.org/api/currencies')
+    const response = await axios.get('http://elegance_backend.test/api/currencies')
     if (response.data.currencies) {
       currencies.value = response.data.currencies
     }
@@ -100,7 +100,7 @@ const fetchProducts = async () => {
     const selectedCurrency =
       JSON.parse(localStorage.getItem('selectedCurrency')) || { code: 'USD' }
     const response = await axios.get(
-      'https://backend.webenia.org/api/website/products/section',
+      'http://elegance_backend.test/api/website/products/section',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -126,7 +126,7 @@ const fetchProducts = async () => {
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('https://backend.webenia.org/api/favorites', {
+    const response = await axios.get('http://elegance_backend.test/api/favorites', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       }
@@ -199,7 +199,7 @@ const addToCart = async (product) => {
     }
 
     const response = await axios.post(
-      'https://backend.webenia.org/api/cart-items',
+      'http://elegance_backend.test/api/cart-items',
       {
         product_id: product.id,
         quantity: 1,
