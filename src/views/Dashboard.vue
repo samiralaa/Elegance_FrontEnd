@@ -1,67 +1,36 @@
 <template>
   <div class="dashboard">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <el-card class="summary-card">
-          <template #header>
-            <div class="card-header">
-              <span>Total Revenue</span>
-            </div>
-          </template>
-          <div class="card-content">
-            <h2>${{ totalRevenue.toFixed(2) }}</h2>
-            <span :class="['trend', salesOverview.month_over_month_growth >= 0 ? 'positive' : 'negative']">
-              {{ salesOverview.month_over_month_growth >= 0 ? '+' : '' }}{{ salesOverview.month_over_month_growth }}%
-            </span>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
-          <template #header>
-            <div class="card-header">
-              <span>Total Orders</span>
-            </div>
-          </template>
-          <div class="card-content">
-            <h2>{{ totalOrders }}</h2>
-            <span class="trend positive">+8%</span>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
-          <template #header>
-            <div class="card-header">
-              <span>Total Customers</span>
-            </div>
-          </template>
-          <div class="card-content">
-            <h2>{{ totalCustomers }}</h2>
-            <span class="trend positive">+5%</span>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
-          <template #header>
-            <div class="card-header">
-              <span>Total Products</span>
-            </div>
-          </template>
-          <div class="card-content">
-            <h2>{{ totalProducts }}</h2>
-            <span class="trend positive">+3%</span>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <!-- Responsive summary cards using Bootstrap -->
+    <!-- Change row behavior -->
+<div class="row g-3 mb-4 justify-content-center">
+  <div
+    class="col-12 col-sm-1 col-md-6 col-lg-3 d-flex justify-content-center"
+    v-for="(card, idx) in summaryCards"
+    :key="idx"
+  >
+    <el-card class="summary-card text-center w-100" style="min-width: 160px; max-width: 180px; padding: 10px;">
+      <template #header>
+        <div class="card-header w-100 small fw-semibold text-truncate">
+          {{ card.title }}
+        </div>
+      </template>
+      <div class="card-content">
+        <h5 class="mb-2">{{ card.value }}</h5>
+        <span :class="['trend', card.trendClass]">
+          {{ card.trendPrefix }}{{ card.trendValue }}
+        </span>
+      </div>
+    </el-card>
+  </div>
+</div>
 
-    <el-row :gutter="20" class="chart-row">
+
+
+    <el-row :gutter="20" class="chart-row d-flex flex-column flex-md-row justify-content-center align-items-center">
       <el-col :span="12">
         <el-card>
           <template #header>
-            <div class="card-header">
+            <div class="card-header card flex-fill w-100 h-100">
               <span>Sales Overview</span>
             </div>
           </template>
@@ -343,13 +312,46 @@ export default defineComponent({
       }
     })
 
+    // Add summaryCards computed for Bootstrap rendering
+    const summaryCards = computed(() => [
+      {
+        title: 'Total Revenue',
+        value: `$${totalRevenue.value.toFixed(2)}`,
+        trendClass: salesOverview.value.month_over_month_growth >= 0 ? 'positive' : 'negative',
+        trendPrefix: salesOverview.value.month_over_month_growth >= 0 ? '+' : '',
+        trendValue: `${salesOverview.value.month_over_month_growth}%`,
+      },
+      {
+        title: 'Total Orders',
+        value: totalOrders.value,
+        trendClass: 'positive',
+        trendPrefix: '+',
+        trendValue: '8%',
+      },
+      {
+        title: 'Total Customers',
+        value: totalCustomers.value,
+        trendClass: 'positive',
+        trendPrefix: '+',
+        trendValue: '5%',
+      },
+      {
+        title: 'Total Products',
+        value: totalProducts.value,
+        trendClass: 'positive',
+        trendPrefix: '+',
+        trendValue: '3%',
+      },
+    ])
+
     return {
       totalRevenue,
       totalOrders,
       totalCustomers,
       totalProducts,
       orders,
-      salesOverview
+      salesOverview,
+      summaryCards,
     }
   }
 })
@@ -385,6 +387,24 @@ export default defineComponent({
 
 .trend.positive {
   color: #67C23A;
+}
+
+.summary-card {
+  font-size: 0.875rem; /* smaller text */
+  padding: 0.5rem;
+}
+
+.card-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-content h5 {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .trend.negative {
@@ -433,4 +453,4 @@ export default defineComponent({
   margin-top: 20px;
   width: 100%;
 }
-</style> 
+</style>

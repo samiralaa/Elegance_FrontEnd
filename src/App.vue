@@ -1,7 +1,7 @@
 <template>
   <div v-if="isAuthenticated" class="dashboard-container" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
     <!-- Sidebar -->
-    <aside class="dashboard-sidebar" :class="{ open: isSidebarOpen }">
+    <aside class="dashboard-sidebar" :class="{ open: isSidebarOpen, 'sidebar-mobile': isMobile }">
       <!-- Brand Section -->
       <div class="brand-section">
         <div class="brand-logo">
@@ -12,7 +12,6 @@
           </div>
         </div>
       </div>
-
       <!-- Menu Navigation -->
       <nav class="sidebar-menu">
         <!-- Main Navigation -->
@@ -62,73 +61,50 @@
 
     <!-- Main Content -->
     <main class="dashboard-main">
-      <header class="dashboard-header">
-        <!-- Toggle Sidebar Button (Mobile) -->
-        <button class="menu-toggle" @click="toggleSidebar" v-show="isMobile">
-          <el-icon>
-            <Menu />
-          </el-icon>
+      <!-- Responsive Navbar/Header -->
+      <header class="dashboard-header navbar navbar-expand bg-white sticky-top shadow-sm px-2 px-md-4 py-2 d-flex align-items-center justify-content-between">
+        <!-- Sidebar Toggle Button (Mobile) -->
+        <button class="btn btn-outline-secondary d-md-none me-2" @click="toggleSidebar">
+          <el-icon><Menu /></el-icon>
         </button>
-        <div></div>
-        <!-- Search Bar -->
-        <!-- <div class="search-bar">
-          <el-icon>
-            <Search />
-          </el-icon>
-          <input type="text" :placeholder="$t('common.search')" v-model="searchQuery" @input="handleSearch" />
-        </div> -->
-
-        <div class="header-actions">
-          <!-- Theme Switcher -->
-          <!-- <ThemeSwitcher class="header-item" /> -->
-
+        <!-- <div class="flex-grow-1"></div> -->
+        <div class="header-actions d-flex align-items-center gap-2 ms-auto">
           <!-- Language Switcher -->
           <LanguageSwitcher class="header-item"/>
-
           <!-- Notifications -->
-          <div class="notifications" @click="showNotifications">
-            <el-icon>
-              <Bell />
-            </el-icon>
-            <span v-if="unreadNotifications" class="notification-badge">
+          <div class="notifications position-relative mx-2" @click="showNotifications">
+            <el-icon><Bell /></el-icon>
+            <span v-if="unreadNotifications" class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {{ unreadNotifications }}
             </span>
           </div>
-
           <!-- User Menu -->
           <el-dropdown @command="handleCommand" trigger="click">
-            <div class="user-menu">
-              <div class="user-avatar">
+            <div class="user-menu d-flex align-items-center">
+              <div class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 36px; height: 36px;">
                 {{ userInitials }}
               </div>
-              <div class="user-info">
-                <span class="user-name">{{ userName }}</span>
-                <span class="user-role">{{ userRole }}</span>
+              <div class="user-info d-none d-sm-block">
+                <span class="user-name fw-semibold">{{ userName }}</span>
+                <span class="user-role d-block small text-muted">{{ userRole }}</span>
               </div>
             </div>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="profile">
-                  <el-icon>
-                    <User />
-                  </el-icon> {{ $t('common.menu.profile') }}
+                  <el-icon><User /></el-icon> {{ $t('common.menu.profile') }}
                 </el-dropdown-item>
                 <el-dropdown-item command="settings">
-                  <el-icon>
-                    <Setting />
-                  </el-icon> {{ $t('common.menu.settings') }}
+                  <el-icon><Setting /></el-icon> {{ $t('common.menu.settings') }}
                 </el-dropdown-item>
                 <el-dropdown-item divided command="logout">
-                  <el-icon>
-                    <SwitchButton />
-                  </el-icon> {{ $t('common.menu.logout') }}
+                  <el-icon><SwitchButton /></el-icon> {{ $t('common.menu.logout') }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </div>
       </header>
-
       <div class="dashboard-content">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
@@ -338,16 +314,6 @@ export default {
   padding: var(--spacing-sm);
 }
 
-@media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
-  }
-
-  .search-bar {
-    width: 200px;
-  }
-}
-
 .menu-item-group {
   position: relative;
 }
@@ -394,5 +360,63 @@ export default {
 .dropdown-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.dashboard-header {
+  z-index: 1050;
+  min-height: 56px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    min-height: 56px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    width: 80vw;
+    max-width: 320px;
+    z-index: 2000;
+    background: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+  }
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+  .dashboard-main {
+    padding-top: 56px;
+  }
+  .menu-toggle {
+    display: block;
+  }
+  .search-bar {
+    width: 200px;
+  }
+}
+
+.notification-badge {
+  font-size: 0.75rem;
+  min-width: 1.2em;
+  min-height: 1.2em;
+  display: inline-block;
+  padding: 0.2em 0.4em;
+  line-height: 1;
+}
+
+.user-avatar {
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 </style>
