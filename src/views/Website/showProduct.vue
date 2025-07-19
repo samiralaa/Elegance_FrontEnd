@@ -68,7 +68,7 @@
                   <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input class="form-control qty-number" type="number" min="1" max="99" v-model.number="quantity"
+                  <input dir="ltr" class="form-control qty-number" type="number" min="1" max="99" v-model.number="quantity"
                     @input="quantity = Math.min(quantity)">
                   <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />

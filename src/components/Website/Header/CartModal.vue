@@ -42,7 +42,7 @@
                     class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input class="qty-number" type="number" min="1" max="99" step="1" v-model.number="item.quantity"
+                  <input dir="ltr" class="qty-number" type="number" min="1" max="99" step="1" v-model.number="item.quantity"
                     @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(item.quantity, 99)" @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()">
 
                   <el-button size="small" @click="increaseQuantity(item)" :disabled="item.quantity >= 99"

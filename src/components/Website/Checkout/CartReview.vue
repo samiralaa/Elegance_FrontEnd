@@ -9,7 +9,7 @@
           <p class="item-price">{{ calculateDiscountedPrice(item) }} {{ currency }}</p>
           <div class="quantity-controls">
             <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">-</button>
-            <input class="form-control qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
+            <input dir="ltr" class="form-control qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
               @change="updateCartItemQuantity(item)" @input="item.quantity = Math.min(Math.max(item.quantity, 1), 99)" @keydown="e => ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()">
             <button @click="increaseQuantity(item)" :disabled="item.quantity >= 99">+</button>
           </div>
