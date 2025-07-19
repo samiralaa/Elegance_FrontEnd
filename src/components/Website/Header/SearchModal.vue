@@ -40,6 +40,7 @@
             </template>
 
             <template v-else-if="item.type === 'category'">
+              <img :src="getCategoryImage(item)" class="product-image" />
               <div>
                 <h6 class="mb-1">
                   {{ isArabic(query) ? item.name_ar : item.name_en }}
@@ -64,6 +65,9 @@
 <script>
 import axios from 'axios';
 import { useI18n } from 'vue-i18n'
+import i18n from '@/i18n.js';
+
+export const API_URL = 'https://backend.webenia.org';
 
 export default {
   name: 'SearchModal',
@@ -121,6 +125,18 @@ export default {
       }
       return '/placeholder-image.jpg';
     },
+    getCategoryImage(category) {
+      console.log('Images Array:', category.images);
+      if (category.images && category.images.length > 0 && category.images[0].path) {
+        const path = category.images[0].path;
+        console.log('Resolved path:', path);
+        return path.startsWith('http')
+          ? path
+          : `${API_URL}/public/storage/${path}`;
+      }
+      return '/placeholder-image.jpg';
+    },
+
     handleResultClick(item) {
       if (item.type === 'product') {
         this.$router.push(`/read/products/${item.id}`);
