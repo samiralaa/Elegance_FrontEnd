@@ -42,7 +42,6 @@
           <div class="price-range">
             <!-- Sliders -->
             <input
-              dir="ltr"
               type="range"
               v-model.number="priceRange.min"
               :step="10"
@@ -50,7 +49,6 @@
               :max="priceRangeLimit.max"
             />
             <input
-              dir="ltr"
               type="range"
               v-model.number="priceRange.max"
               :step="10"
