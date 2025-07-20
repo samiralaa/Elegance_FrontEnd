@@ -63,7 +63,11 @@
     border-right: none;
     border-left: 1px solid var(--border-color-light);
   }
-
+  .dashboard-content{
+    margin-left: 0;
+    margin-right: var(--sidebar-width);
+  }
+  
   .dashboard-main {
     margin-right: var(--sidebar-width);
     margin-left: 0;
@@ -98,6 +102,12 @@
     right: auto;
     left: -5px;
   }
+  @media (max-width: 768px) {
+    .dashboard-content{
+    margin-left: 0;
+    margin-right: 0;
+  }
+  }
 }
 
 /* LTR Theme Overrides */
@@ -121,7 +131,7 @@
     border-left: none;
     border-right: 1px solid var(--border-color-light);
   }
-
+ 
   .dashboard-main {
     margin-left: var(--sidebar-width);
     margin-right: 0;
