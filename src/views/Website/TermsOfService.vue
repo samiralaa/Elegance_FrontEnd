@@ -1,110 +1,142 @@
 <template>
-<Header />
-    
-<div class=" content">
-  <div class="row mb-4">
-    <div class="col-md-8">
-      <h2 class="title">TERMS OF SERVICE</h2>
+  <Header />
 
-      <h5 class="section-title">GENERAL TERMS</h5>
-      <p>
-        Modification: We reserve the right to modify or update these terms at any time without prior notice.
-        You are responsible for reviewing the terms periodically. Your continued use of our store after any
-        modifications constitutes acceptance of those changes.
-      </p>
+  <div class="content">
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <h2 class="title">{{ $t('terms.title') }}</h2>
 
-      <h5 class="section-title">STORE USAGE</h5>
-      <p>
-        <strong>Product Information:</strong> We strive to provide accurate and up-to-date information about our products,
-        including descriptions, prices, and availability.
-      </p>
-      <p>
-        <strong>Purchases:</strong> By making a purchase through our store, you agree to provide accurate, complete,
-        and current information. You are solely responsible for the accuracy of the information provided. We reserve
-        the right to refuse or cancel any order if we suspect fraudulent activity or for any other reason deemed necessary.
-      </p>
-      <p>
-        <strong>2.3 Pricing:</strong> All prices displayed on our store are in the specified currency and are subject to
-        change without notice. We make every effort to ensure accurate pricing, but in the event of an error, we reserve
-        the right to correct it and refuse or cancel any affected orders.
-      </p>
-      <p>
-        <strong>2.4 Product Availability:</strong> Product availability is subject to change without notice. We make every
-        effort to maintain accurate stock levels, but we cannot guarantee the availability of any product. If a product
-        becomes unavailable after you place an order, we will notify you and provide alternatives or a refund.
-      </p>
+        <h5 class="section-title ">{{ $t('terms.general-title') }}</h5>
+        <p>
+         <strong>{{ $t('terms.modification') }}</strong>
+        {{ $t('terms.general-modification') }}
+        </p>
 
-      <h5 class="section-title">SHIPPING AND DELIVERY</h5>
-      <p>
-        <strong>3.1 Shipping:</strong> We offer shipping services to specified locations. Shipping fees and estimated delivery
-        times are provided during the checkout process. Please review our shipping policy for more information.
-      </p>
-    </div>
+        <h5 class="section-title ">{{ $t('terms.usage-title') }}</h5>
+        <p>
+          <strong>{{ $t('terms.Product-information') }}</strong> 
+          {{ $t('terms.usage-productInformation') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Purchases') }}</strong> 
+          {{ $t('terms.usage-purchases') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Pricing') }}</strong> 
+          {{ $t('terms.usage-pricing') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Availability') }}</strong>
+          {{ $t('terms.usage-availability') }}
+        </p>
 
-    <div class="col-md-4 text-center">
-      <img src="@/assets/images/EleganceLogo.png" alt="Logo" class="logo mb-2">
-      <div class="brand-text">ELEGANCE</div>
-      <div class="subtitle">PARFUMS AND OUD</div>
+        <h5 class="section-title">{{ $t('terms.shipping-title') }}</h5>
+        <p>
+          <strong>{{ $t('terms.Shipping') }}</strong> 
+          {{ $t('terms.shipping-shipping') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Customs') }}</strong>
+          {{ $t('terms.shipping-customs') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Delivery') }}</strong>
+          {{ $t('terms.shipping-delivery') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Returns') }}</strong>
+          {{ $t('terms.shipping-returns') }}
+        </p>
+        <h5 class="section-title ">{{ $t('terms.usage-oud-title') }}</h5>
+        <p>
+          <strong>{{ $t('terms.Fragrance') }}</strong>
+          {{ $t('terms.usage.oud-testing') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Variations') }}</strong>
+          {{ $t('terms.usage-oud-variations') }}
+        </p>
+        <h5 class="section-title ">{{ $t('terms.intellectualProperty-title') }}</h5>
+        <p>
+          <strong>{{ $t('terms.Ownership') }}</strong>
+          {{ $t('terms.intellectualProperty-ownership') }}
+        </p>
+        <h5 class="section-title ">{{ $t('terms.limitation-title') }}</h5>
+        <p>
+          <strong>{{ $t('terms.Disclaimer') }}</strong>
+          {{ $t('terms.limitation-disclaimer') }}
+        </p>
+        <p>
+          <strong>{{ $t('terms.Liability') }}</strong>
+          {{ $t('terms.limitation-limitation') }}
+        </p>
+        <p>{{ $t('terms.endNote') }}</p>
+      </div>
+
+      <div class="col-md-4 text-center">
+        <img
+          src="@/assets/images/EleganceLogo.png"
+          alt="Logo"
+          class="logo mb-2"
+        />
+        <div class="brand-text">ELEGANCE</div>
+        <div class="subtitle">PARFUMS AND OUD</div>
+      </div>
     </div>
   </div>
-</div>
 
-
-
-   
-<Footer />
-  
+  <Footer />
 </template>
 
 <script>
-import Header from '@/components/Website/Header.vue'
-import Footer from '@/components/Website/Footer.vue'
-import i18n from '@/i18n.js'
+import Header from "@/components/Website/Header.vue";
+import Footer from "@/components/Website/Footer.vue";
+import i18n from "@/i18n.js";
 export default {
-  name: 'RefundPolicy',
+  name: "termsOfService",
   components: {
     Header,
-    Footer
+    Footer,
   },
   data() {
     return {
-      direction: i18n.global.locale === 'ar' ? 'rtl' : 'ltr'
+      direction: i18n.global.locale === "ar" ? "rtl" : "ltr",
     };
-  }
+  },
 };
 </script>
 
 <style scoped>
 .title {
-      color: #c19f45;
-      font-weight: bold;
-      margin-bottom: 2rem;
-    }
+  color: #c19f45;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
 
-    .section-title {
-      color: #c19f45;
-      font-weight: bold;
-      margin-top: 2rem;
-    }
+.section-title {
+  color: #c19f45;
+  font-weight: bold;
+  margin-top: 2rem;
+}
 
-    .logo {
-      max-height: 80px;
-    }
+.logo {
+  max-height: 80px;
+}
 
-    .brand-text {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #1a1a2e;
-    }
+.brand-text {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1a1a2e;
+}
 
-    .subtitle {
-      text-transform: uppercase;
-      font-size: 0.9rem;
-    }
+.subtitle {
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
 
-    .content {
-      /* max-width: 1000px; */
-      /* margin: auto; */
-      padding: 3rem;
-    }
+.content {
+  /* max-width: 1000px; */
+  /* margin: auto; */
+  padding: 3rem;
+}
 </style>
