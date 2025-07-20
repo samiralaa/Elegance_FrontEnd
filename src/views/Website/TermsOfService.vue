@@ -4,7 +4,7 @@
   <div class="content">
     <div class="row mb-4">
       <div class="col-md-8">
-        <h2 class="title">{{ $t('terms.title') }}</h2>
+        <h2 class='title' >{{ $t('terms.title') }}</h2>
 
         <h5 class="section-title ">{{ $t('terms.general-title') }}</h5>
         <p>
@@ -50,7 +50,7 @@
         <h5 class="section-title ">{{ $t('terms.usage-oud-title') }}</h5>
         <p>
           <strong>{{ $t('terms.Fragrance') }}</strong>
-          {{ $t('terms.usage.oud-testing') }}
+          {{ $t('terms.usage-oud-testing') }}
         </p>
         <p>
           <strong>{{ $t('terms.Variations') }}</strong>
@@ -70,7 +70,7 @@
           <strong>{{ $t('terms.Liability') }}</strong>
           {{ $t('terms.limitation-limitation') }}
         </p>
-        <p>{{ $t('terms.endNote') }}</p>
+        <p class="fw-bold mt-5">{{ $t('terms.endNote') }}</p>
       </div>
 
       <div class="col-md-4 text-center">

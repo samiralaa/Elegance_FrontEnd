@@ -240,6 +240,12 @@ const routes = [
     component: () => import('../views/Website/TermsOfService.vue'),
     
   },
+  {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: () => import('../views/Website/PrivacyPolicy.vue'),
+    
+  },
 ]
 
 const router = createRouter({

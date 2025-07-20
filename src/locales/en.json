@@ -605,7 +605,7 @@
   "terms": {
   "title": "TERMS OF SERVICE",
   "general-title": "GENERAL TERMS",
-  "modification":"modification",
+  "modification":"modification: ",
   "general-modification": "We reserve the right to modify or update these terms at any time without prior notice. You are responsible for reviewing the terms periodically. Your continued use of our store after any modifications constitutes acceptance of those changes.",
   "usage-title": "STORE USAGE",
   "Product-information": "Product Information",
@@ -627,7 +627,7 @@
   "shipping-returns": "We accept returns or exchanges of unused, unopened products within a specified period, subject to our Return Policy. You are responsible for any return shipping costs unless the return is due to our error or a defective product. We reserve the right to refuse returns or exchanges based on our discretion.",
   "usage-oud-title": "Oud and Perfume Usage",
   "Fragrance": "Fragrance Testing: ",
-  "usage.oud-testing": "We recommend testing perfumes and oud products on a small area of skin before applying them widely to ensure compatibility and to check for any allergic reactions. We are not responsible for any adverse reactions resulting from the use of our products.",
+  "usage-oud-testing": "We recommend testing perfumes and oud products on a small area of skin before applying them widely to ensure compatibility and to check for any allergic reactions. We are not responsible for any adverse reactions resulting from the use of our products.",
   "Variations": "Product Variations: ",
   "usage-oud-variations": "Oud and perfume products may vary in scent, color, and packaging due to natural variations and manufacturing processes. We strive to provide accurate representations of our products, but such variations are normal and do not constitute defects.",
   "intellectualProperty-title": "Intellectual Property",
@@ -639,5 +639,72 @@
   "Liability": "Limitation of Liability: ",
   "limitation-limitation": "To the maximum extent permitted by law, we shall not be liable for any direct, indirect, incidental, consequential, or special damages arising out of or in connection with your use of our store, including but not limited to damages for loss of profits, goodwill, data, or other intangible losses.",
   "endNote": "Thank you for reviewing our Terms and Conditions. If you have any questions or concerns, please contact us for further assistance."
+  },
+
+
+
+   "privacyPolicy": {
+    "title": "Privacy Policy",
+    "intro": "We are committed to protecting the privacy and security of our customers' personal information. This Privacy Policy outlines how we collect, use, disclose, and protect the information you provide while using our website or interacting with us. By accessing our website or providing your personal information, you agree to the terms of this Privacy Policy.",
+    "sections": {
+      "informationWeCollect": {
+        "title": "Information We Collect:",
+        "content": [
+          "Contact information (such as name, email address, phone number, and shipping address).",
+          "Payment information (such as credit card details or other payment method information).",
+          "Account login credentials (if you create an account with us).",
+          "Demographic information (such as age, gender, and preferences) provided voluntarily.",
+          "Information related to your purchases, browsing behavior, and interactions with our website."
+        ]
+      },
+      "useOfPersonalInformation": {
+        "title": " Use of Personal Information:",
+        "content": [
+          "Process and fulfill your orders, including shipping and delivery.",
+          "Provide customer support and respond to your inquiries, requests, or comments.",
+          "Customize and improve your shopping experience.",
+          "Send you promotional offers, newsletters, or other marketing communications (you can opt-out at any time).",
+          "Conduct research and analysis to enhance our products, services, and website.",
+          "Comply with legal obligations and prevent fraudulent activities."
+        ]
+      },
+      "sharingInformation": {
+        "title": " Sharing of Personal Information:",
+        "content": [
+          "Service Providers: We may engage trusted third-party service providers to perform certain functions on our behalf, such as payment processing, shipping, or marketing.",
+          "Legal Compliance: We may disclose personal information to comply with applicable laws, regulations, legal processes, or enforceable governmental requests.",
+          "Business Transfers: In the event of a merger, acquisition, or sale of our business assets, personal information may be transferred as part of the transaction."
+        ]
+      },
+      "security": {
+        "title": "Data Security:",
+        "content": "We implement reasonable security measures to protect your personal information from unauthorized access, use, or disclosure..."
+      },
+      "cookies": {
+        "title": "Cookies and Tracking Technologies:",
+        "content": "We use cookies and similar tracking technologies to enhance your browsing experience..."
+      },
+      "thirdParty": {
+        "title": "Third-Party Websites:",
+        "content": "Our website may contain links to third-party websites or services..."
+      },
+      "children": {
+        "title": "Children's Privacy:",
+        "content": "Our website and services are not intended for individuals under the age of 16..."
+      },
+      "rights": {
+        "title": "Your Rights:",
+        "content": "You have the right to access, update, and correct your personal information..."
+      },
+      "changes": {
+        "title": "Changes to the Privacy Policy:",
+        "content": "We reserve the right to update or modify this Privacy Policy at any time..."
+      },
+      "contact": {
+        "title": "Contact Us:",
+        "content": "If you have any questions, concerns, or requests regarding this Privacy Policy..."
+      }
+    },
+    "consent": "By using our website or providing your personal information, you signify your consent to the terms of this Privacy Policy."
   }
 }
