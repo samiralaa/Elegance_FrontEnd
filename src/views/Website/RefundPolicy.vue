@@ -1,7 +1,7 @@
 <template>
 <Header />
     
-<div class=" policy-container">
+<div class=" policy-container" >
   <div class="row mb-4">
     <div class="col-md-8">
       <h2 class="gold-text">{{ $t('refundPlice.REFUNDPOLICY') }}</h2>
@@ -83,5 +83,11 @@ export default {
       /* max-width: 1000px; */
       /* margin: auto; */
       padding: 3rem;
+    }
+    h5{
+      text-align: left;
+    }
+   [dir='rtl'] h5{
+      text-align: right;
     }
 </style>

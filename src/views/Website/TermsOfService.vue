@@ -79,8 +79,6 @@
           alt="Logo"
           class="logo mb-2"
         />
-        <div class="brand-text">ELEGANCE</div>
-        <div class="subtitle">PARFUMS AND OUD</div>
       </div>
     </div>
   </div>
@@ -139,4 +137,10 @@ export default {
   /* margin: auto; */
   padding: 3rem;
 }
+ h5{
+      text-align: left;
+    }
+   [dir='rtl'] h5{
+      text-align: right;
+    }
 </style>

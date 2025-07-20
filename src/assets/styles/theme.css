@@ -57,7 +57,7 @@
   --flex-direction-reverse: row;
 
   /* RTL-specific layout */
-  .dashboard-sidebar {
+ .dashboard-sidebar {
     right: 0;
     left: auto;
     border-right: none;

@@ -1,16 +1,17 @@
 <template>
-  <div v-if="isAuthenticated" class="dashboard-container" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+  <div v-if="isAuthenticated" class="dashboard-container  " :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
     <!-- Sidebar -->
-    <aside class="dashboard-sidebar" :class="{ open: isSidebarOpen }">
+    <aside class="dashboard-sidebar " :class="{ open: isSidebarOpen }">
       <!-- Brand Section -->
-      <div class="brand-section">
+      <div class="brand-section d-flex justify-content-between align-items-center">
         <div class="brand-logo">
           <div class="brand-icon">E</div>
-          <div class="brand-text">
+          <div class="brand-text fs-6">
             <span class="brand-name">Elegance</span>
             <span class="brand-tagline">{{ $t('common.brand.tagline') }}</span>
           </div>
         </div>
+        <button class="btn btn-sm btn-outline-light" @click="toggleSidebar" v-show="isMobile">x</button>
       </div>
 
       <!-- Menu Navigation -->
@@ -61,7 +62,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="dashboard-main">
+    <main class="">
       <header class="dashboard-header">
         <!-- Toggle Sidebar Button (Mobile) -->
         <button class="menu-toggle" @click="toggleSidebar" v-show="isMobile">
