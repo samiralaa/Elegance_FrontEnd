@@ -110,4 +110,10 @@ export default {
       /* margin: auto; */
       padding: 3rem;
     }
+     h5{
+      text-align: left;
+    }
+   [dir='rtl'] h5{
+      text-align: right;
+    }
 </style>
