@@ -335,7 +335,7 @@ export default defineComponent({
         await fetchTotalProducts()
         await fetchRecentOrders()
         await fetchSalesOverview()
-        
+
         // Update values after fetching data
         totalCustomers.value = store.getters.totalCustomers || 0
       } catch (error) {
@@ -433,4 +433,4 @@ export default defineComponent({
   margin-top: 20px;
   width: 100%;
 }
-</style> 
+</style>

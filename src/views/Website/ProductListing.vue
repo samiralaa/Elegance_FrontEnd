@@ -259,7 +259,7 @@ const fetchCategories = async () => {
 
 const fetchProducts = async () => {
   try {
-    const res = await axios.get('https://backend.webenia.org/api/all/products')
+    const res = await axios.get('https://backend.webenia.org/api/list/products')
     products.value = res.data.data || []
   } catch (err) {
     console.error('Error loading products', err)

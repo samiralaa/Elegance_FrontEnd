@@ -7,24 +7,13 @@
       </div>
 
       <div class="row justify-content-center g-4">
-        <el-col
-          v-for="product in products"
-          :key="product.id"
-          :xs="24"
-          :sm="12"
-          :md="8"
-          :lg="6"
-          class="d-flex justify-content-center"
-        >
+        <el-col v-for="product in products" :key="product.id" :xs="24" :sm="12" :md="8" :lg="6"
+          class="d-flex justify-content-center">
           <div class="product-card card h-100 w-100">
             <div class="img-container overflow-hidden bg-light m-2 rounded-circle">
               <router-link :to="`/read/products/${product.id}`">
-                <img
-                  v-if="product.images.length"
-                  :src="getImageUrl(product.images[0].path)"
-                  :alt="product.name_en"
-                  class="product-img card-img-top"
-                />
+                <img v-if="product.images.length" :src="getImageUrl(product.images[0].path)" :alt="product.name_en"
+                  class="product-img card-img-top" />
               </router-link>
               <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
@@ -44,18 +33,16 @@
               </div>
 
               <div class="product-actions d-flex justify-content-center flex-wrap gap-2">
-                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm"
+                  title="View">
                   <fa icon="eye" />
                 </router-link>
                 <button @click="addToCart(product)" :disabled="!product.is_available" class="btn btn-light shadow-sm">
                   {{ $t('home.add-to-cart') }}
                 </button>
-                <button
-                  @click="addToFavorites(product)"
-                  class="btn rounded-circle shadow-sm btn-light"
+                <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
                   :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
-                >
+                  :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
                   <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
                 </button>
               </div>
@@ -192,10 +179,10 @@ const addToCart = async (product) => {
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
-      const originalPrice = parseFloat(product.converted_price || product.price);
+      const originalPrice = parseFloat(product.price); // Use original price only
       priceToSend = originalPrice - originalPrice * (discountValue / 100);
     } else {
-      priceToSend = parseFloat(product.converted_price || product.price);
+      priceToSend = parseFloat(product.price); // Use original price only
     }
 
     const payload = {
@@ -219,9 +206,9 @@ const addToCart = async (product) => {
     if (response.data.status) {
       ElNotification({
         title: t('success'),
-        message: t('cart.added_to_cart') ,
+        message: t('cart.added_to_cart'),
         type: 'success'
-        
+
       })
       cartStore.incrementCount();
       await cartStore.fetchCartCount();
@@ -252,7 +239,7 @@ const addToCart = async (product) => {
 
 onMounted(() => {
   fetchProducts()
-  
+
   // Listen for currency changes
   window.addEventListener('currency-changed', () => {
     fetchProducts()
@@ -381,6 +368,7 @@ onMounted(() => {
     text-align: center;
     font-size: 0.95rem;
   }
+
   .product-card {
     margin: 0 2rem;
   }
