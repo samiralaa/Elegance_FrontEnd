@@ -17,7 +17,7 @@
           <button type="button" @click="handleActiveNow" class="login-btn btn my-4">active now</button>
         </div>
         <div v-if="showOtpInput" class="w-100 d-flex flex-column align-items-center mt-3">
-          <input v-model="otp" type="text" maxlength="6" placeholder="Enter OTP" class="form-control mb-2"
+          <input dir="ltr" v-model="otp" type="text" maxlength="6" placeholder="Enter OTP" class="form-control mb-2"
             style="max-width: 200px; text-align: center;" />
           <button type="button" @click="verifyOtp" class="btn btn-success mb-2">Verify OTP</button>
         </div>

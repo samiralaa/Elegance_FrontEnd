@@ -20,13 +20,13 @@
                 </span>
               </div>
               <span class="price-new">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
+  
+              <button @click="toggleFavorite(product)" class="love-btn btn rounded-circle shadow-sm btn-light"
+                :class="isInFavorites(product.id) ? 'text-danger' : ''"
+                :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
+                <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
+              </button>
             </div>
-
-            <button @click="toggleFavorite(product)" class="btn rounded-circle shadow-sm btn-light"
-              :class="isInFavorites(product.id) ? 'text-danger' : ''"
-              :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
-              <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" size="xl" />
-            </button>
             <div class="product-actions">
               <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
             </div>
@@ -68,7 +68,7 @@
                   <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input class="form-control qty-number" type="number" min="1" max="99" v-model.number="quantity"
+                  <input dir="ltr" class="form-control qty-number" type="number" min="1" max="99" v-model.number="quantity"
                     @input="quantity = Math.min(quantity)">
                   <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />
@@ -736,6 +736,7 @@ const discountedPriceToShow = computed(() => {
 }
 
 .price-block {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: baseline;
@@ -765,6 +766,10 @@ const discountedPriceToShow = computed(() => {
   margin: 20px 0;
 }
 
+.weight {
+  position: relative;
+}
+
 .weight-container .row {
   display: flex;
   gap: 0 30px;
@@ -778,9 +783,11 @@ const discountedPriceToShow = computed(() => {
 }
 
 .reset {
+  position: absolute;
+  top: 0;
+  left: 10px;
   display: flex;
   align-items: center;
-
   cursor: pointer;
   color: #7f7f7f;
   font-size: 16px;
@@ -795,7 +802,7 @@ const discountedPriceToShow = computed(() => {
 }
 
 .weight-item {
-  flex: calc(100% / 3 - 30px);
+  width: calc(100% / 3 - 30px);
   color: #333;
   padding: 10px;
   text-align: center;
@@ -1363,5 +1370,20 @@ input[type=number]::-webkit-outer-spin-button {
 .btn.disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.love-btn{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+[dir="ltr"] .love-btn {
+  left: auto;
+  right: 10px;
+}
+[dir="ltr"] .reset {
+  left: auto;
+  right: 10px;
 }
 </style>

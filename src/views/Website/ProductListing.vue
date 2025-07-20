@@ -31,7 +31,7 @@
           <div v-for="cat in categories" :key="cat.id" class="filter-item">
             <label class="checkbox-container">
               {{ $i18n.locale === 'ar' ? cat.name_ar : cat.name_en }}
-              <input type="checkbox" v-model="selectedCategories" :value="cat.id" />
+              <input dir="ltr" type="checkbox" v-model="selectedCategories" :value="cat.id" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -60,6 +60,7 @@
             <div class="price-values mt-2">
               <div class="d-flex gap-2 align-items-center">
                 <input
+                  dir="ltr"
                   type="number"
                   v-model.number.lazy="priceRange.min"
                   :step="10"
@@ -70,6 +71,7 @@
                 />
                 <span>-</span>
                 <input
+                  dir="ltr"
                   type="number"
                   v-model.number.lazy="priceRange.max"
                   :step="10"
