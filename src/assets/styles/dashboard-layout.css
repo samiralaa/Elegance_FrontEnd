@@ -376,13 +376,17 @@
   .dashboard-sidebar {
     transform: translateX(-100%);
   }
+  [dir="rtl"] .dashboard-sidebar {
+    transform: translateX(100%);
+  }
+ 
   .dashboard-content{
     margin-left: 0;
   }
   
   .dashboard-sidebar.open {
     transform: translateX(0);
-    z-index: 1000;
+    z-index: 10000;
   }
   
   .dashboard-main {
