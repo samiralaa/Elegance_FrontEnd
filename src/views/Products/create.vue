@@ -20,19 +20,32 @@
         </el-form-item>
 
         <!-- Manual toggle for amount -->
+
         <el-form-item :label="$t('General.NeedsAmount')">
           <el-switch v-model="amountRequired" :active-text="$t('General.Yes')" :inactive-text="$t('General.No')" />
+
+        <el-form-item :label=" $t('Products.Needs-Amount')" prop="amountRequired">
+          <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
+
         </el-form-item>
 
         <!-- Show amount fields conditionally -->
         <template v-if="amountRequired">
+
           <el-divider content-position="left">{{$t('General.AmountInfo')}}</el-divider>
 
           <el-form-item :label="$t('General.Unit')" prop="unit_id">
             <el-select v-model="amountForm.unit_id" :placeholder="$t('General.SelectUnit')">
+
+          <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
+
+          <el-form-item :label="$t('Products.Unit')" >
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
+
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
+
 
           <el-form-item :label="$t('General.Weight')" prop="weight">
             <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
@@ -40,6 +53,14 @@
 
           <el-form-item :label="$t('Products.Price')" prop="price">
             <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
+
+          <el-form-item :label="$t('Products.Weight')">
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+          </el-form-item>
+
+          <el-form-item :label="$t('Products.Price')" >
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
+
           </el-form-item>
         </template>
 
@@ -149,7 +170,7 @@ const amountForm = ref({
   weight: null,
   price: null,
 })
-
+const lang = localStorage.getItem('lang') || 'en'
 const amountRequired = ref(false)
 const fileList = ref([])
 const categories = ref([])
@@ -169,6 +190,7 @@ const brands = ref([])
 // }
 
 const rules = {
+
   name_en: [
     { required: true, message: t('Validation.ProductNameEn'), trigger: 'blur' }
   ],
@@ -186,7 +208,15 @@ const rules = {
   ],
   brand_id: [
     { required: true, message: t('Validation.SelectBrand'), trigger: 'change' }
-  ]
+  ],
+
+  name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }, { min: 3, message: 'Product name must be at least 3 characters', trigger: 'blur' }],
+  price: [{ required: true, message:lang === 'en' ? 'Please input product price':"من فضلك ادخل سعر المنتج", trigger: 'blur' }, { type: 'number', message: 'Please input product price', trigger: 'blur' }],
+  category_id: [{ required: true, message:lang === 'en' ? 'Please select a category': 'من فضلك اختر فئة', trigger: 'change' }],
+  currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency': 'من فضلك اختر عملة', trigger: 'change' }],
+  country_id: [{ required: true, message:lang === 'en' ? 'Please select a country': 'من فضلك اختر دولة ', trigger: 'change' }],
+  brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand': 'من فضلك اختر براند', trigger: 'change' }], // Add validation
+
 }
 
 

@@ -301,6 +301,30 @@
     "SelectCountry": "من فضلك اختر دولة",
     "SelectBrand": "من فضلك اختر علامة تجارية"
   },
+    "CreateProduct": "إنشاء منتج",
+    
+    "Category": "التصنيف",
+    "SelectCategory": "اختار التصنيف",
+    
+    "SelectCurrency": "اختار العملة",
+    "Country": "الدولة",
+    "SelectCountry": "اختار الدولة",
+    "ParentProduct": "منتج رئيسي",
+    "SelectParentProduct": "اختار منتج رئيسي",
+    "None": "لا شيء",
+    "Images": "الصور",
+    "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
+    "CreateButton": "إنشاء المنتج",
+    "addedSussess": "تم إضافة المنتج بنجاح",
+      "brand": "العلامة التجارية",
+    "BrandPlaceholder": "اختر العلامة التجارية",
+     "Needs-Amount": "تحتاج للكمية؟",
+    "Amount-Info": "معلومات الكمية",
+    "Unit": "الوحدة",
+    "Weight": "الوزن",
+      "select-unit": "اختر الوحدة",
+    "select-weight": "اختر الوزن",
+    "select-price": "اختر السعر",
 
   "Footer": {
     "DownloadApp": "حمّل التطبيق",
@@ -332,6 +356,8 @@
   "orders": {
     "myOrders": "طلباتي",
     "selectOrder": "اختر الطلب",
+    "Search-orders" : "ابحث عن الطلبات...",
+    "Filter-by-Status" : "تصفية حسب الحالة",
     "allOrders": "كل الطلبات",
     "inProgress": "قيد التنفيذ",
     "completed": "مكتمل",
@@ -341,7 +367,10 @@
     "orderDate": "تاريخ الطلب",
     "total": "الإجمالي",
     "status": "الحالة",
+    "price": "السعر",
     "actions": "الإجراءات",
+    "Subtotal": "المجموع الفرعي",
+    "quantity": "الكمية",
     "filterByStatus": "تصفية حسب الحالة",
     "searchPlaceholder": "ابحث...",
     "orderDetails": "تفاصيل الطلب",
@@ -793,13 +822,18 @@
   "customers":{
     "title": "العملاء",
     "addCustomer": "إضافة عميل",
+    "refrech": "تحديث",
+    "customer-id": "معرف العميل",
     "editCustomer": "تعديل عميل",
+    "deleteCustomer": "حذف عميل",
+    "role": "الدور",
     "name": "الاسم",
     "email": "الايميل",
     "phone": "الهاتف",
     "address": "العنوان",
     "city": "المدينة",
     "country": "الدولة",
+    "Created-At": "تم الإنشاء في",
     "status": "الحالة",
     "actions": "الإجراءات",
     "deleteConfirm": "هل أنت متأكد من حذف هذا العميل؟",
@@ -814,11 +848,19 @@
       "addressRequired": "العنوان مطلوب",
       "cityRequired": "المدينة مطلوبة",
       "countryRequired": "الدولة مطلوبة"
-    }
-    
+    },
+     "Enter-name": "أدخل اسم العميل",
+    "Enter-email": "أدخل بريد العميل الإلكتروني",
+    "Enter-phone": "أدخل رقم هاتف العميل",
+    "Enter-role": "أدخل دور العميل",
+    "Enter-address": "أدخل عنوان العميل",
+    "Enter-password": "أدخل كلمة المرور",
+    "Enter-comfirmPassword": "أدخل تأكيد كلمة المرور",
+    "admin": "مدير",
+    "user": "مستخدم",
+    "manager": "مدير",
+      "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "cancel": "إلغاء",
+    "create": "إنشاء عميل"
   }
- 
-
-  
-
-}

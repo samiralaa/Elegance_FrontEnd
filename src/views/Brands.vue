@@ -89,10 +89,10 @@
     </div>
 
     <!-- Brand Form Dialog -->
-    <el-dialog v-model="dialogVisible" :title="dialogType === 'create' ? 'Create New Brand' : 'Edit Brand'"
+    <el-dialog v-model="dialogVisible" :title="dialogType === 'create' ? $t('Brands.CreateTitle') : $t('Brands.Edit')"
       width="600px" :close-on-click-modal="false">
       <el-form ref="brandFormRef" :model="brandForm" :rules="formRules" label-position="top">
-        <el-form-item label="Brand Logo" prop="logo">
+        <el-form-item :label="$t('Brands.Logo')" prop="logo">
           <el-upload class="logo-uploader" action="#" :show-file-list="false" :auto-upload="false"
             :on-change="handleLogoChange">
             <el-image v-if="brandForm.logo" :src="brandForm.logo" class="logo-preview" />
@@ -104,28 +104,28 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Name (English)" prop="name_en">
-              <el-input v-model="brandForm.name_en" placeholder="Enter brand name in English" />
+            <el-form-item :label="$t('Brands.NameEn')" prop="name_en">
+              <el-input v-model="brandForm.name_en" :placeholder="$t('Brands.PlaceholderNameEn')" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Name (Arabic)" prop="name_ar">
-              <el-input v-model="brandForm.name_ar" placeholder="Enter brand name in Arabic" dir="rtl" />
+            <el-form-item :label="$t('Brands.NameAr')" prop="name_ar">
+              <el-input v-model="brandForm.name_ar" :placeholder="$t('Brands.PlaceholderNameAr')" dir="rtl" />
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Description (English)" prop="description_en">
+            <el-form-item :label="$t('Brands.DescriptionEn')" prop="description_en">
               <el-input v-model="brandForm.description_en" type="textarea" :rows="3"
-                placeholder="Enter brand description in English" />
+                :placeholder="$t('Brands.PlaceholderDescriptionEn')" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Description (Arabic)" prop="description_ar">
+            <el-form-item :label="$t('Brands.DescriptionAr')" prop="description_ar">
               <el-input v-model="brandForm.description_ar" type="textarea" :rows="3"
-                placeholder="Enter brand description in Arabic" dir="rtl" />
+                :placeholder="$t('Brands.PlaceholderDescriptionAr')" dir="rtl" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -133,9 +133,9 @@
 
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button @click="dialogVisible = false">{{ $t('Brands.Cancel') }}</el-button>
           <el-button type="primary" @click="submitForm" :loading="submitting">
-            {{ dialogType === 'create' ? 'Create' : 'Update' }}
+            {{ dialogType === 'create' ? $t('Brands.Create') : $t('Brands.Update') }}
           </el-button>
         </span>
       </template>
@@ -224,7 +224,7 @@ export default defineComponent({
     const deleting = ref(false)
     const selectedBrand = ref(null)
     const error = ref(null)
-
+    const lang = ref(localStorage.getItem('lang') || 'en')
     const brandForm = reactive({
       logo: '',
       name_en: '',
@@ -235,16 +235,16 @@ export default defineComponent({
 
     const formRules = {
       name_en: [
-        { required: true, message: 'Please enter brand name in English', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter brand name in English': 'من فضلك ادخل اسم البراند بالانجليزي', trigger: 'blur' }
       ],
       name_ar: [
-        { required: true, message: 'Please enter brand name in Arabic', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter brand name in Arabic': 'من فضلك ادخل اسم البراند بالعربي', trigger: 'blur' }
       ],
       description_en: [
-        { required: true, message: 'Please enter brand description in English', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter brand description in English': 'من فضلك ادخل وصف البراند بالانجليزي', trigger: 'blur' }
       ],
       description_ar: [
-        { required: true, message: 'Please enter brand description in Arabic', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter brand description in Arabic': 'من فضلك ادخل وصف البراند بالعربي', trigger: 'blur' }
       ]
     }
 
@@ -350,7 +350,7 @@ export default defineComponent({
         })
 
         ElMessage({
-          message: `Brand ${dialogType.value === 'create' ? 'created' : 'updated'} successfully`,
+          message:lang === 'en' ? ` ${dialogType.value === 'create' ? 'created' : 'updated'} successfully` : `  ${dialogType.value === 'create' ? 'تم إنشاؤه' : 'تم التحديث'} بنجاح `,
           type: 'success',
           duration: 2000
         })
@@ -369,7 +369,7 @@ export default defineComponent({
         deleting.value = true
         await api.delete(`/brands/${selectedBrand.value.id}`)
         ElMessage({
-          message: 'Brand deleted successfully',
+          message:lang === 'en' ? 'Brand deleted successfully' : 'تم حذف العلامة التجارية بنجاح',
           type: 'success',
           duration: 2000
         })
@@ -378,7 +378,7 @@ export default defineComponent({
       } catch (err) {
         console.error('Error deleting brand:', err)
         ElMessage({
-          message: 'Failed to delete brand',
+          message: lang === 'en' ? 'Failed to delete brand' : 'فشل في حذف العلامة التجارية',
           type: 'error',
           duration: 5000
         })

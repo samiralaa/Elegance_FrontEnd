@@ -1,19 +1,19 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <h2 class="page-title">customers</h2>
+      <h2 class="page-title">{{$t('customers.title')}}</h2>
       <div class="button-group">
         <el-button type="success" class="action-button" @click="showCreateDialog">
           <el-icon>
             <Plus />
           </el-icon>
-          <span>Create User</span>
+          <span>{{$t('customers.addCustomer')}}</span>
         </el-button>
         <el-button type="primary" class="action-button" @click="loadCustomers">
           <el-icon>
             <Refresh />
           </el-icon>
-          <span>Refresh</span>
+          <span>{{$t('customers.refrech')}}</span>
         </el-button>
       </div>
     </div>
@@ -22,27 +22,27 @@
     <el-alert v-if="error" :title="error" type="error" show-icon @close="clearError" class="mb-md" />
 
     <!-- Create User Dialog -->
-    <el-dialog v-model="createDialogVisible" title="Create New User" width="500px">
+    <el-dialog v-model="createDialogVisible" :title="$t('customers.addCustomer')" width="500px">
       <el-form ref="createFormRef" :model="createForm" :rules="createRules" label-width="120px" class="form-container"
         @submit.prevent="handleCreate">
-        <el-form-item label="Name" prop="name">
-          <el-input v-model="createForm.name" placeholder="Enter name" />
+        <el-form-item :label="$t('customers.name')" prop="name">
+          <el-input v-model="createForm.name" :placeholder="$t('customers.Enter-name')" />
         </el-form-item>
-        <el-form-item label="Email" prop="email">
-          <el-input v-model="createForm.email" placeholder="Enter email" />
+        <el-form-item :label="$t('customers.email')" prop="email">
+          <el-input v-model="createForm.email" :placeholder="$t('customers.Enter-email')" />
         </el-form-item>
-        <el-form-item label="Phone" prop="phone">
-          <el-input v-model="createForm.phone" placeholder="Enter phone number" />
+        <el-form-item :label="$t('customers.phone')" prop="phone">
+          <el-input v-model="createForm.phone" :placeholder="$t('customers.Enter-phone')" />
         </el-form-item>
-        <el-form-item label="Role" prop="role">
-          <el-select v-model="createForm.role" placeholder="Select role">
-            <el-option label="Admin" value="admin" />
-            <el-option label="User" value="user" />
-            <el-option label="Manager" value="manager" />
+        <el-form-item :label="$t('customers.role')" prop="role">
+          <el-select v-model="createForm.role" :placeholder="$t('customers.Enter-role')">
+            <el-option :label="$t('customers.admin')" value="admin" />
+            <el-option :label="$t('customers.user')" value="user" />
+            <el-option :label="$t('customers.manager')" value="manager" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Country" prop="country_id">
-  <el-select v-model="createForm.country_id" placeholder="Select country">
+        <el-form-item :label="$t('customers.country')" prop="country_id">
+  <el-select v-model="createForm.country_id" :placeholder="$t('customers.Enter-address')">
     <el-option
       v-for="country in countries"
       :key="country.id"
@@ -52,19 +52,19 @@
   </el-select>
 </el-form-item>
 
-        <el-form-item label="Password" prop="password">
-          <el-input v-model="createForm.password" type="password" placeholder="Enter password" show-password />
+        <el-form-item :label="$t('customers.password')" prop="password">
+          <el-input v-model="createForm.password" type="password" :placeholder="$t('customers.Enter-password')" show-password />
         </el-form-item>
-        <el-form-item label="Confirm" prop="password_confirmation">
-          <el-input v-model="createForm.password_confirmation" type="password" placeholder="Confirm password"
+        <el-form-item :label="$t('customers.confirmPassword')" prop="password_confirmation">
+          <el-input v-model="createForm.password_confirmation" type="password" :placeholder="$t('customers.Enter-comfirmPassword')"
             show-password />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="form-footer">
-          <el-button @click="createDialogVisible = false">Cancel</el-button>
+          <el-button @click="createDialogVisible = false">{{$t('customers.cancel')}}</el-button>
           <el-button type="primary" :loading="isLoading" @click="handleCreate">
-            Create
+            {{$t('customers.create')}}
           </el-button>
         </div>
       </template>
@@ -78,33 +78,33 @@
     <!-- Users Table -->
     <div v-else class="table-container">
       <el-table :data="usersList" style="width: 100%" :border="true">
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="Name" min-width="120" />
-        <el-table-column prop="email" label="Email" min-width="180" />
-        <el-table-column prop="phone" label="Phone" min-width="120" />
-        <el-table-column prop="role" label="Role" width="120">
+        <el-table-column prop="id" :label="$t('customers.customer-id')" width="80" />
+        <el-table-column prop="name" :label="$t('customers.name')" min-width="120" />
+        <el-table-column prop="email" :label="$t('customers.email')" min-width="180" />
+        <el-table-column prop="phone" :label="$t('customers.phone')" min-width="120" />
+        <el-table-column prop="role" :label="$t('customers.role')" width="120">
           <template #default="scope">
             <el-tag :type="getRoleType(scope.row.role)" class="status-tag">
               {{ scope.row.role }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" label="Created At" width="150">
+        <el-table-column prop="created_at" :label="$t('customers.Created-At')" width="150">
           <template #default="scope">
             {{ formatDate(scope.row.created_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="Actions" width="150" fixed="right">
+        <el-table-column :label="$t('customers.actions')" width="150" fixed="right">
           <template #default="scope">
             <div class="button-group">
-              <el-tooltip content="Edit User" placement="top">
+              <el-tooltip :content="$t('customers.editCustomer')" placement="top">
                 <el-button type="primary" size="small" class="action-button" @click="handleEdit(scope.row)">
                   <el-icon>
                     <Edit />
                   </el-icon>
                 </el-button>
               </el-tooltip>
-              <el-tooltip content="Delete User" placement="top">
+              <el-tooltip :content="$t('customers.deleteCustomer')" placement="top">
                 <el-button type="danger" size="small" class="action-button" @click="handleDelete(scope.row)">
                   <el-icon>
                     <Delete />
@@ -185,7 +185,7 @@ export default defineComponent({
     const usersList = ref([])
     const isLoading = ref(false)
     const error = ref(null)
-
+    const lang = localStorage.getItem('lang') || 'en'
     const createForm = reactive({
       name: '',
       email: '',
@@ -206,33 +206,33 @@ export default defineComponent({
     }
     const createRules = {
       name: [
-        { required: true, message: 'Please enter name', trigger: 'blur' },
-        { min: 3, message: 'Name must be at least 3 characters', trigger: 'blur' }
+        { required: true, message:lang==='en'? 'Please enter name':' من فضلك ادخل الاسم', trigger: 'blur' },
+        { min: 3, message:lang === 'en' ? 'Name must be at least 3 characters' : 'الاسم يجب ان يكون على الاقل 3 حروف', trigger: 'blur' }
       ],
       email: [
-        { required: true, message: 'Please enter email', trigger: 'blur' },
-        { type: 'email', message: 'Please enter valid email', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter email' : 'من فضلك ادخل البريد الالكتروني', trigger: 'blur' },
+        { type: 'email', message:lang === 'en' ? 'Please enter valid email' : ' من فضلك ادخل بريد الكتروني صحيح', trigger: 'blur' }
       ],
       phone: [
-        { required: true, message: 'Please enter phone number', trigger: 'blur' },
-        { pattern: /^[0-9+\-\s()]*$/, message: 'Please enter a valid phone number', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter phone number' : 'من فضلك ادخل رقم الهاتف', trigger: 'blur' },
+        { pattern: /^[0-9+\-\s()]*$/, message:lang === 'en' ? 'Please enter a valid phone number' : 'من فضلك ادخل رقم هاتف صحيح', trigger: 'blur' }
       ],
       role: [
-        { required: true, message: 'Please select role', trigger: 'change' }
+        { required: true, message: lang === 'en' ? 'Please select role' : 'من فضلك اختر الصلاحية', trigger: 'change' }
       ],
       country_id: [
-        { required: true, message: 'Please select country', trigger: 'change' }
+        { required: true, message:lang === 'en' ? 'Please select country' : 'من فضلك اختر الدولة', trigger: 'change' }
       ],
       password: [
-        { required: true, message: 'Please enter password', trigger: 'blur' },
-        { min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }
+        { required: true, message:lang === 'en' ? 'Please enter password' : 'من فضلك ادخل كلمة المرور', trigger: 'blur' },
+        { min: 6, message:lang === 'en' ? 'Password must be at least 6 characters' : 'كلمة المرور يجب ان تكون على الاقل 6 حروف', trigger: 'blur' }
       ],
       password_confirmation: [
-        { required: true, message: 'Please confirm password', trigger: 'blur' },
+        { required: true, message:lang === 'en' ? 'Please confirm password' : 'من فضلك ادخل تاكيد كلمة المرور', trigger: 'blur' },
         {
           validator: (rule, value, callback) => {
             if (value !== createForm.password) {
-              callback(new Error('Passwords do not match'))
+              callback(new Error(lang === 'en' ? 'Passwords do not match' : 'كلمات المرور غير متطابقة'))
             } else {
               callback()
             }
@@ -252,6 +252,7 @@ export default defineComponent({
     }
 
     const showCreateDialog = () => {
+  
       createDialogVisible.value = true
       createForm.name = ''
       createForm.email = ''
@@ -273,7 +274,7 @@ export default defineComponent({
 
         if (response.data.status) {
           ElMessage({
-            message: 'User created successfully',
+            message: lang === 'en' ? 'User created successfully' : 'تم إنشاء المستخدم بنجاح',
             type: 'success',
             duration: 2000
           })
@@ -285,7 +286,7 @@ export default defineComponent({
       } catch (err) {
         console.error('Error creating user:', err)
         ElMessage({
-          message: err.response?.data?.message || 'Failed to create user',
+          message: lang === 'en' ?  'Failed to create user' : 'فشل في إنشاء المستخدم',
           type: 'error',
           duration: 5000
         })
@@ -355,7 +356,7 @@ export default defineComponent({
       } catch (err) {
         console.error('Error updating user:', err)
         ElMessage({
-          message: err.response?.data?.message || 'Failed to update user',
+          message: lang === 'en' ? err.response?.data?.message || 'Failed to update user' : 'فشل في تحديث المستخدم',
           type: 'error',
           duration: 5000
         })
@@ -365,11 +366,11 @@ export default defineComponent({
     const handleDelete = async (user) => {
       try {
         await ElMessageBox.confirm(
-          `Are you sure you want to delete user ${user.name}?`,
-          'Warning',
+        lang === 'en' ?  `Are you sure you want to delete user ${user.name}?`: `هل أنت متأكد من حذف المستخدم ${user.name}?`,
+          lang === 'en' ? 'Warning' : 'تحذير',
           {
-            confirmButtonText: 'Delete',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: lang === 'en' ? 'Delete' : 'حذف',
+            cancelButtonText: lang === 'en' ? 'Cancel' : 'إلغاء',
             type: 'warning'
           }
         )
@@ -378,7 +379,7 @@ export default defineComponent({
 
         if (response.data.status) {
           ElMessage({
-            message: 'User deleted successfully',
+            message: lang === 'en' ? 'User deleted successfully' : 'تم حذف المستخدم بنجاح',
             type: 'success',
             duration: 2000
           })
@@ -390,7 +391,7 @@ export default defineComponent({
         if (err !== 'cancel') {
           console.error('Error deleting user:', err)
           ElMessage({
-            message: err.response?.data?.message || 'Failed to delete user',
+            message: lang === 'en' ? 'Failed to delete user' : 'فشل في حذف المستخدم',
             type: 'error',
             duration: 5000
           })
