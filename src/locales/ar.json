@@ -196,7 +196,7 @@
     
   },
 
-  "categories":{
+  "Categories":{
     "title":"الفئات",
     "AddCategory":"إضافة فئة",
     "Image":"الصورة",
@@ -206,7 +206,10 @@
     "name":"الاسم",
     "Actions":"الإجراءات",
     "Brand":"العلامة التجارية",
+    "CreateButton": "إنشاء الفئة",
+    "SelectBrand":"اختيار العلامة التجارية",
     "Description":"الوصف",
+    "Selected-Brand": "العلامة التجارية المحددة",
     "DescriptionEn":"الوصف (إنجليزي)",
     "DescriptionAr":"الوصف (عربي)",
     "Products":"المنتجات",
@@ -214,7 +217,7 @@
     "DeleteSuccess":"تم حذف الفئة بنجاح",
     "UpdateSuccess":"تم تحديث الفئة بنجاح",
     "CreateSuccess":"تم إنشاء الفئة بنجاح",
-
+    "Categories": "الفئات",
     "Status":{
       "Status":"الحالة",
       "Active":"نشط",
@@ -699,6 +702,88 @@
       }
     },
     "consent": "باستخدامك لموقعنا أو تقديم معلوماتك الشخصية، فإنك توافق على شروط سياسة الخصوصية."
+  },
+   "dashboard":{ 
+    "Total-Revenue": "إجمالي الإيرادات",
+    "total-Orders": "إجمالي الطلبات",
+    "total-Customers": "إجمالي العملاء",
+    "total-Products": "إجمالي المنتجات",
+    "Sales-Overview": "نظرة عامة على المبيعات",
+    "recent-Orders": "الطلبات الأخيرة",
+     "Today-Sales": "مبيعات اليوم",
+    "This-Month": "هذا الشهر",
+    "Last-Month": "الشهر الماضي",
+     "Order-Id": "رقم الطلب",
+    "Total": "الإجمالي",
+    "Status": "الحالة",
+    "Order-Date": "تاريخ الطلب",
+    "customer": "العميل",
+    "orders": "الطلبات",
+    "sales": "المبيعات"
+  },
+   "input":{
+    "unites":{
+      "Units-List": "قائمة الوحدات",
+      "name-ar": "الاسم بالعربي",
+      "name-en": "الاسم بالإنجليزي",
+      "action": "الإجراء",
+      "add-unit": "إضافة وحدة",
+      "update": "تحديث ",
+      "delete": "حذف ",
+      "create": "إنشاء وحدة",
+      "Please-input-unit": "الرجاء إدخال اسم الوحدة"
+    },
+    "currencies":{
+      "title": "قائمة العملات",
+      "name-ar": "الاسم (عربي)",
+      "name-en": "الاسم (إنجليزي)",
+      "create": "إنشاء عملة",
+      "action": "الإجراء",
+      "add-currency": "إضافة عملة",
+      "update": "تحديث ",
+      "delete": "حذف ",
+      "cancel": "إلغاء",
+      "exchangeRate": "سعر الصرف",
+      "Edit-Currency": "تعديل العملة",
+      "createSuccess": "تم إنشاء العملة بنجاح",
+      "status":{
+        "status": "الحالة",
+        "active": "نشط",
+        "inactive": "غير نشط"
+      }
+    }
+  },
+  "customers":{
+    "title": "العملاء",
+    "addCustomer": "إضافة عميل",
+    "editCustomer": "تعديل عميل",
+    "name": "الاسم",
+    "email": "الايميل",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "city": "المدينة",
+    "country": "الدولة",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا العميل؟",
+    "deleteSuccess": "تم حذف العميل بنجاح",
+    "updateSuccess": "تم تحديث العميل بنجاح",
+    "createSuccess": "تم إنشاء العميل بنجاح",
+    "validation": {
+      "nameRequired": "الاسم مطلوب",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "البريد الإلكتروني غير صالح",
+      "phoneRequired": "رقم الهاتف مطلوب",
+      "addressRequired": "العنوان مطلوب",
+      "cityRequired": "المدينة مطلوبة",
+      "countryRequired": "الدولة مطلوبة"
+    }
+    
+
+
   }
+ 
+
+  
 
 }

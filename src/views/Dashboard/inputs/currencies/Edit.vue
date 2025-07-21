@@ -1,28 +1,28 @@
 <template>
     <div class="currency-edit-container">
       <el-card class="currency-card">
-        <h2>Edit Currency</h2>
+        <h2>{{ $t('input.currencies.Edit-Currency') }}</h2>
   
         <el-form :model="form" ref="formRef" :rules="rules" label-width="120px">
           <!-- Name (EN) -->
-          <el-form-item label="Name (EN)" prop="name_en">
+          <el-form-item :label="$t('input.currencies.name-en') " prop="name_en">
             <el-input v-model="form.name_en" />
           </el-form-item>
   
           <!-- Name (AR) -->
-          <el-form-item label="Name (AR)" prop="name_ar">
+          <el-form-item :label="$t('input.currencies.name-ar') " prop="name_ar">
             <el-input v-model="form.name_ar" />
           </el-form-item>
   
           <!-- Exchange Rate -->
-          <el-form-item label="Exchange Rate" prop="exchange_rate">
+          <el-form-item :label="$t('input.currencies.exchangeRate') " prop="exchange_rate">
             <el-input v-model="form.exchange_rate" />
           </el-form-item>
   
           <!-- Submit -->
           <el-form-item>
-            <el-button type="primary" @click="submitForm">Update</el-button>
-            <el-button @click="router.push('/currencies')">Cancel</el-button>
+            <el-button type="primary" @click="submitForm">{{ $t('input.currencies.update') }}</el-button>
+            <el-button @click="router.push('/currencies')">{{ $t('input.currencies.cancel') }}</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -39,7 +39,7 @@
   const route = useRoute()
   
   const currencyId = route.params.id
-  
+  const lang = localStorage.getItem('lang') || 'en'
   const formRef = ref(null)
   const form = ref({
     name_en: '',
@@ -48,11 +48,11 @@
   })
   
   const rules = {
-    name_en: [{ required: true, message: 'Please enter name (EN)', trigger: 'blur' }],
-    name_ar: [{ required: true, message: 'Please enter name (AR)', trigger: 'blur' }],
+    name_en: [{ required: true, message:lang === 'en'? 'Please enter name (EN)':"من فضلك ادخل سعر العملة بالانجليزي", trigger: 'blur' }],
+    name_ar: [{ required: true, message: lang==='en' ?'Please input currency name (AR)':"من فضلك ادخل سعر العملة بالعربي", trigger: 'blur' }],
     exchange_rate: [
-      { required: true, message: 'Please enter exchange rate', trigger: 'blur' },
-      { pattern: /^\d+(\.\d{1,2})?$/, message: 'Must be a valid number', trigger: 'blur' }
+      { required: true, message: lang=== 'en'? 'Please input exchange rate':'من فضلك ادخل سعر الصرف', trigger: 'blur' },
+      { pattern: /^\d+(\.\d{1,2})?$/, message: lang=== 'en'?'Exchange rate must be a valid number':'سعر الصرف يجب ان يكون رقم صحيح', trigger: 'blur' }
     ]
   }
   
@@ -80,10 +80,10 @@
           exchange_rate: data.data.exchange_rate
         }
       } else {
-        ElMessage.error('Currency not found')
+        ElMessage.error(lang==='en'?'Currency not found':'العملة غير موجودة')
       }
     } catch (error) {
-      ElMessage.error('Failed to fetch currency data')
+      ElMessage.error(lang==='en'?'Failed to fetch currency data':'فشل في جلب بيانات العملة')
     }
   }
   
@@ -104,7 +104,7 @@
   
         await axios.post(`${CURRENCY_API}/${currencyId}`, form.value)
   
-        ElMessage.success('Currency updated successfully')
+        ElMessage.success(lang ==='en'?'Currency updated successfully':'تم تحديث العملة بنجاح')
         router.push('/currencies')
       } catch (error) {
         if (error.response?.status === 422) {
@@ -113,7 +113,7 @@
             ElMessage.error(validationErrors[key][0])
           }
         } else {
-          ElMessage.error('Failed to update currency')
+          ElMessage.error(lang==='en'?'Failed to update currency':'فشل في تحديث العملة')
         }
       }
     })

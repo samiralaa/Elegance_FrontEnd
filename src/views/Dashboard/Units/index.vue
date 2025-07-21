@@ -1,18 +1,18 @@
 <template>
   <div class="units-container">
     <div class="header">
-      <h2>Units List</h2>
-      <el-button type="primary" :to="'/units/create'" tag="router-link">Add Unit</el-button>
+      <h2>{{ $t('input.unites.Units-List') }}</h2>
+      <el-button type="primary" :to="'/units/create'" tag="router-link">{{ $t('input.unites.add-unit') }}</el-button>
     </div>
 
     <el-card class="units-table">
       <el-table v-loading="loading" :data="units" style="width: 100%">
-        <el-table-column prop="name_ar" label="Name (Arabic)" />
-        <el-table-column prop="name_en" label="Name (English)" />
-        <el-table-column label="Actions">
+        <el-table-column prop="name_ar" :label=" $t('input.unites.name-ar') " />
+        <el-table-column prop="name_en" :label=" $t('input.unites.name-en') " />
+        <el-table-column :label=" $t('input.unites.action') ">
           <template v-slot="scope">
-            <el-button type="text" size="small" @click="handleUpdate(scope.row)">Update</el-button>
-            <el-button type="text" size="small" @click="handleDelete(scope.row)">Delete</el-button>
+            <el-button type="text" size="small" @click="handleUpdate(scope.row)">{{ $t('input.unites.update') }}</el-button>
+            <el-button type="text" size="small" @click="handleDelete(scope.row)">{{ $t('input.unites.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>

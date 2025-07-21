@@ -48,7 +48,7 @@
           </el-select>
         </div>
         <div class="form-group">
-          <label>Selected Brand ID</label>
+          <label>{{ $t('Categories.Selected-Brand') }}</label>
           <input class="form-input" :value="form.brand_id" readonly />
         </div>
 
