@@ -13,6 +13,11 @@
             <span :class="['trend', salesOverview.month_over_month_growth >= 0 ? 'positive' : 'negative']">
               {{ salesOverview.month_over_month_growth >= 0 ? '+' : '' }}{{ salesOverview.month_over_month_growth }}%
             </span>
+            <div v-if="salesOverview.converted_total_sales">
+              <small>
+                ({{ salesOverview.converted_total_sales.toFixed(2) }} {{ salesOverview.converted_currency }})
+              </small>
+            </div>
           </div>
         </el-card>
       </el-col>
@@ -143,7 +148,9 @@ export default defineComponent({
       last_month_sales: 0,
       month_over_month_growth: 0,
       daily_sales: [],
-      top_selling_products: []
+      top_selling_products: [],
+      converted_total_sales: 0,
+      converted_currency: ''
     })
     let chartInstance = null
 
@@ -267,6 +274,9 @@ export default defineComponent({
         if (response.data.status === true) {
           salesOverview.value = response.data.data
           totalRevenue.value = parseFloat(response.data.data.this_month_sales || 0)
+          totalRevenue.value = parseFloat(response.data.data.converted_total_sales || 0)
+
+          
           updateChart()
         }
       } catch (error) {
