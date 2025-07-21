@@ -19,9 +19,9 @@
       <!-- Product Information -->
       <div class="info">
         <p><strong>{{ $t('Products.Price') }}:</strong> {{ product.price }} {{ product.currency?.name_en || '' }}</p>
-        <p><strong>{{ $t('Products.Availability') }}:</strong> {{ product.is_available ? $t('Product.Available') : $t('Product.NotAvailable') }}</p>
-        <p><strong>{{ $t('Products.DescriptionEn') }}:</strong> {{ product.description_en || $t('Product.NA') }}</p>
-        <p><strong>{{ $t('Products.DescriptionAr') }}:</strong> <span dir="rtl">{{ product.description_ar || $t('Product.NA') }}</span></p>
+        <p><strong>{{ $t('Products.Availability') }}:</strong> {{ product.is_available ? $t('Products.Available') : $t('Products.NotAvailable') }}</p>
+        <p><strong>{{ $t('Products.DescriptionEn') }}:</strong> {{ product.description_en || $t('Products.NA') }}</p>
+        <p><strong>{{ $t('Products.DescriptionAr') }}:</strong> <span dir="rtl">{{ product.description_ar || $t('Products.NA') }}</span></p>
       </div>
     </el-card>
 

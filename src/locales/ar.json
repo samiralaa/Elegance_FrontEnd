@@ -272,7 +272,8 @@
     "Yes": "نعم",
     "No": "لا",
     "DeletedSuccessfully": "تم حذف المنتج بنجاح",
-    "NA": "غير متاح"
+    "NA": "غير متاح",
+    "AddDiscount": "إضافة خصم"
   },
 
   "General": {
@@ -286,6 +287,8 @@
     "EnterWeight": "أدخل الوزن",
     "EnterPrice": "أدخل السعر"
   },
+
+  "add.amount":  "إضافة كمية",
 
   "Validation": {
     "ProductNameEn": "من فضلك أدخل اسم المنتج (بالإنجليزية)",

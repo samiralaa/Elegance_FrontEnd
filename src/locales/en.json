@@ -268,9 +268,10 @@
     "Yes": "Yes",
     "No": "No",
     "DeletedSuccessfully": "Product deleted successfully",
-    "NA": "N/A"
+    "NA": "N/A",
+    "AddDiscount": "Add Discount"
   },
-  
+
   "General": {
     "NeedsAmount": "Needs Amount?",
     "Yes": "Yes",
@@ -282,6 +283,8 @@
     "EnterWeight": "Enter weight",
     "EnterPrice": "Enter price"
   },
+
+  "add.amount": "Add Amount",
 
   "Validation": {
     "ProductNameEn": "Please input product name (EN)",
