@@ -719,6 +719,19 @@
       }
     },
     "consent": "باستخدامك لموقعنا أو تقديم معلوماتك الشخصية، فإنك توافق على شروط سياسة الخصوصية."
+  },
+
+  "discount": {
+    "add_discount": "إضافة خصم للمنتج",
+    "start_date": "تاريخ البدء",
+    "start_date_placeholder": "اختر تاريخ البدء",
+    "duration_days": "المدة (بالأيام)",
+    "duration_days_placeholder": "أدخل المدة بالأيام",
+    "discount_value": "قيمة الخصم (%)",
+    "discount_value_placeholder": "أدخل نسبة الخصم",
+    "is_active": "نشط",
+    "end_date": "تاريخ الانتهاء",
+    "end_date_placeholder": "اختر تاريخ الانتهاء"
   }
 
 }
