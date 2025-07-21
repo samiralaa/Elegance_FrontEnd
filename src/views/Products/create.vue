@@ -13,39 +13,39 @@
         <el-form-item :label="$t('Products.NameAr')" prop="name_ar">
           <el-input v-model="form.name_ar" />
         </el-form-item>
-
-        <!-- Price -->
-        <el-form-item v-if="!amountRequired" :label="$t('Products.Price')" prop="price">
-          <el-input v-model="form.price" type="number" />
+        
+        <!-- Availability -->
+        <el-form-item :label="$t('Products.Availability')" prop="is_available">
+          <el-switch v-model="form.is_available" active-value="1" inactive-value="0" />
         </el-form-item>
 
         <!-- Manual toggle for amount -->
-        <el-form-item label="Needs Amount?">
-          <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
+        <el-form-item :label="$t('General.NeedsAmount')">
+          <el-switch v-model="amountRequired" :active-text="$t('General.Yes')" :inactive-text="$t('General.No')" />
         </el-form-item>
 
         <!-- Show amount fields conditionally -->
         <template v-if="amountRequired">
-          <el-divider content-position="left">Amount Info</el-divider>
+          <el-divider content-position="left">{{$t('General.AmountInfo')}}</el-divider>
 
-          <el-form-item label="Unit">
-            <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
+          <el-form-item :label="$t('General.Unit')" prop="unit_id">
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('General.SelectUnit')">
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
-          <el-form-item label="Weight">
-            <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
+          <el-form-item :label="$t('General.Weight')" prop="weight">
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
           </el-form-item>
 
-          <el-form-item label="Price">
-            <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
+          <el-form-item :label="$t('Products.Price')" prop="price">
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
           </el-form-item>
         </template>
 
-        <!-- Availability -->
-        <el-form-item :label="$t('Products.Availability')" prop="is_available">
-          <el-switch v-model="form.is_available" active-value="1" inactive-value="0" />
+        <!-- Price -->
+        <el-form-item v-if="!amountRequired" :label="$t('Products.Price')" prop="price">
+          <el-input v-model="form.price" type="number" />
         </el-form-item>
 
         <!-- Description EN -->
@@ -66,7 +66,7 @@
         </el-form-item>
 
         <!-- Add after category select -->
-        <el-form-item label="Brand" prop="brand_id">
+        <el-form-item :label="$t('Products.Brand')" prop="brand_id">
           <el-select v-model="form.brand_id" placeholder="Select Brand" filterable clearable>
             <el-option
               v-for="brand in brands"
@@ -124,6 +124,8 @@ import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const router = useRouter()
 const formRef = ref(null)
@@ -157,14 +159,36 @@ const parentProducts = ref([])
 const units = ref([])
 const brands = ref([])
 
+// const rules = {
+//   name_en: [{ required: true, message: 'Please input product name (EN)', trigger: 'blur' }],
+//   price: [{ required: true, message: 'Please input product price', trigger: 'blur' }],
+//   category_id: [{ required: true, message: 'Please select a category', trigger: 'change' }],
+//   currency_id: [{ required: true, message: 'Please select a currency', trigger: 'change' }],
+//   country_id: [{ required: true, message: 'Please select a country', trigger: 'change' }],
+//   brand_id: [{ required: true, message: 'Please select a brand', trigger: 'change' }], // Add validation
+// }
+
 const rules = {
-  name_en: [{ required: true, message: 'Please input product name (EN)', trigger: 'blur' }],
-  price: [{ required: true, message: 'Please input product price', trigger: 'blur' }],
-  category_id: [{ required: true, message: 'Please select a category', trigger: 'change' }],
-  currency_id: [{ required: true, message: 'Please select a currency', trigger: 'change' }],
-  country_id: [{ required: true, message: 'Please select a country', trigger: 'change' }],
-  brand_id: [{ required: true, message: 'Please select a brand', trigger: 'change' }], // Add validation
+  name_en: [
+    { required: true, message: t('Validation.ProductNameEn'), trigger: 'blur' }
+  ],
+  price: [
+    { required: true, message: t('Validation.ProductPrice'), trigger: 'blur' }
+  ],
+  category_id: [
+    { required: true, message: t('Validation.SelectCategory'), trigger: 'change' }
+  ],
+  currency_id: [
+    { required: true, message: t('Validation.SelectCurrency'), trigger: 'change' }
+  ],
+  country_id: [
+    { required: true, message: t('Validation.SelectCountry'), trigger: 'change' }
+  ],
+  brand_id: [
+    { required: true, message: t('Validation.SelectBrand'), trigger: 'change' }
+  ]
 }
+
 
 const BASE_URL = 'https://backend.webenia.org'
 
@@ -279,5 +303,15 @@ onMounted(() => {
   color: #909399;
   font-size: 0.9em;
   margin-left: 8px;
+}
+
+::v-deep(.el-form-item__label){
+  text-align: start;
+  justify-content:flex-start;
+  width: 170px !important;
+}
+
+[dir="rtl"] .el-switch{
+  flex-direction: row-reverse;
 }
 </style>

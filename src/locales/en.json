@@ -228,18 +228,20 @@
     "Edit": "Edit",
     "Delete": "Delete",
     "Save": "Save"
-  },
-  
+  },  
+
   "Products": {
-    "NoImageAvailable": "No Image Available",
-    "Availability": "Availability",
-    "Available": "Available",
-    "NotAvailable": "Not Available",
-    "DescriptionEn": "Description (EN)",
-    "DescriptionAr": "Description (AR)",
     "CreateProduct": "Create Product",
+    "NameEn": "Name (English)",
+    "NameAr": "Name (Arabic)",
+    "Price": "Price",
+    "Availability": "Availability",
+    "DescriptionEn": "Description (English)",
+    "DescriptionAr": "Description (Arabic)",
     "Category": "Category",
     "SelectCategory": "Select Category",
+    "Brand": "Brand",
+    "Currency": "Currency",
     "SelectCurrency": "Select Currency",
     "Country": "Country",
     "SelectCountry": "Select Country",
@@ -249,14 +251,14 @@
     "Images": "Images",
     "DropFiles": "Drop files here or click to upload",
     "CreateButton": "Create Product",
+    "addedSussess": "Product added successfully",
+    "NoImageAvailable": "No image available",
+    "Available": "Available",
+    "NotAvailable": "Not available",
     "Loading": "Loading...",
     "Products": "Products",
     "AddProduct": "Add Product",
     "Image": "Image",
-    "NameEn": "Name (EN)",
-    "NameAr": "Name (AR)",
-    "Price": "Price",
-    "Currency": "Currency",
     "Actions": "Actions",
     "View": "View",
     "Edit": "Edit",
@@ -265,10 +267,31 @@
     "Warning": "Warning",
     "Yes": "Yes",
     "No": "No",
-    "DeletedSuccessfully": "Product deleted successfullyca",
-    "addedSussess": "Product added successfully",
+    "DeletedSuccessfully": "Product deleted successfully",
     "NA": "N/A"
   },
+  
+  "General": {
+    "NeedsAmount": "Needs Amount?",
+    "Yes": "Yes",
+    "No": "No",
+    "AmountInfo": "Amount Info",
+    "Unit": "Unit",
+    "Weight": "Weight",
+    "SelectUnit": "Select Unit",
+    "EnterWeight": "Enter weight",
+    "EnterPrice": "Enter price"
+  },
+
+  "Validation": {
+    "ProductNameEn": "Please input product name (EN)",
+    "ProductPrice": "Please input product price",
+    "SelectCategory": "Please select a category",
+    "SelectCurrency": "Please select a currency",
+    "SelectCountry": "Please select a country",
+    "SelectBrand": "Please select a brand"
+  },
+
   
   "Footer": {
     "DownloadApp": "Download App",
