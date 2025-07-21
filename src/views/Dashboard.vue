@@ -5,7 +5,7 @@
         <el-card class="summary-card">
           <template #header>
             <div class="card-header">
-              <span>Total Revenue</span>
+              <span>{{ $t('dashboard.Total-Revenue') }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -13,6 +13,11 @@
             <span :class="['trend', salesOverview.month_over_month_growth >= 0 ? 'positive' : 'negative']">
               {{ salesOverview.month_over_month_growth >= 0 ? '+' : '' }}{{ salesOverview.month_over_month_growth }}%
             </span>
+            <div v-if="salesOverview.converted_total_sales">
+              <small>
+                ({{ salesOverview.converted_total_sales.toFixed(2) }} {{ salesOverview.converted_currency }})
+              </small>
+            </div>
           </div>
         </el-card>
       </el-col>
@@ -20,7 +25,7 @@
         <el-card class="summary-card">
           <template #header>
             <div class="card-header">
-              <span>Total Orders</span>
+              <span>{{ $t('dashboard.total-Orders') }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -33,7 +38,7 @@
         <el-card class="summary-card">
           <template #header>
             <div class="card-header">
-              <span>Total Customers</span>
+              <span>{{ $t('dashboard.total-Customers') }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -46,7 +51,7 @@
         <el-card class="summary-card">
           <template #header>
             <div class="card-header">
-              <span>Total Products</span>
+              <span>{{ $t('dashboard.total-Products') }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -62,21 +67,21 @@
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>Sales Overview</span>
+              <span>{{ $t('dashboard.Sales-Overview') }}</span>
             </div>
           </template>
           <div class="sales-overview">
             <div class="sales-metrics">
               <div class="metric">
-                <span class="label">Today's Sales</span>
+                <span class="label">{{ $t('dashboard.Today-Sales') }}</span>
                 <span class="value">${{ parseFloat(salesOverview.today_sales || 0).toFixed(2) }}</span>
               </div>
               <div class="metric">
-                <span class="label">This Month</span>
+                <span class="label">{{ $t('dashboard.This-Month') }}</span>
                 <span class="value">${{ parseFloat(salesOverview.this_month_sales || 0).toFixed(2) }}</span>
               </div>
               <div class="metric">
-                <span class="label">Last Month</span>
+                <span class="label">{{ $t('dashboard.Last-Month') }}</span>
                 <span class="value">${{ parseFloat(salesOverview.last_month_sales || 0).toFixed(2) }}</span>
               </div>
             </div>
@@ -88,29 +93,29 @@
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>Recent Orders</span>
+              <span>{{ $t('dashboard.recent-Orders') }}</span>
             </div>
           </template>
           <el-table :data="orders" style="width: 100%">
-            <el-table-column prop="id" label="Order ID" width="100" />
-            <el-table-column label="Customer">
+            <el-table-column prop="id" :label="$t('dashboard.Order-Id')" width="100" />
+            <el-table-column :label="$t('dashboard.customer')">
               <template #default="{ row }">
                 {{ row.user.name }}
               </template>
             </el-table-column>
-            <el-table-column prop="total_price" label="Total" width="120">
+            <el-table-column prop="total_price" :label="$t('dashboard.Total')" width="120">
               <template #default="{ row }">
                 {{ row.currency }}{{ row.total_price }}
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="Status" width="120">
+            <el-table-column prop="status" :label="$t('dashboard.Status')" width="120">
               <template #default="{ row }">
                 <el-tag :type="row.status === 'completed' ? 'success' : 'warning'">
                   {{ row.status }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="ordered_at" label="Order Date" width="180">
+            <el-table-column prop="ordered_at" :label="$t('dashboard.Order-Date')" width="180">
               <template #default="{ row }">
                 {{ row.ordered_at }}
               </template>
@@ -143,7 +148,9 @@ export default defineComponent({
       last_month_sales: 0,
       month_over_month_growth: 0,
       daily_sales: [],
-      top_selling_products: []
+      top_selling_products: [],
+      converted_total_sales: 0,
+      converted_currency: ''
     })
     let chartInstance = null
 
@@ -267,6 +274,9 @@ export default defineComponent({
         if (response.data.status === true) {
           salesOverview.value = response.data.data
           totalRevenue.value = parseFloat(response.data.data.this_month_sales || 0)
+          totalRevenue.value = parseFloat(response.data.data.converted_total_sales || 0)
+
+          
           updateChart()
         }
       } catch (error) {

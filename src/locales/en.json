@@ -213,7 +213,9 @@
     "DescriptionAr": "description (AR)",
     "DescriptionEn": "description (EN)",
     "Actions": "Actions",
+    "Selected-Brand": "Selected Brand ID",
     "Image": "Image",
+    
     "Status": "Status",
     "Products": "Products",
     "description": "Description",
@@ -745,4 +747,88 @@
     "end_date": "End Date",
     "end_date_placeholder": "Select end date"
   }
+,
+  "dashboard":{ 
+    "Total-Revenue": "Total Revenue",
+    "total-Orders": "Total Orders",
+    "total-Customers": "Total Customers",
+    "total-Products": "Total Products",
+    "Sales-Overview": "Sales Overview",
+    "recent-Orders": "Recent Orders",
+    "Today-Sales": "Today's Sales",
+    "This-Month": "This Month",
+    "Last-Month": "Last Month",
+    "Order-Id": "Order ID",
+    "Total": "Total",
+    "Status": "Status",
+    "Order-Date": "Order Date",
+    "customer": "Customer",
+    "orders": "Orders",
+    "sales": "Sales"
+  },
+  "input":{
+    "unites":{
+      "Units-List": "Units List",
+      "name-ar": "Name (AR)",
+      "name-en": "Name (EN)",
+      "action": "Action",
+      "add-unit": "Add Unit",
+      "update": "Update ",
+      "delete": "Delete ",
+      "create": "Create Unit",
+      "Please-input-unit": "Please input unit name (EN)"
+    },
+    "currencies":{
+      "title": "Currencies",
+      "name-ar": "Name (AR)",
+      "name-en": "Name (EN)",
+      "create": "Create Currency",
+      "action": "common Action",
+      "add-currency": "Add Currency",
+      "update": "Update ",
+      "delete": "Delete ",
+      "cancel": "Cancel",
+      "exchangeRate": "Exchange Rate",
+      "Edit-Currency": "Edit Currency",
+      "createSuccess": "Currency created successfully",
+      "status":{
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    }
+  },
+  "customers":{
+    "title": "Customers",
+    "addCustomer": "Add Customer",
+    "editCustomer": "Edit Customer",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "country": "Country",
+    "status": "Status",
+    "actions": "Actions",
+    "deleteConfirm": "Are you sure you want to delete this customer?",
+    "deleteSuccess": "Customer deleted successfully",
+    "updateSuccess": "Customer updated successfully",
+    "createSuccess": "Customer created successfully",
+    "validation": {
+      "nameRequired": "Customer name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Email is invalid",
+      "phoneRequired": "Phone number is required",
+      "addressRequired": "Address is required",
+      "cityRequired": "City is required",
+      "countryRequired": "Country is required"
+    }
+    
+
+
+  }
+ 
+
+
+
 }

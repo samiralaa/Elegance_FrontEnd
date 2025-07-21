@@ -1,7 +1,7 @@
 <template>
   <div class="unit-create-container">
     <el-card class="unit-card">
-      <h2>{{ $t('Units.CreateUnit') }}</h2>
+      <h2>{{ $t('input.unites.add-unit') }}</h2>
 
       <el-form
         :model="form"
@@ -10,18 +10,18 @@
         label-width="120px"
       >
         <!-- Name (EN) -->
-        <el-form-item :label="$t('Units.NameEn')" prop="name_en">
+        <el-form-item :label="$t('input.unites.name-en')" prop="name_en">
           <el-input v-model="form.name_en" />
         </el-form-item>
 
         <!-- Name (AR) -->
-        <el-form-item :label="$t('Units.NameAr')" prop="name_ar">
+        <el-form-item :label="$t('input.unites.name-ar')" prop="name_ar">
           <el-input v-model="form.name_ar" />
         </el-form-item>
 
         <!-- Submit Button -->
         <el-form-item>
-          <el-button type="primary" @click="submitForm">{{ $t('Units.CreateButton') }}</el-button>
+          <el-button type="primary" @click="submitForm">{{ $t('input.unites.create') }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>
