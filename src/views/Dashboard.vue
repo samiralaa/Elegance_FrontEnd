@@ -276,7 +276,7 @@ export default defineComponent({
           totalRevenue.value = parseFloat(response.data.data.this_month_sales || 0)
           totalRevenue.value = parseFloat(response.data.data.converted_total_sales || 0)
 
-          
+
           updateChart()
         }
       } catch (error) {
