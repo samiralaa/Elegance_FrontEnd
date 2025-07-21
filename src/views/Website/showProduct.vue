@@ -1,5 +1,4 @@
 <template>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <Header />
 
   <div class="product-show" :dir="direction">
@@ -165,10 +164,13 @@
       </div>
     </div>
   </div>
+
+  <Footer />
 </template>
 
 <script setup>
 import Header from "@/components/Website/Header.vue";
+import Footer from "@/components/Website/Footer.vue";
 import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
