@@ -20,7 +20,7 @@
       </div>
 
       <!-- Sidebar Filters -->
-      <aside class="sidebar" :class="{ active: isSidebarActive }">
+      <aside ref="sidebarRef" class="sidebar" :class="{ active: isSidebarActive },{ 'fixed-sidebar': isFixed }">
         <div class="sidebar-container">
           <!-- Close Button -->
           <button class="close-btn" @click="toggleSidebar">&times;</button>
@@ -91,7 +91,7 @@
       <div class="overlay" @click="toggleSidebar" v-if="isSidebarActive"></div>
 
       <!-- Product Grid -->
-      <section class="products-grid">
+      <section class="products-grid" :class="{ 'ms-300': isFixed }">
         <div v-for="product in filteredProducts" :key="product.id" class="product-card">
           <div class="image-container mb-3 bg-light rounded">
             <router-link :to="`/read/products/${product.id}`">
@@ -326,6 +326,29 @@ const addToCart = async (product) => {
   }
 }
 
+import { onUnmounted } from 'vue'
+
+const sidebarRef = ref(null)
+const isFixed = ref(false)
+
+const handleScroll = () => {
+  const scrollY = window.scrollY
+  const triggerPoint = 100
+
+  if (sidebarRef.value) {
+    const topOffset = sidebarRef.value.getBoundingClientRect().top + window.scrollY
+    isFixed.value = scrollY >= triggerPoint
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+
 onMounted(() => {
   fetchCategories()
   fetchProducts()
@@ -433,6 +456,11 @@ watch(() => priceRange.value.max, (val) => {
   width: 300px;
   transition: left 0.3s ease-in-out;
   position: relative;
+}
+
+.fixed-sidebar {
+  position: fixed;
+  top: 130px;
 }
 
 .sidebar-container {
@@ -837,5 +865,9 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.ms-300{
+  margin-inline-start: 332px;
 }
 </style>
