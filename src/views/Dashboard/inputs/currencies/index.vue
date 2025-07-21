@@ -1,29 +1,29 @@
 <template>
     <div class="currencies-container">
       <div class="header">
-        <h2>{{ $t('currencies.title') }}</h2>
+        <h2>{{ $t('input.currencies.title') }}</h2>
         <el-button type="primary" :to="'/currencies/create'" tag="router-link">
-          {{ $t('currencies.addNew') }}
+          {{ $t('input.currencies.create') }}
         </el-button>
       </div>
   
       <el-card class="currencies-table">
         <el-table v-loading="loading" :data="currencies" style="width: 100%">
-          <el-table-column prop="name_ar" :label="$t('currencies.nameAr')" min-width="150" />
-          <el-table-column prop="name_en" :label="$t('currencies.nameEn')" min-width="150" />
-          <el-table-column prop="exchange_rate" :label="$t('currencies.exchangeRate')" min-width="120">
+          <el-table-column prop="name_ar" :label="$t('input.currencies.name-ar')" min-width="150" />
+          <el-table-column prop="name_en" :label="$t('input.currencies.name-en')" min-width="150" />
+          <el-table-column prop="exchange_rate" :label="$t('input.currencies.exchangeRate')" min-width="120">
             <template #default="scope">
               {{ parseFloat(scope.row.exchange_rate).toFixed(2) }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('currencies.status')" min-width="100">
+          <el-table-column :label="$t('input.currencies.status.status')" min-width="100">
             <template #default="scope">
               <el-tag :type="scope.row.is_deleted ? 'danger' : 'success'" size="small">
-                {{ scope.row.is_deleted ? $t('currencies.deleted') : $t('currencies.active') }}
+                {{ scope.row.is_deleted ? $t('currencies.deleted') : $t('input.currencies.status.active') }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('common.actions')" min-width="150" fixed="right">
+          <el-table-column :label="$t('input.currencies.action')" min-width="150" fixed="right">
             <template #default="scope">
               <el-button 
                 type="primary" 
@@ -31,7 +31,7 @@
                 @click="handleUpdate(scope.row)"
                 :disabled="scope.row.is_deleted"
               >
-                {{ $t('common.edit') }}
+                {{ $t('input.currencies.update') }}
               </el-button>
               <el-button 
                 type="danger" 
@@ -39,7 +39,7 @@
                 @click="handleDelete(scope.row)"
                 :disabled="scope.row.is_deleted"
               >
-                {{ $t('common.delete') }}
+                {{ $t('input.currencies.delete') }}
               </el-button>
             </template>
           </el-table-column>

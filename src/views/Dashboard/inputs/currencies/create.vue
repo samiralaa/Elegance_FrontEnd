@@ -1,28 +1,28 @@
 <template>
     <div class="currency-create-container">
       <el-card class="currency-card">
-        <h2>{{ $t('currencies.Createcurrency') }}</h2>
+        <h2>{{ $t('input.currencies.add-currency') }}</h2>
   
         <el-form :model="form" ref="formRef" :rules="rules" label-width="120px">
           <!-- Name (EN) -->
-          <el-form-item :label="$t('currencies.NameEn')" prop="name_en">
+          <el-form-item :label="$t('input.currencies.name-en')" prop="name_en">
             <el-input v-model="form.name_en" />
           </el-form-item>
   
           <!-- Name (AR) -->
-          <el-form-item :label="$t('currencies.NameAr')" prop="name_ar">
+          <el-form-item :label="$t('input.currencies.name-ar')" prop="name_ar">
             <el-input v-model="form.name_ar" />
           </el-form-item>
   
           <!-- Exchange Rate -->
-          <el-form-item :label="$t('currencies.exchange_rate')" prop="exchange_rate">
+          <el-form-item :label="$t('input.currencies.exchangeRate')" prop="exchange_rate">
             <el-input v-model="form.exchange_rate" />
           </el-form-item>
   
           <!-- Submit -->
           <el-form-item>
             <el-button type="primary" @click="submitForm">
-              {{ $t('currencies.CreateButton') }}
+              {{ $t('input.currencies.create') }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -37,7 +37,7 @@
   import { ElMessage } from 'element-plus'
   
   const router = useRouter()
-  
+  const lang = localStorage.getItem('lang') || 'en'
   const formRef = ref(null)
   
   const form = ref({
@@ -47,11 +47,11 @@
   })
   
   const rules = {
-    name_en: [{ required: true, message: 'Please input currency name (EN)', trigger: 'blur' }],
-    name_ar: [{ required: true, message: 'Please input currency name (AR)', trigger: 'blur' }],
+    name_en: [{ required: true, message: lang==='en' ?'Please input currency name (EN)':"من فضلك ادخل سعر العملة بالانجليزي", trigger: 'blur' }],
+    name_ar: [{ required: true, message:  lang==='en' ?'Please input currency name (AR)':"من فضلك ادخل سعر العملة بالعربي", trigger: 'blur' }],
     exchange_rate: [
-      { required: true, message: 'Please input exchange rate', trigger: 'blur' },
-      { pattern: /^\d+(\.\d{1,2})?$/, message: 'Exchange rate must be a valid number', trigger: 'blur' }
+      { required: true, message:lang=== 'en'? 'Please input exchange rate':'من فضلك ادخل سعر الصرف', trigger: 'blur' },
+      { pattern: /^\d+(\.\d{1,2})?$/, message: lang=== 'en'?'Exchange rate must be a valid number':'سعر الصرف يجب ان يكون رقم صحيح', trigger: 'blur' }
     ]
   }
   
