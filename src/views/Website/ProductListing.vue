@@ -456,11 +456,20 @@ watch(() => priceRange.value.max, (val) => {
   width: 300px;
   transition: left 0.3s ease-in-out;
   position: relative;
+  height: calc(100vh - 130px);
+  overflow-y: auto;
 }
 
-.fixed-sidebar {
-  position: fixed;
-  top: 130px;
+@media (min-width: 768px) {
+  .fixed-sidebar {
+    position: fixed;
+    top: 130px;
+  }
+  
+  
+  .ms-300{
+    margin-inline-start: 332px;
+  }
 }
 
 .sidebar-container {
@@ -867,7 +876,4 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-.ms-300{
-  margin-inline-start: 332px;
-}
 </style>
