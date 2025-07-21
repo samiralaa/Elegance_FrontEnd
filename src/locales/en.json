@@ -28,7 +28,7 @@
   "Brands": {
     "AddBrands": "Add New Brand",
     "Management": "Brands Management",
-    "Logo": "Logo",
+    "Logo": "Brand Logo",
     "NameAr": "Name (AR)",
     "NameEn": "Name (EN)",
     "DescriptionAr": "Description (AR)",
@@ -55,7 +55,7 @@
     "nameAr": "Brand Name (Arabic)",
     "description": "Description",
     "descriptionAr": "Description (Arabic)",
-    "logo": "Logo",
+  
     "products": "Products",
     "deleteConfirm": "Are you sure you want to delete this brand?",
     "deleteSuccess": "Brand deleted successfully",
@@ -269,7 +269,18 @@
     "No": "No",
     "DeletedSuccessfully": "Product deleted successfullyca",
     "addedSussess": "Product added successfully",
-    "NA": "N/A"
+    "NA": "N/A",
+    "brand": "Brand",
+    "BrandPlaceholder": "Select Brand",
+    "Needs-Amount": "Needs Amount ?",
+    "Amount-Info": "Amount Info",
+    "Unit": "Unit",
+    "Weight": "Weight",
+      "select-unit": "Select Unit",
+    "select-weight": "Select Weight",
+    "select-price": "Select Price"
+
+
   },
   
   "Footer": {
@@ -306,6 +317,8 @@
   "orders" : {
     "myOrders" : "My Orders",
     "selectOrder" : "Select Order",
+    "Search-orders" : "Search Orders...",
+    "Filter-by-Status" : "Filter by Status",
     "allOrders" : "All Orders",
     "inProgress" : "In Progress",
     "completed" : "Completed",
@@ -314,12 +327,15 @@
     "size": "Size",
     "orderDate" : "Date",
     "total" : "Total",
+    "price": "Price",
     "status" : "Status",
+    "Subtotal": "Subtotal",
     "actions" : "Actions",
     "filterByStatus" : "Status",
     "searchPlaceholder" : "Search...",
     "orderDetails" : "Order Details",
     "details": "Details",
+    "quantity": "Quantity",
     "noOrder": "No orders found"
   },
   
@@ -762,14 +778,19 @@
   },
   "customers":{
     "title": "Customers",
-    "addCustomer": "Add Customer",
+    "addCustomer": "Create New Users",
+    "refrech": "Refresh",
     "editCustomer": "Edit Customer",
+    "deleteCustomer": "Delete Customer",
+    "customer-id": "ID",
+    "role": "Role",
     "name": "Name",
     "email": "Email",
     "phone": "Phone",
     "address": "Address",
     "city": "City",
     "country": "Country",
+    "Created-At": "Created At",
     "status": "Status",
     "actions": "Actions",
     "deleteConfirm": "Are you sure you want to delete this customer?",
@@ -784,8 +805,22 @@
       "addressRequired": "Address is required",
       "cityRequired": "City is required",
       "countryRequired": "Country is required"
-    }
-    
+    },
+    "Enter-name": "Enter customer name",
+    "Enter-email": "Enter customer email",
+    "Enter-phone": "Enter customer phone number",
+    "Enter-role": "Select role",
+    "Enter-address": "Select country",
+    "Enter-password": "Enter password",
+    "Enter-comfirmPassword": "Confirm password",
+
+    "admin": "Admin",
+    "user": "User",
+    "manager": "Manager",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "cancel": "Cancel",
+    "create": "Create"
 
 
   }

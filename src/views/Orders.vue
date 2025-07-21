@@ -3,7 +3,7 @@
     <!-- Header: Title & Search -->
     <div class="orders-header">
       <h2>{{ $t('orders.myOrders') }}</h2>
-      <el-input v-model="searchQuery" placeholder="Search orders..." class="search-input" clearable>
+      <el-input v-model="searchQuery" :placeholder="$t('orders.Search-orders') " class="search-input" clearable>
         <template #prefix>
           <el-icon>
             <Search />
@@ -14,32 +14,32 @@
 
     <!-- Filter Dropdown -->
     <div class="orders-filters">
-      <el-select v-model="statusFilter" placeholder="Filter by Status" clearable>
+      <el-select v-model="statusFilter" :placeholder="$t('orders.Filter-by-Status')" clearable>
         <el-option v-for="status in orderStatuses" :key="status" :label="status" :value="status" />
       </el-select>
     </div>
 
     <!-- Orders Table -->
     <el-table v-loading="loading" :data="paginatedOrders" style="width: 100%" class="orders-table" stripe border>
-      <el-table-column prop="id" label="Order ID" width="120" />
-      <el-table-column prop="ordered_at" label="Order Date" width="180">
+      <el-table-column prop="id" :label="$t('orders.orderId')" width="120" />
+      <el-table-column prop="ordered_at" :label="$t('orders.orderDate')" width="180">
         <template #default="scope">
           {{ formatDate(scope.row.ordered_at) }}
         </template>
       </el-table-column>
-      <el-table-column label="Total" width="150">
+      <el-table-column :label="$t('orders.total')" width="150">
         <template #default="scope">
           {{ scope.row.currency }} {{ scope.row.total_price }}
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="Status" width="150">
+      <el-table-column prop="status" :label="$t('orders.status')" width="150">
         <template #default="scope">
           <el-tag :type="getStatusType(scope.row.status)">
             {{ scope.row.status }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" width="220">
+      <el-table-column :label="$t('orders.actions')" width="220">
         <template #default="scope">
           <el-button size="small" type="primary" @click="viewOrder(scope.row)" circle>
             <el-icon>
@@ -68,16 +68,16 @@
       @current-change="handlePageChange" />
 
     <!-- Order Details Dialog -->
-    <el-dialog v-model="showDetails" title="Order Details" width="600px">
+    <el-dialog v-model="showDetails" :title="$t('orders.orderDetails')" width="600px">
       <el-table v-if="selectedOrder" :data="selectedOrder.items" border stripe style="width: 100%">
-        <el-table-column prop="product_id" label="Product ID" />
-        <el-table-column prop="quantity" label="Quantity" />
-        <el-table-column prop="price" label="Price">
+        <el-table-column prop="product_id" :label="$t('orders.orderId')" />
+        <el-table-column prop="quantity" :label="$t('orders.quantity')" />
+        <el-table-column prop="price" :label="$t('orders.price')">
           <template #default="scope">
             ${{ scope.row.price }}
           </template>
         </el-table-column>
-        <el-table-column prop="subtotal" label="Subtotal">
+        <el-table-column prop="subtotal" :label="$t('orders.Subtotal')">
           <template #default="scope">
             {{ scope.row.subtotal }}
           </template>

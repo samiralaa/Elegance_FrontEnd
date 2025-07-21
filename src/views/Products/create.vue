@@ -20,26 +20,26 @@
         </el-form-item>
 
         <!-- Manual toggle for amount -->
-        <el-form-item label="Needs Amount?">
+        <el-form-item :label=" $t('Products.Needs-Amount')" prop="amountRequired">
           <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
         </el-form-item>
 
         <!-- Show amount fields conditionally -->
         <template v-if="amountRequired">
-          <el-divider content-position="left">Amount Info</el-divider>
+          <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
 
-          <el-form-item label="Unit">
-            <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
+          <el-form-item :label="$t('Products.Unit')" >
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
-          <el-form-item label="Weight">
-            <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
+          <el-form-item :label="$t('Products.Weight')">
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
           </el-form-item>
 
-          <el-form-item label="Price">
-            <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
+          <el-form-item :label="$t('Products.Price')" >
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
           </el-form-item>
         </template>
 
@@ -66,8 +66,8 @@
         </el-form-item>
 
         <!-- Add after category select -->
-        <el-form-item label="Brand" prop="brand_id">
-          <el-select v-model="form.brand_id" placeholder="Select Brand" filterable clearable>
+        <el-form-item :label="$t('Products.brand')" prop="brand_id">
+          <el-select v-model="form.brand_id" :placeholder="$t('Products.BrandPlaceholder')" filterable clearable>
             <el-option
               v-for="brand in brands"
               :key="brand.id"
@@ -147,7 +147,7 @@ const amountForm = ref({
   weight: null,
   price: null,
 })
-
+const lang = localStorage.getItem('lang') || 'en'
 const amountRequired = ref(false)
 const fileList = ref([])
 const categories = ref([])
@@ -158,12 +158,12 @@ const units = ref([])
 const brands = ref([])
 
 const rules = {
-  name_en: [{ required: true, message: 'Please input product name (EN)', trigger: 'blur' }],
-  price: [{ required: true, message: 'Please input product price', trigger: 'blur' }],
-  category_id: [{ required: true, message: 'Please select a category', trigger: 'change' }],
-  currency_id: [{ required: true, message: 'Please select a currency', trigger: 'change' }],
-  country_id: [{ required: true, message: 'Please select a country', trigger: 'change' }],
-  brand_id: [{ required: true, message: 'Please select a brand', trigger: 'change' }], // Add validation
+  name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }, { min: 3, message: 'Product name must be at least 3 characters', trigger: 'blur' }],
+  price: [{ required: true, message:lang === 'en' ? 'Please input product price':"من فضلك ادخل سعر المنتج", trigger: 'blur' }, { type: 'number', message: 'Please input product price', trigger: 'blur' }],
+  category_id: [{ required: true, message:lang === 'en' ? 'Please select a category': 'من فضلك اختر فئة', trigger: 'change' }],
+  currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency': 'من فضلك اختر عملة', trigger: 'change' }],
+  country_id: [{ required: true, message:lang === 'en' ? 'Please select a country': 'من فضلك اختر دولة ', trigger: 'change' }],
+  brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand': 'من فضلك اختر براند', trigger: 'change' }], // Add validation
 }
 
 const BASE_URL = 'https://backend.webenia.org'
