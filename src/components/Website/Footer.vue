@@ -3,12 +3,11 @@
     <div class="container">
       <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.DownloadApp') }}</h3>
-        <div class="app-links d-flex justify-content-start align-items-center">
+        <div class="app-links d-flex justify-content-center align-items-center">
           <div class="d-flex flex-column justify-content-center align-items-center">
             <a href=""><img src="@/assets/images/app-store.png" :alt="$t('Footer.AppStore')" /></a>
             <a href=""><img src="@/assets/images/google-play.png" :alt="$t('Footer.GooglePlay')" /></a>
           </div>
-          <img src="@/assets/images/qr-code.png" alt="QR Code" />
         </div>
       </div>
       <div class="footer-section col-12 col-lg-3 col-sm-6">
@@ -50,9 +49,7 @@
         <h6>{{ $t('Footer.AcceptFor') }}</h6>
         <div class="payment-methods pb-2 ps-2">
           <img src="@/assets/images/payment/cart-5.png" alt="Visa" />
-          <img src="@/assets/images/payment/cart-4.png" alt="Apple Pay" />
           <img src="@/assets/images/payment/cart-2.png" alt="Mastercard" />
-          <img src="@/assets/images/payment/cart-3.png" alt="PayPal" />
           <img src="@/assets/images/payment/cart-1.png" alt="Tabby" />
         </div>
       </div>
@@ -284,13 +281,17 @@ const isAuthenticated = () => {
   .footer-bottom {
     padding: 0;
   }
+
+  .app-links {
+    justify-content: start !important;
+  }
 }
 
 @media (max-width: 768px) {
   .footer-bottom {
     flex-direction: column;
   }
-
+  
   .app-links img {
     max-width: 100px;
     padding: 5px 0;
@@ -301,7 +302,7 @@ const isAuthenticated = () => {
   .footer-section {
     margin-bottom: 20px;
   }
-
+    
   .footer-section ul {
     text-align: center;
     align-items: center;
