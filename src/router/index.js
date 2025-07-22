@@ -48,8 +48,8 @@ const routes = [
   },
   {
     path: '/contact',
-    name: 'contact',
-    component: () => import('../views/Website/ContactUs.vue'),
+    name: 'Contact',
+    component: () => import('@/views/Contact.vue')
   },
   {
     path: '/dashboard',
