@@ -279,7 +279,6 @@
     "No": "لا",
     "DeletedSuccessfully": "تم حذف المنتج بنجاح",
     "NA": "غير متاح",
-<<<<<<< HEAD
     "AddDiscount": "إضافة خصم",
     "brand": "العلامة التجارية",
     "BrandPlaceholder": "اختر العلامة التجارية",
@@ -319,8 +318,7 @@
     "duration_days_placeholder": "أدخل عدد الأيام",
     "discount_value": "قيمة الخصم",
     "discount_value_placeholder": "أدخل قيمة الخصم",
-    "is_active": "نشط؟"
-=======
+    "is_active": "نشط؟",
     "CreateProduct": "إنشاء منتج",
     
     "Category": "التصنيف",
@@ -362,7 +360,6 @@
     "Is-Active": "نشط",
     "End-Date": "تاريخ الانتهاء",
     "Select-end-date": "اختر تاريخ الانتهاء"
->>>>>>> mostafa
   },
 
   "Footer": {
@@ -902,29 +899,6 @@
       "cityRequired": "المدينة مطلوبة",
       "countryRequired": "الدولة مطلوبة"
     },
-<<<<<<< HEAD
-=======
-     "Enter-name": "أدخل اسم العميل",
-    "Enter-email": "أدخل بريد العميل الإلكتروني",
-    "Enter-phone": "أدخل رقم هاتف العميل",
-    "Enter-role": "أدخل دور العميل",
-    "Enter-address": "أدخل عنوان العميل",
-    "Enter-password": "أدخل كلمة المرور",
-    "Enter-comfirmPassword": "أدخل تأكيد كلمة المرور",
-    "admin": "مدير",
-    "user": "مستخدم",
-    "manager": "مدير",
-    "password": "كلمة المرور",
-    "confirmPassword": "تأكيد كلمة المرور",
-    "cancel": "إلغاء",
-    "create": "إنشاء عميل"
-
-
-
-
-    
-
->>>>>>> mostafa
 
     "Enter-name": "أدخل اسم العميل",
     "Enter-email": "أدخل بريد العميل الإلكتروني",
