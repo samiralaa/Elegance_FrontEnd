@@ -1,8 +1,8 @@
 <template>
-  <div class="dashboard">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <el-card class="summary-card">
+  <div class="dashboard d-flex flex-wrap flex-grow-1 container-fluid px-2 px-md-4">
+    <el-row :gutter="20" class="row w-100 g-3">
+      <el-col :span="6" :xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.Total-Revenue') }}</span>
@@ -21,8 +21,8 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
+      <el-col :span="6":xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.total-Orders') }}</span>
@@ -34,8 +34,8 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
+      <el-col :span="6":xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.total-Customers') }}</span>
@@ -47,8 +47,8 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
+      <el-col :span="6":xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.total-Products') }}</span>
@@ -62,9 +62,9 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" class="chart-row">
-      <el-col :span="12">
-        <el-card>
+    <el-row :gutter="20" class="chart-row row w-100 mt-3">
+      <el-col :span="12" :xs="24" :md="12">
+        <el-card class="h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.Sales-Overview') }}</span>
@@ -89,14 +89,14 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12">
-        <el-card>
+      <el-col :span="12" :xs="24" :md="12">
+        <el-card class="h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.recent-Orders') }}</span>
             </div>
           </template>
-          <el-table :data="orders" style="width: 100%">
+          <el-table :data="orders" style="width: 100%"  class="table-responsive" >
             <el-table-column prop="id" :label="$t('dashboard.Order-Id')" width="100" />
             <el-table-column :label="$t('dashboard.customer')">
               <template #default="{ row }">
@@ -443,4 +443,10 @@ export default defineComponent({
   margin-top: 20px;
   width: 100%;
 }
+<<<<<<< HEAD
+=======
+.table-responsive {
+  overflow-x: auto;
+}
+>>>>>>> mostafa
 </style>
