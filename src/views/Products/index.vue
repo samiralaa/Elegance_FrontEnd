@@ -55,26 +55,28 @@
       </el-card>
 
       <!-- Add Amount Dialog -->
-      <el-dialog v-model="showAmountDialog" title="Add Product Amount" width="500px">
+      <el-dialog v-model="showAmountDialog" :title="$t('Products.AddProductAmount')" width="500px">
         <el-form :model="amountForm" label-width="100px">
-          <el-form-item label="Unit">
-            <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
+          <el-form-item :label="$t('Products.Unit')">
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')">
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
-          <el-form-item label="Weight">
-            <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
+          <el-form-item :label="$t('Products.Weight')">
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
           </el-form-item>
 
-          <el-form-item label="Price">
-            <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
+          <el-form-item :label="$t('Products.Price')">
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
           </el-form-item>
         </el-form>
 
         <template #footer>
-          <el-button @click="showAmountDialog = false">Cancel</el-button>
-          <el-button type="primary" @click="submitAmount">Submit</el-button>
+          <div class="dialog-footer">
+            <el-button @click="showAmountDialog = false">{{ $t('common.cancel') }}</el-button>
+            <el-button type="primary" @click="submitAmount">{{ $t('common.submit') }}</el-button>
+          </div>
         </template>
       </el-dialog>
 
@@ -398,7 +400,7 @@ onMounted(() => {
 .el-button {
   transition: all 0.2s ease-in-out;
   font-weight: 500;
-  border-radius: 8px;
+  border-radius: 8px !important;
   white-space: nowrap;
 }
 
@@ -519,4 +521,21 @@ onMounted(() => {
     }
   }
 }
+
+::v-deep(.el-form-item__label){
+  text-align: start;
+  justify-content:flex-start;
+  width: 170px !important;
+}
+
+[dir="rtl"] .el-switch{
+  flex-direction: row-reverse;
+}
+
+.el-dialog__footer{
+  justify-content: end;
+  display: flex;
+  gap: 12px;
+}
+
 </style>

@@ -1,5 +1,4 @@
 {
-  
   "header": {
     "joinUs": "Join Us",
     "login": "Login",
@@ -55,7 +54,6 @@
     "nameAr": "Brand Name (Arabic)",
     "description": "Description",
     "descriptionAr": "Description (Arabic)",
-  
     "products": "Products",
     "deleteConfirm": "Are you sure you want to delete this brand?",
     "deleteSuccess": "Brand deleted successfully",
@@ -113,6 +111,7 @@
     "no": "No",
     "ltr": "LTR",
     "rtl": "RTL",
+    "submit": "Submit",
 
     "languages": {
       "english": "English",
@@ -215,7 +214,6 @@
     "Actions": "Actions",
     "Selected-Brand": "Selected Brand ID",
     "Image": "Image",
-    
     "Status": "Status",
     "Products": "Products",
     "description": "Description",
@@ -269,24 +267,21 @@
     "Warning": "Warning",
     "Yes": "Yes",
     "No": "No",
-
     "DeletedSuccessfully": "Product deleted successfully",
     "NA": "N/A",
     "AddDiscount": "Add Discount",
-
-   
-    "addedSussess": "Product added successfully",
-
-    
     "brand": "Brand",
     "BrandPlaceholder": "Select Brand",
     "Needs-Amount": "Needs Amount ?",
     "Amount-Info": "Amount Info",
     "Unit": "Unit",
     "Weight": "Weight",
-      "select-unit": "Select Unit",
+    "select-unit": "Select Unit",
     "select-weight": "Select Weight",
-    "select-price": "Select Price"
+    "select-price": "Select Price",
+    "EditProduct": "Edit Product",
+    "UpdateButton": "Update Product",
+    "AddProductAmount": "Add Product Amount"
   },
 
   "General": {
@@ -300,7 +295,7 @@
     "EnterWeight": "Enter weight",
     "EnterPrice": "Enter price"
   },
-
+  
   "add.amount": "Add Amount",
 
   "Validation": {
@@ -311,7 +306,6 @@
     "SelectCountry": "Please select a country",
     "SelectBrand": "Please select a brand"
   },
-
   
   "Footer": {
     "DownloadApp": "Download App",
@@ -418,7 +412,7 @@
     "go-home": "Go to Home"
   },
   
-    "register": {
+  "register": {
     "confirmPasswordPlaceholder" : "Confirm Password",
     "country": "Country",
     "countryPlaceholder": "Select Country",
@@ -443,7 +437,6 @@
       "phoneLength": "Phone number must be at least 7 digits",
       "passwordMinLength": "Password must be at least 8 characters"
     }
-
   },
 
   "about": {
@@ -465,16 +458,19 @@
     "sending": "Sending...",
     "successMessage": "Your message has been sent successfully. Thank you for contacting us!",
     "errorMessage": "An error occurred while sending the message. Please try again.",
+
     "ourStore": {
       "title": "Our Store",
       "address1": "37 Kwar St - Al Nahyan - E20-02 ",
       "address2": "Abu Dhabi - United Arab Emirates"
     },
+
     "workingHours": {
       "title": "Working Hours",
       "from": "From",
       "to": "To"
     },
+
     "mapTitle": "We are always ready to assist you and answer any questions you may have.",
     "nameRequired": "Name is required",
     "emailRequired": "Email is required",
@@ -486,7 +482,6 @@
     "messagePlaceholder": "Enter your message"
   },
 
-  
   "products": {
     "title": "Explore All Products",
     "price": "Price",
@@ -530,12 +525,12 @@
     "close": "Close",
     "loading": "Loading..."
   },
+
   "favorite_removed": "Product removed from favorites",
   "favorite_added": "Product added to favorites",
   "login_required_favorite": "Login required to favorite product",
   "success": "Success",
   "error": "Error",
-  
 
   "profile": {
     "loading": "Loading...",
@@ -627,76 +622,79 @@
   "refundPlice":{
     "REFUNDPOLICY": "Refund Policy",
     "description": "We strive to provide our customers with the highest quality oud and perfumes. However, we understand that there may be instances where a refund is necessary. Please take a moment to review our refund policy for oud and perfumes:",
+    
     "ELIGIBILITY":{
       "ELIGIBILITY-FOR-REFUND": "ELIGIBILITY FOR REFUND",
       "sub1":"Refunds will only be considered for unopened and unused oud and perfume products.",
       "sub2":"The original proof of purchase, such as a receipt or invoice, is required for all refund requests."
     },
+
     "TIMEFRAME":{
       "TIMEFRAME-FOR-REFUND": "TIMEFRAME FOR REFUND:",
       "sub1":"Refund requests must be made within 14 days from the date of purchase.",
       "sub2":"After the 14-day period, we are unable to process any refund requests."
     },
+
     "NON-REFUNDABLE-ITEMS": {
       "NON-REFUNDABLE-ITEMS": "NON-REFUNDABLE ITEMS:",
       "sub1":"Due to hygiene reasons, opened or used oud and perfume products cannot be refunded.",
       "sub2":"Gift cards or vouchers issued by Elegance Oud are non-refundable and cannot be exchanged for cash."
     },
+
     "STORE-CREDIT": {
       "STORE-CREDIT": "STORE CREDIT:",
       "sub1":"In certain cases where a refund is not possible, we may offer store credit as an alternative.",
       "sub2":"Store credit can be used for future purchases at Elegance Oud and will be issued in the form of a gift card or voucher."
     }
-    
-  }
-,
-  "terms": {
-  "title": "TERMS OF SERVICE",
-  "general-title": "GENERAL TERMS",
-  "modification":"modification: ",
-  "general-modification": "We reserve the right to modify or update these terms at any time without prior notice. You are responsible for reviewing the terms periodically. Your continued use of our store after any modifications constitutes acceptance of those changes.",
-  "usage-title": "STORE USAGE",
-  "Product-information": "Product Information",
-  "usage-productInformation": "We strive to provide accurate and up-to-date information about our products, including descriptions, prices, and availability.",
-  "Purchases": "Purchases",
-  "usage-purchases": "By making a purchase through our store, you agree to provide accurate, complete, and current information. You are solely responsible for the accuracy of the information provided. We reserve the right to refuse or cancel any order if we suspect fraudulent activity or for any other reason deemed necessary.",
-  "Pricing": "Pricing: ",
-  "usage-pricing": "All prices displayed on our store are in the specified currency and are subject to change without notice. We make every effort to ensure accurate pricing, but in the event of an error, we reserve the right to correct it and refuse or cancel any affected orders.",
-  "Availability": "Product Availability: ",
-  "usage-availability": "Product availability is subject to change without notice. We make every effort to maintain accurate stock levels, but we cannot guarantee the availability of any product. If a product becomes unavailable after you place an order, we will notify you and provide alternatives or a refund.",
-  "shipping-title": "SHIPPING AND DELIVERY",
-  "Shipping": "Shipping: ",
-  "shipping-shipping": "We offer shipping services to specified locations. Shipping fees and estimated delivery times are provided during the checkout process. Please review our shipping policy for more information.",
-  "Customs": "Customs and Duties: ",
-  "shipping-customs": "International orders may be subject to customs fees, import duties, and taxes imposed by the destination country. These charges are the responsibility of the recipient. We recommend checking with your local customs office for more information before placing an international order.",
-  "Delivery": "Delivery: ",
-  "shipping-delivery": "We will make reasonable efforts to deliver your purchased products within the specified timeframe. However, delivery times are estimates and are subject to various factors beyond our control. We are not liable for any delays or damages arising from the delivery process.",
-  "Returns": "RETURNS AND EXCHANGES: ",
-  "shipping-returns": "We accept returns or exchanges of unused, unopened products within a specified period, subject to our Return Policy. You are responsible for any return shipping costs unless the return is due to our error or a defective product. We reserve the right to refuse returns or exchanges based on our discretion.",
-  "usage-oud-title": "Oud and Perfume Usage",
-  "Fragrance": "Fragrance Testing: ",
-  "usage-oud-testing": "We recommend testing perfumes and oud products on a small area of skin before applying them widely to ensure compatibility and to check for any allergic reactions. We are not responsible for any adverse reactions resulting from the use of our products.",
-  "Variations": "Product Variations: ",
-  "usage-oud-variations": "Oud and perfume products may vary in scent, color, and packaging due to natural variations and manufacturing processes. We strive to provide accurate representations of our products, but such variations are normal and do not constitute defects.",
-  "intellectualProperty-title": "Intellectual Property",
-  "Ownership": "Ownership: ",
-  "intellectualProperty-ownership": "All content and materials on our store, including text, graphics, logos, images, product descriptions, and trademarks, are the property of their respective owners, including us. You are not granted any rights or licenses to use our intellectual property without our prior written consent.",
-  "limitation-title": "Limitation of Liability",
-  "Disclaimer": "Disclaimer: ",
-  "limitation-disclaimer": "Our store is provided on an \"as is\" and \"as available\" basis without any warranties, express or implied. We do not guarantee that our store will be error-free, uninterrupted, or free from viruses or other harmful components. You use our store at your own risk.",
-  "Liability": "Limitation of Liability: ",
-  "limitation-limitation": "To the maximum extent permitted by law, we shall not be liable for any direct, indirect, incidental, consequential, or special damages arising out of or in connection with your use of our store, including but not limited to damages for loss of profits, goodwill, data, or other intangible losses.",
-  "endNote": "Thank you for reviewing our Terms and Conditions. If you have any questions or concerns, please contact us for further assistance."
   },
 
+  "terms": {
+    "title": "TERMS OF SERVICE",
+    "general-title": "GENERAL TERMS",
+    "modification":"modification: ",
+    "general-modification": "We reserve the right to modify or update these terms at any time without prior notice. You are responsible for reviewing the terms periodically. Your continued use of our store after any modifications constitutes acceptance of those changes.",
+    "usage-title": "STORE USAGE",
+    "Product-information": "Product Information",
+    "usage-productInformation": "We strive to provide accurate and up-to-date information about our products, including descriptions, prices, and availability.",
+    "Purchases": "Purchases",
+    "usage-purchases": "By making a purchase through our store, you agree to provide accurate, complete, and current information. You are solely responsible for the accuracy of the information provided. We reserve the right to refuse or cancel any order if we suspect fraudulent activity or for any other reason deemed necessary.",
+    "Pricing": "Pricing: ",
+    "usage-pricing": "All prices displayed on our store are in the specified currency and are subject to change without notice. We make every effort to ensure accurate pricing, but in the event of an error, we reserve the right to correct it and refuse or cancel any affected orders.",
+    "Availability": "Product Availability: ",
+    "usage-availability": "Product availability is subject to change without notice. We make every effort to maintain accurate stock levels, but we cannot guarantee the availability of any product. If a product becomes unavailable after you place an order, we will notify you and provide alternatives or a refund.",
+    "shipping-title": "SHIPPING AND DELIVERY",
+    "Shipping": "Shipping: ",
+    "shipping-shipping": "We offer shipping services to specified locations. Shipping fees and estimated delivery times are provided during the checkout process. Please review our shipping policy for more information.",
+    "Customs": "Customs and Duties: ",
+    "shipping-customs": "International orders may be subject to customs fees, import duties, and taxes imposed by the destination country. These charges are the responsibility of the recipient. We recommend checking with your local customs office for more information before placing an international order.",
+    "Delivery": "Delivery: ",
+    "shipping-delivery": "We will make reasonable efforts to deliver your purchased products within the specified timeframe. However, delivery times are estimates and are subject to various factors beyond our control. We are not liable for any delays or damages arising from the delivery process.",
+    "Returns": "RETURNS AND EXCHANGES: ",
+    "shipping-returns": "We accept returns or exchanges of unused, unopened products within a specified period, subject to our Return Policy. You are responsible for any return shipping costs unless the return is due to our error or a defective product. We reserve the right to refuse returns or exchanges based on our discretion.",
+    "usage-oud-title": "Oud and Perfume Usage",
+    "Fragrance": "Fragrance Testing: ",
+    "usage-oud-testing": "We recommend testing perfumes and oud products on a small area of skin before applying them widely to ensure compatibility and to check for any allergic reactions. We are not responsible for any adverse reactions resulting from the use of our products.",
+    "Variations": "Product Variations: ",
+    "usage-oud-variations": "Oud and perfume products may vary in scent, color, and packaging due to natural variations and manufacturing processes. We strive to provide accurate representations of our products, but such variations are normal and do not constitute defects.",
+    "intellectualProperty-title": "Intellectual Property",
+    "Ownership": "Ownership: ",
+    "intellectualProperty-ownership": "All content and materials on our store, including text, graphics, logos, images, product descriptions, and trademarks, are the property of their respective owners, including us. You are not granted any rights or licenses to use our intellectual property without our prior written consent.",
+    "limitation-title": "Limitation of Liability",
+    "Disclaimer": "Disclaimer: ",
+    "limitation-disclaimer": "Our store is provided on an \"as is\" and \"as available\" basis without any warranties, express or implied. We do not guarantee that our store will be error-free, uninterrupted, or free from viruses or other harmful components. You use our store at your own risk.",
+    "Liability": "Limitation of Liability: ",
+    "limitation-limitation": "To the maximum extent permitted by law, we shall not be liable for any direct, indirect, incidental, consequential, or special damages arising out of or in connection with your use of our store, including but not limited to damages for loss of profits, goodwill, data, or other intangible losses.",
+    "endNote": "Thank you for reviewing our Terms and Conditions. If you have any questions or concerns, please contact us for further assistance."
+  },
 
-
-   "privacyPolicy": {
+  "privacyPolicy": {
     "title": "Privacy Policy",
     "intro": "We are committed to protecting the privacy and security of our customers' personal information. This Privacy Policy outlines how we collect, use, disclose, and protect the information you provide while using our website or interacting with us. By accessing our website or providing your personal information, you agree to the terms of this Privacy Policy.",
+    
     "sections": {
       "informationWeCollect": {
         "title": "Information We Collect:",
+
         "content": [
           "Contact information (such as name, email address, phone number, and shipping address).",
           "Payment information (such as credit card details or other payment method information).",
@@ -705,8 +703,10 @@
           "Information related to your purchases, browsing behavior, and interactions with our website."
         ]
       },
+
       "useOfPersonalInformation": {
         "title": " Use of Personal Information:",
+
         "content": [
           "Process and fulfill your orders, including shipping and delivery.",
           "Provide customer support and respond to your inquiries, requests, or comments.",
@@ -716,58 +716,69 @@
           "Comply with legal obligations and prevent fraudulent activities."
         ]
       },
+
       "sharingInformation": {
         "title": " Sharing of Personal Information:",
+
         "content": [
           "Service Providers: We may engage trusted third-party service providers to perform certain functions on our behalf, such as payment processing, shipping, or marketing.",
           "Legal Compliance: We may disclose personal information to comply with applicable laws, regulations, legal processes, or enforceable governmental requests.",
           "Business Transfers: In the event of a merger, acquisition, or sale of our business assets, personal information may be transferred as part of the transaction."
         ]
       },
+
       "security": {
         "title": "Data Security:",
         "content": "We implement reasonable security measures to protect your personal information from unauthorized access, use, or disclosure..."
       },
+
       "cookies": {
         "title": "Cookies and Tracking Technologies:",
         "content": "We use cookies and similar tracking technologies to enhance your browsing experience..."
       },
+
       "thirdParty": {
         "title": "Third-Party Websites:",
         "content": "Our website may contain links to third-party websites or services..."
       },
+      
       "children": {
         "title": "Children's Privacy:",
         "content": "Our website and services are not intended for individuals under the age of 16..."
       },
+      
       "rights": {
         "title": "Your Rights:",
         "content": "You have the right to access, update, and correct your personal information..."
       },
+      
       "changes": {
         "title": "Changes to the Privacy Policy:",
         "content": "We reserve the right to update or modify this Privacy Policy at any time..."
       },
+      
       "contact": {
         "title": "Contact Us:",
         "content": "If you have any questions, concerns, or requests regarding this Privacy Policy..."
       }
     },
+
     "consent": "By using our website or providing your personal information, you signify your consent to the terms of this Privacy Policy."
   },
+
   "discount": {
-    "add_discount": "Add Product Discount",
+    "add_discount": "Add Discount",
     "start_date": "Start Date",
-    "start_date_placeholder": "Select start date",
+    "start_date_placeholder": "Pick a start date",
+    "end_date": "End Date",
+    "end_date_placeholder": "Pick an end date",
     "duration_days": "Duration (days)",
     "duration_days_placeholder": "Enter duration in days",
-    "discount_value": "Discount Value (%)",
-    "discount_value_placeholder": "Enter discount percentage",
-    "is_active": "Is Active",
-    "end_date": "End Date",
-    "end_date_placeholder": "Select end date"
-  }
-,
+    "discount_value": "Discount Value",
+    "discount_value_placeholder": "Enter discount value",
+    "is_active": "Is Active?"
+  },
+
   "dashboard":{ 
     "Total-Revenue": "Total Revenue",
     "total-Orders": "Total Orders",
@@ -786,6 +797,7 @@
     "orders": "Orders",
     "sales": "Sales"
   },
+
   "input":{
     "unites":{
       "Units-List": "Units List",
@@ -798,6 +810,7 @@
       "create": "Create Unit",
       "Please-input-unit": "Please input unit name (EN)"
     },
+
     "currencies":{
       "title": "Currencies",
       "name-ar": "Name (AR)",
@@ -818,6 +831,7 @@
       }
     }
   },
+
   "customers":{
     "title": "Customers",
     "addCustomer": "Create New Users",
@@ -839,6 +853,7 @@
     "deleteSuccess": "Customer deleted successfully",
     "updateSuccess": "Customer updated successfully",
     "createSuccess": "Customer created successfully",
+
     "validation": {
       "nameRequired": "Customer name is required",
       "emailRequired": "Email is required",
@@ -848,6 +863,7 @@
       "cityRequired": "City is required",
       "countryRequired": "Country is required"
     },
+
     "Enter-name": "Enter customer name",
     "Enter-email": "Enter customer email",
     "Enter-phone": "Enter customer phone number",
@@ -855,7 +871,6 @@
     "Enter-address": "Select country",
     "Enter-password": "Enter password",
     "Enter-comfirmPassword": "Confirm password",
-
     "admin": "Admin",
     "user": "User",
     "manager": "Manager",
@@ -863,11 +878,5 @@
     "confirmPassword": "Confirm Password",
     "cancel": "Cancel",
     "create": "Create"
-
-
   }
- 
-
-
-
 }
