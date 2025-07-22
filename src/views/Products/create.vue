@@ -149,7 +149,7 @@ const amountForm = ref({
   weight: null,
   price: null,
 })
-
+const lang = localStorage.getItem('lang') || 'en'
 const amountRequired = ref(false)
 const fileList = ref([])
 const categories = ref([])
@@ -169,6 +169,7 @@ const brands = ref([])
 // }
 
 const rules = {
+<<<<<<< HEAD
   name_en: [
     { required: true, message: t('Validation.ProductNameEn'), trigger: 'blur' }
   ],
@@ -187,6 +188,14 @@ const rules = {
   brand_id: [
     { required: true, message: t('Validation.SelectBrand'), trigger: 'change' }
   ]
+=======
+  name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }],
+  price: [{ required: true, message: lang=== 'en'? 'Please input product price':'من فضلك ادخل سعر المنتج', trigger: 'blur' }],
+  category_id: [{ required: true, message:lang === 'en' ? 'Please select a category' : 'من فضلك اختر فئة', trigger: 'change' }],
+  currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency' : 'من فضلك اختر عملة', trigger: 'change' }],
+  country_id: [{ required: true, message:lang === 'en' ? 'Please select a country' : 'من فضلك اختر بلد', trigger: 'change' }],
+  brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand' : 'من فضلك اختر براند', trigger: 'change' }], // Add validation
+>>>>>>> mostafa
 }
 
 
@@ -211,7 +220,7 @@ const fetchSelectOptions = async () => {
     parentProducts.value = parentProductRes.data.data || []
     units.value = unitRes.data.data || []
   } catch (error) {
-    ElMessage.error(error.response?.data?.message || 'Failed to load form options')
+    ElMessage.error(lang === 'en' ? 'Failed to load options' : 'فشل تحميل الخيارات')
   }
 }
 
@@ -222,7 +231,7 @@ const fetchBrands = async () => {
     const res = await axios.get('https://backend.webenia.org/api/brands')
     brands.value = Array.isArray(res.data.data) ? res.data.data : [res.data.data]
   } catch (err) {
-    ElMessage.error('Failed to load brands')
+    ElMessage.error(lang === 'en' ? 'Failed to load brands' : 'فشل تحميل البراندات')
   }
 }
 
@@ -260,13 +269,13 @@ const submitForm = () => {
       })
 
       if (res.data.status) {
-        ElMessage.success('Product created successfully')
+        ElMessage.success(lang === 'en' ? 'Product created successfully' : 'تم إنشاء المنتج بنجاح')
         router.push('/products')
       } else {
         throw new Error(res.data.message || 'Failed to create product')
       }
     } catch (err) {
-      ElMessage.error(err.message || 'Failed to create product')
+      ElMessage.error(lang === 'en' ? 'Failed to create product' : 'فشل إنشاء المنتج')
     }
   })
 }

@@ -54,6 +54,10 @@
     "nameAr": "Brand Name (Arabic)",
     "description": "Description",
     "descriptionAr": "Description (Arabic)",
+<<<<<<< HEAD
+=======
+  
+>>>>>>> mostafa
     "products": "Products",
     "deleteConfirm": "Are you sure you want to delete this brand?",
     "deleteSuccess": "Brand deleted successfully",
@@ -267,15 +271,22 @@
     "Warning": "Warning",
     "Yes": "Yes",
     "No": "No",
+<<<<<<< HEAD
     "DeletedSuccessfully": "Product deleted successfully",
     "NA": "N/A",
     "AddDiscount": "Add Discount",
+=======
+    "DeletedSuccessfully": "Product deleted successfullyca",
+    "addedSussess": "Product added successfully",
+    "NA": "N/A",
+>>>>>>> mostafa
     "brand": "Brand",
     "BrandPlaceholder": "Select Brand",
     "Needs-Amount": "Needs Amount ?",
     "Amount-Info": "Amount Info",
     "Unit": "Unit",
     "Weight": "Weight",
+<<<<<<< HEAD
     "select-unit": "Select Unit",
     "select-weight": "Select Weight",
     "select-price": "Select Price",
@@ -305,6 +316,28 @@
     "SelectCurrency": "Please select a currency",
     "SelectCountry": "Please select a country",
     "SelectBrand": "Please select a brand"
+=======
+      "select-unit": "Select Unit",
+    "select-weight": "Select Weight",
+    "select-price": "Select Price",
+    "addAmount": "Add Amount",
+    "addDiscount": "Add Discount",
+    "EditProduct": "Edit Product",
+    "ExistingImages": "Existing Product Images",
+    "UpdateButton": "Update Product",
+    "AddAmount": "Add Amount",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "Start-Date": "Start Date",
+    "Select-start-date": "Select Start Date",
+    "Duration-days": "Duration (days)",
+    "Enter-duration-days": "Enter Duration (days)",
+    "Discount-Value": "Discount Value (%)",
+    "Enter-discount-percentage": "Enter Discount Percentage",
+    "Is-Active": "Is Active",
+    "End-Date": "End Date",
+    "Select-end-date": "Select End Date"
+>>>>>>> mostafa
   },
   
   "Footer": {
@@ -863,6 +896,25 @@
       "cityRequired": "City is required",
       "countryRequired": "Country is required"
     },
+<<<<<<< HEAD
+=======
+    "Enter-name": "Enter customer name",
+    "Enter-email": "Enter customer email",
+    "Enter-phone": "Enter customer phone number",
+    "Enter-role": "Select role",
+    "Enter-address": "Select country",
+    "Enter-password": "Enter password",
+    "Enter-comfirmPassword": "Confirm password",
+
+    "admin": "Admin",
+    "user": "User",
+    "manager": "Manager",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "cancel": "Cancel",
+    "create": "Create"
+
+>>>>>>> mostafa
 
     "Enter-name": "Enter customer name",
     "Enter-email": "Enter customer email",
