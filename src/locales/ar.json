@@ -285,7 +285,24 @@
     "Weight": "الوزن",
       "select-unit": "اختر الوحدة",
     "select-weight": "اختر الوزن",
-    "select-price": "اختر السعر"
+    "select-price": "اختر السعر",
+    "addAmount": "إضافة كمية",
+    "addDiscount": "إضافة خصم",
+    "EditProduct": "تعديل المنتج",
+    "ExistingImages": "صور المنتج المتاحة",
+    "UpdateButton": "تحديث المنتج",
+    "AddAmount": "إضافة كمية",
+    "cancel": "اغلاق",
+    "submit": "حفظ",
+    "Start-Date": "تاريخ البدء",
+    "Select-start-date": "اختر تاريخ البدء",
+    "Duration-days": "المدة (أيام)",
+    "Enter-duration-days": "أدخل مدة الأيام",
+    "Discount-Value": "قيمة الخصم",
+    "Enter-discount-percentage": "ادخل نسبة الخصم",
+    "Is-Active": "نشط",
+    "End-Date": "تاريخ الانتهاء",
+    "Select-end-date": "اختر تاريخ الانتهاء"
   },
 
   "Footer": {

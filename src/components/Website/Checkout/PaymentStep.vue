@@ -4,7 +4,11 @@
     <div class="payment-methods">
       <button :disabled="method.name === 'Tabby' && currency === 'USD'" v-for="method in paymentMethods" :key="method.id" class="payment-method"
         :class="{active: selectedPaymentMethod === method.id , [method.class]: currency === 'USD'}" @click="selectPaymentMethod(method.id)">
-        <fa :icon="method.icon"/>
+        <!-- <svg height="40" width="40" :style="method.style">
+          <use  :xlink:href="method.icon"></use>
+        </svg> -->
+        <img :src="method.icon" alt="" height="50" width="50" :style="method.style" >
+
         <span>{{ method.name }}</span>
       </button>
     </div>
@@ -80,9 +84,9 @@ export default {
     return {
       selectedPaymentMethod: null,
       paymentMethods: [
-        { id: 1, name: 'Stripe', icon: 'credit-card', class: '' },
-        { id: 2, name: 'Tabby', icon: 'credit-card-alt', class: 'tappy-disabled' },
-        { id: 3, name: 'Cash on Delivery', icon: 'money-bill', class: '' }
+        { id: 1, name: 'Stripe', icon: 'https://cdn.prod.website-files.com/63ce9d04b1ff6e1c14514251/643039c1497e2596d78af94b_stripe-v2.svg', class: '',style: 'border-radius: 50%;' },
+        { id: 2, name: 'Tabby', icon: 'https://ps.w.org/tabby-checkout/assets/icon-256x256.png?rev=2829111', class: 'tappy-disabled',style: 'border-radius: 50%;' },
+        { id: 3, name: 'Cash on Delivery', icon: 'https://i.pinimg.com/736x/e7/41/c6/e741c63791fd9f6ebfb9a1f370c6be86.jpg', class: '',style: '' }
       ],
       loading: false,
       stripePromise: null,
@@ -707,9 +711,10 @@ export default {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   background-color: transparent;
   transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .payment-method.active {

@@ -13,39 +13,39 @@
         <el-form-item :label="$t('Products.NameAr')" prop="name_ar">
           <el-input v-model="form.name_ar" />
         </el-form-item>
-
-        <!-- Price -->
-        <el-form-item v-if="!amountRequired" :label="$t('Products.Price')" prop="price">
-          <el-input v-model="form.price" type="number" />
+        
+        <!-- Availability -->
+        <el-form-item :label="$t('Products.Availability')" prop="is_available">
+          <el-switch v-model="form.is_available" active-value="1" inactive-value="0" />
         </el-form-item>
 
         <!-- Manual toggle for amount -->
-        <el-form-item :label=" $t('Products.Needs-Amount')" prop="amountRequired">
+        <el-form-item label="Needs Amount?">
           <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
         </el-form-item>
 
         <!-- Show amount fields conditionally -->
         <template v-if="amountRequired">
-          <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
+          <el-divider content-position="left">Amount Info</el-divider>
 
-          <el-form-item :label="$t('Products.Unit')" >
-            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
+          <el-form-item label="Unit">
+            <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Weight')">
-            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+          <el-form-item label="Weight">
+            <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Price')" >
-            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
+          <el-form-item label="Price">
+            <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
           </el-form-item>
         </template>
 
-        <!-- Availability -->
-        <el-form-item :label="$t('Products.Availability')" prop="is_available">
-          <el-switch v-model="form.is_available" active-value="1" inactive-value="0" />
+        <!-- Price -->
+        <el-form-item v-if="!amountRequired" :label="$t('Products.Price')" prop="price">
+          <el-input v-model="form.price" type="number" />
         </el-form-item>
 
         <!-- Description EN -->
@@ -66,8 +66,8 @@
         </el-form-item>
 
         <!-- Add after category select -->
-        <el-form-item :label="$t('Products.brand')" prop="brand_id">
-          <el-select v-model="form.brand_id" :placeholder="$t('Products.BrandPlaceholder')" filterable clearable>
+        <el-form-item label="Brand" prop="brand_id">
+          <el-select v-model="form.brand_id" placeholder="Select Brand" filterable clearable>
             <el-option
               v-for="brand in brands"
               :key="brand.id"
@@ -124,6 +124,8 @@ import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const router = useRouter()
 const formRef = ref(null)
@@ -157,14 +159,24 @@ const parentProducts = ref([])
 const units = ref([])
 const brands = ref([])
 
+// const rules = {
+//   name_en: [{ required: true, message: 'Please input product name (EN)', trigger: 'blur' }],
+//   price: [{ required: true, message: 'Please input product price', trigger: 'blur' }],
+//   category_id: [{ required: true, message: 'Please select a category', trigger: 'change' }],
+//   currency_id: [{ required: true, message: 'Please select a currency', trigger: 'change' }],
+//   country_id: [{ required: true, message: 'Please select a country', trigger: 'change' }],
+//   brand_id: [{ required: true, message: 'Please select a brand', trigger: 'change' }], // Add validation
+// }
+
 const rules = {
-  name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }, { min: 3, message: 'Product name must be at least 3 characters', trigger: 'blur' }],
-  price: [{ required: true, message:lang === 'en' ? 'Please input product price':"من فضلك ادخل سعر المنتج", trigger: 'blur' }, { type: 'number', message: 'Please input product price', trigger: 'blur' }],
-  category_id: [{ required: true, message:lang === 'en' ? 'Please select a category': 'من فضلك اختر فئة', trigger: 'change' }],
-  currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency': 'من فضلك اختر عملة', trigger: 'change' }],
-  country_id: [{ required: true, message:lang === 'en' ? 'Please select a country': 'من فضلك اختر دولة ', trigger: 'change' }],
-  brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand': 'من فضلك اختر براند', trigger: 'change' }], // Add validation
+  name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }],
+  price: [{ required: true, message: lang=== 'en'? 'Please input product price':'من فضلك ادخل سعر المنتج', trigger: 'blur' }],
+  category_id: [{ required: true, message:lang === 'en' ? 'Please select a category' : 'من فضلك اختر فئة', trigger: 'change' }],
+  currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency' : 'من فضلك اختر عملة', trigger: 'change' }],
+  country_id: [{ required: true, message:lang === 'en' ? 'Please select a country' : 'من فضلك اختر بلد', trigger: 'change' }],
+  brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand' : 'من فضلك اختر براند', trigger: 'change' }], // Add validation
 }
+
 
 const BASE_URL = 'https://backend.webenia.org'
 
@@ -187,7 +199,7 @@ const fetchSelectOptions = async () => {
     parentProducts.value = parentProductRes.data.data || []
     units.value = unitRes.data.data || []
   } catch (error) {
-    ElMessage.error(error.response?.data?.message || 'Failed to load form options')
+    ElMessage.error(lang === 'en' ? 'Failed to load options' : 'فشل تحميل الخيارات')
   }
 }
 
@@ -198,7 +210,7 @@ const fetchBrands = async () => {
     const res = await axios.get('https://backend.webenia.org/api/brands')
     brands.value = Array.isArray(res.data.data) ? res.data.data : [res.data.data]
   } catch (err) {
-    ElMessage.error('Failed to load brands')
+    ElMessage.error(lang === 'en' ? 'Failed to load brands' : 'فشل تحميل البراندات')
   }
 }
 
@@ -236,13 +248,13 @@ const submitForm = () => {
       })
 
       if (res.data.status) {
-        ElMessage.success('Product created successfully')
+        ElMessage.success(lang === 'en' ? 'Product created successfully' : 'تم إنشاء المنتج بنجاح')
         router.push('/products')
       } else {
         throw new Error(res.data.message || 'Failed to create product')
       }
     } catch (err) {
-      ElMessage.error(err.message || 'Failed to create product')
+      ElMessage.error(lang === 'en' ? 'Failed to create product' : 'فشل إنشاء المنتج')
     }
   })
 }
@@ -279,5 +291,15 @@ onMounted(() => {
   color: #909399;
   font-size: 0.9em;
   margin-left: 8px;
+}
+
+::v-deep(.el-form-item__label){
+  text-align: start;
+  justify-content:flex-start;
+  width: 170px !important;
+}
+
+[dir="rtl"] .el-switch{
+  flex-direction: row-reverse;
 }
 </style>

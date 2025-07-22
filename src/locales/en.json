@@ -278,9 +278,24 @@
     "Weight": "Weight",
       "select-unit": "Select Unit",
     "select-weight": "Select Weight",
-    "select-price": "Select Price"
-
-
+    "select-price": "Select Price",
+    "addAmount": "Add Amount",
+    "addDiscount": "Add Discount",
+    "EditProduct": "Edit Product",
+    "ExistingImages": "Existing Product Images",
+    "UpdateButton": "Update Product",
+    "AddAmount": "Add Amount",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "Start-Date": "Start Date",
+    "Select-start-date": "Select Start Date",
+    "Duration-days": "Duration (days)",
+    "Enter-duration-days": "Enter Duration (days)",
+    "Discount-Value": "Discount Value (%)",
+    "Enter-discount-percentage": "Enter Discount Percentage",
+    "Is-Active": "Is Active",
+    "End-Date": "End Date",
+    "Select-end-date": "Select End Date"
   },
   
   "Footer": {

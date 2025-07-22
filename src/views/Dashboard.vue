@@ -1,8 +1,8 @@
 <template>
-  <div class="dashboard">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <el-card class="summary-card">
+  <div class="dashboard d-flex flex-wrap flex-grow-1 container-fluid px-2 px-md-4">
+    <el-row :gutter="20" class="row w-100 g-3">
+      <el-col :span="6" :xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.Total-Revenue') }}</span>
@@ -13,11 +13,16 @@
             <span :class="['trend', salesOverview.month_over_month_growth >= 0 ? 'positive' : 'negative']">
               {{ salesOverview.month_over_month_growth >= 0 ? '+' : '' }}{{ salesOverview.month_over_month_growth }}%
             </span>
+            <div v-if="salesOverview.converted_total_sales">
+              <small>
+                ({{ salesOverview.converted_total_sales.toFixed(2) }} {{ salesOverview.converted_currency }})
+              </small>
+            </div>
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
+      <el-col :span="6":xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.total-Orders') }}</span>
@@ -29,8 +34,8 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
+      <el-col :span="6":xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.total-Customers') }}</span>
@@ -42,8 +47,8 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <el-card class="summary-card">
+      <el-col :span="6":xs="24" :sm="12" :md="6">
+        <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.total-Products') }}</span>
@@ -57,9 +62,9 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" class="chart-row">
-      <el-col :span="12">
-        <el-card>
+    <el-row :gutter="20" class="chart-row row w-100 mt-3">
+      <el-col :span="12" :xs="24" :md="12">
+        <el-card class="h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.Sales-Overview') }}</span>
@@ -84,14 +89,14 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12">
-        <el-card>
+      <el-col :span="12" :xs="24" :md="12">
+        <el-card class="h-100">
           <template #header>
             <div class="card-header">
               <span>{{ $t('dashboard.recent-Orders') }}</span>
             </div>
           </template>
-          <el-table :data="orders" style="width: 100%">
+          <el-table :data="orders" style="width: 100%"  class="table-responsive" >
             <el-table-column prop="id" :label="$t('dashboard.Order-Id')" width="100" />
             <el-table-column :label="$t('dashboard.customer')">
               <template #default="{ row }">
@@ -143,7 +148,9 @@ export default defineComponent({
       last_month_sales: 0,
       month_over_month_growth: 0,
       daily_sales: [],
-      top_selling_products: []
+      top_selling_products: [],
+      converted_total_sales: 0,
+      converted_currency: ''
     })
     let chartInstance = null
 
@@ -267,6 +274,9 @@ export default defineComponent({
         if (response.data.status === true) {
           salesOverview.value = response.data.data
           totalRevenue.value = parseFloat(response.data.data.this_month_sales || 0)
+          totalRevenue.value = parseFloat(response.data.data.converted_total_sales || 0)
+
+
           updateChart()
         }
       } catch (error) {
@@ -335,7 +345,7 @@ export default defineComponent({
         await fetchTotalProducts()
         await fetchRecentOrders()
         await fetchSalesOverview()
-        
+
         // Update values after fetching data
         totalCustomers.value = store.getters.totalCustomers || 0
       } catch (error) {
@@ -433,4 +443,7 @@ export default defineComponent({
   margin-top: 20px;
   width: 100%;
 }
-</style> 
+.table-responsive {
+  overflow-x: auto;
+}
+</style>

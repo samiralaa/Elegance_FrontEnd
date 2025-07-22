@@ -200,6 +200,7 @@ import { API_URL } from '@/store/index.js';
 import { useFavoritesStore } from '@/store/favorites';
 import { useCartStore } from '@/store/cart';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'Header',
@@ -251,7 +252,7 @@ export default {
       return this.userProfile?.name || '';
     },
     currentLang() {
-      return localStorage.getItem('lang') || 'en';
+      return this.locale;
     }
   },
   mounted() {
@@ -277,13 +278,14 @@ export default {
     const favoritesStore = useFavoritesStore();
     const cartStore = useCartStore();
     const { cartCount } = storeToRefs(cartStore);
+    const { locale } = useI18n();
     
     // Fetch initial cart count
     if (localStorage.getItem('auth_token')) {
       cartStore.fetchCartCount();
     }
     
-    return { favoritesStore, cartStore, cartCount };
+    return { favoritesStore, cartStore, cartCount, locale };
   },
   methods: {
     async fetchBrands() {

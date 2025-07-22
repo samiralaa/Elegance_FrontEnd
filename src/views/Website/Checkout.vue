@@ -33,6 +33,7 @@
       @order-placed="handleOrderPlaced"
     />
   </div>
+  <Footer />
 </template>
 
 <script>
@@ -44,6 +45,7 @@ import CartReview from "@/components/Website/Checkout/CartReview.vue";
 import ShippingDetails from "@/components/Website/Checkout/ShippingDetails.vue";
 import PaymentStep from "@/components/Website/Checkout/PaymentStep.vue";
 import { onMounted } from 'vue';
+import Footer from '@/components/Website/Footer.vue';
 
 export default {
   name: 'Checkout',
@@ -52,7 +54,8 @@ export default {
     CheckoutStepper,
     CartReview,
     ShippingDetails,
-    PaymentStep
+    PaymentStep,
+    Footer
   },
   data() {
     return {

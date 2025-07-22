@@ -3,7 +3,7 @@
     <div class="container">
       <!-- Title -->
       <div class="title">
-        <fa class="fa-icon" :icon="['fas', 'cubes']"></fa>
+        <fa class="fa-icon" :icon="['fas', 'tag']"></fa>
         <h2>{{ $t('home.brands') }}</h2>
       </div>
 

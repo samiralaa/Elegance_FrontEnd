@@ -457,4 +457,14 @@ export default defineComponent({
   padding: var(--spacing-xl) 0;
   text-align: center;
 }
+
+.el-form-item__label{
+  text-align: start;
+  justify-content:flex-start;
+  width: 170px !important;
+}
+
+[dir="rtl"] .el-switch{
+  flex-direction: row-reverse;
+}
 </style>
