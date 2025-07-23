@@ -23,7 +23,7 @@
                     {{ getDiscountPercentage(product) }}% OFF
                   </span>
                   <span v-if="product.discount && product.discount.is_active" class="price-old">
-                    {{ product.price }} {{ product.currency_code }}
+                    {{ product.converted_price }} {{ product.currency_code }}
                   </span>
                   <span class="card-text card-price">
                     {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
