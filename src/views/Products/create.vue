@@ -169,7 +169,7 @@ const brands = ref([])
 // }
 
 const rules = {
-<<<<<<< HEAD
+
   name_en: [
     { required: true, message: t('Validation.ProductNameEn'), trigger: 'blur' }
   ],
@@ -187,15 +187,13 @@ const rules = {
   ],
   brand_id: [
     { required: true, message: t('Validation.SelectBrand'), trigger: 'change' }
-  ]
-=======
+  ],
   name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }],
   price: [{ required: true, message: lang=== 'en'? 'Please input product price':'من فضلك ادخل سعر المنتج', trigger: 'blur' }],
   category_id: [{ required: true, message:lang === 'en' ? 'Please select a category' : 'من فضلك اختر فئة', trigger: 'change' }],
   currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency' : 'من فضلك اختر عملة', trigger: 'change' }],
   country_id: [{ required: true, message:lang === 'en' ? 'Please select a country' : 'من فضلك اختر بلد', trigger: 'change' }],
   brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand' : 'من فضلك اختر براند', trigger: 'change' }], // Add validation
->>>>>>> mostafa
 }
 
 
