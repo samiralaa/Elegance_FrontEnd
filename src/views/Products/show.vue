@@ -1,3 +1,4 @@
+
 <template>
   <div class="product-detail-container">
     <el-card v-if="!loading && !error" class="product-card">

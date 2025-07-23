@@ -1,8 +1,12 @@
-<template>
+  <template>
     <div class="products-container ">
-      <div class="header">
-        <h2>{{ $t('Products.Products') }}</h2>
-        <el-input
+      <div class="header ">
+       <div class="d-flex justify-content-between align-items-center w-100">
+
+         <h2>{{ $t('Products.Products') }}</h2>
+         <el-button type="primary" :icon="Plus" @click="openCreateDialog">{{ $t('Products.AddProduct') }}</el-button>
+        </div>
+       <el-input
           v-model="searchQuery"
           :placeholder="$t('Products.SearchPlaceholder')"
           :prefix-icon="Search"
@@ -10,8 +14,8 @@
           class="search-input"
           style="max-width: 250px; margin-right: 16px;"
         />
-        <el-button type="primary" :icon="Plus" @click="openCreateDialog">{{ $t('Products.AddProduct') }}</el-button>
       </div>
+      
 
    
 
@@ -40,6 +44,8 @@
             </template>
           </el-table-column>
 
+
+
           <el-table-column prop="name_en" :label="$t('Products.NameEn')" />
           <el-table-column prop="name_ar" :label="$t('Products.NameAr')">
             <template #default="{ row }">
@@ -48,7 +54,7 @@
           </el-table-column>
           <el-table-column prop="price" :label="$t('Products.Price')" />
           <el-table-column prop="currency.name_en" :label="$t('Products.Currency')" />
-          <el-table-column :label="$t('Products.Actions')" width="250">
+          <el-table-column :label="$t('Products.Actions')" width="250" >
             <template #default="{ row }">
               
             
@@ -71,29 +77,30 @@
             </template>
           </el-table-column>
         </el-table>
+
       </el-card>
 
       <!-- Add Amount Dialog -->
-      <el-dialog v-model="showAmountDialog" title="Add Product Amount" width="500px">
-        <el-form :model="amountForm" label-width="100px">
-          <el-form-item label="Unit">
-            <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
+      <el-dialog v-model="showAmountDialog" :title="$t('Products.AddAmount')" width="500px">
+        <el-form :model="amountForm"  label-width="100px">
+          <el-form-item :label="$t('Products.Unit')">
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" >
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
-          <el-form-item label="Weight">
-            <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
+          <el-form-item :label="$t('Products.Weight')">
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
           </el-form-item>
 
-          <el-form-item label="Price">
-            <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
+          <el-form-item :label="$t('Products.Price')">
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
           </el-form-item>
         </el-form>
 
         <template #footer>
-          <el-button @click="showAmountDialog = false">Cancel</el-button>
-          <el-button type="primary" @click="submitAmount">Submit</el-button>
+          <el-button @click="showAmountDialog = false">{{ $t('Products.cancel') }}</el-button>
+          <el-button type="primary" class="mx-2" @click="submitAmount">{{ $t('Products.submit') }}</el-button>
         </template>
       </el-dialog>
 
@@ -162,15 +169,15 @@
   import { ref, onMounted, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-import { Plus, Edit, Delete, Picture, View, Discount, Search } from '@element-plus/icons-vue'
+  import { Plus, Edit, Delete, Picture, View, Discount ,Search } from '@element-plus/icons-vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import axios from 'axios'
 
   const router = useRouter()
   const { t } = useI18n()
-const products = ref([])
-const loading = ref(false)
-const searchQuery = ref('')
+  const products = ref([])
+  const loading = ref(false)
+  const searchQuery = ref('')
 const filteredProducts = computed(() => {
   if (!searchQuery.value) return products.value
   const query = searchQuery.value.toLowerCase()
@@ -182,7 +189,7 @@ const filteredProducts = computed(() => {
 const lang= localStorage.getItem('lang') || 'en'
   const BASE_URL = 'https://backend.webenia.org'
 
-  const API_URL = BASE_URL + '/api/dashboard/products'
+  const API_URL = `${BASE_URL}/api/dashboard/products`
 
   const fetchProducts = async () => {
     loading.value = true
@@ -191,7 +198,7 @@ const lang= localStorage.getItem('lang') || 'en'
       if (!tokenData || !tokenData.token) {
         throw new Error('Authentication token not found')
       }
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + tokenData.token
+      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
 
       const response = await axios.get(API_URL)
 
@@ -238,8 +245,8 @@ const lang= localStorage.getItem('lang') || 'en'
         if (!tokenData || !tokenData.token) {
           throw new Error('Authentication token not found')
         }
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + tokenData.token
-        const response = await axios.delete(API_URL + '/' + product.id)
+        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+        const response = await axios.delete(`${API_URL}/${product.id}`)
 
         if (response.data.status) {
           ElMessage.success(lang === 'ar' ? 'تم حذف المنتج بنجاح' : 'Product deleted successfully')
@@ -271,8 +278,8 @@ const lang= localStorage.getItem('lang') || 'en'
   const fetchUnits = async () => {
     try {
       const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + tokenData.token
-      const res = await axios.get(BASE_URL + '/api/units')
+      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+      const res = await axios.get(`${BASE_URL}/api/units`)
       units.value = res.data.data
     } catch (err) {
       console.error('Failed to fetch units:', err)
@@ -294,7 +301,7 @@ const lang= localStorage.getItem('lang') || 'en'
   const submitAmount = async () => {
     try {
       const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + tokenData.token
+      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
 
       const payload = {
         product_id: selectedProduct.value.id,
@@ -303,7 +310,7 @@ const lang= localStorage.getItem('lang') || 'en'
         price: amountForm.value.price
       }
 
-      const res = await axios.post(BASE_URL + '/api/amounts', payload)
+      const res = await axios.post(`${BASE_URL}/api/amounts`, payload)
 
       if (res.data.status) {
         ElMessage.success(lang === 'ar' ? 'تم إضافة الكمية بنجاح' : 'Amount added successfully')
@@ -346,7 +353,7 @@ const lang= localStorage.getItem('lang') || 'en'
   const submitDiscount = async () => {
     try {
       const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + tokenData.token
+      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
 
       const payload = {
         start_date: discountForm.value.start_date,
@@ -358,9 +365,9 @@ const lang= localStorage.getItem('lang') || 'en'
         end_date: discountForm.value.end_date,
       }
 
-      const res = await axios.post(BASE_URL + '/api/discounts', payload)
+      const res = await axios.post(`${BASE_URL}/api/discounts`, payload)
 
-      if (res.data) {
+      if (res.data.status) {
         ElMessage.success(lang === 'ar' ? 'تم إضافة الخصم بنجاح' : 'Discount added successfully')
         showDiscountDialog.value = false
       } else {
@@ -383,10 +390,6 @@ const lang= localStorage.getItem('lang') || 'en'
   </script>
 
   <style scoped>
-  .search-input {
-    min-width: 180px;
-    margin-left: auto;
-  }
   .products-container {
     padding: 24px;
     background-color: #f5f7fa;
@@ -396,9 +399,10 @@ const lang= localStorage.getItem('lang') || 'en'
 
   .header {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
     margin-bottom: 24px;
     padding: 16px;
     background-color: #ffffff;
@@ -506,6 +510,18 @@ const lang= localStorage.getItem('lang') || 'en'
 
     .products-table {
       padding: 12px;
+      
+    background-color: #ffffff;
+    height: 80vh; 
+    display: flex;
+    flex-direction: column;
+    /* padding: 16px; */
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+   
+    
+    
+  
     }
 
     .product-image,
@@ -584,4 +600,19 @@ const lang= localStorage.getItem('lang') || 'en'
       }
     }
   }
-</style>
+  ::v-deep(.el-form-item__label){
+  text-align: start;
+  justify-content:flex-start;
+  width: 170px !important;
+}
+
+[dir="rtl"] .el-switch{
+  flex-direction: row-reverse;
+}
+
+.el-dialog__footer{
+  justify-content: end;
+  display: flex;
+  gap: 12px;
+}
+  </style>

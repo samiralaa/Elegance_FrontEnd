@@ -1,3 +1,4 @@
+
   <template>
     <div class="product-edit-container">
       <el-card class="product-card">
@@ -15,28 +16,28 @@
           </el-form-item>
 
           <!-- Toggle for Amount -->
-          <el-form-item :label="$t('Products.NeedsAmount')">
-            <el-switch v-model="form.amount_required" active-text="Yes" inactive-text="No" />
+          <el-form-item :label="$t('Products.Needs-Amount')">
+            <el-switch v-model="form.amount_required" active-text="Yes" inactive-text="No" dir="ltr" class="mx-3" />
           </el-form-item>
 
           <template v-if="form.amount_required">
-            <el-divider content-position="left">{{ $t('Products.AmountInfo') }}</el-divider>
+            <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
 
             <!-- Unit -->
             <el-form-item :label="$t('Products.Unit')" prop="unit_id">
-              <el-select v-model="form.unit_id" placeholder="Select Unit">
+              <el-select v-model="form.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
                 <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
               </el-select>
             </el-form-item>
 
             <!-- Weight -->
             <el-form-item :label="$t('Products.Weight')" prop="weight">
-              <el-input v-model="form.weight" type="number" placeholder="Enter weight" />
+              <el-input v-model="form.weight" type="number" :placeholder="$t('Products.select-weight')" />
             </el-form-item>
 
             <!-- Amount Price -->
-            <el-form-item :label="$t('Products.AmountPrice')" prop="amount_price">
-              <el-input v-model="form.amount_price" type="number" placeholder="Enter price" />
+            <el-form-item :label="$t('Products.amount-Price')" prop="amount_price">
+              <el-input v-model="form.amount_price" type="number" :placeholder="$t('Products.select-price')" />
             </el-form-item>
           </template>
 
@@ -65,7 +66,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Brand')" prop="brand_id">
+          <el-form-item :label="$t('Products.brand')" prop="brand_id">
             <el-select v-model="form.brand_id" filterable clearable placeholder="Select Brand">
               <el-option v-for="brand in brands" :key="brand.id" :label="brand.name_en" :value="brand.id" />
             </el-select>
@@ -102,7 +103,7 @@
           </div>
           <el-form-item :label="$t('Products.Images')" prop="images">
             <el-upload
-              class="upload-demo"
+              class="upload-demo  "
               drag
               action=""
               :auto-upload="false"
@@ -112,8 +113,8 @@
               :on-change="handleFileChange"
               :on-remove="handleRemove"
             >
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">{{ $t('Products.DropFiles') }}</div>
+              <i class="el-icon-upload "></i>
+              <div class="el-upload__text ">{{ $t('Products.DropFiles') }}</div>
             </el-upload>
           </el-form-item>
 
@@ -284,4 +285,25 @@
     flex-wrap: wrap;
     margin-bottom: 1em;
   }
+  ::v-deep(.el-form-item__label){
+  text-align: start;
+  justify-content:flex-start;
+  width: 170px !important;
+}
+
+[dir="rtl"] .el-switch{
+  flex-direction: row-reverse;
+}
+
+.el-dialog__footer{
+  justify-content: end;
+  display: flex;
+  gap: 12px;
+}
+::v-deep(.el-upload-list__item){
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
   </style>
