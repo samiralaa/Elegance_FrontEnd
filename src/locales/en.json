@@ -501,7 +501,8 @@
     "grandTotal": "Grand Total",
     "emptyCartMessage": "Your cart is currently empty. Start adding products to your cart.",
     "added_to_cart": "Product added to cart",
-    "item_removed": "Item removed from cart"
+    "item_removed": "Item removed from cart",
+    "quantity_updated": "Quantity updated"
   },
 
   "favorites": {

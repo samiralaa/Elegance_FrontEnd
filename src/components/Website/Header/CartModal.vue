@@ -142,14 +142,14 @@ export default {
         if (response.data.status) {
           this.$emit('update-quantity', item);
           ElNotification({
-            title: this.t('cart.success'),
+            title: this.t('success'),
             message: this.t('cart.quantity_updated'),
             type: 'success',
             duration: 2000
           });
         } else {
           ElNotification({
-            title: this.t('cart.success'),
+            title: this.t('success'),
             message: response.data.message || this.t('cart.update_failed'),
             type: 'success',
             duration: 3000
@@ -158,7 +158,7 @@ export default {
       } catch (error) {
         console.error('Error updating cart:', error);
         ElNotification({
-          title: this.t('cart.error'),
+          title: this.t('error'),
           message: error.response?.data?.message || this.t('cart.network_error'),
           type: 'error',
           duration: 3000
