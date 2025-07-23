@@ -15,8 +15,8 @@
           </el-form-item>
 
           <!-- Toggle for Amount -->
-          <el-form-item :label="$t('Products.Needs-Amount')">
-            <el-switch v-model="form.amount_required" :active-text="$t('Products.Yes')" :inactive-text="$t('Products.No')" />
+          <el-form-item :label="$t('Products.NeedsAmount')">
+            <el-switch v-model="form.amount_required" active-text="Yes" inactive-text="No" />
           </el-form-item>
 
           <template v-if="form.amount_required">
@@ -65,7 +65,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('Products.brand')" prop="brand_id">
+          <el-form-item :label="$t('Products.Brand')" prop="brand_id">
             <el-select v-model="form.brand_id" filterable clearable placeholder="Select Brand">
               <el-option v-for="brand in brands" :key="brand.id" :label="brand.name_en" :value="brand.id" />
             </el-select>
@@ -182,7 +182,7 @@
   const fetchOptions = async () => {
     const token = JSON.parse(localStorage.getItem('tokenData'))?.token
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    const [catRes, cur, cou, parents, brand, unit] = await Promise.all([
+    const [cat, cur, cou, parents, brand, unit] = await Promise.all([
       axios.get(`${BASE_URL}/api/categories`),
       axios.get(`${BASE_URL}/api/currencies`),
       axios.get(`${BASE_URL}/api/countries`),
@@ -190,7 +190,7 @@
       axios.get(`${BASE_URL}/api/brands`),
       axios.get(`${BASE_URL}/api/units`),
     ])
-    categories.value = catRes.data.data
+    categories.value = cat.data.data
     currencies.value = cur.data
     countries.value = cou.data.data
     parentProducts.value = parents.data.data
@@ -229,6 +229,7 @@
         axios.get('/api/categories'),
         axios.get('/api/currencies'),
       ]);
+      categories.value = catRes.data;
       currencies.value = currRes.data;
     } catch (error) {
       console.error('Error loading product data', error);
@@ -283,14 +284,4 @@
     flex-wrap: wrap;
     margin-bottom: 1em;
   }
-
-  ::v-deep(.el-form-item__label){
-  text-align: start;
-  justify-content:flex-start;
-  width: 170px !important;
-}
-
-[dir="rtl"] .el-switch{
-  flex-direction: row-reverse;
-}
   </style>
