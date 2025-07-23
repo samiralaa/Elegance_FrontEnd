@@ -841,6 +841,17 @@
     "create": "Create"
 
 
+  },
+  "Logs":{
+    "Logs": "Logs",
+    "User": "User",
+    "Operation": "Operation",
+    "Model": "Model",
+    "ModelID": "Model ID",
+    "Description": "Description",
+    "IPAddress": "IP Address",
+    "BrowserInfo": "Browser Info",
+    "Timestamp": "Timestamp"
   }
  
 

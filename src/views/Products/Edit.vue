@@ -291,9 +291,9 @@
   width: 170px !important;
 }
 
-[dir="rtl"] .el-switch{
+/* [dir="rtl"] .el-switch{
   flex-direction: row-reverse;
-}
+} */
 
 .el-dialog__footer{
   justify-content: end;
