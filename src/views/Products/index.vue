@@ -1,17 +1,12 @@
   <template>
-    <div class="products-container ">
+    <div class="products-container">
       <div class="header">
         <h2>{{ $t('Products.Products') }}</h2>
         <el-button type="primary" :icon="Plus" @click="openCreateDialog">{{ $t('Products.AddProduct') }}</el-button>
       </div>
-      
 
-   
-
-     
-      <el-card class="products-table  ">
-      
-        <el-table v-loading="loading" :data="products"   class="table-responsivew" style="height: 70vh" dir="ltr" >
+      <el-card class="products-table">
+        <el-table v-loading="loading" :data="products" style="width: 100%">
           <el-table-column :label="$t('Products.Image')" width="120">
             <template #default="{ row }">
               <el-image v-if="row.images && row.images.length > 0" :src="`${BASE_URL}/${row.images[0].path}`"
@@ -34,8 +29,6 @@
             </template>
           </el-table-column>
 
-
-
           <el-table-column prop="name_en" :label="$t('Products.NameEn')" />
           <el-table-column prop="name_ar" :label="$t('Products.NameAr')">
             <template #default="{ row }">
@@ -44,9 +37,8 @@
           </el-table-column>
           <el-table-column prop="price" :label="$t('Products.Price')" />
           <el-table-column prop="currency.name_en" :label="$t('Products.Currency')" />
-          <el-table-column :label="$t('Products.Actions')" width="250" >
+          <el-table-column :label="$t('Products.Actions')" width="250">
             <template #default="{ row }">
-<<<<<<< HEAD
               <el-button-group>
                 <el-button type="primary" :icon="View" @click="viewProduct(row.id)">{{ $t('Products.View')
                   }}</el-button>
@@ -57,58 +49,38 @@
                 <el-button type="info" :icon="Discount" @click="openDiscountDialog(row)">{{ $t('Products.AddDiscount')
                   }}</el-button>
               </el-button-group>
-=======
-              
-            
-              
-              <div class="d-flex flex-column gap-1 align-items-center" dir="ltr"> 
-              <div class="btn-group  "role="group" aria-label="Basic mixed styles example">
-               
-                <button type="button" class="btn btn-success btn-sm"  @click="viewProduct(row.id)">{{ $t('Products.View') }}</button>
-                <button type="button" class="btn btn-warning btn-sm"  @click="editProduct(row)">{{ $t('Products.Edit') }}</button>
-                <button type="button" class="btn btn-danger btn-sm"  @click="deleteProduct(row)">{{ $t('Products.Delete') }}</button>
-             
-              </div>
-               <div class="btn-group  "role="group" aria-label="Basic mixed styles example">
-
-                 <button type="button" class="btn btn-secondary btn-sm"  @click="addAmount(row)">{{ $t('Products.addAmount') }}</button>
-                 <button type="button" class="btn btn-info btn-sm"  @click="openDiscountDialog(row)">{{ $t('Products.addDiscount') }}</button>
-                </div>
-             
-            </div>
->>>>>>> mostafa
             </template>
           </el-table-column>
         </el-table>
-
       </el-card>
 
       <!-- Add Amount Dialog -->
-      <el-dialog v-model="showAmountDialog" :title="$t('Products.AddAmount')" width="500px">
-        <el-form :model="amountForm"  label-width="100px">
+      <el-dialog v-model="showAmountDialog" :title="$t('Products.AddProductAmount')" width="500px">
+        <el-form :model="amountForm" label-width="100px">
           <el-form-item :label="$t('Products.Unit')">
-            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" >
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')">
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
           <el-form-item :label="$t('Products.Weight')">
-            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
           </el-form-item>
 
           <el-form-item :label="$t('Products.Price')">
-            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
           </el-form-item>
         </el-form>
 
         <template #footer>
-          <el-button @click="showAmountDialog = false">{{ $t('Products.cancel') }}</el-button>
-          <el-button type="primary" class="mx-2" @click="submitAmount">{{ $t('Products.submit') }}</el-button>
+          <div class="dialog-footer">
+            <el-button @click="showAmountDialog = false">{{ $t('common.cancel') }}</el-button>
+            <el-button type="primary" @click="submitAmount">{{ $t('common.submit') }}</el-button>
+          </div>
         </template>
       </el-dialog>
 
       <!-- Add Discount Dialog -->
-<<<<<<< HEAD
       <el-dialog v-model="showDiscountDialog" :title="$t('discount.add_discount')" :width="isMobile ? '90%' : '500px'"
         class="discount-dialog">
         <el-form :model="discountForm" label-width="100px" class="discount-form">
@@ -125,72 +97,19 @@
               class="w-100" />
           </el-form-item>
           <el-form-item :label="$t('discount.is_active')">
-=======
-      <el-dialog 
-        v-model="showDiscountDialog" 
-        :title="$t('Products.addDiscount')" 
-        :width="isMobile ? '90%' : '500px'"
-        class="discount-dialog"
-      >
-        <el-form 
-          :model="discountForm" 
-          label-width="100px"
-          class="discount-form"
-        >
-          <el-form-item :label="$t('Products.Start-Date')">
-            <el-date-picker 
-              v-model="discountForm.start_date" 
-              type="date" 
-              :placeholder="$t('Products.Select-start-date')"
-              class="w-100"
-            />
-          </el-form-item>
-          <el-form-item :label="$t('Products.Duration-days')" >
-            <el-input 
-              v-model="discountForm.duration" 
-              type="number" 
-              :placeholder="$t('Products.Enter-duration-days')"
-              class="w-100"
-            />
-          </el-form-item>
-          <el-form-item :label="$t('Products.Discount-Value')" >
-            <el-input 
-              v-model="discountForm.discount_value" 
-              type="number" 
-              :placeholder="$t('Products.Enter-discount-percentage')"
-              class="w-100"
-            />
-          </el-form-item>
-          <el-form-item :label="$t('Products.Is-Active')" >
->>>>>>> mostafa
             <el-switch v-model="discountForm.is_active" />
           </el-form-item>
           <input type="hidden" v-model="discountForm.product_id" />
           <input type="hidden" v-model="discountForm.category_id" />
-<<<<<<< HEAD
           <el-form-item :label="$t('discount.end_date')">
             <el-date-picker v-model="discountForm.end_date" type="date" :placeholder="$t('discount.end_date_placeholder')" class="w-100" />
-=======
-          <el-form-item :label="$t('Products.End-Date')" >
-            <el-date-picker 
-              v-model="discountForm.end_date" 
-              type="date" 
-              :placeholder="$t('Products.Select-end-date')"
-              class="w-100"
-            />
->>>>>>> mostafa
           </el-form-item>
         </el-form>
 
         <template #footer>
           <div class="dialog-footer">
-<<<<<<< HEAD
             <el-button @click="showDiscountDialog = false">{{ $t('common.cancel') }}</el-button>
             <el-button type="primary" @click="submitDiscount">{{ $t('common.submit') }}</el-button>
-=======
-            <el-button @click="showDiscountDialog = false">{{ $t('Products.cancel') }}</el-button>
-            <el-button type="primary" @click="submitDiscount">{{ $t('Products.submit') }}</el-button>
->>>>>>> mostafa
           </div>
         </template>
       </el-dialog>
@@ -205,21 +124,12 @@ import { Plus, Edit, Delete, Picture, View, Discount } from '@element-plus/icons
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 
-<<<<<<< HEAD
 const router = useRouter()
 const { t } = useI18n()
 const products = ref([])
 const loading = ref(false)
 
 const BASE_URL = 'https://backend.webenia.org'
-=======
-  const router = useRouter()
-  const { t } = useI18n()
-  const products = ref([])
-  const loading = ref(false)
-const lang= localStorage.getItem('lang') || 'en'
-  const BASE_URL = 'https://backend.webenia.org'
->>>>>>> mostafa
 
 const API_URL = `${BASE_URL}/api/dashboard/products`
 
@@ -286,69 +196,11 @@ const deleteProduct = async (product) => {
       } else {
         throw new Error(response.data.message || 'Failed to delete product')
       }
-<<<<<<< HEAD
     }
   } catch (error) {
     if (error !== 'cancel') {
       console.error('Delete product error:', error)
       ElMessage.error(error.message || 'Failed to delete product')
-=======
-    } catch (error) {
-      console.error('Fetch products error:', error)
-      ElMessage.error(lang === 'ar' ? 'فشل في تحميل المنتجات' : 'Failed to load products')
-    } finally {
-      loading.value = false
-    }
-  }
-
-  const openCreateDialog = () => {
-    router.push('/products/create')
-  }
-
-  const viewProduct = (id) => {
-    router.push(`/products/${id}`)
-  }
-
-  const editProduct = (product) => {
-    router.push(`/products/${product.id}/edit`)
-  }
-
-  const deleteProduct = async (product) => {
-    try {
-      const result = await ElMessageBox.confirm(
-        t('Products.DeleteConfirmation'),
-        t('Products.Warning'),
-        {
-          confirmButtonText: t('Products.Yes'),
-          cancelButtonText: t('Products.No'),
-          type: 'warning',
-        }
-      )
-
-      if (result === 'confirm') {
-        loading.value = true
-        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-        if (!tokenData || !tokenData.token) {
-          throw new Error('Authentication token not found')
-        }
-        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.delete(`${API_URL}/${product.id}`)
-
-        if (response.data.status) {
-          ElMessage.success(lang === 'ar' ? 'تم حذف المنتج بنجاح' : 'Product deleted successfully')
-          products.value = products.value.filter(p => p.id !== product.id)
-        } else {
-          throw new Error(response.data.message || 'Failed to delete product')
-        }
-      }
-    } catch (error) {
-      if (error !== 'cancel') {
-        console.error('Delete product error:', error)
-        ElMessage.error(lang === 'ar' ? 'فشل في حذف المنتج' : 'Failed to delete product')
-      }
-    } finally {
-      loading.value = false
->>>>>>> mostafa
     }
   } finally {
     loading.value = false
@@ -382,23 +234,7 @@ const addAmount = (product) => {
   amountForm.value = {
     unit_id: '',
     weight: '',
-<<<<<<< HEAD
     price: ''
-=======
-    price: '',
-  })
-
-  const fetchUnits = async () => {
-    try {
-      const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-      const res = await axios.get(`${BASE_URL}/api/units`)
-      units.value = res.data.data
-    } catch (err) {
-      console.error('Failed to fetch units:', err)
-      ElMessage.error(lang === 'ar' ? 'فشل في تحميل الوحدات' : 'Failed to load units')
-    }
->>>>>>> mostafa
   }
   fetchUnits()
   showAmountDialog.value = true
@@ -418,32 +254,11 @@ const submitAmount = async () => {
 
     const res = await axios.post(`${BASE_URL}/api/amounts`, payload)
 
-<<<<<<< HEAD
     if (res.data.status) {
       ElMessage.success('Amount added successfully')
       showAmountDialog.value = false
     } else {
       ElMessage.error(res.data.message || 'Failed to add amount')
-=======
-      const payload = {
-        product_id: selectedProduct.value.id,
-        unit_id: amountForm.value.unit_id,
-        weight: amountForm.value.weight,
-        price: amountForm.value.price
-      }
-
-      const res = await axios.post(`${BASE_URL}/api/amounts`, payload)
-
-      if (res.data.status) {
-        ElMessage.success(lang === 'ar' ? 'تم إضافة الكمية بنجاح' : 'Amount added successfully')
-        showAmountDialog.value = false
-      } else {
-        ElMessage.error(lang === 'ar' ? 'فشل في إضافة الكمية' : 'Failed to add amount')
-      }
-    } catch (err) {
-      console.error(err)
-      ElMessage.error(lang === 'ar' ? 'حدث خطأ أثناء حفظ الكمية' : 'Error occurred while saving amount')
->>>>>>> mostafa
     }
   } catch (err) {
     console.error(err)
@@ -494,35 +309,11 @@ const submitDiscount = async () => {
 
     const res = await axios.post(`${BASE_URL}/api/discounts`, payload)
 
-<<<<<<< HEAD
     if (res.data) {
       ElMessage.success('Discount added successfully')
       showDiscountDialog.value = false
     } else {
       ElMessage.error(res.data.message || 'Failed to add discount')
-=======
-      const payload = {
-        start_date: discountForm.value.start_date,
-        duration: discountForm.value.duration,
-        discount_value: discountForm.value.discount_value,
-        is_active: discountForm.value.is_active,
-        product_id: discountForm.value.product_id,
-        category_id: discountForm.value.category_id,
-        end_date: discountForm.value.end_date,
-      }
-
-      const res = await axios.post(`${BASE_URL}/api/discounts`, payload)
-
-      if (res.data.status) {
-        ElMessage.success(lang === 'ar' ? 'تم إضافة الخصم بنجاح' : 'Discount added successfully')
-        showDiscountDialog.value = false
-      } else {
-        ElMessage.error(lang === 'ar' ? 'فشل في إضافة الخصم' : 'Failed to add discount')
-      }
-    } catch (err) {
-      console.error(err)
-      ElMessage.error(lang === 'ar' ? 'حدث خطأ أثناء حفظ الخصم' : 'Error occurred while saving discount')
->>>>>>> mostafa
     }
   } catch (err) {
     console.error(err)
@@ -540,22 +331,12 @@ onMounted(() => {
 })
 </script>
 
-<<<<<<< HEAD
 <style scoped>
 .products-container {
   padding: 24px;
   background-color: #f5f7fa;
   min-height: 100vh;
 }
-=======
-  <style scoped>
-  .products-container {
-    padding: 24px;
-    background-color: #f5f7fa;
-    height: 100vh;
-   
-  }
->>>>>>> mostafa
 
 .header {
   display: flex;
@@ -648,53 +429,7 @@ onMounted(() => {
   }
 
   .header h2 {
-<<<<<<< HEAD
     font-size: 20px;
-=======
-    margin: 0;
-    font-size: 24px;
-    font-weight: 600;
-    color: #303133;
-  }
-
-  .products-table {
-    background-color: #ffffff;
-    height: 80vh; 
-  display: flex;
-  flex-direction: column;
-    /* padding: 16px; */
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-   
-    
-    
-  }
- 
-
-
-  .product-image {
-    width: 100px;
-    height: 60px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid #ebeef5;
-  }
-
-  .image-error {
-    width: 100px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f2f5;
-    border-radius: 8px;
-    border: 1px dashed #dcdfe6;
-  }
-
-  .image-error .el-icon {
-    font-size: 24px;
-    color: #909399;
->>>>>>> mostafa
   }
 
   .el-button-group {

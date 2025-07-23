@@ -187,7 +187,7 @@ const fetchSelectOptions = async () => {
     parentProducts.value = parentProductRes.data.data || []
     units.value = unitRes.data.data || []
   } catch (error) {
-    ElMessage.error(lang === 'en' ? 'Failed to load options' : 'فشل تحميل الخيارات')
+    ElMessage.error(error.response?.data?.message || 'Failed to load form options')
   }
 }
 
@@ -198,7 +198,7 @@ const fetchBrands = async () => {
     const res = await axios.get('https://backend.webenia.org/api/brands')
     brands.value = Array.isArray(res.data.data) ? res.data.data : [res.data.data]
   } catch (err) {
-    ElMessage.error(lang === 'en' ? 'Failed to load brands' : 'فشل تحميل البراندات')
+    ElMessage.error('Failed to load brands')
   }
 }
 
@@ -236,13 +236,13 @@ const submitForm = () => {
       })
 
       if (res.data.status) {
-        ElMessage.success(lang === 'en' ? 'Product created successfully' : 'تم إنشاء المنتج بنجاح')
+        ElMessage.success('Product created successfully')
         router.push('/products')
       } else {
         throw new Error(res.data.message || 'Failed to create product')
       }
     } catch (err) {
-      ElMessage.error(lang === 'en' ? 'Failed to create product' : 'فشل إنشاء المنتج')
+      ElMessage.error(err.message || 'Failed to create product')
     }
   })
 }

@@ -279,7 +279,6 @@
     "No": "لا",
     "DeletedSuccessfully": "تم حذف المنتج بنجاح",
     "NA": "غير متاح",
-<<<<<<< HEAD
     "AddDiscount": "إضافة خصم",
     "brand": "العلامة التجارية",
     "BrandPlaceholder": "اختر العلامة التجارية",
@@ -320,49 +319,6 @@
     "discount_value": "قيمة الخصم",
     "discount_value_placeholder": "أدخل قيمة الخصم",
     "is_active": "نشط؟"
-=======
-    "CreateProduct": "إنشاء منتج",
-    
-    "Category": "التصنيف",
-    "SelectCategory": "اختار التصنيف",
-    
-    "SelectCurrency": "اختار العملة",
-    "Country": "الدولة",
-    "SelectCountry": "اختار الدولة",
-    "ParentProduct": "منتج رئيسي",
-    "SelectParentProduct": "اختار منتج رئيسي",
-    "None": "لا شيء",
-    "Images": "الصور",
-    "DropFiles": "أسقط الملفات هنا أو اضغط للرفع",
-    "CreateButton": "إنشاء المنتج",
-    "addedSussess": "تم إضافة المنتج بنجاح",
-      "brand": "العلامة التجارية",
-    "BrandPlaceholder": "اختر العلامة التجارية",
-     "Needs-Amount": "تحتاج للكمية؟",
-    "Amount-Info": "معلومات الكمية",
-    "Unit": "الوحدة",
-    "Weight": "الوزن",
-      "select-unit": "اختر الوحدة",
-    "select-weight": "اختر الوزن",
-    "select-price": "اختر السعر",
-    "addAmount": "إضافة كمية",
-    "addDiscount": "إضافة خصم",
-    "EditProduct": "تعديل المنتج",
-    "ExistingImages": "صور المنتج المتاحة",
-    "UpdateButton": "تحديث المنتج",
-    "AddAmount": "إضافة كمية",
-    "cancel": "اغلاق",
-    "submit": "حفظ",
-    "Start-Date": "تاريخ البدء",
-    "Select-start-date": "اختر تاريخ البدء",
-    "Duration-days": "المدة (أيام)",
-    "Enter-duration-days": "أدخل مدة الأيام",
-    "Discount-Value": "قيمة الخصم",
-    "Enter-discount-percentage": "ادخل نسبة الخصم",
-    "Is-Active": "نشط",
-    "End-Date": "تاريخ الانتهاء",
-    "Select-end-date": "اختر تاريخ الانتهاء"
->>>>>>> mostafa
   },
 
   "Footer": {
@@ -902,29 +858,6 @@
       "cityRequired": "المدينة مطلوبة",
       "countryRequired": "الدولة مطلوبة"
     },
-<<<<<<< HEAD
-=======
-     "Enter-name": "أدخل اسم العميل",
-    "Enter-email": "أدخل بريد العميل الإلكتروني",
-    "Enter-phone": "أدخل رقم هاتف العميل",
-    "Enter-role": "أدخل دور العميل",
-    "Enter-address": "أدخل عنوان العميل",
-    "Enter-password": "أدخل كلمة المرور",
-    "Enter-comfirmPassword": "أدخل تأكيد كلمة المرور",
-    "admin": "مدير",
-    "user": "مستخدم",
-    "manager": "مدير",
-    "password": "كلمة المرور",
-    "confirmPassword": "تأكيد كلمة المرور",
-    "cancel": "إلغاء",
-    "create": "إنشاء عميل"
-
-
-
-
-    
-
->>>>>>> mostafa
 
     "Enter-name": "أدخل اسم العميل",
     "Enter-email": "أدخل بريد العميل الإلكتروني",
@@ -941,5 +874,4 @@
     "cancel": "إلغاء",
     "create": "إنشاء عميل"
   }
-
 }
