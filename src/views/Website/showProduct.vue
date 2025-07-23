@@ -419,6 +419,8 @@ const addChildToCart = async (childProduct) => {
         message: response.data.message,
         type: 'success',
       });
+      cartStore.incrementCount();
+      await cartStore.fetchCartCount();
     }
   } catch (error) {
     console.error('Error adding child product to cart:', error);
