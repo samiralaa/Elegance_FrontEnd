@@ -443,10 +443,7 @@ export default defineComponent({
   margin-top: 20px;
   width: 100%;
 }
-<<<<<<< HEAD
-=======
 .table-responsive {
   overflow-x: auto;
 }
->>>>>>> mostafa
 </style>
