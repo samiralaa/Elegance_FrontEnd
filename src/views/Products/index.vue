@@ -360,7 +360,7 @@ const lang= localStorage.getItem('lang') || 'en'
 
       const res = await axios.post(BASE_URL + '/api/discounts', payload)
 
-      if (res.data.status) {
+      if (res.data) {
         ElMessage.success(lang === 'ar' ? 'تم إضافة الخصم بنجاح' : 'Discount added successfully')
         showDiscountDialog.value = false
       } else {

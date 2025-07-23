@@ -13,7 +13,7 @@
         <el-form-item :label="$t('Products.NameAr')" prop="name_ar">
           <el-input v-model="form.name_ar" />
         </el-form-item>
-        
+
         <!-- Availability -->
         <el-form-item :label="$t('Products.Availability')" prop="is_available">
           <el-switch v-model="form.is_available" active-value="1" inactive-value="0" />
@@ -23,118 +23,119 @@
 
         <el-form-item :label="$t('General.NeedsAmount')">
           <el-switch v-model="amountRequired" :active-text="$t('General.Yes')" :inactive-text="$t('General.No')" />
-
-        <el-form-item :label=" $t('Products.Needs-Amount')" prop="amountRequired">
-          <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
-
         </el-form-item>
 
-        <!-- Show amount fields conditionally -->
-        <template v-if="amountRequired">
+          <el-form-item :label="$t('Products.Needs-Amount')" prop="amountRequired">
+            <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
 
-          <el-divider content-position="left">{{$t('General.AmountInfo')}}</el-divider>
+          </el-form-item>
 
-          <el-form-item :label="$t('General.Unit')" prop="unit_id">
-            <el-select v-model="amountForm.unit_id" :placeholder="$t('General.SelectUnit')">
+          <!-- Show amount fields conditionally -->
+          <template v-if="amountRequired">
 
-          <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
+            <el-divider content-position="left">{{ $t('General.AmountInfo') }}</el-divider>
 
-          <el-form-item :label="$t('Products.Unit')" >
-            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
+            <el-form-item :label="$t('General.Unit')" prop="unit_id">
+              <el-select v-model="amountForm.unit_id" :placeholder="$t('General.SelectUnit')">
+              </el-select>
+              </el-form-item> 
+        
+                <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
+<
+                <el-form-item :label="$t('Products.Unit')">
+                  <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" filterable
+                    clearable>
 
-              <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
+
+                    <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
+                  </el-select>
+                </el-form-item>
+
+
+                <el-form-item :label="$t('General.Weight')" prop="weight">
+                  <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
+                </el-form-item>
+
+                <el-form-item :label="$t('Products.Price')" prop="price">
+                  <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
+                </el-form-item>
+
+                  <el-form-item :label="$t('Products.Weight')">
+                    <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+                  </el-form-item>
+
+                  <el-form-item :label="$t('Products.Price')">
+                    <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
+
+                  </el-form-item>
+          </template>
+
+          <!-- Price -->
+          <el-form-item v-if="!amountRequired" :label="$t('Products.Price')" prop="price">
+            <el-input v-model="form.price" type="number" />
+          </el-form-item>
+
+          <!-- Description EN -->
+          <el-form-item :label="$t('Products.DescriptionEn')" prop="description_en">
+            <el-input type="textarea" v-model="form.description_en" />
+          </el-form-item>
+
+          <!-- Description AR -->
+          <el-form-item :label="$t('Products.DescriptionAr')" prop="description_ar">
+            <el-input type="textarea" v-model="form.description_ar" />
+          </el-form-item>
+
+          <!-- Category -->
+          <el-form-item :label="$t('Products.Category')" prop="category_id">
+            <el-select v-model="form.category_id" :placeholder="$t('Products.SelectCategory')" filterable clearable>
+              <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
             </el-select>
           </el-form-item>
 
-
-          <el-form-item :label="$t('General.Weight')" prop="weight">
-            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
+          <!-- Add after category select -->
+          <el-form-item :label="$t('Products.Brand')" prop="brand_id">
+            <el-select v-model="form.brand_id" placeholder="Select Brand" filterable clearable>
+              <el-option v-for="brand in brands" :key="brand.id" :label="brand.name_en" :value="brand.id" />
+            </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Price')" prop="price">
-            <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
-
-          <el-form-item :label="$t('Products.Weight')">
-            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+          <!-- Currency -->
+          <el-form-item :label="$t('Products.Currency')" prop="currency_id">
+            <el-select v-model="form.currency_id" :placeholder="$t('Products.SelectCurrency')" filterable clearable>
+              <el-option v-for="curr in activeCurrencies" :key="curr.id" :label="getCurrencyLabel(curr)"
+                :value="curr.id" />
+            </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Price')" >
-            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
-
+          <!-- Country -->
+          <el-form-item :label="$t('Products.Country')" prop="country_id">
+            <el-select v-model="form.country_id" :placeholder="$t('Products.SelectCountry')" filterable clearable>
+              <el-option v-for="country in countries" :key="country.id" :label="country.name_en || country.name_ar"
+                :value="country.id" />
+            </el-select>
           </el-form-item>
-        </template>
 
-        <!-- Price -->
-        <el-form-item v-if="!amountRequired" :label="$t('Products.Price')" prop="price">
-          <el-input v-model="form.price" type="number" />
-        </el-form-item>
+          <!-- Parent Product -->
+          <el-form-item :label="$t('Products.ParentProduct')" prop="parent_id">
+            <el-select v-model="form.parent_id" :placeholder="$t('Products.SelectParentProduct')" clearable>
+              <el-option :label="$t('Products.None')" :value="null" />
+              <el-option v-for="parent in parentProducts" :key="parent.id" :label="parent.name_en" :value="parent.id" />
+            </el-select>
+          </el-form-item>
 
-        <!-- Description EN -->
-        <el-form-item :label="$t('Products.DescriptionEn')" prop="description_en">
-          <el-input type="textarea" v-model="form.description_en" />
-        </el-form-item>
+          <!-- Images -->
+          <el-form-item :label="$t('Products.Images')" prop="images">
+            <el-upload class="upload-demo" drag action="" :auto-upload="false" :limit="5" :file-list="fileList"
+              list-type="picture" :on-change="handleFileChange" :on-remove="handleRemove">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">{{ $t('Products.DropFiles') }}</div>
+            </el-upload>
+          </el-form-item>
 
-        <!-- Description AR -->
-        <el-form-item :label="$t('Products.DescriptionAr')" prop="description_ar">
-          <el-input type="textarea" v-model="form.description_ar" />
-        </el-form-item>
-
-        <!-- Category -->
-        <el-form-item :label="$t('Products.Category')" prop="category_id">
-          <el-select v-model="form.category_id" :placeholder="$t('Products.SelectCategory')" filterable clearable>
-            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
-          </el-select>
-        </el-form-item>
-
-        <!-- Add after category select -->
-        <el-form-item :label="$t('Products.Brand')" prop="brand_id">
-          <el-select v-model="form.brand_id" placeholder="Select Brand" filterable clearable>
-            <el-option
-              v-for="brand in brands"
-              :key="brand.id"
-              :label="brand.name_en"
-              :value="brand.id"
-            />
-          </el-select>
-        </el-form-item>
-
-        <!-- Currency -->
-        <el-form-item :label="$t('Products.Currency')" prop="currency_id">
-          <el-select v-model="form.currency_id" :placeholder="$t('Products.SelectCurrency')" filterable clearable>
-            <el-option v-for="curr in activeCurrencies" :key="curr.id" :label="getCurrencyLabel(curr)"
-              :value="curr.id" />
-          </el-select>
-        </el-form-item>
-
-        <!-- Country -->
-        <el-form-item :label="$t('Products.Country')" prop="country_id">
-          <el-select v-model="form.country_id" :placeholder="$t('Products.SelectCountry')" filterable clearable>
-            <el-option v-for="country in countries" :key="country.id" :label="country.name_en || country.name_ar"
-              :value="country.id" />
-          </el-select>
-        </el-form-item>
-
-        <!-- Parent Product -->
-        <el-form-item :label="$t('Products.ParentProduct')" prop="parent_id">
-          <el-select v-model="form.parent_id" :placeholder="$t('Products.SelectParentProduct')" clearable>
-            <el-option :label="$t('Products.None')" :value="null" />
-            <el-option v-for="parent in parentProducts" :key="parent.id" :label="parent.name_en" :value="parent.id" />
-          </el-select>
-        </el-form-item>
-
-        <!-- Images -->
-        <el-form-item :label="$t('Products.Images')" prop="images">
-          <el-upload class="upload-demo" drag action="" :auto-upload="false" :limit="5" :file-list="fileList"
-            list-type="picture" :on-change="handleFileChange" :on-remove="handleRemove">
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">{{ $t('Products.DropFiles') }}</div>
-          </el-upload>
-        </el-form-item>
-
-        <!-- Submit -->
-        <el-form-item>
-          <el-button type="primary" @click="submitForm">{{ $t('Products.CreateButton') }}</el-button>
-        </el-form-item>
+          <!-- Submit -->
+          <el-form-item>
+            <el-button type="primary" @click="submitForm">{{ $t('Products.CreateButton') }}</el-button>
+          </el-form-item>
       </el-form>
     </el-card>
   </div>
@@ -209,12 +210,12 @@ const rules = {
   brand_id: [
     { required: true, message: t('Validation.SelectBrand'), trigger: 'change' }
   ],
-  name_en: [{ required: true, message:lang === 'en' ? 'Please input product name (EN)':"من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }],
-  price: [{ required: true, message: lang=== 'en'? 'Please input product price':'من فضلك ادخل سعر المنتج', trigger: 'blur' }],
-  category_id: [{ required: true, message:lang === 'en' ? 'Please select a category' : 'من فضلك اختر فئة', trigger: 'change' }],
-  currency_id: [{ required: true, message:lang === 'en' ? 'Please select a currency' : 'من فضلك اختر عملة', trigger: 'change' }],
-  country_id: [{ required: true, message:lang === 'en' ? 'Please select a country' : 'من فضلك اختر بلد', trigger: 'change' }],
-  brand_id: [{ required: true, message:lang === 'en' ? 'Please select a brand' : 'من فضلك اختر براند', trigger: 'change' }], // Add validation
+  name_en: [{ required: true, message: lang === 'en' ? 'Please input product name (EN)' : "من فضلك ادخل اسم المنتج بالانجليزي", trigger: 'blur' }],
+  price: [{ required: true, message: lang === 'en' ? 'Please input product price' : 'من فضلك ادخل سعر المنتج', trigger: 'blur' }],
+  category_id: [{ required: true, message: lang === 'en' ? 'Please select a category' : 'من فضلك اختر فئة', trigger: 'change' }],
+  currency_id: [{ required: true, message: lang === 'en' ? 'Please select a currency' : 'من فضلك اختر عملة', trigger: 'change' }],
+  country_id: [{ required: true, message: lang === 'en' ? 'Please select a country' : 'من فضلك اختر بلد', trigger: 'change' }],
+  brand_id: [{ required: true, message: lang === 'en' ? 'Please select a brand' : 'من فضلك اختر براند', trigger: 'change' }], // Add validation
 }
 
 
@@ -333,13 +334,13 @@ onMounted(() => {
   margin-left: 8px;
 }
 
-::v-deep(.el-form-item__label){
+::v-deep(.el-form-item__label) {
   text-align: start;
-  justify-content:flex-start;
+  justify-content: flex-start;
   width: 170px !important;
 }
 
-[dir="rtl"] .el-switch{
+[dir="rtl"] .el-switch {
   flex-direction: row-reverse;
 }
 </style>
