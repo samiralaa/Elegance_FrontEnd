@@ -20,19 +20,32 @@
         </el-form-item>
 
         <!-- Manual toggle for amount -->
+
         <el-form-item :label="$t('General.NeedsAmount')">
           <el-switch v-model="amountRequired" :active-text="$t('General.Yes')" :inactive-text="$t('General.No')" />
+
+        <el-form-item :label=" $t('Products.Needs-Amount')" prop="amountRequired">
+          <el-switch v-model="amountRequired" active-text="Yes" inactive-text="No" />
+
         </el-form-item>
 
         <!-- Show amount fields conditionally -->
         <template v-if="amountRequired">
+
           <el-divider content-position="left">{{$t('General.AmountInfo')}}</el-divider>
 
           <el-form-item :label="$t('General.Unit')" prop="unit_id">
             <el-select v-model="amountForm.unit_id" :placeholder="$t('General.SelectUnit')">
+
+          <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
+
+          <el-form-item :label="$t('Products.Unit')" >
+            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
+
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
+
 
           <el-form-item :label="$t('General.Weight')" prop="weight">
             <el-input v-model="amountForm.weight" type="number" :placeholder="$t('General.EnterWeight')" />
@@ -40,6 +53,14 @@
 
           <el-form-item :label="$t('Products.Price')" prop="price">
             <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
+
+          <el-form-item :label="$t('Products.Weight')">
+            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+          </el-form-item>
+
+          <el-form-item :label="$t('Products.Price')" >
+            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
+
           </el-form-item>
         </template>
 
@@ -218,7 +239,7 @@ const fetchSelectOptions = async () => {
     parentProducts.value = parentProductRes.data.data || []
     units.value = unitRes.data.data || []
   } catch (error) {
-    ElMessage.error(lang === 'en' ? 'Failed to load options' : 'فشل تحميل الخيارات')
+    ElMessage.error(error.response?.data?.message || 'Failed to load form options')
   }
 }
 
@@ -229,7 +250,7 @@ const fetchBrands = async () => {
     const res = await axios.get('https://backend.webenia.org/api/brands')
     brands.value = Array.isArray(res.data.data) ? res.data.data : [res.data.data]
   } catch (err) {
-    ElMessage.error(lang === 'en' ? 'Failed to load brands' : 'فشل تحميل البراندات')
+    ElMessage.error('Failed to load brands')
   }
 }
 
@@ -267,13 +288,13 @@ const submitForm = () => {
       })
 
       if (res.data.status) {
-        ElMessage.success(lang === 'en' ? 'Product created successfully' : 'تم إنشاء المنتج بنجاح')
+        ElMessage.success('Product created successfully')
         router.push('/products')
       } else {
         throw new Error(res.data.message || 'Failed to create product')
       }
     } catch (err) {
-      ElMessage.error(lang === 'en' ? 'Failed to create product' : 'فشل إنشاء المنتج')
+      ElMessage.error(err.message || 'Failed to create product')
     }
   })
 }

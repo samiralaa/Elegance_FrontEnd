@@ -115,6 +115,7 @@
     },
     "brand": {
       "tagline": "لوحة تحكم مميزة"
+      
     },
     "menu": {
       "dashboard": "لوحة التحكم",
@@ -176,6 +177,7 @@
     "ForgotPassword": "هل نسيت كلمة المرور؟",
     "Login": "تسجيل الدخول",
     "incorret": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+    
   },
   "Categories": {
     "title": "الفئات",
@@ -431,14 +433,15 @@
       "to": "إلى"
     },
     "mapTitle": "نحن دائمًا جاهزون لمساعدتك والإجابة على أي أسئلة قد تكون لديك.",
-    "nameRequired": "الاسم مطلوب",
+     "nameRequired": "الاسم مطلوب",
     "emailRequired": "البريد الإلكتروني مطلوب",
     "subjectRequired": "الموضوع مطلوب",
     "messageRequired": "الرسالة مطلوبة",
-    "namePlaceholder": "أدخل اسمك",
+     "namePlaceholder": "أدخل اسمك",
     "emailPlacehodler": "أدخل بريدك الإلكتروني",
     "subjectPlaceholder": "أدخل الموضوع",
     "messagePlaceholder": "أدخل رسالتك"
+    
   },
   "products": {
     "title": "استعرض جميع المنتجات",
@@ -696,10 +699,10 @@
     "total-Products": "إجمالي المنتجات",
     "Sales-Overview": "نظرة عامة على المبيعات",
     "recent-Orders": "الطلبات الأخيرة",
-    "Today-Sales": "مبيعات اليوم",
+     "Today-Sales": "مبيعات اليوم",
     "This-Month": "هذا الشهر",
     "Last-Month": "الشهر الماضي",
-    "Order-Id": "رقم الطلب",
+     "Order-Id": "رقم الطلب",
     "Total": "الإجمالي",
     "Status": "الحالة",
     "Order-Date": "تاريخ الطلب",

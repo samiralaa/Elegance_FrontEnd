@@ -188,8 +188,7 @@ export default {
       { path: '/profile', name: 'common.menu.profile', icon: 'User' },
       // log
       { path: '/log', name: 'common.menu.log', icon: 'Document' },
-      { path: '/help', name: 'common.menu.help', icon: 'QuestionFilled' },
-      { path: '/contact', name: 'common.menu.contact', icon: 'Message' }
+      { path: '/help', name: 'common.menu.help', icon: 'QuestionFilled' }
     ]
 
     // Computed Properties

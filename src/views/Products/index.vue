@@ -12,7 +12,6 @@
         />
         <el-button type="primary" :icon="Plus" @click="openCreateDialog">{{ $t('Products.AddProduct') }}</el-button>
       </div>
-      
 
    
 
@@ -41,8 +40,6 @@
             </template>
           </el-table-column>
 
-
-
           <el-table-column prop="name_en" :label="$t('Products.NameEn')" />
           <el-table-column prop="name_ar" :label="$t('Products.NameAr')">
             <template #default="{ row }">
@@ -51,7 +48,7 @@
           </el-table-column>
           <el-table-column prop="price" :label="$t('Products.Price')" />
           <el-table-column prop="currency.name_en" :label="$t('Products.Currency')" />
-          <el-table-column :label="$t('Products.Actions')" width="250" >
+          <el-table-column :label="$t('Products.Actions')" width="250">
             <template #default="{ row }">
               
             
@@ -74,30 +71,29 @@
             </template>
           </el-table-column>
         </el-table>
-
       </el-card>
 
       <!-- Add Amount Dialog -->
-      <el-dialog v-model="showAmountDialog" :title="$t('Products.AddAmount')" width="500px">
-        <el-form :model="amountForm"  label-width="100px">
-          <el-form-item :label="$t('Products.Unit')">
-            <el-select v-model="amountForm.unit_id" :placeholder="$t('Products.select-unit')" >
+      <el-dialog v-model="showAmountDialog" title="Add Product Amount" width="500px">
+        <el-form :model="amountForm" label-width="100px">
+          <el-form-item label="Unit">
+            <el-select v-model="amountForm.unit_id" placeholder="Select Unit">
               <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Weight')">
-            <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
+          <el-form-item label="Weight">
+            <el-input v-model="amountForm.weight" type="number" placeholder="Enter weight" />
           </el-form-item>
 
-          <el-form-item :label="$t('Products.Price')">
-            <el-input v-model="amountForm.price" type="number" :placeholder="$t('Products.select-price')" />
+          <el-form-item label="Price">
+            <el-input v-model="amountForm.price" type="number" placeholder="Enter price" />
           </el-form-item>
         </el-form>
 
         <template #footer>
-          <el-button @click="showAmountDialog = false">{{ $t('Products.cancel') }}</el-button>
-          <el-button type="primary" class="mx-2" @click="submitAmount">{{ $t('Products.submit') }}</el-button>
+          <el-button @click="showAmountDialog = false">Cancel</el-button>
+          <el-button type="primary" @click="submitAmount">Submit</el-button>
         </template>
       </el-dialog>
 
