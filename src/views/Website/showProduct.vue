@@ -387,10 +387,10 @@ const addChildToCart = async (childProduct) => {
     let priceToSend = 0;
     if (childProduct.discount && childProduct.discount.is_active) {
       const discountValue = parseFloat(childProduct.discount.discount_value);
-      const originalPrice = parseFloat(childProduct.converted_price); // Always use childProduct.price
+      const originalPrice = parseFloat(childProduct.price); // Use childProduct.price
       priceToSend = originalPrice - (originalPrice * (discountValue / 100));
     } else {
-      priceToSend = parseFloat(childProduct.converted_price); // Always use childProduct.price
+      priceToSend = parseFloat(childProduct.price); // Use childProduct.price
     }
     const payload = {
       product_id: childProduct.id,

@@ -59,7 +59,7 @@
                 <el-form-item :label="$t('Products.Price')" prop="price">
                   <el-input v-model="amountForm.price" type="number" :placeholder="$t('General.EnterPrice')" />
                 </el-form-item>
-
+a
                   <el-form-item :label="$t('Products.Weight')">
                     <el-input v-model="amountForm.weight" type="number" :placeholder="$t('Products.select-weight')" />
                   </el-form-item>
