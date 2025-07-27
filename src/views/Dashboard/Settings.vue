@@ -1,7 +1,7 @@
 <template>
   <div class="container py-5">
     <div class="card shadow rounded-4 p-4 border-0">
-      <h2 class="mb-4 text-center fw-bold">إعدادات الموقع</h2>
+      <h2 class="mb-4 text-center fw-bold">{{ $t('settings.title') }}</h2>
 
       <div v-if="loading" class="text-center">
         <div class="spinner-border text-primary" role="status">
@@ -12,7 +12,7 @@
       <form v-else @submit.prevent="saveSettings">
         <!-- Category setting -->
         <div class="form-group mb-4">
-          <label class="form-label fw-semibold mb-2">عرض التصنيفات (Category)</label>
+          <label class="form-label fw-semibold mb-2">{{ $t('settings.show-categories') }}</label>
           <div class="d-flex gap-4">
             <div class="form-check">
               <input
@@ -22,7 +22,7 @@
                 :value="true"
                 v-model="settings.show_category"
               />
-              <label class="form-check-label" for="showCategoryTrue">تفعيل</label>
+              <label class="form-check-label" for="showCategoryTrue">{{ $t('settings.enable') }}</label>
             </div>
             <div class="form-check">
               <input
@@ -32,20 +32,20 @@
                 :value="false"
                 v-model="settings.show_category"
               />
-              <label class="form-check-label" for="showCategoryFalse">تعطيل</label>
+              <label class="form-check-label" for="showCategoryFalse">{{ $t('settings.disable') }}</label>
             </div>
           </div>
           <small
             class="d-block mt-2 fw-medium"
             :class="settings.show_category ? 'text-success' : 'text-danger'"
           >
-            الحالة الحالية: {{ settings.show_category ? 'مفعّل' : 'معطّل' }}
+            {{ $t('settings.current-state') }} {{ settings.show_category ?  $t('settings.enable')  :  $t('settings.disable')  }}
           </small>
         </div>
 
         <!-- Brand setting -->
         <div class="form-group mb-4">
-          <label class="form-label fw-semibold mb-2">عرض الماركات (Brand)</label>
+          <label class="form-label fw-semibold mb-2">{{ $t('settings.show-brand') }}</label>
           <div class="d-flex gap-4">
             <div class="form-check">
               <input
@@ -55,7 +55,7 @@
                 :value="true"
                 v-model="settings.show_brand"
               />
-              <label class="form-check-label" for="showBrandTrue">تفعيل</label>
+              <label class="form-check-label" for="showBrandTrue">{{ $t('settings.enable') }}</label>
             </div>
             <div class="form-check">
               <input
@@ -65,20 +65,20 @@
                 :value="false"
                 v-model="settings.show_brand"
               />
-              <label class="form-check-label" for="showBrandFalse">تعطيل</label>
+              <label class="form-check-label" for="showBrandFalse">{{ $t('settings.disable') }}</label>
             </div>
           </div>
           <small
             class="d-block mt-2 fw-medium"
             :class="settings.show_brand ? 'text-success' : 'text-danger'"
           >
-            الحالة الحالية: {{ settings.show_brand ? 'مفعّل' : 'معطّل' }}
+            {{ $t('settings.current-state') }} {{ settings.show_brand ? $t('settings.enable') : $t('settings.disable') }}
           </small>
         </div>
 
         <!-- Our Products setting -->
         <div class="form-group mb-4">
-          <label class="form-label fw-semibold mb-2">عرض المنتجات لدينا (Our Products)</label>
+          <label class="form-label fw-semibold mb-2">{{ $t('settings.show-ourProducts') }}</label>
           <div class="d-flex gap-4">
             <div class="form-check">
               <input
@@ -88,7 +88,7 @@
                 :value="true"
                 v-model="settings.show_our_products"
               />
-              <label class="form-check-label" for="showOurProductsTrue">تفعيل</label>
+              <label class="form-check-label" for="showOurProductsTrue">{{ $t('settings.enable') }}</label>
             </div>
             <div class="form-check">
               <input
@@ -98,20 +98,20 @@
                 :value="false"
                 v-model="settings.show_our_products"
               />
-              <label class="form-check-label" for="showOurProductsFalse">تعطيل</label>
+              <label class="form-check-label" for="showOurProductsFalse">{{ $t('settings.disable') }}</label>
             </div>
           </div>
           <small
             class="d-block mt-2 fw-medium"
             :class="settings.show_our_products ? 'text-success' : 'text-danger'"
           >
-            الحالة الحالية: {{ settings.show_our_products ? 'مفعّل' : 'معطّل' }}
+            {{ $t('settings.current-state') }} {{ settings.show_our_products ? $t('settings.enable') : $t('settings.disable') }}
           </small>
         </div>
 
         <!-- Latest Products setting -->
         <div class="form-group mb-4">
-          <label class="form-label fw-semibold mb-2">عرض المنتجات الجديدة (Latest Products)</label>
+          <label class="form-label fw-semibold mb-2">{{ $t('settings.show-newProducts') }}</label>
           <div class="d-flex gap-4">
             <div class="form-check">
               <input
@@ -121,7 +121,7 @@
                 :value="true"
                 v-model="settings.show_latest_products"
               />
-              <label class="form-check-label" for="showLatestProductsTrue">تفعيل</label>
+              <label class="form-check-label" for="showLatestProductsTrue">{{ $t('settings.enable') }}</label>
             </div>
             <div class="form-check">
               <input
@@ -131,20 +131,20 @@
                 :value="false"
                 v-model="settings.show_latest_products"
               />
-              <label class="form-check-label" for="showLatestProductsFalse">تعطيل</label>
+              <label class="form-check-label" for="showLatestProductsFalse">{{ $t('settings.disable') }}</label>
             </div>
           </div>
           <small
             class="d-block mt-2 fw-medium"
             :class="settings.show_latest_products ? 'text-success' : 'text-danger'"
           >
-            الحالة الحالية: {{ settings.show_latest_products ? 'مفعّل' : 'معطّل' }}
+            {{ $t('settings.current-state') }} {{ settings.show_latest_products ? $t('settings.enable') : $t('settings.disable') }}
           </small>
         </div>
 
         <!-- Best Selling Products setting -->
         <div class="form-group mb-4">
-          <label class="form-label fw-semibold mb-2">عرض المنتجات الأكثر مبيعًا (Best Selling Products)</label>
+          <label class="form-label fw-semibold mb-2">{{ $t('settings.show-bestSellings') }}</label>
           <div class="d-flex gap-4">
             <div class="form-check">
               <input
@@ -154,7 +154,7 @@
                 :value="true"
                 v-model="settings.show_best_selling_products"
               />
-              <label class="form-check-label" for="showBestSellingProductsTrue">تفعيل</label>
+              <label class="form-check-label" for="showBestSellingProductsTrue">{{ $t('settings.enable') }}</label>
             </div>
             <div class="form-check">
               <input
@@ -164,21 +164,21 @@
                 :value="false"
                 v-model="settings.show_best_selling_products"
               />
-              <label class="form-check-label" for="showBestSellingProductsFalse">تعطيل</label>
+              <label class="form-check-label" for="showBestSellingProductsFalse">{{ $t('settings.disable') }}</label>
             </div>
           </div>
           <small
             class="d-block mt-2 fw-medium"
             :class="settings.show_best_selling_products ? 'text-success' : 'text-danger'"
           >
-            الحالة الحالية: {{ settings.show_best_selling_products ? 'مفعّل' : 'معطّل' }}
+            {{ $t('settings.current-state') }} {{ settings.show_best_selling_products ? $t('settings.enable') : $t('settings.disable') }}
           </small>
         </div>
 
         <!-- Save Button -->
         <div class="text-center">
           <button type="submit" class="btn btn-primary px-5 py-2 rounded-3 shadow-sm">
-            حفظ التغييرات
+            {{ $t('settings.saveChanges') }}
           </button>
         </div>
 
@@ -254,7 +254,7 @@ export default {
 
   axios.post('/api/settings', updatedSettings)
     .then(response => {
-      this.message = response.data.message || 'تم الحفظ بنجاح';
+      this.message = localStorage.getItem('lang')=== 'ar' ? 'تم الحفظ بنجاح' : 'Settings saved successfully';
       this.errors = [];  // Clear any previous errors
     })
     .catch(error => {

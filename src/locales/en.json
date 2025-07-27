@@ -297,7 +297,8 @@
     "Is-Active": "Is Active",
     "End-Date": "End Date",
     "Select-end-date": "Select End Date",
-    "SearchPlaceholder": "Search for products..."
+    "SearchPlaceholder": "Search for products...",
+    "RemoveAmount": "Remove Amount"
   },
   
   "Footer": {
@@ -852,6 +853,46 @@
     "IPAddress": "IP Address",
     "BrowserInfo": "Browser Info",
     "Timestamp": "Timestamp"
+  },
+  "settings":{
+    "title": "Settings",
+    "show-categories": "Show Categories (Category)",
+    "show-brand": "Show Brands (Brand)",
+    "show-ourProducts": "Show Our Products (Our Products)",
+    "show-newProducts": "Show New Products (Latest Products)",
+    "show-bestSellings": "Show Best Selling Products (Best Selling Products)",
+    "enable": "Enable",
+    "disable": "Disable",
+    "saveChanges": "Save Changes",
+    "successMessage": "Settings updated successfully",
+    "current-state": "Current State :"
+  },
+  "help":{
+    "title": "Help & Support",
+    "faq": "Frequently Asked Questions",
+    "resetPassword":"How do I reset my password ?",
+    "resetPasswordAnswer": "You can reset your password by clicking on the 'Forgot Password' link on the login page. Follow the instructions sent to your email to create a new password.",
+    "newBrand": "How do I add a new brand?",
+    "newBrandAnswer": "To add a new brand, navigate to the Brands page and click on the 'Add New Brand' button. Fill in the required information in the form and submit.",
+    "exportData": "Can I export my data?",
+    "exportDataAnswer": "Yes, you can export your data in various formats including CSV, Excel, and PDF from most pages that display tabular data. Look for the export button in the table header.",
+    "updateProfile":"How do I update my profile information?",
+    "updateProfileAnswer": "You can update your profile information by navigating to the Profile page from the dropdown menu in the top-right corner. Edit your information and click 'Save Changes'.",
+    "inviteNewUser":"How can I invite new users to the platform?",
+    "inviteNewUserAnswer": "Administrators can invite new users from the Settings > Users page. Click on 'Invite User' and enter their email address and role.",
+    "contactSupport":{
+      "title": "Contact Support",
+      "subtitle": "Need additional help? Our support team is available to assist you.",
+      "Subject": "Subject",
+      "Description":"Description",
+      "Priority":{
+        "Priority": "Priority",
+        "High": "High",
+        "Medium": "Medium",
+        "Low": "Low"
+      },
+      "Submit": "Submit Request"
+    } 
   }
  
 

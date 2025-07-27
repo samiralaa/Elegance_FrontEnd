@@ -49,36 +49,7 @@
             </form>
           </div>
           
-          <div class="help-section">
-            <h2>Documentation</h2>
-            <p>Browse our documentation to learn more about using Elegance.</p>
-            
-            <div class="doc-links">
-              <a href="#" class="doc-link">
-                <i class="doc-icon">📄</i>
-                <div class="doc-info">
-                  <h4>Getting Started Guide</h4>
-                  <p>Learn the basics of using Elegance</p>
-                </div>
-              </a>
-              
-              <a href="#" class="doc-link">
-                <i class="doc-icon">🔧</i>
-                <div class="doc-info">
-                  <h4>Administrator Manual</h4>
-                  <p>Detailed guide for system administrators</p>
-                </div>
-              </a>
-              
-              <a href="#" class="doc-link">
-                <i class="doc-icon">📊</i>
-                <div class="doc-info">
-                  <h4>Reports & Analytics</h4>
-                  <p>Learn how to generate and interpret reports</p>
-                </div>
-              </a>
-            </div>
-          </div>
+         
         </div>
       </div>
     </div>
@@ -86,13 +57,18 @@
 </template>
 
 <script>
+import { useStore } from 'vuex'
 export default {
   name: 'HelpView',
+
+setup(){
+  const store = useStore()
+},
   data() {
     return {
       faqs: [
         {
-          question: 'How do I reset my password?',
+          question:'How do I reset my password?',
           answer: 'You can reset your password by clicking on the "Forgot Password" link on the login page. Follow the instructions sent to your email to create a new password.',
           isOpen: false
         },
@@ -124,6 +100,7 @@ export default {
       }
     }
   },
+  
   methods: {
     toggleFaq(index) {
       this.faqs[index].isOpen = !this.faqs[index].isOpen

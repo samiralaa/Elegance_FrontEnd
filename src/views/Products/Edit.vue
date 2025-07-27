@@ -14,10 +14,7 @@
           <el-input v-model="form.name_ar" />
         </el-form-item>
 
-        <!-- Toggle for Amount -->
-        <el-form-item :label="$t('Products.Needs-Amount')">
-          <el-switch v-model="form.amount_required" active-text="Yes" inactive-text="No" dir="ltr" class="mx-3" />
-        </el-form-item>
+       
 
         <template v-if="form.amounts">
           <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
@@ -46,6 +43,10 @@
           }}</el-button>
         </template>
 
+         <!-- Toggle for Amount -->
+        <el-form-item :label="$t('Products.Needs-Amount')">
+          <el-switch v-model="form.amount_required" active-text="Yes" inactive-text="No" dir="ltr" class="mx-3" />
+        </el-form-item>
 
         <template v-if="form.amount_required">
           <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
@@ -182,7 +183,18 @@ const addAmount = () => {
 }
 
 const removeAmount = (index) => {
-  form.value.amounts.splice(index, 1)
+  if (form.value.amounts.length <= 1) {
+    ElMessage.warning(localStorage.getItem('lang') === 'ar' ? 'يجب عليك حفظ كمية واحدة على الاقل' : 'At least one amount entry is required.')
+    return ;
+  }
+ const confirmation =  confirm(localStorage.getItem('lang') === 'ar' ? 'سيتم حذف الكمية' : 'The amount will be deleted')
+ if (!confirmation) {
+    return;
+  
+ }else{
+
+   form.value.amounts.splice(index, 1)
+ }
 }
 const rules = {
   name_en: [{ required: true, message: 'Required', trigger: 'blur' }],
