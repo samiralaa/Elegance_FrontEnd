@@ -207,7 +207,7 @@
     "CreateButton": "Create Category",
     "Categories": "Categories",
     "addCategory": "Add Category",
-    "editCategory": "Edit Category",
+    "EditCategory": "Edit Category",
     "name": "name",
     "Brand": "Brand",
     "DescriptionAr": "description (AR)",
@@ -215,7 +215,7 @@
     "Actions": "Actions",
     "Selected-Brand": "Selected Brand ID",
     "Image": "Image",
-    
+    "UpdateButton": "Update Category",
     "Status": "Status",
     "Products": "Products",
     "description": "Description",

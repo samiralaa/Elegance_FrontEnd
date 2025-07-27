@@ -25,7 +25,7 @@
         <el-table v-loading="loading" :data="filteredProducts"   class="table-responsivew" style="height: 70vh" dir="ltr" >
           <el-table-column :label="$t('Products.Image')" width="120">
             <template #default="{ row }">
-              <el-image v-if="row.images && row.images.length > 0" :src="BASE_URL + '/' + row.images[0].path" fit="cover"
+              <el-image v-if="row.images && row.images.length > 0" :src="BASE_URL + '/public/storage/' + row.images[0].path" fit="cover"
                 class="product-image" :preview-src-list="[BASE_URL + '/public/storage/' + row.images[0].path]" :initial-index="0"
                 preview-teleported>
                 <template #error>

@@ -4,10 +4,10 @@
     <div class="payment-methods">
       <button :disabled="method.name === 'Tabby' && currency === 'USD'" v-for="method in paymentMethods" :key="method.id" class="payment-method"
         :class="{active: selectedPaymentMethod === method.id , [method.class]: currency === 'USD'}" @click="selectPaymentMethod(method.id)">
-        <svg height="40" width="40" :style="method.style">
+        <!-- <svg height="40" width="40" :style="method.style">
           <use  :xlink:href="method.icon"></use>
-        </svg>
-
+        </svg> -->
+      <img :src="method.icon" :alt="method.name" :style="method.style" height="40" width="40">
         <span>{{ method.name }}</span>
       </button>
     </div>
@@ -83,9 +83,9 @@ export default {
     return {
       selectedPaymentMethod: null,
       paymentMethods: [
-        { id: 1, name: 'Stripe', icon: 'src/assets/images/payment/stripe.svg', class: '',style: 'border-radius: 50%;' },
-        { id: 2, name: 'Tabby', icon: 'src/assets/images/payment/tabby.svg', class: 'tappy-disabled',style: 'border-radius: 50%;' },
-        { id: 3, name: 'Cash on Delivery', icon: 'src/assets/images/payment/cash.svg', class: '',style: '' }
+        { id: 1, name: 'Stripe', icon: 'src/assets/images/payment/strappi.png', class: '',style: 'border-radius: 50%;' },
+        { id: 2, name: 'Tabby', icon: 'src/assets/images/payment/tabby.png', class: 'tappy-disabled',style: 'border-radius: 50%;' },
+        { id: 3, name: 'Cash on Delivery', icon: 'src/assets/images/payment/cash.png', class: '',style: '' }
       ],
       loading: false,
       stripePromise: null,

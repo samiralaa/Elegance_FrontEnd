@@ -22,7 +22,8 @@
 
         <div class="form-group">
           <label>{{ $t('Categories.DescriptionEn') }}</label>
-          <textarea v-model="form.description" required class="form-input form-textarea"></textarea>
+          <textarea v-model="form.description_en" required class="form-input form-textarea"></textarea>
+          
         </div>
 
         <div class="form-group">
@@ -48,7 +49,7 @@
           </el-select>
         </div>
         <div class="form-group">
-          <label>Selected Brand ID</label>
+          <label>{{ $t('Categories.Selected-Brand') }}</label>
           <input class="form-input" :value="form.brand_id" readonly />
         </div>
         <div class="form-group">
@@ -61,6 +62,7 @@
           <p class="preview-title">{{ $t('Categories.ImagePreview') }}</p>
           <div class="image-preview">
             <img :src="imagePreview" alt="Image Preview" />
+
           </div>
         </div>
         <button type="submit" class="submit-button">{{ $t('Categories.UpdateButton') }}</button>
@@ -80,7 +82,7 @@ export default {
       form: {
         name: '',
         name_ar: '',
-        description: '',
+        description_en: '',
         description_ar: '',
         brand_id: '',
         image: null,
@@ -90,6 +92,7 @@ export default {
       successMessage: '',
       errorMessage: '',
       loading: false,
+      domain_Img: 'https://backend.webenia.org/public/storage/',
     }
   },
   created() {
@@ -126,17 +129,23 @@ export default {
         const response = await axios.get(`https://backend.webenia.org/api/categories/${id}`)
         if (response.data.status && response.data.data) {
           const cat = response.data.data
+          console.log('Fetched category:', cat);
+          
           this.form = {
             name: cat.name_en || '',
             name_ar: cat.name_ar || '',
-            description: cat.description_en || '',
+            description_en: cat.description_en || '',
             description_ar: cat.description_ar || '',
             brand_id: cat.brand_id || '',
             image: null,
           }
-          if (cat.image) {
-            this.imagePreview = cat.image
+  
+          if (cat.images) {
+            this.imagePreview = `${this.domain_Img}${cat.images[0]?.path || ''}`
+            
+            
           }
+          
         } else {
           throw new Error(response.data.message || 'Failed to fetch category')
         }
@@ -144,6 +153,7 @@ export default {
         this.errorMessage = error.response?.data?.message || error.message || 'An error occurred while fetching the category.'
       } finally {
         this.loading = false
+        
       }
     },
     onFileChange(event) {
@@ -164,7 +174,7 @@ export default {
         const formData = new FormData()
         formData.append('name_en', this.form.name)
         formData.append('name_ar', this.form.name_ar)
-        formData.append('description_en', this.form.description)
+        formData.append('description_en', this.form.description_en)
         formData.append('description_ar', this.form.description_ar)
         formData.append('brand_id', this.form.brand_id)
         if (this.form.image) {
@@ -174,6 +184,9 @@ export default {
         if (tokenData?.token) {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
+        
+        console.log('Submitting category with form data:', formData);
+        
         const id = this.$route.params.id
         const response = await axios.post(`https://backend.webenia.org/api/categories/${id}`, formData, {
           headers: {

@@ -17,12 +17,12 @@
     <div v-else class="table-container">
       <el-table :data="brands" style="width: 100%" :border="true" v-loading="loading">
         <el-table-column :label="$t('Brands.Logo')" min-width="200" :resizable="true">
-          <template #default="scope">
+          <template #default="{row}">
             <div class="d-flex align-center brand-name">
-              <div class="brand-logo-container" @click="previewImage(scope.row)">
+              <div class="brand-logo-container" @click="previewImage(row)">
                 <el-avatar :size="120" class="brand-logo">
-                  <el-image v-if="scope.row.media && scope.row.media.length > 0" :src="scope.row.media[0].original_url"
-                    class="logo-img" :preview-src-list="[scope.row.media[0].original_url]" />
+                  <el-image v-if="row.images" :src="'https://backend.webenia.org' + '/public/storage/' + row.images[0].path" fit="cover"
+                    class="logo-img" :preview-src-list="['https://backend.webenia.org' + '/public/storage/' + row.images[0].path]" />
                   <el-icon v-else size="24" color="#909399">
                     <Picture />
                   </el-icon>
@@ -167,7 +167,7 @@ import axios from 'axios'
 // Create axios instance with default config
 const api = axios.create({
 
-  baseURL: 'https://backend.webenia.org/api',
+  baseURL: 'https://backend.webenia.org',
 
   headers: {
     'Accept': 'application/json',
@@ -388,8 +388,10 @@ export default defineComponent({
     }
 
     const previewImage = (brand) => {
-      if (brand.media && brand.media.length > 0) {
-        const imageUrl = brand.media[0].original_url
+      if (brand.images && brand.images.length > 0) {
+        const imageUrl = `https://backend.webenia.org/public/storage/${brand.images[0].path}`; 
+        console.log('Previewing image:', imageUrl);
+        
         window.open(imageUrl, '_blank')
       }
     }

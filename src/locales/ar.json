@@ -214,6 +214,7 @@
     "DescriptionEn":"الوصف (إنجليزي)",
     "DescriptionAr":"الوصف (عربي)",
     "Products":"المنتجات",
+    "UpdateButton": "تحديث الفئة",
     "DeleteConfirm":"هل أنت متأكد من حذف هذه الفئة؟",
     "DeleteSuccess":"تم حذف الفئة بنجاح",
     "UpdateSuccess":"تم تحديث الفئة بنجاح",
