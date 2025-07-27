@@ -19,7 +19,7 @@
                 </span>
               </div>
               <span class="price-new">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
-  
+
               <button @click="toggleFavorite(product)" class="love-btn btn rounded-circle shadow-sm btn-light"
                 :class="isInFavorites(product.id) ? 'text-danger' : ''"
                 :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
@@ -40,14 +40,16 @@
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
                     :class="{ active: selectedAmountIndex === index }" @click="setActive(index, amount)">
-                    <p>{{ direction === 'rtl' ? amount.weight + '' +  amount.unit.name_en     : amount.weight + ' ' + amount.unit.name_en }} For {{ amount.converted_price }} {{ product.currency_code }}</p>
+                    <p>{{ direction === 'rtl' ? amount.weight + '' + amount.unit.name_en : amount.weight + ' ' +
+                      amount.unit.name_en }} For {{ amount.converted_price }} {{ product.currency_code }}</p>
                   </div>
                 </div>
               </div>
               <div v-if="selectedAmount" class="amount-details" style="margin-top: 1rem;">
                 <p>
                   <strong>{{ $t('amount.selected') }}:</strong>
-                  {{direction ==='rtl' ?  selectedAmount.weight + ""+ selectedAmount.unit.name_en : selectedAmount.unit.name_en +' '+ selectedAmount.weight    }} -
+                  {{ direction === 'rtl' ? selectedAmount.weight + "" + selectedAmount.unit.name_en :
+                    selectedAmount.unit.name_en + ' ' + selectedAmount.weight }} -
                   {{ selectedAmount.converted_price }} {{ product.currency_code }}
                 </p>
                 <!-- Add more details here if needed -->
@@ -67,8 +69,8 @@
                   <el-button size="small" @click="decreaseQty" :disabled="quantity <= minQuantity" class="qty-btn">
                     <fa icon="minus" />
                   </el-button>
-                  <input dir="ltr" class="form-control qty-number" type="number" min="1" max="99" v-model.number="quantity"
-                    @input="quantity = Math.min(quantity)">
+                  <input dir="ltr" class="form-control qty-number" type="number" min="1" max="99"
+                    v-model.number="quantity" @input="quantity = Math.min(quantity)">
                   <el-button size="small" @click="increaseQty" :disabled="quantity >= maxQuantity" class="qty-btn">
                     <fa icon="plus" />
                   </el-button>
@@ -295,8 +297,8 @@ const addToCart = async () => {
     if (selectedAmount.value) {
       payload.amount_id = selectedAmount.value.id;
     }
-    
-    
+
+
     const response = await axios.post(
       'https://backend.webenia.org/api/cart-items',
       payload,
@@ -307,12 +309,12 @@ const addToCart = async () => {
       }
     );
     if (response.data.status) {
-      
-       ElNotification({
-          title: t('success'),
-          message: t('Products.addedSussess') ,
-          type: 'success',
-        })
+
+      ElNotification({
+        title: t('success'),
+        message: t('Products.addedSussess'),
+        type: 'success',
+      })
       cartStore.incrementCount();
       await cartStore.fetchCartCount();
     } else {
@@ -388,7 +390,7 @@ const addChildToCart = async (childProduct) => {
     if (childProduct.discount && childProduct.discount.is_active) {
       const discountValue = parseFloat(childProduct.discount.discount_value);
       const originalPrice = parseFloat(childProduct.price); // Use childProduct.price
-      priceToSend = originalPrice - (originalPrice * (discountValue / 100));nee
+      priceToSend = originalPrice - (originalPrice * (discountValue / 100)); nee
     } else {
       priceToSend = parseFloat(childProduct.price); // Use childProduct.price
     }
@@ -693,17 +695,17 @@ const selectedAmount = computed(() => {
 
 // Add this computed property for discount logic
 const discountedPriceToShow = computed(() => {
-  let basePrice ;
-   basePrice = selectedAmount.value ? parseFloat(selectedAmount.value?.converted_price) : parseFloat(product.value.converted_price);
+  let basePrice;
+  basePrice = selectedAmount.value ? parseFloat(selectedAmount.value?.converted_price) : parseFloat(product.value.converted_price);
 
-    if (product.value.discount && product.value.discount.is_active) {
+  if (product.value.discount && product.value.discount.is_active) {
     const discountValue = parseFloat(product.value.discount.discount_value);
-  
-     basePrice = basePrice - (basePrice * (discountValue / 100))
-    
+
+    basePrice = basePrice - (basePrice * (discountValue / 100))
+
     return basePrice.toFixed(2);
   }
-  
+
   return basePrice;
 });
 
@@ -1376,7 +1378,7 @@ input[type=number]::-webkit-outer-spin-button {
   cursor: not-allowed;
 }
 
-.love-btn{
+.love-btn {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -1386,6 +1388,7 @@ input[type=number]::-webkit-outer-spin-button {
   left: auto;
   right: 10px;
 }
+
 [dir="ltr"] .reset {
   left: auto;
   right: 10px;

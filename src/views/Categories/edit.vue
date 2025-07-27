@@ -47,10 +47,7 @@
             />
           </el-select>
         </div>
-        <div class="form-group">
-          <label>Selected Brand ID</label>
-          <input class="form-input" :value="form.brand_id" readonly />
-        </div>
+       
         <div class="form-group">
           <label>{{ $t('Categories.Image') }}</label>
           <div class="file-input-wrapper">
