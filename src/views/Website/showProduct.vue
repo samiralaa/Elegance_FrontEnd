@@ -280,7 +280,7 @@ const addToCart = async () => {
     if (selectedAmount.value) {
       priceToSend = parseFloat(selectedAmount.value?.price);
     } else {
-      priceToSend = parseFloat(product.value.converted_price);
+      priceToSend = parseFloat(product.value.price);
     }
     // Apply discount if active
     if (product.value.discount && product.value.discount.is_active) {
@@ -388,7 +388,7 @@ const addChildToCart = async (childProduct) => {
     if (childProduct.discount && childProduct.discount.is_active) {
       const discountValue = parseFloat(childProduct.discount.discount_value);
       const originalPrice = parseFloat(childProduct.price); // Use childProduct.price
-      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
+      priceToSend = originalPrice - (originalPrice * (discountValue / 100));nee
     } else {
       priceToSend = parseFloat(childProduct.price); // Use childProduct.price
     }
