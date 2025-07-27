@@ -839,9 +839,19 @@
     
 
 
-  }
+  },
  
 
-  
+  "Logs":{
+    "Logs": "سجلات",
+    "User": "المستخدم",
+    "Operation": "العملية",
+    "Model": "النوع",
+    "ModelID": "معرف النوع",
+    "Description": "الوصف",
+    "IPAddress": "عنوان IP",
+    "BrowserInfo": "معلومات المتصفح",
+    "Timestamp": "الوقت"
+  }
 
 }
