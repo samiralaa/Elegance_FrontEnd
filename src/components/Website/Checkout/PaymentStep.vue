@@ -83,9 +83,9 @@ export default {
     return {
       selectedPaymentMethod: null,
       paymentMethods: [
-        { id: 1, name: 'Stripe', icon: 'src/assets/images/payment/strappi.png', class: '',style: 'border-radius: 50%;' },
-        { id: 2, name: 'Tabby', icon: 'src/assets/images/payment/tabby.png', class: 'tappy-disabled',style: 'border-radius: 50%;' },
-        { id: 3, name: 'Cash on Delivery', icon: 'src/assets/images/payment/cash.png', class: '',style: '' }
+        { id: 1, name: 'Stripe', icon: 'assets/strappi.png', class: '',style: 'border-radius: 50%;' },
+        { id: 2, name: 'Tabby', icon: 'assets/tabby.png', class: 'tappy-disabled',style: 'border-radius: 50%;' },
+        { id: 3, name: 'Cash on Delivery', icon: 'assets/cash.png', class: '',style: '' }
       ],
       loading: false,
       stripePromise: null,
