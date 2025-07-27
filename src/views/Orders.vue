@@ -74,7 +74,7 @@
         <el-table-column prop="quantity" :label="$t('orders.quantity')" />
         <el-table-column prop="price" :label="$t('orders.price')">
           <template #default="scope">
-            ${{ scope.row.price }}
+         {{ scope.row.price }} {{ selectedOrder.currency }} × {{ scope.row.quantity }}
           </template>
         </el-table-column>
         <el-table-column prop="subtotal" :label="$t('orders.Subtotal')">
@@ -83,6 +83,35 @@
           </template>
         </el-table-column>
       </el-table>
+      <template #footer>
+        <el-button type="primary" @click="printInvoice" v-if="selectedOrder">{{ $t('orders.printInvoice') || 'Print Invoice' }}</el-button>
+      </template>
+      <!-- Hidden invoice template for printing -->
+      <div id="invoice-print" style="display:none">
+        <h2>{{ $t('orders.invoice') || 'Invoice' }}</h2>
+        <p>{{ $t('orders.orderId') }}: {{ selectedOrder.id }}</p>
+        <p>{{ $t('orders.orderDate') }}: {{ formatDate(selectedOrder.ordered_at) }}</p>
+        <p>{{ $t('orders.status') }}: {{ selectedOrder.status }}</p>
+        <p>{{ $t('orders.total') }}: {{ selectedOrder.currency }} {{ selectedOrder.total_price }}</p>
+        <table style="width:100%;border-collapse:collapse" border="1">
+          <thead>
+            <tr>
+              <th>{{ $t('orders.orderId') }}</th>
+              <th>{{ $t('orders.quantity') }}</th>
+              <th>{{ $t('orders.price') }}</th>
+              <th>{{ $t('orders.Subtotal') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in selectedOrder.items" :key="item.id">
+              <td>{{ item.product_id }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.price }} {{ selectedOrder.currency }}</td>
+              <td>{{ item.subtotal }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </el-dialog>
     <!-- Debug output -->
 
@@ -158,6 +187,23 @@ const handlePageChange = (page) => {
 const viewOrder = (order) => {
   selectedOrder.value = order
   showDetails.value = true
+}
+
+const printInvoice = () => {
+  // Clone the invoice template
+  const invoice = document.getElementById('invoice-print').cloneNode(true)
+  invoice.style.display = 'block'
+  // Create a new window for printing
+  const printWindow = window.open('', '', 'width=800,height=600')
+  printWindow.document.write('<html><head><title>Invoice</title>')
+  printWindow.document.write('<style>body{font-family:sans-serif;} table{margin-top:16px;} th,td{padding:8px;}</style>')
+  printWindow.document.write('</head><body>')
+  printWindow.document.write(invoice.innerHTML)
+  printWindow.document.write('</body></html>')
+  printWindow.document.close()
+  printWindow.focus()
+  printWindow.print()
+  printWindow.close()
 }
 
 const formatDate = (dateStr) => {
