@@ -298,7 +298,10 @@
     "End-Date": "End Date",
     "Select-end-date": "Select End Date",
     "SearchPlaceholder": "Search for products...",
-    "RemoveAmount": "Remove Amount"
+    "RemoveAmount": "Remove Amount",
+    "discountInfo": "Discount Info",
+    "discount": "Discount",
+    "removeDiscount": "Remove Discount"
   },
   
   "Footer": {

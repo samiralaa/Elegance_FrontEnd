@@ -307,7 +307,10 @@
     "End-Date": "تاريخ الانتهاء",
     "Select-end-date": "اختر تاريخ الانتهاء",
     "SearchPlaceholder": "ابحث عن المنتجات...",
-    "RemoveAmount": "إزالة الكمية"
+    "RemoveAmount": "إزالة الكمية",
+    "discountInfo": "معلومات الخصم",
+    "discount": "الخصم",
+    "removeDiscount": "إزالة الخصم"
   },
 
   "Footer": {

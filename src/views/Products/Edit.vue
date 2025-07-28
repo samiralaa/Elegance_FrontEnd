@@ -17,9 +17,9 @@
        
 
         <template v-if="form.amounts">
-          <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
-
+          
           <div v-for="(amount, index) in form.amounts" :key="index" class="amount-entry mb-3">
+            <el-divider content-position="left">{{ $t('Products.Amount-Info') }}</el-divider>
             <el-form-item :label="$t('Products.Unit')" :prop="`amounts.${index}.unit_id`">
               <el-select v-model="amount.unit_id" :placeholder="$t('Products.select-unit')" filterable clearable>
                 <el-option v-for="unit in units" :key="unit.id" :label="unit.name_en" :value="unit.id" />
@@ -36,15 +36,64 @@
 
             <el-button type="danger" @click="removeAmount(index)" icon="el-icon-delete" v-if="form.amounts.length > 0">{{ $t('Products.RemoveAmount')
             }}</el-button>
-            <el-divider />
+            <el-button type="success" plain @click="addAmount" icon="el-icon-plus" v-if="form.amounts.length > 0">{{ $t('Products.AddAmount')
+            }}</el-button>
           </div>
-
-          <el-button type="success" plain @click="addAmount" icon="el-icon-plus" v-if="form.amounts.length > 0">{{ $t('Products.AddAmount')
-          }}</el-button>
+          
         </template>
 
+        <el-form-item :label="$t('Products.discount')" prop="discount.value">
+          <el-switch v-model="form.discount.is_active" active-text="Yes" inactive-text="No" />
+        </el-form-item>
+
+        <template v-if="form.discount && form.discount.is_active">
+          <div class="amount-entry mb-3">
+            <el-divider content-position="left">{{ $t('Products.discountInfo') }}</el-divider>
+
+
+            <template v-if="form.discount.is_active">
+              <el-form-item :label="$t('Products.Discount-Value')" prop="discount.value">
+                <el-input v-model="form.discount.value" type="number" />
+              </el-form-item>
+
+              <el-form-item :label="$t('Products.Start-Date')" prop="discount.startDate">
+                <el-date-picker
+                  v-model="form.discount.startDate"
+                  type="date"
+                  format="YYYY-MM-DD"
+                  value-format="YYYY-MM-DD"
+                  placeholder="Pick start date"
+                  style="width: 100%;"
+                />
+              </el-form-item>
+
+              <el-form-item :label="$t('Products.End-Date')" prop="discount.endDate">
+                <el-date-picker
+                  v-model="form.discount.endDate"
+                  type="date"
+                  format="YYYY-MM-DD"
+                  value-format="YYYY-MM-DD"
+                  placeholder="Pick end date"
+                  style="width: 100%;"
+                />
+              </el-form-item>
+
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                v-if="form.discount.value"
+                @click="removeDiscount"
+              >
+                {{ $t('Products.removeDiscount') }}
+              </el-button>
+              <el-divider />
+            </template>
+          </div>
+        </template>
+
+
          <!-- Toggle for Amount -->
-        <el-form-item :label="$t('Products.Needs-Amount')">
+        <el-form-item v-if="!form.amounts.length > 0" :label="$t('Products.Needs-Amount')">
           <el-switch v-model="form.amount_required" active-text="Yes" inactive-text="No" dir="ltr" class="mx-3" />
         </el-form-item>
 
@@ -70,7 +119,7 @@
         </template>
 
         <!-- Price -->
-        <el-form-item v-if="!form.amount_required" :label="$t('Products.Price')" prop="price">
+        <el-form-item v-if="!form.amounts" :label="$t('Products.Price')" prop="price">
           <el-input v-model="form.price" type="number" />
         </el-form-item>
 
@@ -173,6 +222,14 @@ const form = ref({
   unit_id: null,
   weight: null,
   amount_price: null,
+  discount: {
+    id: null,
+    value: null,
+    startDate: null,
+    endDate: null,
+    is_active: false
+  }
+
 })
 const addAmount = () => {
   form.value.amounts.push({
@@ -269,6 +326,22 @@ const fetchProduct = async () => {
       path: img.path,
       url: getImageUrl(img.path)
     }))
+    form.value.discount = product.discount
+      ? {
+          id: product.discount.id,
+          value: parseFloat(product.discount.discount_value),
+          startDate: product.discount.start_date?.split('T')[0],
+          endDate: product.discount.end_date?.split('T')[0],
+          is_active: product.discount.is_active,
+        }
+      : {
+          id: null,
+          value: null,
+          startDate: null,
+          endDate: null,
+          is_active: false
+        };
+
 
     // Fetch categories and currencies
     const [catRes, currRes] = await Promise.all([
@@ -309,6 +382,14 @@ const submitForm = () => {
         formData.append('existing_images[]', img.id)
       }
     })
+    if (form.value.discount.value) {
+      formData.append('discount[value]', form.value.discount.value)
+      formData.append('discount[startDate]', form.value.discount.startDate)
+      formData.append('discount[endDate]', form.value.discount.endDate)
+      if (form.value.discount.id) {
+        formData.append('discount[id]', form.value.discount.id)
+      }
+    }
     const token = JSON.parse(localStorage.getItem('tokenData'))?.token
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     await axios.post(`${BASE_URL}/api/products/${productId}?_method=PUT`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
@@ -316,6 +397,23 @@ const submitForm = () => {
     router.push('/products')
   })
 }
+
+const removeDiscount = () => {
+  const confirmation = confirm(localStorage.getItem('lang') === 'ar'
+    ? 'سيتم حذف الخصم'
+    : 'The discount will be deleted');
+
+  if (!confirmation) return;
+
+  form.value.discount = {
+    id: null,
+    value: null,
+    startDate: null,
+    endDate: null,
+    is_active: false
+  };
+}
+
 
 onMounted(() => {
   fetchOptions()
