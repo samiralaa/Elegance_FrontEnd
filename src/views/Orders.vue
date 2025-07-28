@@ -1,4 +1,4 @@
-<template>
+<template >
   <div class="orders-page">
     <!-- Header: Title & Search -->
     <div class="orders-header">
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Orders Table -->
-    <el-table v-loading="loading" :data="paginatedOrders" style="width: 100%" class="orders-table" stripe border>
+    <el-table v-loading="loading" :data="paginatedOrders" id="orders-table" style="width: 100%" class="orders-table" stripe border>
       <el-table-column prop="id" :label="$t('orders.orderId')" width="120" />
       <el-table-column prop="ordered_at" :label="$t('orders.orderDate')" width="180">
         <template #default="scope">
@@ -68,50 +68,80 @@
       @current-change="handlePageChange" />
 
     <!-- Order Details Dialog -->
-    <el-dialog v-model="showDetails" :title="$t('orders.orderDetails')" width="600px">
-      <el-table v-if="selectedOrder" :data="selectedOrder.items" border stripe style="width: 100%">
-        <el-table-column prop="product_id" :label="$t('orders.orderId')" />
-        <el-table-column prop="quantity" :label="$t('orders.quantity')" />
-        <el-table-column prop="price" :label="$t('orders.price')">
-          <template #default="scope">
-         {{ scope.row.price }} {{ selectedOrder.currency }} × {{ scope.row.quantity }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="subtotal" :label="$t('orders.Subtotal')">
-          <template #default="scope">
-            {{ scope.row.subtotal }}
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-dialog v-model="showDetails" id="order-details-dialog"  :title="$t('orders.orderDetails')" width="600px">
+      
       <template #footer>
         <el-button type="primary" @click="printInvoice" v-if="selectedOrder">{{ $t('orders.printInvoice') || 'Print Invoice' }}</el-button>
       </template>
-      <!-- Hidden invoice template for printing -->
-      <div id="invoice-print" style="display:none">
-        <h2>{{ $t('orders.invoice') || 'Invoice' }}</h2>
-        <p>{{ $t('orders.orderId') }}: {{ selectedOrder.id }}</p>
-        <p>{{ $t('orders.orderDate') }}: {{ formatDate(selectedOrder.ordered_at) }}</p>
-        <p>{{ $t('orders.status') }}: {{ selectedOrder.status }}</p>
-        <p>{{ $t('orders.total') }}: {{ selectedOrder.currency }} {{ selectedOrder.total_price }}</p>
-        <table style="width:100%;border-collapse:collapse" border="1">
-          <thead>
-            <tr>
-              <th>{{ $t('orders.orderId') }}</th>
-              <th>{{ $t('orders.quantity') }}</th>
-              <th>{{ $t('orders.price') }}</th>
-              <th>{{ $t('orders.Subtotal') }}</th>
-            </tr>
-          </thead>
-          <tbody>
+      
+      
+      <div class=" " id="invoice-print" >
+        <div class="card p-4">
+          <div class="d-flex justify-content-between">
+        <img :src="imageSrc" class="rounded object-fit-contain " width="200" height="100" alt="hi">
+        <div>
+          <h5>Elegance OUD</h5>
+          
+          <p class="mb-0">company's Country</p>
+          <p>Elegance@gmail.com</p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <h6>Billed To:</h6>
+          <p class="mb-0">{{ selectedOrder.user.name }}</p>
+          <p class="mb-0">{{ selectedOrder.address.country.name_en }}</p>
+          <p class="mb-0">{{ selectedOrder.user.email }}</p>
+          <p>{{ selectedOrder.user.phone }}</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <h6>Invoice Details:</h6>
+          <p class="mb-0">Invoice ID : {{ selectedOrder.invoice_number }}</p>
+          <p class="mb-0">Date: {{ selectedOrder.ordered_at}}</p>
+          
+        </div>
+      </div>
+
+      <table class="table table-hover table-bordered"> 
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Description</th>
+            <th >Unit Price</th>
+            <th >Quantity</th>
+            <th >Subtotal</th>
+          </tr>
+        </thead>
+         <tbody>
             <tr v-for="item in selectedOrder.items" :key="item.id">
               <td>{{ item.product_id }}</td>
-              <td>{{ item.quantity }}</td>
+              <td>name product</td>
               <td>{{ item.price }} {{ selectedOrder.currency }}</td>
+              <td>{{ item.quantity }}</td>
               <td>{{ item.subtotal }}</td>
             </tr>
           </tbody>
-        </table>
-      </div>
+        <tfoot>
+           <tr>
+            <th colspan="4" class="text-end">Delivery</th>
+            <th class="text-end">{{ selectedOrder.currency === 'USD' ? 'USD' : 'AED' }} {{ selectedOrder.address.country.id === 57 ? 10 : 20 }}</th>
+          </tr>
+          <tr>
+            <th colspan="4" class="text-end">Total</th>
+            <th class="text-end">{{ selectedOrder.currency }} {{ selectedOrder.total_price }}</th>
+          </tr>
+          
+        </tfoot>
+      </table>
+
+      <p class="mt-4 text-center fw-bold">Elegance happy to see you again</p>
+    </div>
+  </div>
+
+
     </el-dialog>
     <!-- Debug output -->
 
@@ -132,7 +162,7 @@ const pageSize = 5
 const showDetails = ref(false)
 const selectedOrder = ref(null)
 const loading = ref(false)
-
+const imageSrc = ref('assets/logo.png')
 const orderStatuses = ['pending', 'processing', 'cancelled']
 
 const fetchOrders = async () => {
@@ -148,7 +178,7 @@ const fetchOrders = async () => {
 
     if (response.data.status === true) {
       orders.value = response.data.data
-      console.log('Orders loaded:', orders.value)
+ 
     } else {
       throw new Error(response.data.message || 'Failed to fetch orders')
     }
@@ -187,24 +217,40 @@ const handlePageChange = (page) => {
 const viewOrder = (order) => {
   selectedOrder.value = order
   showDetails.value = true
+  console.log('Selected Order:', selectedOrder.value);
+  
+  
+  
 }
 
 const printInvoice = () => {
-  // Clone the invoice template
-  const invoice = document.getElementById('invoice-print').cloneNode(true)
+  const invoice = document.getElementById('invoice-print')
   invoice.style.display = 'block'
-  // Create a new window for printing
-  const printWindow = window.open('', '', 'width=800,height=600')
-  printWindow.document.write('<html><head><title>Invoice</title>')
-  printWindow.document.write('<style>body{font-family:sans-serif;} table{margin-top:16px;} th,td{padding:8px;}</style>')
-  printWindow.document.write('</head><body>')
-  printWindow.document.write(invoice.innerHTML)
-  printWindow.document.write('</body></html>')
-  printWindow.document.close()
-  printWindow.focus()
-  printWindow.print()
-  printWindow.close()
+  const printWindow = window.open('', '', 'width=800,height=600');
+  printWindow.document.write(`
+  <html>
+    <head>
+      <title>Invoice</title>
+      
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    </head>
+    <body>
+      ${invoice.innerHTML}
+    </body>
+  </html>
+`);
+
+printWindow.document.close();
+printWindow.focus();
+printWindow.print();
+printWindow.close();
+
 }
+const closeDetails = () => {
+  showDetails.value = false
+  selectedOrder.value = null
+}
+
 
 const formatDate = (dateStr) => {
   const date = new Date(dateStr)

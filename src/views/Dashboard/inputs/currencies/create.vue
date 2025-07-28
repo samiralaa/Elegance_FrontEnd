@@ -97,7 +97,7 @@
           }
         }
       } else {
-        console.log('Form validation failed')
+      
         return false
       }
     })

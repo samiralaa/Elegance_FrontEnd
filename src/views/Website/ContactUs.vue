@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     direction() {
-    console.log('i18n.global.locale:', i18n.global.locale.value);
+   
     
       return i18n.global.locale.value === 'ar' ? 'rtl' : 'ltr';
     }

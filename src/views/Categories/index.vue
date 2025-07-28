@@ -91,7 +91,7 @@ const fetchCategories = async () => {
 
     if (response.data.status === true) {
       categories.value = response.data.data
-      console.log('Categories fetched successfully:', categories.value);
+    
       
     } else {
       ElMessage.error(response.data.message || 'Failed to fetch categories')

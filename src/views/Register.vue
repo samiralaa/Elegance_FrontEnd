@@ -281,7 +281,7 @@ export default {
       try {
         this.loading = true;
         const response = await axios.get(`${API_URL}/countries`);
-        console.log('Countries API response:', response.data.data);
+      
         const countriesArray = response.data?.data || [];
         this.countries = Array.isArray(countriesArray) ? countriesArray : [];
         this.filteredCountries = this.countries;

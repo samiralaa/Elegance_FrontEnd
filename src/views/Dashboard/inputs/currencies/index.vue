@@ -89,7 +89,7 @@
   const openAddcurrencyModal = () => {
   
     // Logic to open a modal or redirect to a form for adding a new currency
-    console.log('Open Add currency Modal');
+ 
   }
   
   onMounted(() => {

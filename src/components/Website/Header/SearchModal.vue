@@ -126,10 +126,10 @@ export default {
       return '/placeholder-image.jpg';
     },
     getCategoryImage(category) {
-      console.log('Images Array:', category.images);
+      
       if (category.images && category.images.length > 0 && category.images[0].path) {
         const path = category.images[0].path;
-        console.log('Resolved path:', path);
+     
         return path.startsWith('http')
           ? path
           : `${API_URL}/public/storage/${path}`;

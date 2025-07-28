@@ -58,7 +58,7 @@ const fetchUnits = async () => {
 const openAddUnitModal = () => {
 
   // Logic to open a modal or redirect to a form for adding a new unit
-  console.log('Open Add Unit Modal');
+
 }
 
 onMounted(() => {
@@ -67,7 +67,7 @@ onMounted(() => {
 
 const handleUpdate = (unit) => {
   // Logic to update the unit
-  console.log('Update unit:', unit);
+
 }
 
 const handleDelete = async (unit) => {
@@ -80,7 +80,7 @@ const handleDelete = async (unit) => {
 
     const response = await axios.delete(`${API_URL}/${unit.id}`);
     if (response.data.status ) {
-     console.log('Unit deleted successfully');
+   
       fetchUnits();
     } else {
       throw new Error(response.data.message || 'Failed to delete unit');

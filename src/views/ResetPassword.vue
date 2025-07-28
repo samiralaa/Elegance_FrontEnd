@@ -104,7 +104,7 @@ export default {
             }
 
             // Debug: Check if email is available
-            console.log('Email being sent:', this.email);
+       
             if (!this.email) {
                 this.error = 'Email is required but not available';
                 return;

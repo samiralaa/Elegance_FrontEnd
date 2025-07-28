@@ -354,7 +354,9 @@
     "orderDetails" : "Order Details",
     "details": "Details",
     "quantity": "Quantity",
-    "noOrder": "No orders found"
+    "noOrder": "No orders found",
+    "printInvoice": "Print Invoice",
+    "invoice": "Invoice"
   },
   
   "checkout": {

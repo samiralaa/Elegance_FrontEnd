@@ -233,7 +233,7 @@ export default {
 
         // 10. التوجيه لصفحة الدفع في Tabby
         if (response.data.status === 'success') {
-          console.log('Redirecting to:', response.data.data.payment_url);
+       
           window.location.href = response.data.data.payment_url;
 
         }
@@ -487,7 +487,7 @@ export default {
         });
 
         if (orderResponse.data.success) {
-          console.log(orderResponse)
+       
 
           // this.$toast.success(this.$t('checkout.orderPlacedSuccessfully'));
           window.location.href = '/orders/user';

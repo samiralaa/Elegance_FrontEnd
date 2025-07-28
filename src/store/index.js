@@ -109,7 +109,7 @@ export default createStore({
           password: credentials.password
         })
 
-        console.log('Login response:', response.data)
+        
 
         // Check for token structure in response, including nested data object
         const responseData = response.data.data || response.data
@@ -226,7 +226,7 @@ export default createStore({
           password_confirmation: userData.password_confirmation
         })
 
-        console.log('Registration response:', response.data)
+     
 
         if (response.data?.data?.token) {
           commit('SET_TOKEN', response.data.data.token)

@@ -98,7 +98,7 @@ export default {
 
       item.quantity = updatedItem?.quantity ?? item.quantity;
       item.price = updatedItem?.price ?? item.price;
-      console.log("test")
+    
 
       // ✅ أظهر رسالة نجاح
       const successMsg = this.$t('checkout.quantityUpdated') || 'Quantity updated successfully';

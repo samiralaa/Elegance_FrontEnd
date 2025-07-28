@@ -93,7 +93,7 @@ const submitForm = () => {
         ElMessage.error(error.message || 'Failed to create unit')
       }
     } else {
-      console.log('Form validation failed')
+    
       return false
     }
   })
