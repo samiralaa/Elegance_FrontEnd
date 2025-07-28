@@ -390,7 +390,7 @@ const addChildToCart = async (childProduct) => {
     if (childProduct.discount && childProduct.discount.is_active) {
       const discountValue = parseFloat(childProduct.discount.discount_value);
       const originalPrice = parseFloat(childProduct.price); // Use childProduct.price
-      priceToSend = originalPrice - (originalPrice * (discountValue / 100)); nee
+      priceToSend = originalPrice - (originalPrice * (discountValue / 100));
     } else {
       priceToSend = parseFloat(childProduct.price); // Use childProduct.price
     }
