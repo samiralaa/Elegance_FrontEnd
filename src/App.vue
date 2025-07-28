@@ -233,7 +233,7 @@ export default {
 
     const showNotifications = () => {
       // Implement notifications panel
-      console.log('Show notifications')
+      
     }
 
     // Responsive handling

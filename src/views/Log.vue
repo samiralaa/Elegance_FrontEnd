@@ -76,7 +76,7 @@ const fetchLogs = async () => {
     const res = await axios.get(API_URL);
 
     if (res.data.status === "success" || res.data.status === true) {
-      console.log("Logs fetched successfully:", res.data.data);
+    
 
       logs.value = res.data.data;
     } else {

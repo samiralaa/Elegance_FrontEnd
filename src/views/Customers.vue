@@ -302,7 +302,7 @@ export default defineComponent({
 
         // Get token data and log it for debugging
         const tokenData = JSON.parse(localStorage.getItem('tokenData'))
-        console.log('Token data:', tokenData)
+       
 
         if (!tokenData?.token) {
           console.error('No token found')
@@ -311,13 +311,13 @@ export default defineComponent({
         }
 
         // Log the request details
-        console.log('Fetching customers with token:', tokenData.token)
+       
 
         // Using Vuex store to load customers
         await store.dispatch('fetchCustomers')
         usersList.value = store.getters.getCustomers
 
-        console.log('Customers loaded from store:', usersList.value)
+       
       } catch (err) {
         console.error('Error loading customers:', err)
         console.error('Error details:', {

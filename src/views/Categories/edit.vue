@@ -129,7 +129,7 @@ export default {
         const response = await axios.get(`https://backend.webenia.org/api/categories/${id}`)
         if (response.data.status && response.data.data) {
           const cat = response.data.data
-          console.log('Fetched category:', cat);
+      
           
           this.form = {
             name: cat.name_en || '',
@@ -185,7 +185,7 @@ export default {
           axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
         }
         
-        console.log('Submitting category with form data:', formData);
+      
         
         const id = this.$route.params.id
         const response = await axios.post(`https://backend.webenia.org/api/categories/${id}`, formData, {

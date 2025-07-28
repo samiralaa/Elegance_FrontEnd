@@ -56,12 +56,12 @@ export default defineComponent({
     }
 
     const handleEdit = (product) => {
-      console.log('Editing product:', product.name)
+    
       // TODO: Implement edit product functionality
     }
 
     const handleDelete = (product) => {
-      console.log('Deleting product:', product.name)
+    
       // TODO: Implement delete product functionality
     }
 

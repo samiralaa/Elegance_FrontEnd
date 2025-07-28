@@ -263,7 +263,7 @@ export default defineComponent({
         await store.dispatch('fetchBrands')
         brands.value = store.getters.getBrands
 
-        console.log('Brands loaded:', brands.value)
+   
       } catch (err) {
         console.error('Error loading brands:', err)
         error.value = err.response?.data?.message ||
@@ -390,7 +390,7 @@ export default defineComponent({
     const previewImage = (brand) => {
       if (brand.images && brand.images.length > 0) {
         const imageUrl = `https://backend.webenia.org/public/storage/${brand.images[0].path}`; 
-        console.log('Previewing image:', imageUrl);
+    
         
         window.open(imageUrl, '_blank')
       }

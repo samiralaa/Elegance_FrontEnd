@@ -470,7 +470,7 @@ export default {
         const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
 
         this.cities = response.data.data.original.data.cities;
-       console.log('Cities:', this.cities);
+     
        
 
       } catch (error) {

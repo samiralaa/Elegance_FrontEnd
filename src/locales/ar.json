@@ -362,7 +362,9 @@
     "searchPlaceholder": "ابحث...",
     "orderDetails": "تفاصيل الطلب",
     "details": "التفاصيل",
-    "noOrder": "لا توجد طلبات"
+    "noOrder": "لا توجد طلبات",
+    "printInvoice": "طباعة الفاتورة",
+     "invoice": "الفاتورة"
   },
 
 
