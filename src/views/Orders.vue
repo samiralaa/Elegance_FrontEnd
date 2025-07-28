@@ -127,7 +127,7 @@
         <tfoot>
            <tr>
             <th colspan="4" class="text-end">Delivery</th>
-            <th class="text-end">{{ selectedOrder.currency === 'USD' ? 'USD' : 'AED' }} {{ selectedOrder.address.country.id === 57 ? 10 : 20 }}</th>
+            <th class="text-end">{{ selectedOrder.delivery_fee }}</th>
           </tr>
           <tr>
             <th colspan="4" class="text-end">Total</th>
