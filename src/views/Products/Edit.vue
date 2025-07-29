@@ -146,13 +146,13 @@
         </el-form-item>
 
             <el-form-item :label="$t('Products.Category')" prop="category_id">
-          <el-select v-model="form.category_id" filterable clearable :placeholder="$t('Products.SelectCategory')">
-            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
+          <el-select v-model="form.category_id" filterable clearable   :placeholder="$t('Products.SelectCategory')">
+            <el-option v-for="cat in categories" :key="cat.id"  :label="cat.name_en || cat.name_ar" :value="cat.id" />
           </el-select>
         </el-form-item>
 
         <el-form-item :label="$t('Products.Currency')" prop="currency_id">
-          <el-select v-model="form.currency_id" filterable clearable :placeholder="$t('Products.SelectCurrency')">
+          <el-select v-model="form.currency_id" filterable clearable  :placeholder="$t('Products.SelectCurrency')">
             <el-option v-for="curr in activeCurrencies" :key="curr.id" :label="getCurrencyLabel(curr)"
               :value="curr.id" />
           </el-select>
@@ -213,6 +213,8 @@ const form = ref({
   is_available: 1,
   description_en: '',
   description_ar: '',
+  category_ar: '',
+  category_en: '',
   category_id: null,
   currency_id: null,
   country_id: null,
@@ -281,7 +283,7 @@ const fetchOptions = async () => {
   const token = JSON.parse(localStorage.getItem('tokenData'))?.token
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   const [cat, cur, cou, parents, brand, unit] = await Promise.all([
-    axios.get(`${BASE_URL}/api/categories`),
+    axios.get(`${BASE_URL}/api/brands/${form.value.brand_id}/categories`),
     axios.get(`${BASE_URL}/api/currencies`),
     axios.get(`${BASE_URL}/api/countries`),
     axios.get(`${BASE_URL}/api/products`),
@@ -289,6 +291,8 @@ const fetchOptions = async () => {
     axios.get(`${BASE_URL}/api/units`),
   ])
   categories.value = cat.data.data
+  console.log('Categories:', categories.value);
+  
   currencies.value = cur.data
   countries.value = cou.data.data
   parentProducts.value = parents.data.data
@@ -300,13 +304,16 @@ const fetchProduct = async () => {
   try {
     const productRes = await axios.get(`/api/products/${productId}`);
     const product = productRes.data.data;
-
+    console.log(product);
+    
     // Fill form with existing product data
     form.value.name_ar = product.name_ar;
     form.value.name_en = product.name_en;
     form.value.description_ar = product.description_ar;
     form.value.description_en = product.description_en;
     form.value.price = product.price;
+    form.value.category_ar = product.category.name_ar;
+    form.value.category_en = product.category.name_en;
     form.value.currency_id = product.currency_id;
     form.value.country_id = product.country_id;
     form.value.brand_id = product.brand_id;
@@ -423,7 +430,9 @@ watch(() => form.value.brand_id, async (newBrandId) => {
     try {
       const res = await axios.get(`${BASE_URL}/api/brands/${newBrandId}/categories`)
       categories.value = res.data.data
-      form.value.category_id = null // Reset selected category
+      console.log('Categories for brand:', categories.value);
+      
+      // form.value.category_id = null // Reset selected category
     } catch (error) {
       console.error('Failed to fetch categories for brand', error)
     }
@@ -435,9 +444,9 @@ watch(() => form.value.brand_id, async (newBrandId) => {
   }
 })
 
-onMounted(() => {
+onMounted(async() => {
+  await fetchProduct()
   fetchOptions()
-  fetchProduct()
 })
 </script>
 

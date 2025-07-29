@@ -75,7 +75,7 @@
       </template>
       
       
-      <div class=" " id="invoice-print" >
+      <div class=" " id="invoice-print" dir="ltr" >
         <div class="card p-4">
           <div class="d-flex justify-content-between">
         <img :src="imageSrc" class="rounded object-fit-contain " width="200" height="100" alt="hi">
@@ -224,26 +224,28 @@ const viewOrder = (order) => {
 }
 
 const printInvoice = () => {
-  const invoice = document.getElementById('invoice-print')
-  invoice.style.display = 'block'
-  const printWindow = window.open('', '', 'width=800,height=600');
-  printWindow.document.write(`
-  <html>
-    <head>
-      <title>Invoice</title>
+//   const invoice = document.getElementById('invoice-print')
+//   invoice.style.display = 'block'
+//   const printWindow = window.open('', '', 'width=800,height=600');
+//   printWindow.document.write(`
+//   <html>
+//     <head>
+//       <title>Invoice</title>
       
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    </head>
-    <body>
-      ${invoice.innerHTML}
-    </body>
-  </html>
-`);
+//     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+//     </head>
+//     <body>
+//       ${invoice.innerHTML}
+//     </body>
+//   </html>
+// `);
 
-printWindow.document.close();
-printWindow.focus();
-printWindow.print();
-printWindow.close();
+// printWindow.document.close();
+// printWindow.focus();
+// printWindow.print();
+// printWindow.close();
+const invoice = document.getElementById('invoice-print')
+
 
 }
 const closeDetails = () => {

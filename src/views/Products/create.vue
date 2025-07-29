@@ -58,12 +58,7 @@
           <el-input type="textarea" v-model="form.description_ar" />
         </el-form-item>
 
-        <!-- Category -->
-        <el-form-item :label="$t('Products.Category')" prop="category_id">
-          <el-select v-model="form.category_id" :placeholder="$t('Products.SelectCategory')" filterable clearable>
-            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
-          </el-select>
-        </el-form-item>
+        
 
         <!-- Add after category select -->
         <el-form-item label="Brand" prop="brand_id">
@@ -77,6 +72,12 @@
           </el-select>
         </el-form-item>
 
+        <!-- Category -->
+        <el-form-item :label="$t('Products.Category')" prop="category_id">
+          <el-select v-model="form.category_id" :placeholder="$t('Products.SelectCategory')" filterable clearable>
+            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
+          </el-select>
+        </el-form-item>
         <!-- Currency -->
         <el-form-item :label="$t('Products.Currency')" prop="currency_id">
           <el-select v-model="form.currency_id" :placeholder="$t('Products.SelectCurrency')" filterable clearable>
