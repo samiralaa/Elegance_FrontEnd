@@ -53,7 +53,7 @@
 
             <template v-if="form.discount.is_active">
               <el-form-item :label="$t('Products.Discount-Value')" prop="discount.value">
-                <el-input v-model="form.discount.value" type="number" />
+                <el-input-number v-model="form.discount.value" type="number"     :min="1" :max="99" />
               </el-form-item>
 
               <el-form-item :label="$t('Products.Start-Date')" prop="discount.startDate">
@@ -109,12 +109,12 @@
 
           <!-- Weight -->
           <el-form-item :label="$t('Products.Weight')" prop="weight">
-            <el-input v-model="form.weight" type="number" :placeholder="$t('Products.select-weight')" />
+            <el-input-number v-model="form.weight" type="number" :min="1"  :placeholder="$t('Products.select-weight')" />
           </el-form-item>
 
           <!-- Amount Price -->
           <el-form-item :label="$t('Products.amount-Price')" prop="amount_price">
-            <el-input v-model="form.amount_price" type="number" :placeholder="$t('Products.select-price')" />
+            <el-input-number  v-model="form.amount_price" type="number" :min="1" :placeholder="$t('Products.select-price')" />
           </el-form-item>
         </template>
 
@@ -260,6 +260,7 @@ const removeAmount = (index) => {
 const rules = {
   name_en: [{ required: true, message: 'Required', trigger: 'blur' }],
   price: [{ required: true, message: 'Required', trigger: 'blur' }]
+
 }
 
 const categories = ref([])
@@ -401,6 +402,8 @@ const submitForm = () => {
         formData.append('discount[id]', form.value.discount.id)
       }
     }
+    
+    
     const token = JSON.parse(localStorage.getItem('tokenData'))?.token
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     await axios.post(`${BASE_URL}/api/products/${productId}?_method=PUT`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
@@ -425,7 +428,8 @@ const removeDiscount = () => {
   };
 }
 
-watch(() => form.value.brand_id, async (newBrandId) => {
+watch(
+  () => form.value.brand_id, async (newBrandId) => {
   if (newBrandId) {
     try {
       const res = await axios.get(`${BASE_URL}/api/brands/${newBrandId}/categories`)
@@ -442,7 +446,8 @@ watch(() => form.value.brand_id, async (newBrandId) => {
     categories.value = catRes.data.data
     form.value.category_id = null
   }
-})
+}
+)
 
 onMounted(async() => {
   await fetchProduct()
