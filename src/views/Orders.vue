@@ -1,9 +1,9 @@
-<template >
+<template>
   <div class="orders-page">
     <!-- Header: Title & Search -->
     <div class="orders-header">
       <h2>{{ $t('orders.myOrders') }}</h2>
-      <el-input v-model="searchQuery" :placeholder="$t('orders.Search-orders') " class="search-input" clearable>
+      <el-input v-model="searchQuery" :placeholder="$t('orders.Search-orders')" class="search-input" clearable>
         <template #prefix>
           <el-icon>
             <Search />
@@ -20,7 +20,8 @@
     </div>
 
     <!-- Orders Table -->
-    <el-table v-loading="loading" :data="paginatedOrders" id="orders-table" style="width: 100%" class="orders-table" stripe border>
+    <el-table v-loading="loading" :data="paginatedOrders" id="orders-table" style="width: 100%" class="orders-table"
+      stripe border>
       <el-table-column prop="id" :label="$t('orders.orderId')" width="120" />
       <el-table-column prop="ordered_at" :label="$t('orders.orderDate')" width="180">
         <template #default="scope">
@@ -68,78 +69,79 @@
       @current-change="handlePageChange" />
 
     <!-- Order Details Dialog -->
-    <el-dialog v-model="showDetails" id="order-details-dialog"  :title="$t('orders.orderDetails')" width="600px">
-      
+    <el-dialog v-model="showDetails" id="order-details-dialog" :title="$t('orders.orderDetails')" width="600px">
+
       <template #footer>
-        <el-button type="primary" @click="printInvoice" v-if="selectedOrder">{{ $t('orders.printInvoice') || 'Print Invoice' }}</el-button>
+        <el-button type="primary" @click="printInvoice" v-if="selectedOrder">{{ $t('orders.printInvoice') || 'Print
+          Invoice' }}</el-button>
       </template>
-      
-      
-      <div class=" " id="invoice-print" dir="ltr" >
+
+
+      <div class=" " id="invoice-print" dir="ltr">
         <div class="card p-4">
           <div class="d-flex justify-content-between align-items-center designInIframe">
-        <img :src="imageSrc" class="rounded object-fit-contain " width="200" height="100" alt="hi">
-        <div>
-          <h5>Elegance OUD</h5>
-          
-          <p class="mb-0">company's Country</p>
-          <p>Elegance@gmail.com</p>
+            <img :src="imageSrc" class="rounded object-fit-contain " width="200" height="100" alt="hi">
+            <div>
+              <h5>Elegance OUD</h5>
+
+              <p class="mb-0">company's Country</p>
+              <p>Elegance@gmail.com</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6>Billed To:</h6>
+              <p class="mb-0">{{ selectedOrder.user.name }}</p>
+              <p class="mb-0">{{ selectedOrder.address.country.name_en }}</p>
+              <p class="mb-0">{{ selectedOrder.user.email }}</p>
+              <p>{{ selectedOrder.user.phone }}</p>
+            </div>
+            <div class="col-md-6 text-end ">
+              <h6>Invoice Details:</h6>
+              <p class="mb-0"><span class="fw-bold">Invoice ID :</span> {{ selectedOrder.invoice_number }}</p>
+              <p class="mb-0"><span class="fw-bold">Date:</span> {{ selectedOrder.ordered_at }}</p>
+
+            </div>
+          </div>
+
+          <table class="table table-hover table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in selectedOrder.items" :key="item.id">
+                <td>{{ item.product_id }}</td>
+                <td>{{ item.product.name_en }}</td>
+                <td>{{ item.price }} {{ selectedOrder.currency }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.subtotal }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="4" class="text-end">Delivery</th>
+                <th class="text-end">{{ selectedOrder.delivery_fee }}</th>
+              </tr>
+              <tr>
+                <th colspan="4" class="text-end">Total</th>
+                <th class="text-end">{{ selectedOrder.currency }} {{ selectedOrder.total_price }}</th>
+              </tr>
+
+            </tfoot>
+          </table>
+
+          <p class="mt-4 text-center fw-bold">Elegance happy to see you again</p>
         </div>
       </div>
-
-      <hr>
-
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <h6>Billed To:</h6>
-          <p class="mb-0">{{ selectedOrder.user.name }}</p>
-          <p class="mb-0">{{ selectedOrder.address.country.name_en }}</p>
-          <p class="mb-0">{{ selectedOrder.user.email }}</p>
-          <p>{{ selectedOrder.user.phone }}</p>
-        </div>
-        <div class="col-md-6 text-end ">
-          <h6 >Invoice Details:</h6>
-          <p class="mb-0"><span class="fw-bold">Invoice ID :</span> {{ selectedOrder.invoice_number }}</p>
-          <p class="mb-0"><span class="fw-bold">Date:</span> {{ selectedOrder.ordered_at}}</p>
-          
-        </div>
-      </div>
-
-      <table class="table table-hover table-bordered"> 
-        <thead class="table-light">
-          <tr>
-            <th>#</th>
-            <th>Description</th>
-            <th >Unit Price</th>
-            <th >Quantity</th>
-            <th >Subtotal</th>
-          </tr>
-        </thead>
-         <tbody>
-            <tr v-for="item in selectedOrder.items" :key="item.id">
-              <td>{{ item.product_id }}</td>
-              <td>{{ item.product.name_en }}</td>
-              <td>{{ item.price }} {{ selectedOrder.currency }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.subtotal }}</td>
-            </tr>
-          </tbody>
-        <tfoot>
-           <tr>
-            <th colspan="4" class="text-end">Delivery</th>
-            <th class="text-end">{{ selectedOrder.delivery_fee }}</th>
-          </tr>
-          <tr>
-            <th colspan="4" class="text-end">Total</th>
-            <th class="text-end">{{ selectedOrder.currency }} {{ selectedOrder.total_price }}</th>
-          </tr>
-          
-        </tfoot>
-      </table>
-
-      <p class="mt-4 text-center fw-bold">Elegance happy to see you again</p>
-    </div>
-  </div>
 
 
     </el-dialog>
@@ -178,7 +180,7 @@ const fetchOrders = async () => {
 
     if (response.data.status === true) {
       orders.value = response.data.data
- 
+
     } else {
       throw new Error(response.data.message || 'Failed to fetch orders')
     }
@@ -218,14 +220,14 @@ const viewOrder = (order) => {
   selectedOrder.value = order
   showDetails.value = true
   console.log('Selected Order:', selectedOrder.value);
-  
-  
-  
+
+
+
 }
 
 const printInvoice = () => {
 
- const invoiceElement = document.getElementById('invoice-print');
+  const invoiceElement = document.getElementById('invoice-print');
 
   // Create an invisible iframe
   const iframe = document.createElement('iframe');
