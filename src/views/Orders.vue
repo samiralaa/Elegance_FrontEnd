@@ -77,7 +77,7 @@
       
       <div class=" " id="invoice-print" dir="ltr" >
         <div class="card p-4">
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between align-items-center designInIframe">
         <img :src="imageSrc" class="rounded object-fit-contain " width="200" height="100" alt="hi">
         <div>
           <h5>Elegance OUD</h5>
@@ -97,10 +97,10 @@
           <p class="mb-0">{{ selectedOrder.user.email }}</p>
           <p>{{ selectedOrder.user.phone }}</p>
         </div>
-        <div class="col-md-6 text-md-end">
-          <h6>Invoice Details:</h6>
-          <p class="mb-0">Invoice ID : {{ selectedOrder.invoice_number }}</p>
-          <p class="mb-0">Date: {{ selectedOrder.ordered_at}}</p>
+        <div class="col-md-6 text-end ">
+          <h6 >Invoice Details:</h6>
+          <p class="mb-0"><span class="fw-bold">Invoice ID :</span> {{ selectedOrder.invoice_number }}</p>
+          <p class="mb-0"><span class="fw-bold">Date:</span> {{ selectedOrder.ordered_at}}</p>
           
         </div>
       </div>
@@ -118,7 +118,7 @@
          <tbody>
             <tr v-for="item in selectedOrder.items" :key="item.id">
               <td>{{ item.product_id }}</td>
-              <td>name product</td>
+              <td>{{ item.product.name_en }}</td>
               <td>{{ item.price }} {{ selectedOrder.currency }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.subtotal }}</td>
@@ -224,29 +224,84 @@ const viewOrder = (order) => {
 }
 
 const printInvoice = () => {
-//   const invoice = document.getElementById('invoice-print')
-//   invoice.style.display = 'block'
-//   const printWindow = window.open('', '', 'width=800,height=600');
-//   printWindow.document.write(`
-//   <html>
-//     <head>
-//       <title>Invoice</title>
-      
-//     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-//     </head>
-//     <body>
-//       ${invoice.innerHTML}
-//     </body>
-//   </html>
-// `);
 
-// printWindow.document.close();
-// printWindow.focus();
-// printWindow.print();
-// printWindow.close();
-const invoice = document.getElementById('invoice-print')
+ const invoiceElement = document.getElementById('invoice-print');
 
+  // Create an invisible iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
 
+  const iframeDoc = iframe.contentWindow.document;
+
+  // Get local styles (optional: include your main CSS file here if needed)
+  const styleContent = `
+    <style>
+      /* Example styles — replace/add your own as needed */
+      body {
+        font-family: Arial, sans-serif;
+        // padding: 20px;
+        color: #000;
+      }
+      .text-end { text-align: right; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        border: 1px solid #ccc;
+         padding: 8px;
+      }
+      .header, .footer {
+        // margin-bottom: 20px;
+      }
+        .designInIframe{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        }
+        .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+       
+        }
+        p{
+        margin: 10px;
+        
+        }
+        span{
+        font-weight: bold;
+        }
+        h6{
+        margin: 20px 0;
+        }
+       
+    </style>
+  `;
+
+  iframeDoc.open();
+  iframeDoc.write(`
+    <html>
+      <head>
+        <title>Invoice</title>
+        ${styleContent}
+      </head>
+      <body>
+        ${invoiceElement.innerHTML}
+      </body>
+    </html>
+  `);
+  iframeDoc.close();
+
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
 }
 const closeDetails = () => {
   showDetails.value = false
