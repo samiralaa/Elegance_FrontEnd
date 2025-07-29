@@ -340,8 +340,8 @@ export default defineComponent({
         }
 
         const url = dialogType.value === 'create'
-          ? '/brands'
-          : `/brands/${selectedBrand.value.id}`
+          ? '/api/brands'
+          : `/api/brands/${selectedBrand.value.id}`
 
         await api.post(url, formData, {
           headers: {
@@ -367,7 +367,7 @@ export default defineComponent({
     const confirmDelete = async () => {
       try {
         deleting.value = true
-        await api.delete(`/brands/${selectedBrand.value.id}`)
+        await api.delete(`/api/brands/${selectedBrand.value.id}`)
         ElMessage({
           message:lang === 'en' ? 'Brand deleted successfully' : 'تم حذف العلامة التجارية بنجاح',
           type: 'success',
