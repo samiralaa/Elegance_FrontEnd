@@ -1,4 +1,3 @@
-
 <template>
   <div class="product-create-container">
     <el-card class="product-card">
@@ -121,7 +120,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -259,6 +258,31 @@ const submitForm = () => {
     }
   })
 }
+
+watch(() => form.value.brand_id, async (newBrandId) => {
+  if (newBrandId) {
+    try {
+      const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+      const res = await axios.get(`https://backend.webenia.org/api/brands/${newBrandId}/categories`)
+      categories.value = res.data.data
+      form.value.category_id = null // Reset selected category
+    } catch (error) {
+      ElMessage.error(lang === 'en' ? 'Failed to load categories for brand' : 'فشل تحميل الفئات للبراند')
+    }
+  } else {
+    // Reload all categories if no brand is selected
+    try {
+      const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+      axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+      const catRes = await axios.get('https://backend.webenia.org/api/categories')
+      categories.value = catRes.data.data
+      form.value.category_id = null
+    } catch (error) {
+      ElMessage.error(lang === 'en' ? 'Failed to load categories' : 'فشل تحميل الفئات')
+    }
+  }
+})
 
 onMounted(() => {
   fetchSelectOptions()

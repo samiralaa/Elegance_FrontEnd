@@ -137,15 +137,17 @@
         </el-form-item>
 
         <!-- Selects -->
-        <el-form-item :label="$t('Products.Category')" prop="category_id">
-          <el-select v-model="form.category_id" filterable clearable :placeholder="$t('Products.SelectCategory')">
-            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
-          </el-select>
-        </el-form-item>
+    
 
         <el-form-item :label="$t('Products.brand')" prop="brand_id">
           <el-select v-model="form.brand_id" filterable clearable placeholder="Select Brand">
             <el-option v-for="brand in brands" :key="brand.id" :label="brand.name_en" :value="brand.id" />
+          </el-select>
+        </el-form-item>
+
+            <el-form-item :label="$t('Products.Category')" prop="category_id">
+          <el-select v-model="form.category_id" filterable clearable :placeholder="$t('Products.SelectCategory')">
+            <el-option v-for="cat in categories" :key="cat.id" :label="cat.name_en || cat.name_ar" :value="cat.id" />
           </el-select>
         </el-form-item>
 
@@ -193,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
@@ -343,13 +345,15 @@ const fetchProduct = async () => {
         };
 
 
-    // Fetch categories and currencies
-    const [catRes, currRes] = await Promise.all([
+    // Fetch categories, currencies, and brands
+    const [catRes, currRes, brandRes] = await Promise.all([
       axios.get('/api/categories'),
       axios.get('/api/currencies'),
+      axios.get('/api/brands'),
     ]);
-    categories.value = catRes.data;
+    categories.value = catRes.data.data;
     currencies.value = currRes.data;
+    brands.value = brandRes.data.data; // <-- FIXED LINE
   } catch (error) {
     console.error('Error loading product data', error);
   }
@@ -414,6 +418,22 @@ const removeDiscount = () => {
   };
 }
 
+watch(() => form.value.brand_id, async (newBrandId) => {
+  if (newBrandId) {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/brands/${newBrandId}/categories`)
+      categories.value = res.data.data
+      form.value.category_id = null // Reset selected category
+    } catch (error) {
+      console.error('Failed to fetch categories for brand', error)
+    }
+  } else {
+    // Optionally, reload all categories if no brand is selected
+    const catRes = await axios.get(`${BASE_URL}/api/categories`)
+    categories.value = catRes.data.data
+    form.value.category_id = null
+  }
+})
 
 onMounted(() => {
   fetchOptions()
