@@ -39,7 +39,12 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('orders.actions')" width="220">
+      <el-table-column prop="method" :label="$t('orders.payment-method')" width="150">
+        <template #default="scope" >
+            {{ scope.row.payment_method }}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('orders.actions')" width="220" >
         <template #default="scope">
           <el-button size="small" type="primary" @click="viewOrder(scope.row)" circle>
             <el-icon>

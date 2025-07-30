@@ -1,31 +1,42 @@
 <template>
-  <div class="dashboard d-flex flex-wrap flex-grow-1 container-fluid px-2 px-md-4">
-    <el-row :gutter="20" class="row w-100 g-3">
+  <div
+    class="dashboard d-flex flex-wrap flex-grow-1 container-fluid px-2 px-md-4"
+  >
+    <div class="row w-100 g-3">
       <el-col :span="6" :xs="24" :sm="12" :md="6">
         <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
-              <span>{{ $t('dashboard.Total-Revenue') }}</span>
+              <span>{{ $t("dashboard.Total-Revenue") }}</span>
             </div>
           </template>
           <div class="card-content">
             <h2>${{ totalRevenue.toFixed(2) }}</h2>
-            <span :class="['trend', salesOverview.month_over_month_growth >= 0 ? 'positive' : 'negative']">
-              {{ salesOverview.month_over_month_growth >= 0 ? '+' : '' }}{{ salesOverview.month_over_month_growth }}%
+            <span
+              :class="[
+                'trend',
+                salesOverview.month_over_month_growth >= 0
+                  ? 'positive'
+                  : 'negative',
+              ]"
+            >
+              {{ salesOverview.month_over_month_growth >= 0 ? "+" : ""
+              }}{{ salesOverview.month_over_month_growth }}%
             </span>
             <div v-if="salesOverview.converted_total_sales">
               <small>
-                ({{ salesOverview.converted_total_sales.toFixed(2) }} {{ salesOverview.converted_currency }})
+                ({{ salesOverview.converted_total_sales.toFixed(2) }}
+                {{ salesOverview.converted_currency }})
               </small>
             </div>
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6":xs="24" :sm="12" :md="6">
+      <el-col :span="6" :xs="24" :sm="12" :md="6">
         <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
-              <span>{{ $t('dashboard.total-Orders') }}</span>
+              <span>{{ $t("dashboard.total-Orders") }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -34,11 +45,11 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6":xs="24" :sm="12" :md="6">
+      <el-col :span="6" :xs="24" :sm="12" :md="6">
         <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
-              <span>{{ $t('dashboard.total-Customers') }}</span>
+              <span>{{ $t("dashboard.total-Customers") }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -47,11 +58,11 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6":xs="24" :sm="12" :md="6">
+      <el-col :span="6" :xs="24" :sm="12" :md="6">
         <el-card class="summary-card h-100">
           <template #header>
             <div class="card-header">
-              <span>{{ $t('dashboard.total-Products') }}</span>
+              <span>{{ $t("dashboard.total-Products") }}</span>
             </div>
           </template>
           <div class="card-content">
@@ -60,115 +71,138 @@
           </div>
         </el-card>
       </el-col>
-    </el-row>
+    </div>
 
-    <el-row :gutter="20" class="chart-row row w-100 mt-3">
-      <el-col :span="12" :xs="24" :md="12">
-        <el-card class="h-100">
+    <div class="container-fluid mt-3">
+      <!-- Sales Overview Card -->
+      <div class="w-100 mb-3">
+        <el-card class="w-100">
           <template #header>
             <div class="card-header">
-              <span>{{ $t('dashboard.Sales-Overview') }}</span>
+              <span>{{ $t("dashboard.Sales-Overview") }}</span>
             </div>
           </template>
           <div class="sales-overview">
             <div class="sales-metrics">
               <div class="metric">
-                <span class="label">{{ $t('dashboard.Today-Sales') }}</span>
-                <span class="value">${{ parseFloat(salesOverview.today_sales || 0).toFixed(2) }}</span>
+                <span class="label">{{ $t("dashboard.Today-Sales") }}</span>
+                <span class="value"
+                  >${{
+                    parseFloat(salesOverview.today_sales || 0).toFixed(2)
+                  }}</span
+                >
               </div>
               <div class="metric">
-                <span class="label">{{ $t('dashboard.This-Month') }}</span>
-                <span class="value">${{ parseFloat(salesOverview.this_month_sales || 0).toFixed(2) }}</span>
+                <span class="label">{{ $t("dashboard.This-Month") }}</span>
+                <span class="value"
+                  >${{
+                    parseFloat(salesOverview.this_month_sales || 0).toFixed(2)
+                  }}</span
+                >
               </div>
               <div class="metric">
-                <span class="label">{{ $t('dashboard.Last-Month') }}</span>
-                <span class="value">${{ parseFloat(salesOverview.last_month_sales || 0).toFixed(2) }}</span>
+                <span class="label">{{ $t("dashboard.Last-Month") }}</span>
+                <span class="value"
+                  >${{
+                    parseFloat(salesOverview.last_month_sales || 0).toFixed(2)
+                  }}</span
+                >
               </div>
             </div>
             <div id="salesChart" class="chart-container"></div>
           </div>
         </el-card>
-      </el-col>
-      <el-col :span="12" :xs="24" :md="12">
-        <el-card class="h-100">
+      </div>
+
+      <!-- Recent Orders Card -->
+      <div class="w-100">
+        <el-card class="w-100">
           <template #header>
-            <div class="card-header">
-              <span>{{ $t('dashboard.recent-Orders') }}</span>
+            <div class="d-flex gap-2 align-items-center">
+              <span>{{ $t("dashboard.recent-Orders") }}</span>
+              <button type="button" class="btn btn-secondary btn-sm position-relative">
+                +{{ orders.count }}
+                <span
+                  class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                >
+                </span>
+              </button>
             </div>
           </template>
-          <!-- <el-table :data="orders" style="width: 100%"  class="table-responsive" >
-            <el-table-column prop="id" :label="$t('dashboard.Order-Id')" width="100" />
-            <el-table-column :label="$t('dashboard.customer')">
-              <template #default="{ row }">
-                {{ row.data.count }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" :label="$t('dashboard.Total')" width="120">
-              <template #default="{ row }">
-                {{ row.currency }}{{ row.total_price }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="status" :label="$t('dashboard.Status')" width="120">
-              <template #default="{ row }">
-                <el-tag :type="row.status === 'completed' ? 'success' : 'warning'">
-                  {{ row.status }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column prop="ordered_at" :label="$t('dashboard.Order-Date')" width="180">
-              <template #default="{ row }">
-                {{ row.ordered_at }}
-              </template>
-            </el-table-column>
-          </el-table> -->
-           <div class="table-responsive logs-table overflow-auto">
-      <table class="table table-hover  align-middle">
-        <thead>
-          <tr>
-            <th  scope="col">{{ $t("Logs.User") }}</th>
-            <th scope="col">{{ $t("Logs.Operation") }}</th>
-            <th scope="col">{{ $t("Logs.Model") }}</th>
-            <th scope="col">{{ $t("Logs.ModelID") }}</th>
-            <th scope="col">{{ $t("Logs.Description") }}</th>
-            <th scope="col">{{ $t("Logs.IPAddress") }}</th>
-            <th scope="col">{{ $t("Logs.BrowserInfo") }}</th>
-            <th scope="col">{{ $t("Logs.Timestamp") }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(log, index) in logs" :key="index">
-            <th class="align-middle">{{ log.user?.name }}</th>
-            <td class="align-middle">{{ log.operation }}</td>
-            <td class="align-middle">{{ log.model_type }}</td>
-            <td class="align-middle">{{ log.model_id }}</td>
-            <td class="align-middle">{{ log.description }}</td>
-            <td class="align-middle">{{ log.ip_address }}</td>
-            <td class="align-middle">{{ formatDate(log.created_at) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
+          <div class="overflow-auto">
+            <table class="table table-hover table-responsive align-middle">
+              <thead>
+                <tr>
+                  <!-- <th scope="col">{{ $t('dashboard.Order-Id') }}</th> -->
+                  <th scope="col">{{ $t("dashboard.customer") }}</th>
+                  <th scope="col">{{ $t("dashboard.address") }}</th>
+                  <th scope="col">{{ $t("dashboard.Total") }}</th>
+                  <th scope="col">{{ $t("dashboard.payment-method") }}</th>
+                  <th scope="col">{{ $t("dashboard.Order-Date") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(order, index) in orders.orders" :key="index">
+                 
+                  <td class="align-middle">
+                    <div class="d-flex align-items-center gap-2">
+                      <div
+                        class="avatar bg-primary text-white rounded-circle d-flex justify-content-center px-3 py-2 align-items-center"
+                      >
+                        {{
+                          order.user.name
+                            ? order.user.name.charAt(0).toUpperCase()
+                            : "?"
+                        }}
+                      </div>
+                      <div class="user-info">
+                        <h6 class="mb-0">{{ order.user.name }}</h6>
+                        <small class="text-muted">{{ order.user.email }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="align-middle">
+                    {{ order.address.country.name_en }}
+                  </td>
+                  <td class="align-middle">
+                    {{ order.total_price }} {{ order.currency }}
+                  </td>
+                  <td class="align-middle text-capitalize text-center">
+                    {{ order.payment_method }}
+                  </td>
+                  <td class="align-middle">{{ order.ordered_at }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </el-card>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, ref, onBeforeUnmount } from 'vue'
-import { useStore } from 'vuex'
-import axios from 'axios'
-import * as echarts from 'echarts'
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  onBeforeUnmount,
+} from "vue";
+import { useStore } from "vuex";
+import axios from "axios";
+import * as echarts from "echarts";
 
 export default defineComponent({
-  name: 'DashboardView',
+  name: "DashboardView",
   setup() {
-    const store = useStore()
-    const totalRevenue = ref(0)
-    const totalOrders = ref(0)
-    const totalCustomers = ref(0)
-    const totalProducts = ref(0)
-    const orders = ref([])
+    const store = useStore();
+    const totalRevenue = ref(0);
+    const totalOrders = ref(0);
+    const totalCustomers = ref(0);
+    const totalProducts = ref(0);
+    const orders = ref([]);
     const salesOverview = ref({
       today_sales: 0,
       this_month_sales: 0,
@@ -177,210 +211,232 @@ export default defineComponent({
       daily_sales: [],
       top_selling_products: [],
       converted_total_sales: 0,
-      converted_currency: ''
-    })
-    let chartInstance = null
+      converted_currency: "",
+    });
+    let chartInstance = null;
 
     const initChart = () => {
-      const chartDom = document.getElementById('salesChart')
+      const chartDom = document.getElementById("salesChart");
       if (chartDom) {
-        chartInstance = echarts.init(chartDom)
-        updateChart()
+        chartInstance = echarts.init(chartDom);
+        updateChart();
       }
-    }
+    };
 
     const updateChart = () => {
-      if (!chartInstance) return
+      if (!chartInstance) return;
 
-      const dates = salesOverview.value.daily_sales.map(item => item.date)
-      const sales = salesOverview.value.daily_sales.map(item => parseFloat(item.total_sales))
-      const orders = salesOverview.value.daily_sales.map(item => item.total_orders)
+      const dates = salesOverview.value.daily_sales.map((item) => item.date);
+      const sales = salesOverview.value.daily_sales.map((item) =>
+        parseFloat(item.total_sales)
+      );
+      const orders = salesOverview.value.daily_sales.map(
+        (item) => item.total_orders
+      );
 
       const option = {
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'cross',
+            type: "cross",
             label: {
-              backgroundColor: '#6a7985'
-            }
-          }
+              backgroundColor: "#6a7985",
+            },
+          },
         },
         legend: {
-          data: ['Sales', 'Orders']
+          data: ["Sales", "Orders"],
         },
         grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           boundaryGap: false,
-          data: dates
+          data: dates,
         },
         yAxis: [
           {
-            type: 'value',
-            name: 'Sales ($)',
-            position: 'left'
+            type: "value",
+            name: "Sales ($)",
+            position: "left",
           },
           {
-            type: 'value',
-            name: 'Orders',
-            position: 'right'
-          }
+            type: "value",
+            name: "Orders",
+            position: "right",
+          },
         ],
         series: [
           {
-            name: 'Sales',
-            type: 'line',
+            name: "Sales",
+            type: "line",
             smooth: true,
             data: sales,
             itemStyle: {
-              color: '#409EFF'
+              color: "#409EFF",
             },
             areaStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgba(64,158,255,0.3)'
+                  color: "rgba(64,158,255,0.3)",
                 },
                 {
                   offset: 1,
-                  color: 'rgba(64,158,255,0.1)'
-                }
-              ])
-            }
+                  color: "rgba(64,158,255,0.1)",
+                },
+              ]),
+            },
           },
           {
-            name: 'Orders',
-            type: 'line',
+            name: "Orders",
+            type: "line",
             smooth: true,
             yAxisIndex: 1,
             data: orders,
             itemStyle: {
-              color: '#67C23A'
-            }
-          }
-        ]
-      }
+              color: "#67C23A",
+            },
+          },
+        ],
+      };
 
-      chartInstance.setOption(option)
-    }
+      chartInstance.setOption(option);
+    };
 
     const handleResize = () => {
       if (chartInstance) {
-        chartInstance.resize()
+        chartInstance.resize();
       }
-    }
+    };
 
     onMounted(() => {
-      initChart()
-      window.addEventListener('resize', handleResize)
-    })
+      initChart();
+      window.addEventListener("resize", handleResize);
+    });
 
     onBeforeUnmount(() => {
       if (chartInstance) {
-        chartInstance.dispose()
+        chartInstance.dispose();
       }
-      window.removeEventListener('resize', handleResize)
-    })
+      window.removeEventListener("resize", handleResize);
+    });
 
     const fetchSalesOverview = async () => {
       try {
-        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+        const tokenData = JSON.parse(localStorage.getItem("tokenData"));
         if (!tokenData || !tokenData.token) {
-          throw new Error('Authentication token not found')
+          throw new Error("Authentication token not found");
         }
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('https://backend.webenia.org/api/dashboard/sales-overview')
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${tokenData.token}`;
+        const response = await axios.get(
+          "https://backend.webenia.org/api/dashboard/sales-overview"
+        );
 
         if (response.data.status === true) {
-          salesOverview.value = response.data.data
-          totalRevenue.value = parseFloat(response.data.data.this_month_sales || 0)
-          totalRevenue.value = parseFloat(response.data.data.converted_total_sales || 0)
+          salesOverview.value = response.data.data;
+          totalRevenue.value = parseFloat(
+            response.data.data.this_month_sales || 0
+          );
+          totalRevenue.value = parseFloat(
+            response.data.data.converted_total_sales || 0
+          );
 
-
-          updateChart()
+          updateChart();
         }
       } catch (error) {
-        console.error('Error fetching sales overview:', error)
+        console.error("Error fetching sales overview:", error);
       }
-    }
+    };
 
     const fetchTotalProducts = async () => {
       try {
-        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+        const tokenData = JSON.parse(localStorage.getItem("tokenData"));
         if (!tokenData || !tokenData.token) {
-          throw new Error('Authentication token not found')
+          throw new Error("Authentication token not found");
         }
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('https://backend.webenia.org/api/dashboard/total-products')
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${tokenData.token}`;
+        const response = await axios.get(
+          "https://backend.webenia.org/api/dashboard/total-products"
+        );
 
         if (response.data.status === true) {
-          totalProducts.value = response.data.data.total_products
+          totalProducts.value = response.data.data.total_products;
         }
       } catch (error) {
-        console.error('Error fetching total products:', error)
+        console.error("Error fetching total products:", error);
       }
-    }
+    };
 
     const fetchTotalOrders = async () => {
       try {
-        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+        const tokenData = JSON.parse(localStorage.getItem("tokenData"));
         if (!tokenData || !tokenData.token) {
-          throw new Error('Authentication token not found')
+          throw new Error("Authentication token not found");
         }
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('https://backend.webenia.org/api/dashboard/total-orders')
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${tokenData.token}`;
+        const response = await axios.get(
+          "https://backend.webenia.org/api/dashboard/total-orders"
+        );
 
         if (response.data.status === true) {
-          totalOrders.value = response.data.data.total_orders
+          totalOrders.value = response.data.data.total_orders;
         }
       } catch (error) {
-        console.error('Error fetching total orders:', error)
+        console.error("Error fetching total orders:", error);
       }
-    }
+    };
 
     const fetchRecentOrders = async () => {
       try {
-        const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+        const tokenData = JSON.parse(localStorage.getItem("tokenData"));
         if (!tokenData || !tokenData.token) {
-          throw new Error('Authentication token not found')
+          throw new Error("Authentication token not found");
         }
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('https://backend.webenia.org/api/orders/count/new')
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${tokenData.token}`;
+        const response = await axios.get(
+          "https://backend.webenia.org/api/orders/count/new"
+        );
 
         if (response.data.status === true) {
-          orders.value = response.data.data
-          console.log('Recent Orders:', orders.value);
-          
+          orders.value = response.data.data;
+          console.log("Recent Orders:", orders.value);
         }
       } catch (error) {
-        console.error('Error fetching recent orders:', error)
+        console.error("Error fetching recent orders:", error);
       }
-    }
+    };
 
     onMounted(async () => {
       try {
-        await fetchTotalOrders()
-        await store.dispatch('fetchCustomers')
-        await fetchTotalProducts()
-        await fetchRecentOrders()
-        await fetchSalesOverview()
+        await fetchTotalOrders();
+        await store.dispatch("fetchCustomers");
+        await fetchTotalProducts();
+        await fetchRecentOrders();
+        await fetchSalesOverview();
 
         // Update values after fetching data
-        totalCustomers.value = store.getters.totalCustomers || 0
+        totalCustomers.value = store.getters.totalCustomers || 0;
       } catch (error) {
-        console.error('Error fetching dashboard data:', error)
+        console.error("Error fetching dashboard data:", error);
       }
-    })
+    });
 
     return {
       totalRevenue,
@@ -388,10 +444,10 @@ export default defineComponent({
       totalCustomers,
       totalProducts,
       orders,
-      salesOverview
-    }
-  }
-})
+      salesOverview,
+    };
+  },
+});
 </script>
 
 <style scoped>
@@ -403,11 +459,7 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+
 
 .card-content {
   text-align: center;
@@ -423,11 +475,11 @@ export default defineComponent({
 }
 
 .trend.positive {
-  color: #67C23A;
+  color: #67c23a;
 }
 
 .trend.negative {
-  color: #F56C6C;
+  color: #f56c6c;
 }
 
 .chart-row {
