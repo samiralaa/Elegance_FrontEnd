@@ -294,8 +294,7 @@ export default {
     getAddress(id) {
     // this.addressForm.country_id = id;
     this.fetchCities(id);
-    console.log("Cities:", this.cities);
-    console.log("Cities:", id);
+   
     
   },
     openEditDialog(addr = null) {
@@ -479,7 +478,7 @@ export default {
         const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
 
         this.cities = response.data.data.original.data.cities;
-    //  console.log('Cities:', this.cities);
+    
      
        
 
@@ -502,7 +501,7 @@ export default {
           }
         });
         this.user = response.data.data.user;
-        console.log('User Profile:', this.user);
+       
         
       } catch (err) {
         this.error = err.response?.data?.message || 'Failed to fetch profile';
