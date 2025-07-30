@@ -70,6 +70,13 @@
               <Select />
             </el-icon>
           </el-button>
+          <el-button size="small" type="info" @click="completedOrder(scope.row)"
+          :disabled="scope.row.status !== 'accepted'"
+          circle>
+            <el-icon>
+              <FolderChecked />
+            </el-icon>
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -162,7 +169,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Search, View, Close, Refresh ,Select} from '@element-plus/icons-vue'
+import { Search, View, Close, Refresh ,Select, FolderChecked} from '@element-plus/icons-vue'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
@@ -257,6 +264,28 @@ const acceptOrder = async (order) => {
   } catch (error) {
     
     ElMessage.error('Failed to accept order')
+  }
+}
+
+const completedOrder = async (order) => {
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    if (!tokenData || !tokenData.token) {
+      throw new Error('Authentication token not found')
+    }
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const response = await axios.get(`https://backend.webenia.org/api/orders/${order.id}/complete`)
+
+    if (response.data.status === true) {
+      ElMessage.success('Order completed successfully')
+      await fetchOrders()
+    } else {
+      throw new Error(response.data.message || 'Failed to complete order')
+    }
+  } catch (error) {
+    console.error('Error completing order:', error)
+    ElMessage.error(error.message || 'Failed to complete order')
   }
 }
 const printInvoice = () => {
