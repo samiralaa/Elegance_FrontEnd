@@ -120,13 +120,13 @@
           <template #header>
             <div class="d-flex gap-2 align-items-center">
               <span>{{ $t("dashboard.recent-Orders") }}</span>
-              <button type="button" class="btn btn-secondary btn-sm position-relative">
+              <span  class="badge text-bg-secondary p-2 position-relative">
                 +{{ orders.count }}
                 <span
                   class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
                 >
                 </span>
-              </button>
+              </span>
             </div>
           </template>
 

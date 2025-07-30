@@ -112,7 +112,7 @@
         <div class="col-md-6 text-end ">
           <h6 >Invoice Details:</h6>
           <p class="mb-0"><span class="fw-bold">Invoice ID :</span> {{ selectedOrder.invoice_number }}</p>
-          <p class="mb-0"><span class="fw-bold">Date:</span> {{ selectedOrder.ordered_at}}</p>
+          <p class="mb-0"><span class="fw-bold">Order Date:</span> {{ selectedOrder.ordered_at}}</p>
           
         </div>
       </div>
@@ -175,7 +175,7 @@ const showDetails = ref(false)
 const selectedOrder = ref(null)
 const loading = ref(false)
 const imageSrc = ref('assets/logo.png')
-const orderStatuses = ['pending', 'processing', 'cancelled']
+const orderStatuses = ['all','pending', 'accepted', 'completed', 'cancelled']
 
 const fetchOrders = async () => {
   loading.value = true
@@ -212,6 +212,9 @@ const filteredOrders = computed(() => {
 
     const matchesStatus =
       !statusFilter.value || order.status === statusFilter.value
+    if (statusFilter.value === 'all') {
+      return matchesSearch
+    }
 
     return matchesSearch && matchesStatus
   })
@@ -349,8 +352,8 @@ const formatDate = (dateStr) => {
 const getStatusType = (status) => {
   const types = {
 
-    pending: 'info',
-    processing: 'warning',
+    pending: 'warning',
+    completed: 'info',
     cancelled: 'danger',
     accepted: 'success',
   }
