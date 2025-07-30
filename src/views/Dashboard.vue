@@ -227,6 +227,8 @@ export default defineComponent({
       if (!chartInstance) return;
 
       const dates = salesOverview.value.daily_sales.map((item) => item.date);
+      
+      
       const sales = salesOverview.value.daily_sales.map((item) =>
         parseFloat(item.total_sales)
       );
