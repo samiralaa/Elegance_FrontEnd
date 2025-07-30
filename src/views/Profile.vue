@@ -107,9 +107,10 @@
       <button class="btn btn-outline-danger btn-sm d-flex align-items-center"  @click="openDeleteDialog(addr)" >
         <fa :icon="['fas','fa-trash-alt']"  class=" me-2"/> {{ $t('profile.deleteAddress') }}
       </button>
-      <button class="btn btn-outline-dark btn-sm d-flex align-items-center" @click="openEditDialog(addr)">
+      <button class="btn btn-outline-dark btn-sm d-flex align-items-center" @click="openEditDialog(addr);getAddress(addr.country_id)" >
         <fa :icon="['fas','fa-pen']" class=" me-2"/> {{ $t('profile.editAddress') }}
       </button>
+     
     </div>
   </div>
 </div>
@@ -162,7 +163,7 @@
             <div class="form-group">
               <label for="city">{{ $t('checkout.city') }}</label>
               <select id="city" class="form-select" v-model="addressForm.city_id" required>
-                <option v-for="city in cities" :key="city.id" :value="city.id">
+                <option v-for="city in cities" :key="city.id" :value="city.id" selected>
                   {{ $i18n.locale === 'ar' ? city.name_ar : city.name_en }}
                 </option>
               </select>
@@ -289,6 +290,14 @@ export default {
         countryName
       ].filter(Boolean).join(', ');
     },
+    
+    getAddress(id) {
+    // this.addressForm.country_id = id;
+    this.fetchCities(id);
+    console.log("Cities:", this.cities);
+    console.log("Cities:", id);
+    
+  },
     openEditDialog(addr = null) {
 
       if (addr) {
@@ -470,6 +479,7 @@ export default {
         const response = await axios.get(`https://backend.webenia.org/api/countries/${id}`);
 
         this.cities = response.data.data.original.data.cities;
+    //  console.log('Cities:', this.cities);
      
        
 
@@ -492,6 +502,8 @@ export default {
           }
         });
         this.user = response.data.data.user;
+        console.log('User Profile:', this.user);
+        
       } catch (err) {
         this.error = err.response?.data?.message || 'Failed to fetch profile';
       } finally {
@@ -531,24 +543,26 @@ export default {
 
     // Fetch countries for address form
     await this.fetchCountries();
-    
+    await this.fetchCities(this.user.country_id);
    
+ 
    
     // If user has address, fetch cities for the first country
-    if (this.user.address && this.user.address.length > 0) {
-      const firstCountryId = this.user.address[0].country_id || this.user.address[0].country?.id;
-      if (firstCountryId) {
-        await this.fetchCities(firstCountryId);
-      }
-    } else {
-      this.cities = [];
-    }
+    // if (this.user.address && this.user.address.length > 0) {
+    //   const firstCountryId = this.user.address[0].country_id || this.user.address[0].country?.id;
+    //   if (firstCountryId) {
+    //     await this.fetchCities(firstCountryId);
+    //   }
+    // } else {
+    //   this.cities = [];
+    // }
 
 
   },
+  
   async mounted() {
     // Fetch countries when component is mounted
-    await this.fetchCountries();
+    // await this.fetchCountries();
 
     
   }
