@@ -11,7 +11,7 @@
             </div>
           </template>
           <div class="card-content">
-            <h2>${{ totalRevenue.toFixed(2) }}</h2>
+            <h2>${{  salesOverview.converted_total_sales.toFixed(2) }}</h2>
             <span
               :class="[
                 'trend',
@@ -203,6 +203,7 @@ export default defineComponent({
     const totalCustomers = ref(0);
     const totalProducts = ref(0);
     const orders = ref([]);
+ 
     const salesOverview = ref({
       today_sales: 0,
       this_month_sales: 0,
@@ -215,100 +216,73 @@ export default defineComponent({
     });
     let chartInstance = null;
 
-    const initChart = () => {
-      const chartDom = document.getElementById("salesChart");
-      if (chartDom) {
-        chartInstance = echarts.init(chartDom);
-        updateChart();
-      }
-    };
 
-    const updateChart = () => {
-      if (!chartInstance) return;
 
-      const dates = salesOverview.value.daily_sales.map((item) => item.date);
-      
-      
-      const sales = salesOverview.value.daily_sales.map((item) =>
-        parseFloat(item.total_sales)
-      );
-      const orders = salesOverview.value.daily_sales.map(
-        (item) => item.total_orders
-      );
+  const initChart = () => {
+  const chartDom = document.getElementById('salesChart');
+  if (chartDom) {
+    chartInstance = echarts.init(chartDom);
+    updateChart(); // رسم الشارت بعد التهيئة
+  }
+};
 
-      const option = {
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "cross",
-            label: {
-              backgroundColor: "#6a7985",
-            },
-          },
-        },
-        legend: {
-          data: ["Sales", "Orders"],
-        },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: false,
-          data: dates,
-        },
-        yAxis: [
-          {
-            type: "value",
-            name: "Sales ($)",
-            position: "left",
-          },
-          {
-            type: "value",
-            name: "Orders",
-            position: "right",
-          },
-        ],
-        series: [
-          {
-            name: "Sales",
-            type: "line",
-            smooth: true,
-            data: sales,
-            itemStyle: {
-              color: "#409EFF",
-            },
-            areaStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: "rgba(64,158,255,0.3)",
-                },
-                {
-                  offset: 1,
-                  color: "rgba(64,158,255,0.1)",
-                },
-              ]),
-            },
-          },
-          {
-            name: "Orders",
-            type: "line",
-            smooth: true,
-            yAxisIndex: 1,
-            data: orders,
-            itemStyle: {
-              color: "#67C23A",
-            },
-          },
-        ],
-      };
+// رسم الشارت
+const updateChart = () => {
+  if (!chartInstance || !Array.isArray(salesOverview.value.daily_sales)) return;
 
-      chartInstance.setOption(option);
-    };
+  const salesData = salesOverview.value.daily_sales;
+
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {
+      data: ['Sales', 'Orders'],
+    },
+    xAxis: {
+      type: 'category',
+      data: salesData.map((item) => item.date),
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        name: 'Sales',
+        type: 'line',
+        data: salesData.map((item) => parseFloat(item.total_sales || 0)),
+      },
+      {
+        name: 'Orders',
+        type: 'line',
+        data: salesData.map((item) => item.total_orders || 0),
+      },
+    ],
+  };
+
+  chartInstance.setOption(option);
+};
+
+const fetchSalesOverview = async () => {
+  try {
+    const response = await axios.get('https://backend.webenia.org/api/dashboard/sales-overview');
+
+    // الوصول للبيانات الحقيقية بشكل صحيح
+    salesOverview.value = response.data.data.original.data;
+
+    totalRevenue.value = parseFloat(salesOverview.value.total_sales || 0);
+
+    // تأكد أن daily_sales موجودة قبل رسم الشارت
+    if (Array.isArray(salesOverview.value.daily_sales)) {
+      updateChart();
+    } else {
+      console.warn('daily_sales is missing or not an array');
+    }
+  } catch (error) {
+    console.error('Error fetching sales overview:', error);
+  }
+};
+
 
     const handleResize = () => {
       if (chartInstance) {
@@ -316,10 +290,23 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
-      initChart();
-      window.addEventListener("resize", handleResize);
-    });
+   onMounted(async () => {
+  initChart(); // تهيئة أولية
+
+  window.addEventListener("resize", handleResize);
+
+  try {
+    await fetchTotalOrders();
+    await store.dispatch("fetchCustomers");
+    await fetchTotalProducts();
+    await fetchRecentOrders();
+    await fetchSalesOverview(); // جلب البيانات ورسم الشارت
+    totalCustomers.value = store.getters.totalCustomers || 0;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+  }
+});
+
 
     onBeforeUnmount(() => {
       if (chartInstance) {
@@ -328,35 +315,7 @@ export default defineComponent({
       window.removeEventListener("resize", handleResize);
     });
 
-    const fetchSalesOverview = async () => {
-      try {
-        const tokenData = JSON.parse(localStorage.getItem("tokenData"));
-        if (!tokenData || !tokenData.token) {
-          throw new Error("Authentication token not found");
-        }
 
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${tokenData.token}`;
-        const response = await axios.get(
-          "https://backend.webenia.org/api/dashboard/sales-overview"
-        );
-
-        if (response.data.status === true) {
-          salesOverview.value = response.data.data;
-          totalRevenue.value = parseFloat(
-            response.data.data.this_month_sales || 0
-          );
-          totalRevenue.value = parseFloat(
-            response.data.data.converted_total_sales || 0
-          );
-
-          updateChart();
-        }
-      } catch (error) {
-        console.error("Error fetching sales overview:", error);
-      }
-    };
 
     const fetchTotalProducts = async () => {
       try {
@@ -528,5 +487,10 @@ export default defineComponent({
 }
 .table-responsive {
   overflow-x: auto;
+}
+.chart-container {
+  height: 400px;
+  width: 100%;
+  margin-top: 20px;
 }
 </style>
