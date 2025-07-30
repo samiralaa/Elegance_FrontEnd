@@ -53,9 +53,16 @@
               <Close />
             </el-icon>
           </el-button>
-          <el-button size="small" type="success" @click="reorder(scope.row)" circle>
+          <el-button size="small" type="warning" @click="reorder(scope.row)" circle>
             <el-icon>
               <Refresh />
+            </el-icon>
+          </el-button>
+          <el-button size="small" type="success" @click="acceptOrder(scope.row)"
+          :disabled="scope.row.status !== 'pending'"
+          circle>
+            <el-icon>
+              <Select />
             </el-icon>
           </el-button>
         </template>
@@ -150,7 +157,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Search, View, Close, Refresh } from '@element-plus/icons-vue'
+import { Search, View, Close, Refresh ,Select} from '@element-plus/icons-vue'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
@@ -178,13 +185,14 @@ const fetchOrders = async () => {
 
     if (response.data.status === true) {
       orders.value = response.data.data
- 
+      console.log('Fetched Orders:', orders.value);
+      
     } else {
       throw new Error(response.data.message || 'Failed to fetch orders')
     }
   } catch (error) {
     console.error('Error fetching orders:', error)
-    ElMessage.error(error.message || 'Failed to fetch orders')
+    ElMessage.error( 'Failed to fetch orders')
   } finally {
     loading.value = false
   }
@@ -222,7 +230,27 @@ const viewOrder = (order) => {
   
   
 }
+const acceptOrder = async (order) => {
+  try {
+    const tokenData = JSON.parse(localStorage.getItem('tokenData'))
+    if (!tokenData || !tokenData.token) {
+      throw new Error('Authentication token not found')
+    }
 
+    axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
+    const response = await axios.get(`https://backend.webenia.org/api/orders/${order.id}/accept`)
+
+    if (response.data.status === true) {
+      ElMessage.success('Order accepted successfully')
+      await fetchOrders()
+    } else {
+      throw new Error(response.data.message || 'Failed to accept order')
+    }
+  } catch (error) {
+    
+    ElMessage.error('Failed to accept order')
+  }
+}
 const printInvoice = () => {
 
  const invoiceElement = document.getElementById('invoice-print');
@@ -239,7 +267,6 @@ const printInvoice = () => {
 
   const iframeDoc = iframe.contentWindow.document;
 
-  // Get local styles (optional: include your main CSS file here if needed)
   const styleContent = `
     <style>
       /* Example styles — replace/add your own as needed */
@@ -319,7 +346,8 @@ const getStatusType = (status) => {
 
     pending: 'info',
     processing: 'warning',
-    cancelled: 'danger'
+    cancelled: 'danger',
+    accepted: 'success',
   }
   return types[status.toLowerCase()] || 'info'
 }
