@@ -661,9 +661,9 @@ export default {
       let charge;
 
       if (countryId === 57) {
-        charge = 10;
+        charge = 30;
       } else {
-        charge = 20;
+        charge = 70;
       }
       return convertToAED(charge, this.currency).toFixed(2);
     },
