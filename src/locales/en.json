@@ -359,7 +359,8 @@
     "quantity": "Quantity",
     "noOrder": "No orders found",
     "printInvoice": "Print Invoice",
-    "invoice": "Invoice"
+    "invoice": "Invoice",
+    "payment-method": "Payment Method"
   },
   
   "checkout": {
@@ -766,7 +767,9 @@
     "Order-Date": "Order Date",
     "customer": "Customer",
     "orders": "Orders",
-    "sales": "Sales"
+    "sales": "Sales",
+    "payment-method": "Payment Method",
+    "address": "Address"
   },
   "input":{
     "unites":{
