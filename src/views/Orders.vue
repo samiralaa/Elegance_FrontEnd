@@ -71,7 +71,7 @@
             </el-icon>
           </el-button>
           <el-button size="small" type="info" @click="completedOrder(scope.row)"
-          :disabled="scope.row.status !== 'pending' && scope.row.status !== 'accepted'"
+          :disabled="scope.row.status !== 'accepted'"
           circle>
             <el-icon>
               <FolderChecked />
