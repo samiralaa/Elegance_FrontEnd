@@ -6,7 +6,8 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-md-3">
-            <img :src="getBrandImage(brand)" :alt="currentLang === 'ar' ? brand.name_ar : brand.name_en" class="brand-logo">
+            <img :src="getBrandImage(brand)" :alt="currentLang === 'ar' ? brand.name_ar : brand.name_en"
+              class="brand-logo">
           </div>
           <div class="col-md-9">
             <h1 class="brand-name">{{ currentLang === 'ar' ? brand.name_ar : brand.name_en }}</h1>
@@ -26,20 +27,11 @@
 
         <div class="slider-wrapper">
           <div class="slider row slick-track p-4">
-            <div
-              v-for="category in brand.categories"
-              :key="category.id"
-              class="col-md-4 col-lg-3"
-            >
-              <router-link
-                :to="`/category/${category.id}`"
-                class="card text-decoration-none"
-              >
+            <div v-for="category in brand.categories" :key="category.id" class="col-md-4 col-lg-3">
+              <router-link :to="`/category/${category.id}`" class="card text-decoration-none">
                 <div class="category-content">
-                  <img
-                    :src="getCategoryImage(category)"
-                    :alt="currentLang === 'ar' ? category.name_ar : category.name_en"
-                  />
+                  <img :src="getCategoryImage(category)"
+                    :alt="currentLang === 'ar' ? category.name_ar : category.name_en" />
                   <p>{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</p>
                   <span class="product-count"> {{ $t('Products.Products') }} : {{ category.products.length }}</span>
                 </div>
@@ -61,21 +53,20 @@
               <div v-for="product in category.products" :key="product.id" class="product-card">
                 <div class="image-container mb-3 bg-light rounded">
                   <router-link :to="`/read/products/${product.id}`" class="product-link">
-                    <img :src="getProductImage(product)" :alt="currentLang === 'ar' ? product.name_ar : product.name_en" />
+                    <img :src="getProductImage(product)"
+                      :alt="currentLang === 'ar' ? product.name_ar : product.name_en" />
 
                   </router-link>
 
                   <div v-if="!product.is_available" class="sale-badge">{{ $t('products.outOfStock') }}</div>
                   <div class="product-actions d-flex justify-content-center gap-5 w-100">
-                    <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm" title="View">
+                    <router-link :to="`/read/products/${product.id}`" class="btn btn-light rounded-circle shadow-sm"
+                      title="View">
                       <fa icon="eye" />
                     </router-link>
-                    <button
-                      @click="addToFavorites(product)"
-                      class="btn rounded-circle shadow-sm btn-light"
+                    <button @click="addToFavorites(product)" class="btn rounded-circle shadow-sm btn-light"
                       :class="isInFavorites(product.id) ? 'text-danger' : ''"
-                      :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'"
-                    >
+                      :title="isInFavorites(product.id) ? 'Remove from favorites' : 'Add to favorites'">
                       <fa :icon="isInFavorites(product.id) ? 'fas fa-heart' : 'far fa-heart'" />
                     </button>
                   </div>
@@ -98,11 +89,7 @@
                   </div>
                 </div>
                 <div class="addToCart-btn">
-                  <button 
-                    :disabled="!product.is_available" 
-                    @click="addToCart(product)" 
-                    class="btn"
-                  >
+                  <button :disabled="!product.is_available" @click="addToCart(product)" class="btn">
                     {{ $t('products.addToCart') }}
                   </button>
                 </div>
@@ -127,6 +114,7 @@ import Footer from '@/components/Website/Footer.vue'
 import { API_URL } from '@/store/index.js'
 import { useFavoritesStore } from '@/store/favorites'
 import { useI18n } from 'vue-i18n'
+import { useCartStore } from '@/store/cart' // Adjust path as needed
 
 
 const route = useRoute()
@@ -143,6 +131,7 @@ const { locale } = useI18n()
 const currentLang = computed(() => localStorage.getItem('lang') || 'en')
 
 const favoritesStore = useFavoritesStore()
+const cartStore = useCartStore() // If using Pinia or similar
 
 onMounted(() => {
   fetchBrandDetails()
@@ -239,10 +228,10 @@ const addToCart = async (product) => {
     let priceToSend = 0;
     if (product.discount && product.discount.is_active) {
       const discountValue = parseFloat(product.discount.discount_value);
-      const originalPrice = parseFloat(product.converted_price || product.price);
+      const originalPrice = parseFloat(product.price || product.price);
       priceToSend = originalPrice - originalPrice * (discountValue / 100);
     } else {
-      priceToSend = parseFloat(product.converted_price || product.price);
+      priceToSend = parseFloat(product.price || product.price);
     }
 
     const payload = {
@@ -268,9 +257,10 @@ const addToCart = async (product) => {
     if (response.data.status) {
       ElNotification({
         title: t('success'),
-        message: response.data.message ,
+        message: response.data.message,
         type: 'success'
       })
+      await cartStore.fetchCartCount() // <-- Update cart count in real-time
     } else {
       ElNotification({
         title: t('error'),
@@ -288,27 +278,27 @@ const addToCart = async (product) => {
   }
 }
 
-  const calculateDiscountedPrice = (product) => {
-    if (product.discount && product.discount.is_active) {
-      const discountValue = parseFloat(product.discount.discount_value)
-      const originalPrice = parseFloat(product.converted_price || product.price)
-      const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
-      return discountedPrice.toFixed(2)
-    }
-    return product.converted_price || product.price
+const calculateDiscountedPrice = (product) => {
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
+    const originalPrice = parseFloat(product.converted_price || product.price)
+    const discountedPrice = originalPrice - originalPrice * (discountValue / 100)
+    return discountedPrice.toFixed(2)
   }
+  return product.converted_price || product.price
+}
 
-  const getDiscountPercentage = (product) => {
-    if (product.discount && product.discount.is_active) {
-      const discountValue = parseFloat(product.discount.discount_value)
-      return Math.round(discountValue)
-    }
-    return 0
+const getDiscountPercentage = (product) => {
+  if (product.discount && product.discount.is_active) {
+    const discountValue = parseFloat(product.discount.discount_value)
+    return Math.round(discountValue)
   }
+  return 0
+}
 
-  watch(locale, () => {
-    fetchBrandDetails()
-  })
+watch(locale, () => {
+  fetchBrandDetails()
+})
 </script>
 
 <style scoped>
@@ -349,7 +339,7 @@ const addToCart = async (product) => {
   padding: 16px 0;
 }
 
-.slick-track{
+.slick-track {
   width: 100%;
   overflow: hidden !important;
 }
@@ -439,6 +429,7 @@ const addToCart = async (product) => {
     transform: scale(1);
     color: #333 !important;
   }
+
   .card:hover::after {
     transform: translate(-50%, -50%) scale(0);
   }
@@ -456,6 +447,7 @@ const addToCart = async (product) => {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
 }
+
 .product-card {
   position: relative;
   background: #fff;
@@ -463,20 +455,24 @@ const addToCart = async (product) => {
   transition: box-shadow 0.3s;
   height: fit-content;
 }
+
 .image-container {
   position: relative;
   background: #f9f9f9;
   overflow: hidden;
   border-radius: 5px;
 }
+
 .image-container img {
   width: 100%;
   height: auto;
   transition: transform 0.3s ease;
 }
+
 .product-card:hover .image-container img {
   transform: scale(1.1);
 }
+
 .product-actions {
   position: absolute;
   bottom: 10px;
@@ -507,21 +503,26 @@ const addToCart = async (product) => {
   justify-content: center;
   cursor: pointer;
 }
+
 .icon {
   font-size: 1.2rem;
   transition: all 0.2s ease;
 }
+
 .action-btn:hover .icon {
   transform: scale(1.2);
 }
+
 .cart-btn {
   background-color: #fff;
   color: #8b6b3d;
 }
+
 .love-btn {
   background-color: #8b6b3d;
   color: #fff;
 }
+
 .sale-badge {
   position: absolute;
   top: 10px;
@@ -532,7 +533,8 @@ const addToCart = async (product) => {
   font-size: 12px;
   border-radius: 5px;
 }
-.card-body{
+
+.card-body {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -577,6 +579,7 @@ const addToCart = async (product) => {
   align-items: center;
   width: 100%;
 }
+
 .addToCart-btn button {
   position: relative;
   padding: 0.75rem 1.5rem;
@@ -592,6 +595,7 @@ const addToCart = async (product) => {
   border-radius: 0;
   background-color: #fff;
 }
+
 .addToCart-btn button::before {
   content: "";
   position: absolute;
@@ -603,10 +607,12 @@ const addToCart = async (product) => {
   transition: height 0.3s ease;
   z-index: -1;
 }
+
 .addToCart-btn button:hover {
   color: #fff;
   border-radius: 6px;
 }
+
 .addToCart-btn button:hover::before {
   height: 100%;
 }
@@ -624,8 +630,9 @@ const addToCart = async (product) => {
   .product-card:hover .product-actions {
     transform: translateX(0) translateY(0);
   }
+
   .card-body {
     flex-direction: column;
   }
 }
-</style> 
+</style>
