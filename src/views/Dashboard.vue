@@ -30,7 +30,7 @@
           </template>
           <div class="card-content">
             <h2>{{ totalOrders }}</h2>
-            <span class="trend positive">+8%</span>
+            <!-- <span class="trend positive">+8%</span> -->
           </div>
         </el-card>
       </el-col>
@@ -43,7 +43,7 @@
           </template>
           <div class="card-content">
             <h2>{{ totalCustomers }}</h2>
-            <span class="trend positive">+5%</span>
+            <!-- <span class="trend positive">+5%</span> -->
           </div>
         </el-card>
       </el-col>
@@ -56,7 +56,7 @@
           </template>
           <div class="card-content">
             <h2>{{ totalProducts }}</h2>
-            <span class="trend positive">+3%</span>
+            <!-- <span class="trend positive">+3%</span> -->
           </div>
         </el-card>
       </el-col>
@@ -96,11 +96,11 @@
               <span>{{ $t('dashboard.recent-Orders') }}</span>
             </div>
           </template>
-          <el-table :data="orders" style="width: 100%"  class="table-responsive" >
+          <!-- <el-table :data="orders" style="width: 100%"  class="table-responsive" >
             <el-table-column prop="id" :label="$t('dashboard.Order-Id')" width="100" />
             <el-table-column :label="$t('dashboard.customer')">
               <template #default="{ row }">
-                {{ row.user.name }}
+                {{ row.data.count }}
               </template>
             </el-table-column>
             <el-table-column prop="total_price" :label="$t('dashboard.Total')" width="120">
@@ -120,7 +120,34 @@
                 {{ row.ordered_at }}
               </template>
             </el-table-column>
-          </el-table>
+          </el-table> -->
+           <div class="table-responsive logs-table overflow-auto">
+      <table class="table table-hover  align-middle">
+        <thead>
+          <tr>
+            <th  scope="col">{{ $t("Logs.User") }}</th>
+            <th scope="col">{{ $t("Logs.Operation") }}</th>
+            <th scope="col">{{ $t("Logs.Model") }}</th>
+            <th scope="col">{{ $t("Logs.ModelID") }}</th>
+            <th scope="col">{{ $t("Logs.Description") }}</th>
+            <th scope="col">{{ $t("Logs.IPAddress") }}</th>
+            <th scope="col">{{ $t("Logs.BrowserInfo") }}</th>
+            <th scope="col">{{ $t("Logs.Timestamp") }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(log, index) in logs" :key="index">
+            <th class="align-middle">{{ log.user?.name }}</th>
+            <td class="align-middle">{{ log.operation }}</td>
+            <td class="align-middle">{{ log.model_type }}</td>
+            <td class="align-middle">{{ log.model_id }}</td>
+            <td class="align-middle">{{ log.description }}</td>
+            <td class="align-middle">{{ log.ip_address }}</td>
+            <td class="align-middle">{{ formatDate(log.created_at) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
         </el-card>
       </el-col>
     </el-row>
@@ -328,10 +355,12 @@ export default defineComponent({
         }
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${tokenData.token}`
-        const response = await axios.get('https://backend.webenia.org/api/dashboard/recent-orders')
+        const response = await axios.get('https://backend.webenia.org/api/orders/count/new')
 
         if (response.data.status === true) {
           orders.value = response.data.data
+          console.log('Recent Orders:', orders.value);
+          
         }
       } catch (error) {
         console.error('Error fetching recent orders:', error)
