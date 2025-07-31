@@ -67,7 +67,7 @@
           <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
             <div>
               <small class="text-muted">{{ $t('orders.orderId') }}</small>
-              <h5 class="fw-bold">#{{ order.id }}</h5>
+              <h5 class="fw-bold">#{{ order.invoice_number }}</h5>
             </div>
             <div class="text-end">
               <small class="text-muted">{{ formatDate(order.ordered_at) }}</small><br>
