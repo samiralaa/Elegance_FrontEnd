@@ -41,10 +41,13 @@
       </el-table-column>
       <el-table-column prop="method" :label="$t('orders.payment-method')" width="150">
         <template #default="scope" >
+          <img v-if="scope.row.payment_method === 'stripe'" :src="imageSrc.strappi" alt="Strappi" width="20" height="20">
+          <img v-if="scope.row.payment_method === 'tabby'" :src="imageSrc.tabby" alt="Tabby" width="20" height="20">
+          <img v-if="scope.row.payment_method === 'cod'" :src="imageSrc.cash" alt="Cash" width="20" height="20">
             {{ scope.row.payment_method }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('orders.actions')" width="220" >
+      <el-table-column :label="$t('orders.actions')" width="220" fixed="right">
         <template #default="scope">
           <el-button size="small" type="primary" @click="viewOrder(scope.row)" circle>
             <el-icon>
@@ -56,11 +59,6 @@
             @click="cancelOrder(scope.row)" circle>
             <el-icon>
               <Close />
-            </el-icon>
-          </el-button>
-          <el-button size="small" type="warning" @click="reorder(scope.row)" circle>
-            <el-icon>
-              <Refresh />
             </el-icon>
           </el-button>
           <el-button size="small" type="success" @click="acceptOrder(scope.row)"
@@ -97,7 +95,7 @@
       <div class=" " id="invoice-print" dir="ltr" >
         <div class="card p-4">
           <div class="d-flex justify-content-between align-items-center designInIframe">
-        <img :src="imageSrc" class="rounded object-fit-contain " width="200" height="100" alt="hi">
+        <img :src="imageSrc.elegance" class="rounded object-fit-contain " width="200" height="100" alt="hi">
         <div>
           <h5>Elegance OUD</h5>
           
@@ -181,7 +179,12 @@ const pageSize = 5
 const showDetails = ref(false)
 const selectedOrder = ref(null)
 const loading = ref(false)
-const imageSrc = ref('assets/logo.png')
+const imageSrc = ref({
+  elegance: 'assets/logo.png',
+  strappi :'assets/strappi.png',
+  tabby:'assets/tabby.png',
+  cash :'assets/cash.png'
+})
 const orderStatuses = ['all','pending', 'accepted', 'completed', 'cancelled']
 
 const fetchOrders = async () => {
