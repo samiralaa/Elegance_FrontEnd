@@ -177,6 +177,8 @@ export default {
     },
 
    async addToCart(product) {
+    console.log('Adding product to cart:', product);
+    
   if (!product || !product.price) {
     ElNotification({
       title: this.$t('error'),
@@ -187,22 +189,23 @@ export default {
   }
 
   try {
-    const originalPrice = parseFloat(product.price);
-    let discountToSend = null;
-
-    if (product.discount && product.discount.length > 0 && product.discount[0].is_active) {
-      discountToSend = product.discount[0].id;
+    let priceToSend = 0;
+    if (product.discount && product.discount.is_active) {
+      const discountValue = parseFloat(product.discount.discount_value);
+      const originalPrice = parseFloat(product.price); // Use original price only
+      priceToSend = originalPrice - originalPrice * (discountValue / 100);
+    } else {
+      priceToSend = parseFloat(product.price); // Use original price only
     }
-
     const payload = {
       product_id: product.id,
       quantity: 1,
-      price: originalPrice,          // send original price
+      price: priceToSend,          // send original price
     };
 
-    if (discountToSend !== null) {
-      payload.discount_id = discountToSend;  // renamed to discount_id
-    }
+    // if (discountToSend !== null) {
+    //   payload.discount_id = discountToSend;  // renamed to discount_id
+    // }
 
     const response = await axios.post(
       'https://backend.webenia.org/api/cart-items',
@@ -220,6 +223,8 @@ export default {
         message: response.data.message,
         type: 'success'
       });
+      console.log('Product added to cart:', payload);
+      
       this.cartStore.incrementCount();
       await this.cartStore.fetchCartCount();
     } else {

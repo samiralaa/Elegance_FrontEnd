@@ -228,15 +228,21 @@ export default {
     
     calculateDiscountedPrice(item) {
       const product = item.product;
+      
       if (!product) return '';
+      
       if (product.discount && product.discount.is_active) {
+        
+        
         const discountValue = parseFloat(product.discount.discount_value);
         const originalPrice = parseFloat(product.converted_price);
         if (!isNaN(originalPrice) && !isNaN(discountValue)) {
           const discountedPrice = originalPrice - (originalPrice * (discountValue / 100));
           return discountedPrice.toFixed(2);
         }
+        
       }
+      
       return product.converted_price;
     },
 
@@ -245,7 +251,11 @@ export default {
     }
   },
   computed: {
-  convertedTotal() {
+
+
+    convertedTotal() {
+      console.log('Calculating total for cart items:', this.cartItems);
+      
     return this.cartItems.reduce((total, item) => {
       if (item.product.discount && item.product.discount.is_active) {
         const discountValue = parseFloat(item.product.discount.discount_value)
