@@ -2,7 +2,7 @@
   <div class="checkout-step">
     <h2>{{ $t('checkout.payment') }}</h2>
     <div class="payment-methods">
-      <button :disabled="method.name === 'Tabby' && currency === 'USD'" v-for="method in paymentMethods" :key="method.id" class="payment-method"
+      <button :disabled="method.name === 'Tabby' && currency === 'USD' || method.name === 'Cash on Delivery'&& shippingDetails.country_id !==57" v-for="method in paymentMethods" :key="method.id" class="payment-method"
         :class="{active: selectedPaymentMethod === method.id , [method.class]: currency === 'USD'}" @click="selectPaymentMethod(method.id)">
         <!-- <svg height="40" width="40" :style="method.style">
           <use  :xlink:href="method.icon"></use>
@@ -720,7 +720,9 @@ export default {
   border-color: #8b6b3d;
   background: #fff;
 }
-
+.payment-method:disabled {
+  cursor: not-allowed;
+} 
 .tappy-disabled{
   cursor: not-allowed;
 }
