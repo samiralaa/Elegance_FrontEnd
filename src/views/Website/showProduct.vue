@@ -32,10 +32,10 @@
 
             <div class="weight" v-if="product.amounts && product.amounts.length > 0">
               <h1 class="weight-title">{{ $t('amount.weight') }}</h1>
-              <div class="reset" @click="resetActive">
+              <!-- <div class="reset" @click="resetActive">
                 <fa icon="rotate-right"></fa>
                 <a>{{ $t('amount.reset') }}</a>
-              </div>
+              </div> -->
               <div class="weight-container">
                 <div class="row g-4">
                   <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
@@ -49,7 +49,7 @@
                 <p>
                   <strong>{{ $t('amount.selected') }}:</strong>
                   {{ direction === 'rtl' ? selectedAmount.weight + "" + selectedAmount.unit.name_en :
-                    selectedAmount.unit.name_en + ' ' + selectedAmount.weight }} -
+                    selectedAmount.weight + ' ' + selectedAmount.unit.name_en }} -
                   {{ selectedAmount.converted_price }} {{ product.currency_code }}
                 </p>
                 <!-- Add more details here if needed -->
