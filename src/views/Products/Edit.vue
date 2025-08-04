@@ -75,6 +75,8 @@
                   value-format="YYYY-MM-DD"
                   placeholder="Pick end date"
                   style="width: 100%;"
+
+                  
                 />
               </el-form-item>
 
@@ -259,7 +261,9 @@ const removeAmount = (index) => {
 }
 const rules = {
   name_en: [{ required: true, message: 'Required', trigger: 'blur' }],
-  price: [{ required: true, message: 'Required', trigger: 'blur' }]
+  price: [{ required: true, message: 'Required', trigger: 'blur' }],
+  ['discount.endDate']: [{ required: true, message: 'Required', trigger: 'blur' }],
+  ['discount.startDate']: [{ required: true, message: 'Required', trigger: 'blur' }],
 
 }
 
