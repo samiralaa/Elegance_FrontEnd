@@ -370,7 +370,6 @@ const fetchProduct = async () => {
     );
     if (res.data.status) {
       product.value = res.data.data;
-   locale.value === 'ar' ? description.value= product.value.description_ar :description.value= product.value.description_en;
   
    
       product.value._original_price = product.value.converted_price;
@@ -573,6 +572,7 @@ watch(() => route.params.id, async (newId) => {
   if (product.value?.amounts?.length) {
     setActive(0, product.value.amounts[0]);
   }
+  descriptionText();
   nextTick(() => {
     initializeSlick();
     checkFavoriteStatus();
@@ -718,9 +718,15 @@ const discountedPriceToShow = computed(() => {
   return basePrice;
 });
 
+const descriptionText = computed(() => {
+   return  locale.value === 'ar' ?  product.value.description_ar : product.value.description_en;
+
+
+})
+// Format description into chunks of 3 lines
 const formattedDescription = computed(() => {
-  if (!description.value) return [];
-   const lines = description.value.split('\n').filter(line => line.trim() !== '');
+  if (!descriptionText.value) return [];
+   const lines = descriptionText.value.split('\n').filter(line => line.trim() !== '');
    console.log('lines',lines);
    
    const chunks = [];
