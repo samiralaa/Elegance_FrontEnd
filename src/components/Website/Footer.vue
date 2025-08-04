@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="container">
-      <div class="footer-section col-12 col-lg-3 col-sm-6">
+      <!-- <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.DownloadApp') }}</h3>
         <div class="app-links d-flex justify-content-center align-items-center">
           <div class="d-flex flex-column justify-content-center align-items-center">
@@ -9,7 +9,7 @@
             <a href=""><img src="@/assets/images/google-play.png" :alt="$t('Footer.GooglePlay')" /></a>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="footer-section col-12 col-lg-3 col-sm-6">
         <h3>{{ $t('Footer.QuickLink') }}</h3>
         <ul>
