@@ -7,8 +7,14 @@
         <el-col :xs="24" :sm="24" :md="12" :lg="14">
           <div class="product-details">
             <h1 class="product-title">{{ locale === 'ar' ? product.name_ar : product.name_en }}</h1>
-            <div v-html="locale === 'ar' ? product.description_ar : product.description_en" class="description"></div>
-
+            
+              <ul v-if="formattedDescription.length" class="description">
+      <li v-for="(chunk, index) in formattedDescription" :key="index">
+       <p v-for="(line, i) in chunk" :key="i">{{ line }}</p>
+  </li>
+   </ul>
+           
+            
             <div class="price-block">
               <div class="d-flex">
                 <span class="price-old" v-if="product.discount && product.discount.is_active">
@@ -36,9 +42,9 @@
                 <fa icon="rotate-right"></fa>
                 <a>{{ $t('amount.reset') }}</a>
               </div> -->
-              <div class="weight-container">
-                <div class="row g-4">
-                  <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item"
+              <div class="weight-container ">
+                <div class="row g-4 ">
+                  <div v-for="(amount, index) in product.amounts" :key="amount.id" class="weight-item p-0 "
                     :class="{ active: selectedAmountIndex === index }" @click="setActive(index, amount)">
                     <p>{{ direction === 'rtl' ? amount.weight + '' + amount.unit.name_en : amount.weight + ' ' +
                       amount.unit.name_en }} For {{ amount.converted_price }} {{ product.currency_code }}</p>
@@ -201,7 +207,7 @@ const maxQuantity = 99;
 const placeholder = "/default-image.jpg";
 const selectedImage = ref(null);
 const currentSlideIndex = ref(0);
-
+const description = ref("");
 // Slider Ref
 const slider = ref(null);
 const main = ref(null);
@@ -364,6 +370,9 @@ const fetchProduct = async () => {
     );
     if (res.data.status) {
       product.value = res.data.data;
+   locale.value === 'ar' ? description.value= product.value.description_ar :description.value= product.value.description_en;
+  
+   
       product.value._original_price = product.value.converted_price;
       if (product.value.images?.length) {
         // Set initial image
@@ -709,6 +718,19 @@ const discountedPriceToShow = computed(() => {
   return basePrice;
 });
 
+const formattedDescription = computed(() => {
+  if (!description.value) return [];
+   const lines = description.value.split('\n').filter(line => line.trim() !== '');
+   console.log('lines',lines);
+   
+   const chunks = [];
+   for (let i = 0; i < lines.length; i += 3) {
+      chunks.push(lines.slice(i, i + 3));
+    }
+  return chunks;
+ 
+});
+
 
 </script>
 
@@ -768,7 +790,7 @@ const discountedPriceToShow = computed(() => {
   color: #7f7f7f;
   font-size: 18px;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1;
   margin: 20px 0;
 }
 
@@ -779,6 +801,7 @@ const discountedPriceToShow = computed(() => {
 .weight-container .row {
   display: flex;
   gap: 0 30px;
+
 }
 
 .weight-title {
