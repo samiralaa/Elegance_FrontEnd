@@ -99,8 +99,7 @@
         <div>
           <h5>Elegance OUD</h5>
           
-          <p class="mb-0">37 Kwar St - Al Nahyan - E20-02
-Abu Dhabi - United Arab Emirates</p>
+          <p class="mb-0">00971544887138</p>
           <p>eleganceoud22@gmail.com</p>
         </div>
       </div>
