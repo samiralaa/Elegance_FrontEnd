@@ -17,14 +17,14 @@
             
             <div class="price-block">
               <div class="d-flex">
-                <span class="price-old" v-if="product.discount && product.discount.is_active">
+                <span class="price-old" v-if="product.discount && product.discount.is_active" dir="ltr">
                   {{ currentPrice }} {{ product.currency_code }}
                 </span>
-                <span class="discount-badge" v-if="product.discount && product.discount.is_active">
+                <span class="discount-badge" v-if="product.discount && product.discount.is_active" dir="ltr">
                   -{{ product.discount.discount_value }}%
                 </span>
               </div>
-              <span class="price-new">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
+              <span class="price-new" dir="ltr">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
 
               <button @click="toggleFavorite(product)" class="love-btn btn rounded-circle shadow-sm btn-light"
                 :class="isInFavorites(product.id) ? 'text-danger' : ''"
