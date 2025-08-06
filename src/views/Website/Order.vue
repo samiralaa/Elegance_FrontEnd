@@ -9,6 +9,11 @@
         <h3>{{ $t('orders.allOrders') }}</h3>
         <h3 class="num">{{ allOrdersCount }}</h3>
       </a>
+      <a class="order-stage" href="#" @click.prevent="filterOrders('accepted')"
+      :class="{ active: currentFilter === 'accepted' }">
+        <h3>{{ $t('orders.accepted') }}</h3>
+        <h3 class="num">{{ acceptedOrdersCount }}</h3>
+      </a>
       <a class="order-stage" href="#" @click.prevent="filterOrders('pending')"
         :class="{ active: currentFilter === 'pending' }">
         <h3>{{ $t('orders.inProgress') }}</h3>
@@ -39,6 +44,10 @@
           <a class="select-option" href="#" @click.prevent="filterOrders(null)">
             {{ $t('orders.allOrders') }}
             <h3 class="num">{{ allOrdersCount }}</h3>
+          </a>
+          <a class="select-option" href="#" @click.prevent="filterOrders('accepted')">
+            {{ $t('orders.accepted') }}
+            <h3 class="num">{{ acceptedOrdersCount }}</h3>
           </a>
           <a class="select-option" href="#" @click.prevent="filterOrders('pending')">
             {{ $t('orders.inProgress') }}
@@ -196,6 +205,9 @@ export default {
     pendingOrdersCount() {
       return this.orders.filter(order => order.status === 'pending').length;
     },
+    acceptedOrdersCount() {
+      return this.orders.filter(order => order.status === 'accepted').length;
+    },
     completedOrdersCount() {
       return this.orders.filter(order => order.status === 'completed').length;
     },
@@ -260,6 +272,7 @@ export default {
     formatStatus(status) {
       const statusMap = {
         'pending': 'In Progress',
+        'accepted': 'Accepted',
         'completed': 'Completed',
         'cancelled': 'Cancelled'
       };
@@ -268,6 +281,7 @@ export default {
     getStatusBadgeClass(status) {
       const statusClasses = {
         'pending': 'bg-warning',
+        'accepted': 'bg-info',
         'completed': 'bg-success',
         'cancelled': 'bg-danger'
       };

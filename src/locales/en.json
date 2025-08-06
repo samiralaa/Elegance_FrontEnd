@@ -344,6 +344,7 @@
     "inProgress" : "In Progress",
     "completed" : "Completed",
     "cancelled" : "Cancelled",
+    "accepted" : "Accepted",
     "orderId" : "ID",
     "size": "Size",
     "orderDate" : "Date",

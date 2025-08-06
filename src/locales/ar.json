@@ -349,6 +349,7 @@
     "inProgress": "قيد التنفيذ",
     "completed": "مكتمل",
     "cancelled": "ملغى",
+    "accepted": "مقبول",
     "orderId": "رقم الطلب",
     "size": "المقاس",
     "orderDate": "تاريخ الطلب",
