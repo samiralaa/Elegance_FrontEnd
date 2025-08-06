@@ -17,14 +17,14 @@
             
             <div class="price-block">
               <div class="d-flex">
-                <span class="price-old" v-if="product.discount && product.discount.is_active">
+                <span class="price-old" v-if="product.discount && product.discount.is_active" dir="ltr">
                   {{ currentPrice }} {{ product.currency_code }}
                 </span>
-                <span class="discount-badge" v-if="product.discount && product.discount.is_active">
+                <span class="discount-badge" v-if="product.discount && product.discount.is_active" dir="ltr">
                   -{{ product.discount.discount_value }}%
                 </span>
               </div>
-              <span class="price-new">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
+              <span class="price-new" dir="ltr">{{ discountedPriceToShow || 0 }} {{ product.currency_code }}</span>
 
               <button @click="toggleFavorite(product)" class="love-btn btn rounded-circle shadow-sm btn-light"
                 :class="isInFavorites(product.id) ? 'text-danger' : ''"
@@ -158,10 +158,10 @@
                   <span v-if="child.discount && child.discount.is_active" class="discount-badge">
                     -{{ child.discount.discount_value }}%
                   </span>
-                  <span v-if="child.discount && child.discount.is_active" class="price-old">
+                  <span v-if="child.discount && child.discount.is_active" class="price-old" dir="ltr">
                     {{ child.converted_price || child.price }} {{ child.currency_code || 'UAE' }}
                   </span>
-                  <span class="card-text card-price">
+                  <span class="card-text card-price" dir="ltr">
                     {{ calculateDiscountedPrice(child) }} {{ child.currency_code || 'UAE' }}
                   </span>
                 </div>
