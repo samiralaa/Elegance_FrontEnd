@@ -95,7 +95,7 @@
                 style="width: 100%; aspect-ratio: 1; object-fit: cover" alt="No Image Available" />
               <strong class="small">{{ $i18n.locale ==  'ar' ? item.product.name_ar : item.product.name_en
                 }}</strong>
-              <small class="text-muted">{{ item.price }} {{ order.currency }} x{{ item.quantity }}</small>
+              <small class="text-muted" dir="ltr">{{ item.price }} {{ order.currency }} x{{ item.quantity }}</small>
             </div>
           </div>
 
@@ -163,7 +163,7 @@
         <strong class="card-title small mb-1">
           {{ item.product?.name_en || 'No Name' }}
         </strong>
-        <small class="text-muted">
+        <small class="text-muted"  dir="ltr">
           {{ item.price }} {{ selectedCurrency }} × {{ item.quantity }}
         </small>
       </div>

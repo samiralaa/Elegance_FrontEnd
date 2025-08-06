@@ -27,19 +27,19 @@
 
               <!-- Quantity and Price -->
               <div class="d-flex align-items-center gap-2">
-                <small class="text-muted">
+                <small class="text-muted" dir="ltr">
                   <template v-if="item.product && item.product.discount && item.product.discount.is_active">
                     <span class="discount-badge" style="background:#ff4d4f;color:white;padding:0.15em 0.5em;border-radius:999px;font-size:0.95em;font-weight:600;margin-right:6px;">
                       -{{ parseFloat(item.product.discount.discount_value) }}%
                     </span>
-                    <span style="text-decoration: line-through; color: #b0b0b0;">{{ item.product.price }} {{ item.currency_code || 'AUD' }}</span>
-                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;">{{ calculateDiscountedPrice(item) }} {{ item.currency_code || 'AUD' }}</span>
+                    <span style="text-decoration: line-through; color: #b0b0b0;" dir="ltr">{{ item.product.price }} {{ item.currency_code || 'AUD' }}</span>
+                    <span style="color: #a3852c; font-weight: bold; margin-left: 6px;" dir="ltr">{{ calculateDiscountedPrice(item) }} {{ item.currency_code || 'AUD' }}</span>
                   </template>
-                  <template v-else>
+                  <template v-else dir="ltr">
                     {{ calculateDiscountedPrice(item) }} {{ item.currency_code }}
                   </template>
-                  ×
                 </small>
+                ×
                 <div class="quantity-control">
                   <el-button size="small" @click="decreaseQuantity(item)" :disabled="item.quantity <= 1"
                     class="qty-btn">

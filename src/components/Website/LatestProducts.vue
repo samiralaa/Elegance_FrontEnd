@@ -24,10 +24,10 @@
                 <span v-if="product.discount && product.discount.is_active" class="discount-badge">
                   {{ getDiscountPercentage(product) }}% OFF
                 </span>
-                <span v-if="product.discount && product.discount.is_active" class="price-old">
+                <span v-if="product.discount && product.discount.is_active" class="price-old" dir="ltr">
                   {{ product.converted_price }} {{ product.currency_code }}
                 </span>
-                <span class="card-text card-price">
+                <span class="card-text card-price" dir="ltr">
                   {{ calculateDiscountedPrice(product) }} {{ product.currency_code }}
                 </span>
               </div>

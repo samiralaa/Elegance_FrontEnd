@@ -31,10 +31,10 @@
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   
-                  <span v-if="isDiscountActive(favorite) && getOldPrice(favorite)" class="price-old">
+                  <span v-if="isDiscountActive(favorite) && getOldPrice(favorite)" class="price-old" dir="ltr">
                     {{ getOldPrice(favorite) }} {{ favorite.currency_code || 'AUD' }}
                   </span>
-                  <span class="price">
+                  <span class="price" dir="ltr">
                     {{ calculateDiscountedPrice(favorite) }} {{ favorite.currency_code || 'AUD' }}
                   </span>
                 </div>

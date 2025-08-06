@@ -6,7 +6,7 @@
         <img :src="getProductImage(item)" :alt="item.product?.name_en || ''" class="item-image">
         <div class="item-details">
           <h3>{{ currentLang === 'ar' ? item.product?.name_ar : item.product?.name_en }}</h3>
-          <p class="item-price">{{ calculateDiscountedPrice(item) }} {{ currency }}</p>
+          <p class="item-price" dir="ltr">{{ calculateDiscountedPrice(item) }} {{ currency }}</p>
           <div class="quantity-controls">
             <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">-</button>
             <input dir="ltr" class="form-control qty-number" type="number" min="1" max="99" v-model.number="item.quantity"
@@ -22,11 +22,11 @@
     <div class="cart-summary">
       <div class="summary-row">
         <span>{{ $t('checkout.subtotal') }}</span>
-        <span>{{ subtotal }} {{ currency }}</span>
+        <span dir="ltr">{{ subtotal }} {{ currency }}</span>
       </div>
       <div class="summary-row total">
         <span>{{ $t('checkout.total') }}</span>
-        <span>{{ total }} {{ currency }}</span>
+        <span dir="ltr">{{ total }} {{ currency }}</span>
       </div>
     </div>
     <button class="btn-primary" @click="$emit('next-step')" :disabled="!cartItems.length">
@@ -251,6 +251,7 @@ export default {
   color: #8b6b3d;
   font-weight: bold;
   margin: 0.5rem 0;
+  width: fit-content;
 }
 
 .quantity-controls {

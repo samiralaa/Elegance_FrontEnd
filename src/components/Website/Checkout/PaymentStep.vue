@@ -24,15 +24,14 @@
       <div class="summary-details">
         <p>{{ cartItems.length }} {{ $t('checkout.items') }}</p>
         <p>{{ $t('checkout.deliveryTo') }}: {{ shippingDetails.address }}</p>
-
         <!-- Subtotal -->
-        <p>{{ $t('checkout.subtotal') }}: {{ apiCartTotal }} {{ currency }}</p>
+        <p>{{ $t('checkout.subtotal') }}: <span dir="ltr">{{ apiCartTotal }} {{ currency }}</span></p>
         <!-- Delivery charge -->
-        <p>{{ $t('checkout.deliveryCharge') }}: {{ deliveryCharge }} {{ currency }}</p>
+        <p>{{ $t('checkout.deliveryCharge') }}: <span dir="ltr">{{ deliveryCharge }} {{ currency }}</span></p>
         <!-- Tax -->
         <!-- Total -->
         <div class="total-amount">
-          {{ $t('checkout.totalAmount') }}: {{ totalAmount }} {{ currency }}
+          {{ $t('checkout.totalAmount') }}: <span dir="ltr">{{ totalAmount }} {{ currency }}</span>
         </div>
       </div>
     </div>
