@@ -158,10 +158,10 @@
                   <span v-if="child.discount && child.discount.is_active" class="discount-badge">
                     -{{ child.discount.discount_value }}%
                   </span>
-                  <span v-if="child.discount && child.discount.is_active" class="price-old">
+                  <span v-if="child.discount && child.discount.is_active" class="price-old" dir="ltr">
                     {{ child.converted_price || child.price }} {{ child.currency_code || 'UAE' }}
                   </span>
-                  <span class="card-text card-price">
+                  <span class="card-text card-price" dir="ltr">
                     {{ calculateDiscountedPrice(child) }} {{ child.currency_code || 'UAE' }}
                   </span>
                 </div>
