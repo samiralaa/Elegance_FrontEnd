@@ -13,11 +13,8 @@
     </div>
 
     <!-- Stripe Card Element -->
-    <div v-if="selectedPaymentMethod === 1" class="stripe-container">
-      <div class="card-element-container">
-        <div id="card-element" class="card-element"></div>
-        <div id="card-errors" class="card-errors" role="alert"></div>
-      </div>
+    <div v-if="selectedPaymentMethod === 1">
+      
     </div>
     <div class="order-summary">
       <h3>{{ $t('checkout.orderSummary') }}</h3>
@@ -107,51 +104,20 @@ export default {
         this.selectedPaymentMethod = null;
       }
     },
-    selectedPaymentMethod(newValue) {
-      if (newValue === 1) {
-        this.$nextTick(() => {
-          this.initStripeElements();
-        });
-      }
-    }
+    // selectedPaymentMethod(newValue) {
+    //   if (newValue === 1) {
+    //     this.$nextTick(() => {
+    //       this.initStripeElements();
+    //     });
+    //   }
+    // }
   },
 
   methods: {
     selectPaymentMethod(methodId) {
       this.selectedPaymentMethod = methodId;
     },
-    async initStripeElements() {
-      if (!document.getElementById('card-element')) return;
-      const stripe = await this.stripePromise;
-      this.stripeElements = stripe.elements();
-      const cardElement = this.stripeElements.create('card', {
-        style: {
-          base: {
-            color: '#32325d',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: 'antialiased',
-            fontSize: '16px',
-            '::placeholder': {
-              color: '#aab7c4'
-            }
-          },
-          invalid: {
-            color: '#fa755a',
-            iconColor: '#fa755a'
-          }
-        }
-      });
-      cardElement.mount('#card-element');
-      cardElement.on('change', (event) => {
-        const displayError = document.getElementById('card-errors');
-        if (event.error) {
-          displayError.textContent = event.error.message;
-        } else {
-          displayError.textContent = '';
-        }
-      });
-      this.cardElement = cardElement;
-    },
+   
     async initiateTabbyPayment() {
       this.loading = true;
 

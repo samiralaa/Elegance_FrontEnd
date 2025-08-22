@@ -2,6 +2,9 @@
   <div class="home">
     <Loader v-if="loading" />
     <Header />
+
+    <!-- Countdown Timer Section -->
+  
     <verify-otp-popup
       v-if="showVerifyOtp || showVerifyOtpPopup"
       :user="user"
@@ -14,26 +17,29 @@
 
 
     <section class="hero-section">
-      <div id="carouselExample" class="carousel slide">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="@/assets/images/Hero/1.jpg" class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item ">
-            <img src="@/assets/images/Hero/2.jpg" class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item">
-            <img src="@/assets/images/Hero/3.jpg " class="d-block w-100" alt="...">
+      <div class="hero-background">
+        <!-- Countdown Timer Overlay -->
+        <div class="countdown-overlay">
+          <h2>عداد التوقيت</h2>
+          <div class="countdown-flex">
+            <div class="countdown-box">
+              <div class="countdown-number">{{ countdown.days }}</div>
+              <div class="countdown-label">يوم</div>
+            </div>
+            <div class="countdown-box">
+              <div class="countdown-number">{{ countdown.hours }}</div>
+              <div class="countdown-label">ساعة</div>
+            </div>
+            <div class="countdown-box">
+              <div class="countdown-number">{{ countdown.minutes }}</div>
+              <div class="countdown-label">دقيقة</div>
+            </div>
+            <div class="countdown-box">
+              <div class="countdown-number">{{ countdown.seconds }}</div>
+              <div class="countdown-label">ثانية</div>
+            </div>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
       </div>
     </section>
     <Categories />
@@ -92,6 +98,14 @@ export default {
       user: null,
       token: null,
       showVerifyOtpPopup: false,
+      countdown: {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      },
+      countdownTarget: new Date('2025-09-01T00:00:00'), // Change target date as needed
+      countdownInterval: null
     };
   },
   mounted() {
@@ -100,8 +114,30 @@ export default {
       this.showVerifyOtpPopup = true;
       localStorage.removeItem('showVerifyOtpPopup');
     }
+    this.startCountdown();
   },
   methods: {
+    startCountdown() {
+      this.updateCountdown();
+      this.countdownInterval = setInterval(this.updateCountdown, 1000);
+    },
+    updateCountdown() {
+      const now = new Date();
+      const target = this.countdownTarget;
+      const diff = target - now;
+      if (diff > 0) {
+        this.countdown.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        this.countdown.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        this.countdown.minutes = Math.floor((diff / (1000 * 60)) % 60);
+        this.countdown.seconds = Math.floor((diff / 1000) % 60);
+      } else {
+        this.countdown.days = 0;
+        this.countdown.hours = 0;
+        this.countdown.minutes = 0;
+        this.countdown.seconds = 0;
+        clearInterval(this.countdownInterval);
+      }
+    },
 
 
     async fetchSettings() {
@@ -193,5 +229,73 @@ export default {
 }
 :deep(.el-notification.right){
   top: 150px !important;
+}
+
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin-bottom: 30px;
+}
+.hero-background {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/Hero/ls.png');
+  animation: heroSlider 16s infinite linear;
+  position: relative;
+}
+@keyframes heroSlider {
+  0%   { background-image: url('@/assets/images/Hero/ls.png'); }
+}
+.countdown-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+.countdown-overlay h2 {
+  margin-bottom: 24px;
+  font-size: 2.2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.countdown-flex {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+}
+.countdown-box {
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 18px 24px;
+  min-width: 80px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.countdown-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.countdown-label {
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 </style>

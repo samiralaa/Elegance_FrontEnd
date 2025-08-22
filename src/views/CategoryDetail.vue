@@ -235,12 +235,20 @@ export default {
       });
     }
   } catch (error) {
-    console.error('Error adding to cart:', error);
+    if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: this.$t('error'),
+        message: this.$t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification({
       title: this.$t('error'),
-      message: error.response?.data?.message || this.$t('something_went_wrong'),
+      message: error.response?.data?.message,
       type: 'error'
-    });
+    })
   }
 },
 

@@ -4,6 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
+  assetsInclude: ['**/*.PNG'], // Handle PNG files with uppercase extension
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')

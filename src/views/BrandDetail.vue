@@ -269,7 +269,15 @@ const addToCart = async (product) => {
       })
     }
   } catch (error) {
-    console.error('Error adding to cart:', error)
+ if (error.response?.data?.message === 'Unauthenticated.') {
+      ElNotification({
+        title: t('error'),
+        message: t('unauthenticated'),
+        type: 'warning',
+        duration: 4000
+      })
+      return
+    }
     ElNotification({
       title: t('error'),
       message: error.response?.data?.message,
