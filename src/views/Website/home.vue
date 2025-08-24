@@ -19,7 +19,7 @@
     <section class="hero-section">
       <div class="hero-background">
         <!-- Countdown Timer Overlay -->
-        <div class="countdown-overlay">
+        <div class="countdown-overlay" dir="ltr">
           <h2>عداد التوقيت</h2>
           <div class="countdown-flex">
             <div class="countdown-box">
@@ -297,5 +297,59 @@ export default {
   color: #fff;
   font-weight: 500;
   letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    height: 300px;
+  }
+  .countdown-overlay {
+    padding: 20px 25px;
+  }
+  .countdown-overlay h2 {
+    font-size: 1.8rem;
+    margin-bottom: 18px;
+  }
+  .countdown-flex {
+    gap: 16px;
+  }
+  .countdown-box {
+    min-width: 60px;
+    padding: 14px 18px;
+  }
+  .countdown-number {
+    font-size: 2rem;
+    margin-bottom: 6px;
+  }
+  .countdown-label {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 250px;
+  }
+  .countdown-overlay {
+    padding: 15px 20px;
+  }
+  .countdown-overlay h2 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  .countdown-flex {
+    gap: 12px;
+  }
+  .countdown-box {
+    min-width: 50px;
+    padding: 10px 14px;
+  }
+  .countdown-number {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+  .countdown-label {
+    font-size: 0.9rem;
+  }
 }
 </style>
