@@ -235,18 +235,22 @@ export default {
 .hero-section {
   position: relative;
   width: 100%;
-  height: 400px;
+  height:80vh;
   margin-bottom: 30px;
+  overflow: hidden; 
 }
+
 .hero-background {
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   background-image: url('@/assets/images/Hero/ls.png');
+  background-size: cover; 
+  /* background-position: center center; */
+  background-repeat: no-repeat;
   animation: heroSlider 16s infinite linear;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 @keyframes heroSlider {
   0%   { background-image: url('@/assets/images/Hero/ls.png'); }
