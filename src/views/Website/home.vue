@@ -104,7 +104,7 @@ export default {
         minutes: 0,
         seconds: 0
       },
-      countdownTarget: new Date('2025-09-01T00:00:00'), // Change target date as needed
+      countdownTarget: new Date('2025-08-30T00:00:00'), // Change target date as needed
       countdownInterval: null
     };
   },
