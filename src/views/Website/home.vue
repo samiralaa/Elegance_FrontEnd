@@ -19,27 +19,7 @@
     <section class="hero-section">
       <div class="hero-background">
         <!-- Countdown Timer Overlay -->
-        <div class="countdown-overlay" dir="ltr">
-          <h2>عداد التوقيت</h2>
-          <div class="countdown-flex">
-            <div class="countdown-box">
-              <div class="countdown-number">{{ countdown.days }}</div>
-              <div class="countdown-label">يوم</div>
-            </div>
-            <div class="countdown-box">
-              <div class="countdown-number">{{ countdown.hours }}</div>
-              <div class="countdown-label">ساعة</div>
-            </div>
-            <div class="countdown-box">
-              <div class="countdown-number">{{ countdown.minutes }}</div>
-              <div class="countdown-label">دقيقة</div>
-            </div>
-            <div class="countdown-box">
-              <div class="countdown-number">{{ countdown.seconds }}</div>
-              <div class="countdown-label">ثانية</div>
-            </div>
-          </div>
-        </div>
+      
       </div>
     </section>
     <Categories />

@@ -109,7 +109,7 @@ export default createStore({
           password: credentials.password
         })
 
-        
+
 
         // Check for token structure in response, including nested data object
         const responseData = response.data.data || response.data
@@ -226,7 +226,7 @@ export default createStore({
           password_confirmation: userData.password_confirmation
         })
 
-     
+
 
         if (response.data?.data?.token) {
           commit('SET_TOKEN', response.data.data.token)
