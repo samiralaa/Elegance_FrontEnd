@@ -4,24 +4,46 @@
     <Header />
 
     <!-- Countdown Timer Section -->
-  
-    <verify-otp-popup
-      v-if="showVerifyOtp || showVerifyOtpPopup"
-      :user="user"
-      :token="token"
-      @close="handleCloseOtp"
-    />
+
+    <verify-otp-popup v-if="showVerifyOtp || showVerifyOtpPopup" :user="user" :token="token" @close="handleCloseOtp" />
 
 
     <!-- Hero Section with Ramadan Theme -->
 
+<section class="hero-section">
+  <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2"></button>
+    </div>
 
-    <section class="hero-section">
-      <div class="hero-background">
-        <!-- Countdown Timer Overlay -->
-      
+    <!-- Slides -->
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="@/assets/images/Hero/1.jpg" class="d-block w-100" alt="Slide 1">
       </div>
-    </section>
+      <div class="carousel-item">
+        <img src="@/assets/images/Hero/2.jpg" class="d-block w-100" alt="Slide 2">
+      </div>
+      <div class="carousel-item">
+        <img src="@/assets/images/Hero/3.jpg" class="d-block w-100" alt="Slide 3">
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+
     <Categories />
     <HomeBrands v-if="showBrand" />
     <Products v-if="showOurProducts" />
@@ -45,6 +67,8 @@ import i18n from '@/i18n.js'
 import Footer from '@/components/Website/Footer.vue'
 import Loader from '@/components/Loader.vue'
 import VerifyOtpPopup from '@/components/verifyOtpPopup.vue'
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 
 export default {
   name: 'Home',
@@ -122,7 +146,7 @@ export default {
 
     async fetchSettings() {
       try {
-     
+
         const response = await fetch('https://backend.webenia.org/api/settings');
         const result = await response.json();
         const settings = result.data;
@@ -207,7 +231,8 @@ export default {
 .home {
   min-height: 100vh;
 }
-:deep(.el-notification.right){
+
+:deep(.el-notification.right) {
   top: 150px !important;
 }
 
@@ -218,6 +243,7 @@ export default {
   height: 400px;
   margin-bottom: 30px;
 }
+
 .hero-background {
   width: 100%;
   height: 100%;
@@ -228,50 +254,59 @@ export default {
   animation: heroSlider 16s infinite linear;
   position: relative;
 }
+
 @keyframes heroSlider {
-  0%   { background-image: url('@/assets/images/Hero/ls.png'); }
+  0% {
+    background-image: url('@/assets/images/Hero/ls.png');
+  }
 }
+
 .countdown-overlay {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   padding: 30px 40px;
   border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
+
 .countdown-overlay h2 {
   margin-bottom: 24px;
   font-size: 2.2rem;
   font-weight: bold;
   letter-spacing: 2px;
 }
+
 .countdown-flex {
   display: flex;
   gap: 24px;
   justify-content: center;
   align-items: center;
 }
+
 .countdown-box {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 18px 24px;
   min-width: 80px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .countdown-number {
   font-size: 2.5rem;
   font-weight: bold;
   color: #ffd700;
   margin-bottom: 8px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
+
 .countdown-label {
   font-size: 1.1rem;
   color: #fff;
@@ -283,24 +318,30 @@ export default {
   .hero-section {
     height: 300px;
   }
+
   .countdown-overlay {
     padding: 20px 25px;
   }
+
   .countdown-overlay h2 {
     font-size: 1.8rem;
     margin-bottom: 18px;
   }
+
   .countdown-flex {
     gap: 16px;
   }
+
   .countdown-box {
     min-width: 60px;
     padding: 14px 18px;
   }
+
   .countdown-number {
     font-size: 2rem;
     margin-bottom: 6px;
   }
+
   .countdown-label {
     font-size: 1rem;
   }
@@ -310,24 +351,30 @@ export default {
   .hero-section {
     height: 250px;
   }
+
   .countdown-overlay {
     padding: 15px 20px;
   }
+
   .countdown-overlay h2 {
     font-size: 1.5rem;
     margin-bottom: 12px;
   }
+
   .countdown-flex {
     gap: 12px;
   }
+
   .countdown-box {
     min-width: 50px;
     padding: 10px 14px;
   }
+
   .countdown-number {
     font-size: 1.5rem;
     margin-bottom: 4px;
   }
+
   .countdown-label {
     font-size: 0.9rem;
   }
